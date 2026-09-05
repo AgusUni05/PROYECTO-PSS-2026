@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wireframe — Búsqueda de turnos disponibles (Paciente)</title>
+<style>
+  :root{
+    --border:#9aa1ab;
+    --border-light:#c7ccd3;
+    --ink:#1c1f24;
+    --muted:#6b7280;
+    --fill:#f2f4f7;
+    --fill-strong:#e3e7ec;
+    --accent:#4373c9;
+    --wire:2px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;padding:32px 16px;
+    font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    color:var(--ink);background:#ffffff;
+  }
+  .page{max-width:980px;margin:0 auto;}
+
+  /* Etiqueta de referencia (ID ítem) */
+  .ref{
+    display:inline-block;margin-bottom:6px;
+    font-size:11px;font-weight:600;letter-spacing:.06em;
+    color:var(--muted);text-transform:uppercase;
+  }
+  .ref::before{content:"■ ";}
+  h1.doc-title{font-size:15px;color:var(--muted);font-weight:600;margin:0 0 2px;}
+  .doc-sub{font-size:12px;color:var(--muted);margin:0 0 20px;}
+
+  /* Regla de plegado vertical (índice de la wireframe) */
+  .collapse-rule{
+    border:none;border-top:var(--wire) solid var(--ink);
+    margin:22px 0;
+  }
+
+  /* ---- Cajas genéricas ---- */
+  .box{
+    border:var(--wire) solid var(--border);
+    border-radius:4px;
+    background:#fff;
+  }
+  .box--dashed{border-style:dashed;border-color:var(--border-light);}
+  .placeholder{
+    display:flex;align-items:center;justify-content:center;
+    background:var(--fill);
+    border:1px dashed var(--border-light);
+    color:var(--muted);font-size:12px;text-align:center;
+  }
+
+  /* ---- Encabezado superior (layout común a todas las pantallas) ---- */
+  .topbar{
+    display:flex;align-items:center;gap:14px;padding:10px 0;
+    border-bottom:var(--wire) solid var(--border);
+    margin-bottom:22px;
+  }
+  .logo{width:180px;height:34px;background:var(--fill-strong);border:1px dashed var(--border);border-radius:4px;}
+  .topnav{flex:1;display:flex;gap:6px;}
+  .nav-item{padding:7px 12px;font-size:13px;color:var(--muted);border:1px dashed var(--border-light);border-radius:4px;}
+  .nav-item--active{color:var(--ink);border-style:solid;border-color:var(--accent);font-weight:600;}
+  .top-user{margin-left:auto;display:flex;align-items:center;gap:10px;font-size:13px;}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--fill-strong);border:1px dashed var(--border);}
+
+  /* ---- Estructura de los bloques de wireframe ---- */
+  h2.section{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 6px;}
+  .wf-block{border:var(--wire) solid var(--ink);border-radius:6px;padding:14px;margin-bottom:24px;}
+  .wf-block__num{float:right;font-size:11px;color:var(--muted);font-weight:600;}
+
+  .field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+  .field label{font-size:12px;font-weight:600;color:var(--ink);}
+  .input{
+    height:34px;border:var(--wire) solid var(--border);border-radius:4px;background:#fff;
+    display:flex;align-items:center;padding:0 10px;font-size:13px;color:var(--muted);
+  }
+  .select{display:flex;align-items:center;gap:6px;}
+  .select::after{content:"▾";margin-left:auto;color:var(--muted);}
+  .btn{
+    height:36px;padding:0 14px;border:var(--wire) solid var(--border);border-radius:4px;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:600;background:var(--fill);color:var(--ink);cursor:pointer;
+  }
+  .btn--primary{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .btn--accent{background:var(--accent);color:#fff;border-color:var(--accent);}
+
+  /* Filtros */
+  .filters{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;align-items:end;}
+  .filters .grow-2{grid-column:span 2;}
+
+  /* Resultados */
+  .results-empty{color:var(--muted);font-size:13px;padding:8px 2px;}
+  .day-group{margin-bottom:18px;}
+  .day-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .day-head .day{font-size:13px;font-weight:700;}
+  .day-head .count{font-size:12px;color:var(--muted);}
+  .day-head .rule{flex:1;height:1px;border-top:1px solid var(--border-light);}
+
+  .appt{
+    display:flex;align-items:center;gap:16px;
+    border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:8px;background:#fff;
+  }
+  .appt__time{font-size:15px;font-weight:700;width:64px;flex-shrink:0;}
+  .appt__info{flex:1;}
+  .appt__info .who{font-size:13px;font-weight:600;}
+  .appt__info .meta{font-size:12px;color:var(--muted);}
+  .badge{
+    font-size:11px;font-weight:600;padding:3px 8px;border-radius:999px;
+    background:var(--fill-strong);border:1px solid var(--border);color:var(--muted);
+  }
+
+  .foot{font-size:11px;color:var(--muted);border-top:1px solid var(--border-light);padding-top:10px;margin-top:26px;text-align:center;}
+
+  @media (max-width:680px){
+    .filters{grid-template-columns:1fr 1fr;}
+    .filters .grow-2{grid-column:span 2;}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <span class="ref">US-12 · Buscar turnos disponibles · Paciente (web) · Sprint 2</span>
+  <h1 class="doc-title">Sala Médica Privada — Búsqueda de turnos disponibles</h1>
+  <p class="doc-sub">Wireframe de baja fidelidad · Indica disposición de botones, campos y títulos · Pantalla propuesta</p>
+  <hr class="collapse-rule">
+
+  <!-- ===== Encabezado superior ===== -->
+  <div class="topbar">
+    <div class="logo" title="Logo de la sala"></div>
+    <div class="topnav">
+      <span class="nav-item nav-item--active">Buscar turnos</span>
+      <span class="nav-item">Mis turnos</span>
+      <span class="nav-item">Mi historial</span>
+      <span class="nav-item">Mis pagos</span>
+      <span class="nav-item">Mis datos</span>
+    </div>
+    <div class="top-user">
+      <span>María García</span>
+      <div class="avatar"></div>
+      <span class="nav-item">Cerrar sesión</span>
+    </div>
+  </div>
+
+  <!-- ===== Barra de filtros ===== -->
+  <div class="wf-block">
+    <span class="wf-block__num">Filtros de búsqueda</span>
+    <h2 class="section">Filtros</h2>
+    <div class="filters">
+      <div class="field">
+        <label>Especialidad</label>
+        <div class="input select">Clínica médica</div>
+      </div>
+      <div class="field">
+        <label>Profesional</label>
+        <div class="input select">Todos los profesionales</div>
+      </div>
+      <div class="field grow-2">
+        <label>Rango de fechas</label>
+        <div class="input">del 05/09/2026 &nbsp;▸&nbsp; al 05/10/2026</div>
+      </div>
+      <div style="display:flex;gap:10px;align-items:end;">
+        <button class="btn btn--primary">Buscar</button>
+        <button class="btn">Limpiar</button>
+      </div>
+    </div>
+    <p style="font-size:11px;color:var(--muted);margin:10px 0 0;">Rango por defecto: próximos 30 días. Los resultados se agrupan por día y se ordenan cronológicamente.</p>
+  </div>
+
+  <!-- ===== Resultados ===== -->
+  <div class="wf-block">
+    <span class="wf-block__num">Resultados</span>
+    <h2 class="section">Turnos disponibles (12)</h2>
+
+    <div class="day-group">
+      <div class="day-head">
+        <span class="day">Lunes 07/09/2026</span>
+        <span class="count">4 turnos</span>
+        <span class="rule"></span>
+      </div>
+      <div class="appt">
+        <div class="appt__time">08:00</div>
+        <div class="appt__info">
+          <div class="who">Dra. Laura Fernández</div>
+          <div class="meta">Clínica médica · Consultorio 3</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+      <div class="appt">
+        <div class="appt__time">08:30</div>
+        <div class="appt__info">
+          <div class="who">Dr. Carlos Méndez</div>
+          <div class="meta">Traumatología · Consultorio 1</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+      <div class="appt">
+        <div class="appt__time">11:30</div>
+        <div class="appt__info">
+          <div class="who">Dra. Laura Fernández</div>
+          <div class="meta">Clínica médica · Consultorio 3</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+      <div class="appt">
+        <div class="appt__time">17:00</div>
+        <div class="appt__info">
+          <div class="who">Dra. M. Robles</div>
+          <div class="meta">Pediatría · Consultorio 2</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+    </div>
+
+    <div class="day-group">
+      <div class="day-head">
+        <span class="day">Miércoles 09/09/2026</span>
+        <span class="count">3 turnos</span>
+        <span class="rule"></span>
+      </div>
+      <div class="appt">
+        <div class="appt__time">09:00</div>
+        <div class="appt__info">
+          <div class="who">Dr. Carlos Méndez</div>
+          <div class="meta">Traumatología · Consultorio 1</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+      <div class="appt">
+        <div class="appt__time">10:30</div>
+        <div class="appt__info">
+          <div class="who">Dra. Laura Fernández</div>
+          <div class="meta">Clínica médica · Consultorio 3</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+      <div class="appt">
+        <div class="appt__time">14:00</div>
+        <div class="appt__info">
+          <div class="who">Dra. M. Robles</div>
+          <div class="meta">Pediatría · Consultorio 2</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+    </div>
+
+    <div class="day-group">
+      <div class="day-head">
+        <span class="day">Viernes 11/09/2026</span>
+        <span class="count">5 turnos</span>
+        <span class="rule"></span>
+      </div>
+      <div class="appt">
+        <div class="appt__time">08:00</div>
+        <div class="appt__info">
+          <div class="who">Dr. Carlos Méndez</div>
+          <div class="meta">Traumatología · Consultorio 1</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+      <div class="appt">
+        <div class="appt__time">09:00</div>
+        <div class="appt__info">
+          <div class="who">Dra. Laura Fernández</div>
+          <div class="meta">Clínica médica · Consultorio 3</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+      <div class="appt">
+        <div class="appt__time">10:00</div>
+        <div class="appt__info">
+          <div class="who">Dra. M. Robles</div>
+          <div class="meta">Pediatría · Consultorio 2</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+      <div class="appt">
+        <div class="appt__time">11:00</div>
+        <div class="appt__info">
+          <div class="who">Dra. Laura Fernández</div>
+          <div class="meta">Clínica médica · Consultorio 3</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+      <div class="appt">
+        <div class="appt__time">16:30</div>
+        <div class="appt__info">
+          <div class="who">Dra. M. Robles</div>
+          <div class="meta">Pediatría · Consultorio 2</div>
+        </div>
+        <button class="btn btn--accent">Reservar</button>
+      </div>
+    </div>
+
+    <!-- Estado vacío (mostrado solo cuando no hay resultados) -->
+    <div class="results-empty" style="display:none;">
+      No se encontraron turnos con los filtros seleccionados. Probá ampliar el rango de fechas o cambiar el profesional.
+    </div>
+  </div>
+
+  <p class="foot">Wireframe de baja fidelidad · Paciente (web) · US-12 · Sala Médica Privada — UNS · DCIC</p>
+
+</div>
+</body>
+</html>
