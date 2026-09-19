@@ -31,14 +31,17 @@ asignaci&oacute;n se re-prioriza al cierre de cada sprint junto al ayudante en s
   <p>La reuni&oacute;n con el cliente del 19/09/2026 elimin&oacute; ocho historias, unific&oacute; otras tres con las que ya exist&iacute;an y
   agreg&oacute; dos nuevas: de 62 se pasa a 53. <strong>Los identificadores de las historias que sobreviven no se renumeraron</strong>, para no romper la trazabilidad con
   los wireframes del Sprint 1 ya aprobados; por eso la numeraci&oacute;n presenta huecos. El detalle completo est&aacute; en el
-  <strong>registro de cambios de la secci&oacute;n 12</strong>.</p>
+  <strong>registro de cambios de la secci&oacute;n 13</strong>.</p>
   <p>El cambio de mayor impacto es la baja del control de acceso por rol como historia propia: pas&oacute; a ser el
   requerimiento no funcional transversal <strong>RNF-03</strong>, que atraviesa todas las historias y se verifica como parte de la
   definici&oacute;n de terminado (condici&oacute;n 6 de la secci&oacute;n 3).</p>
+  <p>Se incorpora adem&aacute;s la <strong>secci&oacute;n 5, Dependencias entre User Stories</strong>: cada historia declara de cu&aacute;les
+  necesita que est&eacute;n terminadas antes de arrancar, con la tabla consolidada, el orden de implementaci&oacute;n por niveles y el
+  camino cr&iacute;tico del proyecto. Es el insumo para cargar las precedencias en ProjectLibre.</p>
   <p>En paralelo se confirm&oacute; que el <strong>equipo implementador es de cinco integrantes que trabajan con asistencia de
   IA</strong>, no de diez. Los puntos de cada historia no cambian &mdash;miden tama&ntilde;o, no tiempo&mdash;, pero s&iacute; cambia cu&aacute;ntas entran
   en cada sprint: la equivalencia pasa de 4 a <strong>2,5 horas por punto</strong> y cada historia lleva ahora su estimaci&oacute;n en
-  horas. El c&aacute;lculo est&aacute; en la secci&oacute;n 2.1 y sus consecuencias sobre el plan, en las secciones 10 y 12.5.</p>
+  horas. El c&aacute;lculo est&aacute; en la secci&oacute;n 2.1 y sus consecuencias sobre el plan, en las secciones 11 y 13.5.</p>
 </div>
 
 <h2>2. Formato y convenciones</h2>
@@ -50,7 +53,7 @@ sus criterios de aceptaci&oacute;n verificables y de la trazabilidad al requerim
   <li><strong>Prioridad:</strong> escala MoSCoW heredada del listado de requerimientos (Must, Should, Could).</li>
   <li><strong>Puntos:</strong> estimaci&oacute;n relativa de tama&ntilde;o y complejidad, independiente de qui&eacute;n implemente la historia. No cambian si cambia el equipo.</li>
   <li><strong>Horas:</strong> traducci&oacute;n de esos puntos a esfuerzo del equipo actual, con la equivalencia <strong>1 punto &asymp; 2,5 horas</strong> justificada en la secci&oacute;n 2.1. La escala se recalibra con la velocidad real del Sprint 1.</li>
-  <li><strong>Sprint:</strong> etapa en la que est&aacute; planificada su implementaci&oacute;n. Las User Stories de la secci&oacute;n 10 no est&aacute;n comprometidas en ning&uacute;n sprint.</li>
+  <li><strong>Sprint:</strong> etapa en la que est&aacute; planificada su implementaci&oacute;n. Las User Stories de la secci&oacute;n 9 no est&aacute;n comprometidas en ning&uacute;n sprint.</li>
   <li><strong>Trazabilidad:</strong> requerimientos funcionales, no funcionales y reglas de negocio que la User Story satisface.</li>
 </ul>
 
@@ -81,7 +84,7 @@ la siguiente descomposici&oacute;n del esfuerzo de una historia t&iacute;pica de
 <p class="note">Esta descomposici&oacute;n es una hip&oacute;tesis, no una medici&oacute;n. El valor de 2,5 horas por punto debe contrastarse con el
 tiempo real registrado durante el Sprint 1 y corregirse en el refinement del Sprint 2. Si la aceleraci&oacute;n real resulta
 menor &mdash;por ejemplo 1,3&times;, es decir 3 horas por punto&mdash; la capacidad de los tres sprints cae de 98 a 82 puntos y el
-plan de reducci&oacute;n de la secci&oacute;n 10.1 debe aplicarse m&aacute;s a fondo.</p>
+plan de reducci&oacute;n de la secci&oacute;n 11.1 debe aplicarse m&aacute;s a fondo.</p>
 
 <h2>3. Definici&oacute;n de terminado</h2>
 
@@ -161,17 +164,192 @@ todas las historias del documento y no se repite en cada una.</p>
     <tr><td class="id">US-60</td><td>Calendario de feriados</td><td>Agenda m&eacute;dica</td><td class="c">Could</td><td class="c">2</td><td class="c">5</td><td class="c">&mdash;</td></tr>
     <tr><td class="id">US-61</td><td>Anulaci&oacute;n de pagos</td><td>Pagos y coberturas</td><td class="c">Could</td><td class="c">2</td><td class="c">5</td><td class="c">&mdash;</td></tr>
     <tr><td class="id">US-62</td><td>Adjuntar estudios a la ficha</td><td>Historial cl&iacute;nico</td><td class="c">Could</td><td class="c">3</td><td class="c">7,5</td><td class="c">&mdash;</td></tr>
-    <tr><td class="id">US-63</td><td>Agenda del vacunatorio <span class="new-tag">nueva</span></td><td>Gesti&oacute;n de vacunas</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">2</td></tr>
-    <tr><td class="id">US-64</td><td>Reserva de turno a nombre de otra persona <span class="new-tag">nueva</span></td><td>Reserva de turnos</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-63</td><td>Agenda del vacunatorio</td><td>Gesti&oacute;n de vacunas</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-64</td><td>Reserva de turno a nombre de otra persona</td><td>Reserva de turnos</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">2</td></tr>
   </tbody>
 </table>
 
 <p class="note"><strong>Identificadores dados de baja:</strong> US-04, US-05, US-07, US-09, US-23, US-25, US-26, US-27, US-37,
-US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&oacute;n 12.</p>
+US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&oacute;n 13.</p>
 
 <div class="page-break"></div>
 
-<h2>5. Sprint 1 &mdash; Cimientos y agenda</h2>
+<h2>5. Dependencias entre User Stories</h2>
+
+<p>Esta secci&oacute;n establece, para cada User Story, cu&aacute;les deben estar implementadas antes de poder arrancarla. El
+orden de los sprints de las secciones 6 a 8 se deriva de este grafo y no al rev&eacute;s: primero se determin&oacute; qu&eacute; depende de
+qu&eacute; y despu&eacute;s se agruparon las historias en etapas que respetaran ese orden. Es tambi&eacute;n el insumo directo para cargar
+las precedencias en ProjectLibre y obtener el camino cr&iacute;tico del proyecto.</p>
+
+<p>Cada historia lleva su l&iacute;nea <strong>Depende de</strong> junto a la de trazabilidad. La tabla de la secci&oacute;n 5.2
+consolida esa informaci&oacute;n y agrega la relaci&oacute;n inversa, para poder leer el impacto de postergar o descartar una historia.</p>
+
+<h3>5.1 Criterio aplicado</h3>
+
+<p>Se registran &uacute;nicamente dependencias <strong>duras</strong>: casos en los que la historia no puede cumplir sus
+criterios de aceptaci&oacute;n ni demostrarse si la predecesora no est&aacute; terminada. No se registran afinidades tem&aacute;ticas ni
+conveniencias de agrupamiento.</p>
+
+<table>
+<colgroup><col style="width:22%"><col><col style="width:26%"></colgroup>
+<thead><tr><th>Tipo</th><th>Qu&eacute; significa</th><th>Ejemplo</th></tr></thead>
+<tbody>
+<tr><td><strong>De dato</strong></td><td>La historia opera sobre una entidad que otra historia crea. Sin esa entidad no hay nada que mostrar ni sobre qu&eacute; operar.</td><td>US-13 reserva un turno que US-08 gener&oacute;.</td></tr>
+<tr><td><strong>De estado</strong></td><td>La historia se dispara a partir de una transici&oacute;n de estado que otra historia produce.</td><td>US-39 carga la ficha sobre un turno que US-18 dej&oacute; en estado cumplido.</td></tr>
+<tr><td><strong>De servicio</strong></td><td>La historia consume un componente transversal construido en otra historia.</td><td>US-14, US-15 y US-16 env&iacute;an correo a trav&eacute;s de US-21.</td></tr>
+<tr><td><strong>De rol</strong></td><td>La historia la ejecuta un rol que otra historia debe poder dar de alta primero.</td><td>US-06 la ejecuta un m&eacute;dico, que solo existe si US-03 lo cre&oacute;.</td></tr>
+</tbody>
+</table>
+
+<p class="note">El control de acceso por rol (RNF-03) no genera dependencias en esta tabla: es transversal a todas las
+historias y se verifica dentro de cada una, seg&uacute;n la condici&oacute;n 6 de la definici&oacute;n de terminado.</p>
+
+<h3>5.2 Tabla de dependencias</h3>
+
+<p>La columna <em>Depende de</em> lista las predecesoras directas. En algunos casos una predecesora tambi&eacute;n es
+alcanzable de forma indirecta &mdash;US-28 depende de US-24 y adem&aacute;s de US-13, que ya arrastra el cat&aacute;logo&mdash;; se la
+conserva igual porque la historia necesita ese artefacto para sus propios criterios de aceptaci&oacute;n.</p>
+
+<table>
+<colgroup><col class="w-id"><col><col class="w-sprint"><col style="width:20%"><col style="width:24%"></colgroup>
+<thead><tr><th class="id">ID</th><th>T&iacute;tulo</th><th class="c">Sprint</th><th>Depende de</th><th>Habilita a</th></tr></thead>
+<tbody>
+  <tr><td class="id">US-01</td><td>Registro y gesti&oacute;n de la cuenta de usuario</td><td class="c">1</td><td>&mdash;</td><td>US-02, US-21, US-32</td></tr>
+  <tr><td class="id">US-02</td><td>Inicio de sesi&oacute;n con interfaz seg&uacute;n rol</td><td class="c">1</td><td>US-01</td><td>US-03, US-31, US-51</td></tr>
+  <tr><td class="id">US-03</td><td>Alta y baja de usuarios internos</td><td class="c">1</td><td>US-02</td><td>US-06, US-17, US-24, US-33, US-63</td></tr>
+  <tr><td class="id">US-06</td><td>Carga de disponibilidad mensual y validaci&oacute;n de jornadas</td><td class="c">1</td><td>US-03</td><td>US-08</td></tr>
+  <tr><td class="id">US-08</td><td>Generaci&oacute;n autom&aacute;tica de turnos de 30 minutos</td><td class="c">1</td><td>US-06</td><td>US-10, US-11, US-60, US-63</td></tr>
+  <tr><td class="id">US-10</td><td>Apertura autom&aacute;tica de la agenda</td><td class="c">1</td><td>US-08</td><td>US-12, US-30</td></tr>
+  <tr><td class="id">US-11</td><td>Vista de agenda del profesional</td><td class="c">1</td><td>US-08</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-12</td><td>Elecci&oacute;n del tipo de turno y b&uacute;squeda de disponibilidad</td><td class="c">2</td><td>US-10, US-24, US-63</td><td>US-13</td></tr>
+  <tr><td class="id">US-13</td><td>Reserva de turno</td><td class="c">2</td><td>US-12</td><td>US-14, US-15, US-16, US-17, US-18, US-19, US-20, US-28, US-30, US-52, US-64</td></tr>
+  <tr><td class="id">US-14</td><td>Confirmaci&oacute;n de reserva por email</td><td class="c">2</td><td>US-13, US-21</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-15</td><td>Recordatorio autom&aacute;tico de turno</td><td class="c">2</td><td>US-13, US-21</td><td>US-54</td></tr>
+  <tr><td class="id">US-16</td><td>Cancelaci&oacute;n de turno por el paciente</td><td class="c">2</td><td>US-13, US-21</td><td>US-17, US-52, US-59</td></tr>
+  <tr><td class="id">US-17</td><td>Gesti&oacute;n de turnos desde mostrador</td><td class="c">2</td><td>US-03, US-13, US-16</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-18</td><td>Registro del estado del turno</td><td class="c">2</td><td>US-13</td><td>US-34, US-35, US-39, US-45, US-48</td></tr>
+  <tr><td class="id">US-19</td><td>Prevenci&oacute;n de turnos duplicados del mismo tipo</td><td class="c">2</td><td>US-13</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-20</td><td>Control de concurrencia en la reserva</td><td class="c">2</td><td>US-13</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-21</td><td>Servicio de env&iacute;o de notificaciones por email</td><td class="c">2</td><td>US-01</td><td>US-14, US-15, US-16, US-22, US-31, US-58, US-59</td></tr>
+  <tr><td class="id">US-22</td><td>Aviso por modificaci&oacute;n de agenda</td><td class="c">2</td><td>US-21, US-30</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-24</td><td>Cat&aacute;logo de vacunas</td><td class="c">2</td><td>US-03</td><td>US-12, US-28</td></tr>
+  <tr><td class="id">US-28</td><td>Turno de vacunaci&oacute;n</td><td class="c">2</td><td>US-13, US-24, US-63</td><td>US-29, US-45</td></tr>
+  <tr><td class="id">US-29</td><td>Registro de aplicaci&oacute;n de dosis</td><td class="c">2</td><td>US-28</td><td>US-40, US-57</td></tr>
+  <tr><td class="id">US-30</td><td>Bloqueo de turnos disponibles de una franja publicada</td><td class="c">2</td><td>US-10, US-13</td><td>US-22</td></tr>
+  <tr><td class="id">US-31</td><td>Recuperaci&oacute;n de contrase&ntilde;a</td><td class="c">2</td><td>US-02, US-21</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-32</td><td>Gesti&oacute;n de la cobertura m&eacute;dica</td><td class="c">3</td><td>US-01, US-64</td><td>US-34</td></tr>
+  <tr><td class="id">US-33</td><td>Definici&oacute;n del costo de la consulta por el m&eacute;dico</td><td class="c">3</td><td>US-03</td><td>US-34</td></tr>
+  <tr><td class="id">US-34</td><td>C&aacute;lculo del importe seg&uacute;n cobertura</td><td class="c">3</td><td>US-18, US-32, US-33</td><td>US-35</td></tr>
+  <tr><td class="id">US-35</td><td>Registro del pago en efectivo o por transferencia</td><td class="c">3</td><td>US-18, US-34</td><td>US-36, US-47, US-61</td></tr>
+  <tr><td class="id">US-36</td><td>Comprobante de pago en PDF</td><td class="c">3</td><td>US-35</td><td>US-38, US-55, US-61</td></tr>
+  <tr><td class="id">US-38</td><td>Historial de pagos del paciente</td><td class="c">3</td><td>US-36</td><td>US-55</td></tr>
+  <tr><td class="id">US-39</td><td>Ficha de diagn&oacute;stico del paciente</td><td class="c">3</td><td>US-18</td><td>US-40, US-41, US-42, US-43, US-62</td></tr>
+  <tr><td class="id">US-40</td><td>Consulta de la ficha del paciente</td><td class="c">3</td><td>US-29, US-39</td><td>US-44</td></tr>
+  <tr><td class="id">US-41</td><td>Historial cl&iacute;nico del paciente</td><td class="c">3</td><td>US-39</td><td>US-44, US-53</td></tr>
+  <tr><td class="id">US-42</td><td>Trazabilidad de las entradas cl&iacute;nicas</td><td class="c">3</td><td>US-39</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-43</td><td>Antecedentes, alergias y medicaci&oacute;n habitual</td><td class="c">3</td><td>US-39</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-44</td><td>Auditor&iacute;a de accesos al historial</td><td class="c">3</td><td>US-40, US-41</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-45</td><td>Reporte de turnos por tipo y especialidad</td><td class="c">3</td><td>US-18, US-28</td><td>US-49</td></tr>
+  <tr><td class="id">US-47</td><td>Reporte de pagos realizados</td><td class="c">3</td><td>US-35</td><td>US-49</td></tr>
+  <tr><td class="id">US-48</td><td>Reporte de asistencia de pacientes</td><td class="c">3</td><td>US-18</td><td>US-49</td></tr>
+  <tr><td class="id">US-49</td><td>Filtros comunes de reportes</td><td class="c">3</td><td>US-45, US-47, US-48</td><td>US-50</td></tr>
+  <tr><td class="id">US-50</td><td>Exportaci&oacute;n de reportes</td><td class="c">3</td><td>US-49</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-51</td><td>Acceso desde la aplicaci&oacute;n m&oacute;vil</td><td class="c">3</td><td>US-02</td><td>US-52, US-53, US-54, US-55</td></tr>
+  <tr><td class="id">US-52</td><td>Gesti&oacute;n de turnos desde el m&oacute;vil</td><td class="c">3</td><td>US-13, US-16, US-51, US-64</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-53</td><td>Historial cl&iacute;nico desde el m&oacute;vil</td><td class="c">3</td><td>US-41, US-51</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-54</td><td>Recordatorios en el m&oacute;vil</td><td class="c">3</td><td>US-15, US-51</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-55</td><td>Pagos y comprobantes desde el m&oacute;vil</td><td class="c">3</td><td>US-36, US-38, US-51</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-57</td><td>Carnet de vacunaci&oacute;n del paciente</td><td class="c">3</td><td>US-29</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-58</td><td>Registro de notificaciones enviadas</td><td class="c">3</td><td>US-21</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-59</td><td>Lista de espera de turnos</td><td class="c">&mdash;</td><td>US-16, US-21</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-60</td><td>Calendario de feriados</td><td class="c">&mdash;</td><td>US-08, US-63</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-61</td><td>Anulaci&oacute;n de pagos</td><td class="c">&mdash;</td><td>US-35, US-36</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-62</td><td>Adjuntar estudios a la ficha</td><td class="c">&mdash;</td><td>US-39</td><td>&mdash;</td></tr>
+  <tr><td class="id">US-63</td><td>Agenda del vacunatorio</td><td class="c">2</td><td>US-03, US-08</td><td>US-12, US-28, US-60</td></tr>
+  <tr><td class="id">US-64</td><td>Reserva de turno a nombre de otra persona</td><td class="c">2</td><td>US-13</td><td>US-32, US-52</td></tr>
+</tbody>
+</table>
+
+<h3 class="page-break">5.3 Orden de implementaci&oacute;n por niveles</h3>
+
+<p>Ordenando el grafo por niveles, cada nivel agrupa las historias que quedan habilitadas una vez terminado el
+anterior. Las historias de un mismo nivel pueden trabajarse en paralelo sin bloquearse entre s&iacute;, lo que define c&oacute;mo
+repartir el trabajo entre los cinco integrantes dentro de cada sprint.</p>
+
+<table>
+<colgroup><col style="width:44pt"><col style="width:38%"><col></colgroup>
+<thead><tr><th class="c">Nivel</th><th>User Stories</th><th>Qu&eacute; queda disponible al cerrarlo</th></tr></thead>
+<tbody>
+<tr><td class="c id">0</td><td>US-01</td><td>Existen cuentas. Es el &uacute;nico punto de entrada del grafo: ninguna historia puede arrancar antes.</td></tr>
+<tr><td class="c id">1</td><td>US-02, US-21</td><td>Hay sesi&oacute;n con ruteo por rol y un servicio de correo. US-21 solo necesita direcciones de email, por lo que puede avanzar en paralelo desde el primer d&iacute;a.</td></tr>
+<tr><td class="c id">2</td><td>US-03, US-31, US-51, US-58</td><td>Existen m&eacute;dicos, enfermeras y administrativos con su rol asignado, y el acceso m&oacute;vil.</td></tr>
+<tr><td class="c id">3</td><td>US-06, US-24, US-33</td><td>Primera bifurcaci&oacute;n real del proyecto: agenda m&eacute;dica, cat&aacute;logo de vacunas y arancel salen los tres de US-03 y no se cruzan entre s&iacute;.</td></tr>
+<tr><td class="c id">4</td><td>US-08</td><td>El turno de 30 minutos existe como entidad. Es la pieza de la que depende el 75% del backlog.</td></tr>
+<tr><td class="c id">5</td><td>US-10, US-11, US-63</td><td>Las dos agendas &mdash;m&eacute;dica y del vacunatorio&mdash; est&aacute;n publicadas.</td></tr>
+<tr><td class="c id">6</td><td>US-12, US-60</td><td>El paciente puede encontrar disponibilidad de ambos tipos de turno.</td></tr>
+<tr><td class="c id">7</td><td>US-13</td><td>Existe el turno reservado. Segundo cuello de botella del grafo: 11 historias cuelgan directamente de ella.</td></tr>
+<tr><td class="c id">8</td><td>US-14, US-15, US-16, US-18, US-19, US-20, US-28, US-30, US-64</td><td>El ciclo de vida completo del turno: confirmaci&oacute;n, recordatorio, cancelaci&oacute;n, estados, reservas para terceros y vacunaci&oacute;n.</td></tr>
+<tr><td class="c id">9</td><td>US-17, US-22, US-29, US-32, US-39, US-45, US-48, US-52, US-54, US-59</td><td>Nivel m&aacute;s ancho del grafo: diez historias en paralelo sobre mostrador, cl&iacute;nica, reportes y m&oacute;vil.</td></tr>
+<tr><td class="c id">10</td><td>US-34, US-40, US-41, US-42, US-43, US-57, US-62</td><td>C&aacute;lculo del importe y vistas del historial cl&iacute;nico.</td></tr>
+<tr><td class="c id">11</td><td>US-35, US-44, US-53</td><td>El pago queda registrado y el acceso al historial, auditado.</td></tr>
+<tr><td class="c id">12</td><td>US-36, US-47</td><td>Comprobante en PDF y reporte de recaudaci&oacute;n.</td></tr>
+<tr><td class="c id">13</td><td>US-38, US-49, US-61</td><td>Historial de pagos y filtros comunes de reportes.</td></tr>
+<tr><td class="c id">14</td><td>US-50, US-55</td><td>Exportaci&oacute;n de reportes y pagos desde el m&oacute;vil. Cierre del grafo.</td></tr>
+</tbody>
+</table>
+
+<h3>5.4 Camino cr&iacute;tico</h3>
+
+<p>La cadena m&aacute;s larga del grafo atraviesa quince historias y suma <strong>42 puntos (105 horas)</strong>: es el m&iacute;nimo
+irreducible del proyecto, porque ninguna de esas quince puede solaparse con la anterior.</p>
+
+<div class="callout">
+<h4>Camino cr&iacute;tico &mdash; 15 User Stories, 42 pts, 105 h</h4>
+<p>US-01 &rarr; US-02 &rarr; US-03 &rarr; US-06 &rarr; US-08 &rarr; US-63 &rarr; US-12 &rarr; US-13 &rarr; US-64 &rarr;
+US-32 &rarr; US-34 &rarr; US-35 &rarr; US-36 &rarr; US-38 &rarr; US-55</p>
+<p>Registro &rarr; sesi&oacute;n &rarr; alta de internos &rarr; disponibilidad &rarr; turnos &rarr; agenda del vacunatorio &rarr;
+b&uacute;squeda &rarr; reserva &rarr; reserva para terceros &rarr; cobertura &rarr; importe &rarr; pago &rarr; comprobante &rarr;
+historial de pagos &rarr; consulta desde el m&oacute;vil.</p>
+</div>
+
+<p>De las quince, ocho pertenecen al Sprint 1 y al Sprint 2. Un atraso en cualquiera de ellas se propaga hasta la demo
+del 12/11 sin posibilidad de compensarlo con trabajo en paralelo. Las tres primeras &mdash;US-01, US-02 y US-03&mdash;
+son adem&aacute;s estrictamente secuenciales entre s&iacute;: no hay forma de repartirlas entre dos personas.</p>
+
+<p>Si el m&oacute;dulo m&oacute;vil se reduce seg&uacute;n el punto 1 del escenario de ajuste, el camino cr&iacute;tico termina en US-61 o
+US-38 y baja a 41 o 39 puntos. La reducci&oacute;n de alcance acorta la ruta pero no cambia su tramo inicial, que es el que
+condiciona el arranque.</p>
+
+<h3>5.5 Ramas independientes</h3>
+
+<p>Tres bloques del backlog pueden avanzar en paralelo al tronco principal, lo que importa para repartir el trabajo
+entre los cinco integrantes sin que se pisen:</p>
+
+<ul>
+  <li><strong>Notificaciones (US-21).</strong> Solo depende de US-01 y habilita siete historias. Es la rama que antes
+  se desbloquea y la que m&aacute;s trabajo destraba por punto invertido.</li>
+  <li><strong>Vacunas (US-24 &rarr; US-63 &rarr; US-28 &rarr; US-29 &rarr; US-57).</strong> Se desprende de US-03 y de
+  US-08 y vuelve a tocar el tronco reci&eacute;n en US-12. Es el m&oacute;dulo que menos c&oacute;digo comparte con el resto.</li>
+  <li><strong>Aplicaci&oacute;n m&oacute;vil (US-51).</strong> Solo depende de US-02, aunque sus cuatro historias hijas replican
+  funcionalidad que debe existir antes en la web.</li>
+</ul>
+
+<h3>5.6 Consecuencias sobre la planificaci&oacute;n</h3>
+
+<table>
+<colgroup><col style="width:30%"><col></colgroup>
+<thead><tr><th>Observaci&oacute;n</th><th>Consecuencia</th></tr></thead>
+<tbody>
+<tr><td>Ninguna dependencia va de un sprint a uno anterior.</td><td>La distribuci&oacute;n de las secciones 6 a 8 es consistente con el grafo: ninguna historia est&aacute; planificada antes que sus predecesoras.</td></tr>
+<tr><td>US-21 est&aacute; en el Sprint 2 pero solo depende de US-01.</td><td>Confirma la propuesta de adelantarla al Sprint 1 con los 3 puntos de holgura: es la &uacute;nica historia del Sprint 2 que puede arrancar sin nada del ciclo de reserva, y destraba US-14, US-15, US-16, US-22, US-31, US-58 y US-59.</td></tr>
+<tr><td>US-12 depende de US-24 y US-63, del m&oacute;dulo de vacunas.</td><td>Si el m&oacute;dulo de vacunas se corre al Sprint 3 para descomprimir el Sprint 2, US-12 debe partirse: la b&uacute;squeda de turnos m&eacute;dicos queda en el Sprint 2 y la rama de vacunaci&oacute;n viaja con el m&oacute;dulo.</td></tr>
+<tr><td>US-22 depende de US-30, que es el punto 10 del escenario de ajuste.</td><td>Descartar US-30 deja a US-22 sin disparador. Las dos deben salir juntas: el ahorro real del punto 10 es de 3 puntos, no de 2.</td></tr>
+<tr><td>US-13 habilita once historias y US-08, cuatro.</td><td>Son las dos piezas donde un error de modelado se paga en todo el backlog. Conviene revisarlas de a pares y cerrarlas temprano dentro de su sprint, no sobre la fecha de la demo.</td></tr>
+<tr><td>El nivel 9 agrupa diez historias sin dependencias entre s&iacute;.</td><td>Es el punto del proyecto donde la paralelizaci&oacute;n rinde m&aacute;s. Cae dentro del Sprint 3, el m&aacute;s cargado, lo que juega a favor.</td></tr>
+</tbody>
+</table>
+
+<h2>6. Sprint 1 &mdash; Cimientos y agenda</h2>
 
 <div class="sprint-intro">
   <p>Demo 08/10, entrega 11/10. Identidad, alta de usuarios y todo el ciclo de la agenda m&eacute;dica: desde la carga de
@@ -186,7 +364,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-01</span> Registro y gesti&oacute;n de la cuenta de usuario <span class="chg-tag">unifica ex US-05</span></span>
+    <span class="us-name"><span class="code">US-01</span> Registro y gesti&oacute;n de la cuenta de usuario</span>
     <span class="us-meta">Must | 4 pts | 10 h | Sprint 1</span>
   </div>
   <p class="us-story">Como <strong>visitante</strong>, quiero registrarme en la plataforma con mis datos personales, de contacto y mi obra
@@ -203,6 +381,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Al cambiar el email, las notificaciones posteriores se env&iacute;an a la nueva direcci&oacute;n, y el sistema confirma el guardado con un mensaje expl&iacute;cito.</li>
     <li>El manejo de contrase&ntilde;as se resuelve con un servicio de terceros.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> ninguna. Es el punto de partida del &aacute;rbol de dependencias.</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-USR-01, RF-USR-07, RNF-01, RN-06, RN-11</p>
 </div>
 
@@ -221,6 +400,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El usuario puede cerrar sesi&oacute;n desde cualquier pantalla.</li>
     <li>Cada rol ve un men&uacute; distinto sobre una misma identidad visual.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-01 (cuenta de usuario)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-USR-02, RNF-06, RN-04</p>
 </div>
 
@@ -241,6 +421,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Un usuario desactivado no puede iniciar sesi&oacute;n pero conserva su historial de actividad.</li>
     <li>No se permite eliminar f&iacute;sicamente usuarios que tengan turnos o registros asociados.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-02 (sesi&oacute;n y ruteo por rol)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-USR-03, RF-USR-07, RF-USR-08, RNF-14, RN-01, RN-04, RN-11</p>
 </div>
 
@@ -248,7 +429,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-06</span> Carga de disponibilidad mensual y validaci&oacute;n de jornadas <span class="chg-tag">unifica ex US-07</span></span>
+    <span class="us-name"><span class="code">US-06</span> Carga de disponibilidad mensual y validaci&oacute;n de jornadas</span>
     <span class="us-meta">Must | 5 pts | 12,5 h | Sprint 1</span>
   </div>
   <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero cargar los d&iacute;as y las franjas horarias en que atender&eacute; durante el pr&oacute;ximo mes y que
@@ -264,12 +445,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Las semanas parcialmente incluidas en el mes se eval&uacute;an seg&uacute;n el criterio acordado con el cliente.</li>
     <li>El m&eacute;dico puede modificar o eliminar una franja mientras la disponibilidad no est&eacute; confirmada.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-03 (usuarios internos con rol asignado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-01, RN-02, RN-09</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-08</span> Generaci&oacute;n autom&aacute;tica de turnos de 30 minutos <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-08</span> Generaci&oacute;n autom&aacute;tica de turnos de 30 minutos</span>
     <span class="us-meta">Must | 4 pts | 10 h | Sprint 1</span>
   </div>
   <p class="us-story">Como <strong>sistema</strong>, quiero dividir cada franja horaria confirmada en turnos de 30 minutos, para que los pacientes
@@ -282,6 +464,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Cada turno generado queda en estado disponible, asociado al m&eacute;dico, la fecha y la hora.</li>
     <li>La generaci&oacute;n es idempotente: reconfirmar la misma disponibilidad no duplica turnos.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-06 (disponibilidad mensual confirmada)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-03, RN-09</p>
 </div>
 
@@ -299,6 +482,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>La agenda muestra &uacute;nicamente los turnos futuros y disponibles.</li>
     <li>El paciente ve especialidad, profesional, fecha y hora de cada turno.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-08 (turnos de 30 minutos generados)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-04, RN-03</p>
 </div>
 
@@ -316,12 +500,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El m&eacute;dico puede navegar entre per&iacute;odos sin recargar toda la pantalla.</li>
     <li>La vista diaria ordena los turnos cronol&oacute;gicamente e identifica los huecos libres.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-08 (turnos de 30 minutos generados)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-05</p>
 </div>
 
 <div class="page-break"></div>
 
-<h2>6. Sprint 2 &mdash; Turnos y vacunas</h2>
+<h2>7. Sprint 2 &mdash; Turnos y vacunas</h2>
 
 <div class="sprint-intro">
   <p>Demo 22/10, entrega 25/10. El ciclo completo de reserva de turnos con sus notificaciones, y el m&oacute;dulo de
@@ -329,14 +514,14 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
   <p><strong>18 User Stories &middot; 38 puntos &middot; 95 horas</strong>; con la reserva para bugs, 41 puntos / 102,5 horas. Capacidad del
   sprint: 28 puntos / 70 horas.</p>
   <p>Es el sprint cr&iacute;tico del plan: pide un 46% m&aacute;s de trabajo del que el equipo de cinco puede entregar. No se
-  resuelve con esfuerzo, sino corriendo historias al Sprint 3 o sacando alcance (ver secci&oacute;n 10.1).</p>
+  resuelve con esfuerzo, sino corriendo historias al Sprint 3 o sacando alcance (ver secci&oacute;n 11.1).</p>
 </div>
 
 <h4>Reserva de turnos</h4>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-12</span> Elecci&oacute;n del tipo de turno y b&uacute;squeda de disponibilidad <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-12</span> Elecci&oacute;n del tipo de turno y b&uacute;squeda de disponibilidad</span>
     <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 2</span>
   </div>
   <p class="us-story">Como <strong>usuario</strong>, quiero elegir si quiero sacar un turno m&eacute;dico o uno de vacunaci&oacute;n y buscar la disponibilidad
@@ -351,6 +536,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Si no hay turnos que cumplan el filtro, se informa con un mensaje claro y se sugiere ampliar el rango.</li>
     <li>La b&uacute;squeda responde en menos de tres segundos en condiciones normales de uso.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-10 (agenda publicada al paciente), US-24 (cat&aacute;logo de vacunas), US-63 (agenda del vacunatorio)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-01, RF-VAC-05, RNF-07, RN-08</p>
 </div>
 
@@ -370,6 +556,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>No se puede reservar un turno cuyo horario ya pas&oacute;.</li>
     <li><strong>Una vez reservado, el turno no puede modificarse</strong>: la &uacute;nica operaci&oacute;n disponible sobre &eacute;l es la cancelaci&oacute;n.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-12 (b&uacute;squeda de disponibilidad)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-02, RF-AGE-09, RN-10</p>
 </div>
 
@@ -388,6 +575,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Incluye instrucciones para cancelar el turno.</li>
     <li>Si el env&iacute;o falla, la reserva se mantiene v&aacute;lida y el fallo queda registrado para reintento.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-13 (turno reservado), US-21 (servicio de env&iacute;o de email)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-03, RF-NOT-01</p>
 </div>
 
@@ -405,6 +593,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Se env&iacute;a un &uacute;nico recordatorio por turno, sin duplicados ante reintentos del proceso.</li>
     <li>El proceso corre de forma autom&aacute;tica y deja registro de cada env&iacute;o.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-13 (turno reservado), US-21 (servicio de env&iacute;o de email)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-04, RF-NOT-01</p>
 </div>
 
@@ -423,12 +612,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El usuario y la sala reciben un email de aviso de la cancelaci&oacute;n.</li>
     <li>El turno cancelado queda registrado en el historial, no se elimina.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-13 (turno reservado), US-21 (servicio de env&iacute;o de email)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-05, RF-AGE-09, RN-10</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-17</span> Gesti&oacute;n de turnos desde mostrador <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-17</span> Gesti&oacute;n de turnos desde mostrador</span>
     <span class="us-meta">Should | 3 pts | 7,5 h | Sprint 2</span>
   </div>
   <p class="us-story">Como <strong>personal administrativo</strong>, quiero reservar, reprogramar y cancelar turnos en nombre de un paciente,
@@ -442,6 +632,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El paciente recibe el email correspondiente a la acci&oacute;n realizada.</li>
     <li>Toda operaci&oacute;n queda registrada indicando qu&eacute; usuario la realiz&oacute;.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-03 (usuarios internos con rol asignado), US-13 (turno reservado), US-16 (cancelaci&oacute;n de turno)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-06, RF-AGE-09, RN-10</p>
 </div>
 
@@ -459,12 +650,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Un turno cumplido habilita la carga de la ficha de diagn&oacute;stico y el registro del pago.</li>
     <li>El sistema deja constancia de qui&eacute;n cambi&oacute; el estado y cu&aacute;ndo.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-13 (turno reservado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-07</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-19</span> Prevenci&oacute;n de turnos duplicados del mismo tipo <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-19</span> Prevenci&oacute;n de turnos duplicados del mismo tipo</span>
     <span class="us-meta">Should | 1 pt | 2,5 h | Sprint 2</span>
   </div>
   <p class="us-story">Como <strong>sistema</strong>, quiero impedir que un paciente reserve m&aacute;s de un turno del mismo tipo con el mismo
@@ -476,6 +668,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>La restricci&oacute;n no aplica a turnos con profesionales de distinta especialidad.</li>
     <li>Un turno cancelado previamente no cuenta para esta validaci&oacute;n.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-13 (turno reservado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-08, RN-08</p>
 </div>
 
@@ -493,12 +686,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Existe una prueba que simula dos reservas concurrentes sobre el mismo turno y verifica que solo una prospere.</li>
     <li>En ning&uacute;n caso el sistema queda con dos reservas activas para el mismo turno.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-13 (turno reservado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-09, RNF-05</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-64</span> Reserva de turno a nombre de otra persona <span class="new-tag">nueva</span></span>
+    <span class="us-name"><span class="code">US-64</span> Reserva de turno a nombre de otra persona</span>
     <span class="us-meta">Must | 2 pts | 5 h | Sprint 2</span>
   </div>
   <p class="us-story">Como <strong>usuario</strong>, quiero reservar turnos a nombre de otra persona cargando sus datos y su obra social, para
@@ -513,6 +707,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Las confirmaciones, recordatorios y avisos de cancelaci&oacute;n se env&iacute;an al usuario que reserv&oacute;.</li>
     <li>El turno queda visible en el listado de turnos del usuario que lo reserv&oacute;, identificado con el nombre de la persona atendida.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-13 (turno reservado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-11, RF-PAG-01, RN-12</p>
 </div>
 
@@ -531,12 +726,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Las plantillas de cada tipo de notificaci&oacute;n est&aacute;n parametrizadas y son editables sin tocar el c&oacute;digo de negocio.</li>
     <li>Los env&iacute;os fallidos se reintentan una cantidad acotada de veces antes de marcarse como fallidos.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-01 (cuenta de usuario)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-NOT-01</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-22</span> Aviso por modificaci&oacute;n de agenda <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-22</span> Aviso por modificaci&oacute;n de agenda</span>
     <span class="us-meta">Must | 1 pt | 2,5 h | Sprint 2</span>
   </div>
   <p class="us-story">Como <strong>paciente</strong>, quiero ser avisado si el profesional bloquea la franja en la que ten&iacute;a mi turno, para poder
@@ -548,6 +744,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El email indica el turno afectado y c&oacute;mo reprogramarlo.</li>
     <li>El personal administrativo obtiene un listado de los pacientes a contactar.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-21 (servicio de env&iacute;o de email), US-30 (bloqueo de franja publicada)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-NOT-02, RF-AGE-06, RF-AGE-09, RN-10</p>
 </div>
 
@@ -568,12 +765,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El cat&aacute;logo es la &uacute;nica fuente de datos para el resto del m&oacute;dulo y para la b&uacute;squeda de turnos de vacunaci&oacute;n.</li>
     <li><strong>El cat&aacute;logo no administra existencias</strong>: se asume que toda vacuna activa tiene stock disponible.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-03 (usuarios internos con rol asignado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-VAC-01, RN-05</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-63</span> Agenda del vacunatorio <span class="new-tag">nueva</span></span>
+    <span class="us-name"><span class="code">US-63</span> Agenda del vacunatorio</span>
     <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 2</span>
   </div>
   <p class="us-story">Como <strong>enfermera</strong>, quiero cargar la disponibilidad del vacunatorio para que el sistema publique sus turnos, para
@@ -586,12 +784,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Confirmada la disponibilidad, el sistema genera los turnos y los publica a los pacientes autom&aacute;ticamente.</li>
     <li>Las dos enfermeras ven y administran la misma agenda del vacunatorio.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-03 (usuarios internos con rol asignado), US-08 (turnos de 30 minutos generados)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-VAC-09, RF-AGE-04, RN-08</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-28</span> Turno de vacunaci&oacute;n <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-28</span> Turno de vacunaci&oacute;n</span>
     <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 2</span>
   </div>
   <p class="us-story">Como <strong>usuario</strong>, quiero sacar un turno de vacunaci&oacute;n eligiendo la vacuna y el horario, para vacunarme sin
@@ -605,12 +804,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li><strong>El turno de vacunaci&oacute;n puede superponerse con un turno m&eacute;dico de la misma persona</strong>; el sistema no lo impide ni lo advierte como error.</li>
     <li>El paciente recibe la confirmaci&oacute;n del turno por email.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-13 (turno reservado), US-24 (cat&aacute;logo de vacunas), US-63 (agenda del vacunatorio)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-VAC-05, RF-TUR-01, RF-TUR-11, RN-05, RN-08</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-29</span> Registro de aplicaci&oacute;n de dosis <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-29</span> Registro de aplicaci&oacute;n de dosis</span>
     <span class="us-meta">Must | 1 pt | 2,5 h | Sprint 2</span>
   </div>
   <p class="us-story">Como <strong>enfermera</strong>, quiero registrar cada dosis aplicada con todos sus datos, para dejar trazabilidad sanitaria
@@ -623,6 +823,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El registro no puede eliminarse; una correcci&oacute;n se hace por anulaci&oacute;n con motivo.</li>
     <li>La aplicaci&oacute;n registrada queda vinculada al turno de vacunaci&oacute;n si existi&oacute;.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-28 (turno de vacunaci&oacute;n)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-VAC-06, RNF-04, RN-05</p>
 </div>
 
@@ -630,7 +831,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-30</span> Bloqueo de turnos disponibles de una franja publicada <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-30</span> Bloqueo de turnos disponibles de una franja publicada</span>
     <span class="us-meta">Should | 2 pts | 5 h | Sprint 2</span>
   </div>
   <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero bloquear los turnos a&uacute;n libres de una franja ya publicada por ausencia o licencia, para
@@ -644,6 +845,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El sistema advierte la cantidad de turnos reservados involucrados antes de confirmar.</li>
     <li>El bloqueo puede revertirse mientras no hayan pasado las fechas involucradas.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-10 (agenda publicada al paciente), US-13 (turno reservado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-06, RF-AGE-09, RF-NOT-02, RN-10</p>
 </div>
 
@@ -663,12 +865,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>La respuesta en pantalla es la misma exista o no la cuenta, para no revelar usuarios registrados.</li>
     <li>Al definirse la nueva contrase&ntilde;a, el enlace queda invalidado.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-02 (sesi&oacute;n y ruteo por rol), US-21 (servicio de env&iacute;o de email)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-USR-06, RNF-01</p>
 </div>
 
 <div class="page-break"></div>
 
-<h2>7. Sprint 3 &mdash; Pagos, historial cl&iacute;nico, reportes y m&oacute;vil</h2>
+<h2>8. Sprint 3 &mdash; Pagos, historial cl&iacute;nico, reportes y m&oacute;vil</h2>
 
 <div class="sprint-intro">
   <p>Demo 12/11, entrega 15/11. Todo lo que se apoya sobre el turno ya existente, m&aacute;s la aplicaci&oacute;n m&oacute;vil para
@@ -683,7 +886,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-32</span> Gesti&oacute;n de la cobertura m&eacute;dica <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-32</span> Gesti&oacute;n de la cobertura m&eacute;dica</span>
     <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
   </div>
   <p class="us-story">Como <strong>paciente</strong>, quiero consultar y corregir la obra social o prepaga registrada &mdash;la m&iacute;a y la de las personas
@@ -698,12 +901,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El personal administrativo tambi&eacute;n puede cargar o corregir la cobertura de cualquier paciente.</li>
     <li>Cada cambio de cobertura queda registrado con autor y fecha; los pagos ya registrados conservan la cobertura aplicada en su momento.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-01 (cuenta de usuario), US-64 (reserva a nombre de un tercero)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-01, RF-USR-01, RF-TUR-11, RN-06, RN-12</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-33</span> Definici&oacute;n del costo de la consulta por el m&eacute;dico <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-33</span> Definici&oacute;n del costo de la consulta por el m&eacute;dico</span>
     <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
   </div>
   <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero definir el costo de mi consulta, para que el sistema calcule solo el importe que debe
@@ -716,6 +920,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Al modificarse el costo, los pagos ya registrados conservan el valor vigente al momento del cobro.</li>
     <li>Un m&eacute;dico solo puede ver y modificar el costo de sus propias consultas.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-03 (usuarios internos con rol asignado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-02, RNF-03, RN-14</p>
 </div>
 
@@ -735,12 +940,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>La pantalla muestra el desglose: costo de la consulta, cobertura aplicada e importe final.</li>
     <li>Si la entidad no tiene coseguro configurado, el sistema lo advierte y no permite cerrar el cobro.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-18 (turno en estado cumplido), US-32 (cobertura del paciente), US-33 (costo de la consulta)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-03, RN-06, RN-12, RN-14</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-35</span> Registro del pago en efectivo o por transferencia <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-35</span> Registro del pago en efectivo o por transferencia</span>
     <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
   </div>
   <p class="us-story">Como <strong>personal administrativo</strong>, quiero registrar el pago de una consulta indicando si fue en efectivo o por
@@ -755,12 +961,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El sistema registra fecha, hora, importe, medio de pago y usuario que lo registr&oacute;.</li>
     <li>El sistema solo registra el pago; no procesa la transacci&oacute;n en l&iacute;nea.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-18 (turno en estado cumplido), US-34 (importe calculado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-04, RNF-04, RN-13</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-36</span> Comprobante de pago en PDF <span class="chg-tag">unifica ex US-37</span></span>
+    <span class="us-name"><span class="code">US-36</span> Comprobante de pago en PDF</span>
     <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
   </div>
   <p class="us-story">Como <strong>paciente</strong>, quiero obtener y descargar en PDF un comprobante por cada pago que realizo, para tener
@@ -774,6 +981,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>La descarga solo est&aacute; disponible para el paciente titular, para quien reserv&oacute; el turno y para el personal administrativo.</li>
     <li>La numeraci&oacute;n no presenta huecos ni duplicados.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-35 (pago registrado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-05, RF-PAG-06, RNF-03</p>
 </div>
 
@@ -791,6 +999,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Desde cada fila se accede al comprobante en PDF.</li>
     <li>El paciente solo ve sus propios pagos y los de las personas a cuyo nombre reserv&oacute; turnos.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-36 (comprobante en PDF)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-07, RNF-03</p>
 </div>
 
@@ -798,7 +1007,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-39</span> Ficha de diagn&oacute;stico del paciente <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-39</span> Ficha de diagn&oacute;stico del paciente</span>
     <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 3</span>
   </div>
   <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero registrar el diagn&oacute;stico y el tratamiento de cada consulta sobre la ficha que mantengo
@@ -813,12 +1022,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Solo un usuario con rol M&eacute;dico puede realizar la carga.</li>
     <li>La entrada guardada no puede editarse ni borrarse; se corrige mediante una entrada nueva sobre la misma ficha.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-18 (turno en estado cumplido)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-01, RNF-03, RN-07</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-40</span> Consulta de la ficha del paciente <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-40</span> Consulta de la ficha del paciente</span>
     <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
   </div>
   <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero ver el historial completo del paciente con las fichas de todos los profesionales de la
@@ -832,6 +1042,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El m&eacute;dico puede filtrar por profesional, especialidad o rango de fechas.</li>
     <li>El acceso queda registrado en el log de auditor&iacute;a.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-29 (aplicaci&oacute;n de dosis registrada), US-39 (ficha de diagn&oacute;stico)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-02, RNF-03, RN-07</p>
 </div>
 
@@ -849,6 +1060,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Solo accede a su propia informaci&oacute;n; cualquier intento de acceder a la de otro paciente es rechazado y registrado.</li>
     <li>El historial puede descargarse en PDF.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-39 (ficha de diagn&oacute;stico)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-03, RNF-03</p>
 </div>
 
@@ -866,6 +1078,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>La ficha muestra las correcciones junto a la entrada corregida, sin ocultar la versi&oacute;n previa.</li>
     <li>Cada entrada conserva autor, fecha y hora de creaci&oacute;n.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-39 (ficha de diagn&oacute;stico)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-04, RNF-02, RNF-04</p>
 </div>
 
@@ -884,6 +1097,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El paciente puede consultar esta secci&oacute;n pero no modificarla.</li>
     <li>Cada modificaci&oacute;n queda registrada con autor y fecha.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-39 (ficha de diagn&oacute;stico)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-05, RN-07</p>
 </div>
 
@@ -901,6 +1115,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El log es de solo lectura y accesible &uacute;nicamente para el administrador.</li>
     <li>El administrador puede filtrar el log por usuario, paciente y rango de fechas.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-40 (historial cl&iacute;nico consolidado), US-41 (historial del paciente)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-06, RNF-03, RNF-04</p>
 </div>
 
@@ -908,7 +1123,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-45</span> Reporte de turnos por tipo y especialidad <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-45</span> Reporte de turnos por tipo y especialidad</span>
     <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
   </div>
   <p class="us-story">Como <strong>administrador</strong>, quiero obtener la cantidad de turnos por tipo, especialidad y per&iacute;odo, para evaluar la
@@ -921,6 +1136,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Admite un rango de fechas definido por el usuario.</li>
     <li>Incluye una representaci&oacute;n gr&aacute;fica de la distribuci&oacute;n.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-18 (turno en estado cumplido), US-28 (turno de vacunaci&oacute;n)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-REP-01, RN-08</p>
 </div>
 
@@ -938,6 +1154,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Los pagos anulados se muestran identificados y no suman al total.</li>
     <li>Admite desglose por especialidad y por profesional.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-35 (pago registrado)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-REP-03, RN-13</p>
 </div>
 
@@ -955,6 +1172,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Identifica a los pacientes con mayor cantidad de ausencias.</li>
     <li>Excluye del c&aacute;lculo los turnos cancelados por la sala.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-18 (turno en estado cumplido)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-REP-04</p>
 </div>
 
@@ -972,6 +1190,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El rango de fechas por defecto es el mes en curso.</li>
     <li>El reporte indica en su encabezado los filtros aplicados.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-45 (reporte de turnos), US-47 (reporte de pagos), US-48 (reporte de asistencia)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-REP-05</p>
 </div>
 
@@ -989,6 +1208,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El CSV incluye la fila de encabezados de columna.</li>
     <li>La exportaci&oacute;n est&aacute; disponible &uacute;nicamente para el rol Administrador.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-49 (filtros comunes)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-REP-06, RNF-03</p>
 </div>
 
@@ -1008,12 +1228,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>La aplicaci&oacute;n solo est&aacute; disponible para el rol Usuario.</li>
     <li>El dise&ntilde;o mantiene la identidad visual del sistema web.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-02 (sesi&oacute;n y ruteo por rol)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-MOV-01, RNF-03, RNF-06</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-52</span> Gesti&oacute;n de turnos desde el m&oacute;vil <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-52</span> Gesti&oacute;n de turnos desde el m&oacute;vil</span>
     <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 3</span>
   </div>
   <p class="us-story">Como <strong>paciente</strong>, quiero buscar, reservar y cancelar turnos desde mi tel&eacute;fono, para resolver el turno en el
@@ -1025,6 +1246,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Los turnos reservados desde el m&oacute;vil son los mismos que se ven en la web.</li>
     <li>Las validaciones de concurrencia, duplicados y no modificaci&oacute;n de turnos reservados se aplican por igual.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-13 (turno reservado), US-16 (cancelaci&oacute;n de turno), US-51 (sesi&oacute;n en la aplicaci&oacute;n m&oacute;vil), US-64 (reserva a nombre de un tercero)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-MOV-02, RF-TUR-01, RF-TUR-11, RF-AGE-09</p>
 </div>
 
@@ -1041,6 +1263,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El acceso exige sesi&oacute;n activa y se registra en el log de auditor&iacute;a.</li>
     <li>La informaci&oacute;n no se almacena en el dispositivo tras cerrar sesi&oacute;n.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-41 (historial del paciente), US-51 (sesi&oacute;n en la aplicaci&oacute;n m&oacute;vil)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-MOV-03, RNF-02, RNF-03</p>
 </div>
 
@@ -1058,12 +1281,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El env&iacute;o por email se mantiene en paralelo.</li>
     <li>La notificaci&oacute;n emergente queda fuera del alcance de esta versi&oacute;n, seg&uacute;n lo acordado con el cliente.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-15 (recordatorio por email), US-51 (sesi&oacute;n en la aplicaci&oacute;n m&oacute;vil)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-MOV-04</p>
 </div>
 
 <div class="us">
   <div class="us-head">
-    <span class="us-name"><span class="code">US-55</span> Pagos y comprobantes desde el m&oacute;vil <span class="chg-tag">modificada</span></span>
+    <span class="us-name"><span class="code">US-55</span> Pagos y comprobantes desde el m&oacute;vil</span>
     <span class="us-meta">Should | 2 pts | 5 h | Sprint 3</span>
   </div>
   <p class="us-story">Como <strong>paciente</strong>, quiero consultar mis pagos y descargar los comprobantes desde la aplicaci&oacute;n, para no tener
@@ -1074,6 +1298,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El comprobante en PDF puede descargarse o compartirse desde el dispositivo.</li>
     <li><strong>El registro del pago se sigue realizando presencialmente en el mostrador</strong>, en efectivo o por transferencia; la aplicaci&oacute;n solo consulta.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-36 (comprobante en PDF), US-38 (historial de pagos), US-51 (sesi&oacute;n en la aplicaci&oacute;n m&oacute;vil)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-MOV-05, RN-13</p>
 </div>
 
@@ -1093,6 +1318,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El listado puede descargarse en PDF.</li>
     <li>Solo incluye aplicaciones registradas en la sala.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-29 (aplicaci&oacute;n de dosis registrada)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-VAC-08, RNF-03</p>
 </div>
 
@@ -1112,12 +1338,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El log puede filtrarse por paciente, tipo y rango de fechas.</li>
     <li>Solo es accesible para el rol Administrador.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-21 (servicio de env&iacute;o de email)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-NOT-04, RNF-03</p>
 </div>
 
 <div class="page-break"></div>
 
-<h2>8. Backlog no comprometido</h2>
+<h2>9. Backlog no comprometido</h2>
 
 <div class="sprint-intro">
   <p>Candidatas a reducci&oacute;n de alcance. User Stories de prioridad Could, no asignadas a ning&uacute;n sprint. Se incorporan
@@ -1140,6 +1367,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>La notificaci&oacute;n otorga un plazo acotado de prioridad antes de liberar el turno al p&uacute;blico general.</li>
     <li>El paciente puede darse de baja de la lista en cualquier momento.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-16 (cancelaci&oacute;n de turno), US-21 (servicio de env&iacute;o de email)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-10</p>
 </div>
 
@@ -1157,6 +1385,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Si se agrega un feriado sobre fechas con turnos ya reservados, el sistema advierte antes de aplicarlo y no los modifica.</li>
     <li>El calendario puede consultarse por a&ntilde;o.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-08 (turnos de 30 minutos generados), US-63 (agenda del vacunatorio)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-08, RF-AGE-09</p>
 </div>
 
@@ -1174,6 +1403,7 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>Los reportes descuentan el importe anulado del total del per&iacute;odo.</li>
     <li>Se registra qui&eacute;n realiz&oacute; la anulaci&oacute;n y cu&aacute;ndo.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-35 (pago registrado), US-36 (comprobante en PDF)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-08, RNF-04</p>
 </div>
 
@@ -1191,12 +1421,13 @@ US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&
     <li>El paciente puede descargar sus propios adjuntos.</li>
     <li>El acceso a los adjuntos se registra en el log de auditor&iacute;a.</li>
   </ul>
+  <p class="trace"><strong>Depende de:</strong> US-39 (ficha de diagn&oacute;stico)</p>
   <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-07, RNF-03</p>
 </div>
 
 <div class="page-break"></div>
 
-<h2>9. Pantallas referenciadas (insumo para wireframes y sitemap)</h2>
+<h2>10. Pantallas referenciadas (insumo para wireframes y sitemap)</h2>
 
 <p>Listado de las vistas que surgen de las User Stories anteriores. Cada una necesita su wireframe antes de que la
 historia correspondiente entre a un sprint.</p>
@@ -1226,7 +1457,7 @@ historia correspondiente entre a un sprint.</p>
   Deben revisarse antes del refinement del Sprint 1.</p>
 </div>
 
-<h2>10. Resumen de esfuerzo</h2>
+<h2>11. Resumen de esfuerzo</h2>
 
 <p>Equipo implementador: <strong>5 integrantes</strong>, tope de 10 horas semanales cada uno, factor de foco del 70% y
 equivalencia de 2,5 horas por punto (secci&oacute;n 2.1). Eso da 70 horas efectivas por sprint de dos semanas y 105 en el
@@ -1261,7 +1492,7 @@ Sprint 3, de tres semanas.</p>
   alcance antes de empezar el Sprint 1</strong>, no descubrirlo en la demo del 22/10.</p>
 </div>
 
-<h3>10.1 Escenario de ajuste propuesto</h3>
+<h3>11.1 Escenario de ajuste propuesto</h3>
 
 <p>Orden de descarte sugerido, con la demanda acumulada resultante. La decisi&oacute;n se negocia con el cliente en la
 re-priorizaci&oacute;n; esta tabla existe para que esa conversaci&oacute;n se tenga con n&uacute;meros y no con impresiones.</p>
@@ -1301,7 +1532,7 @@ definidas en el Start up: el desv&iacute;o de estimaci&oacute;n y la cantidad de
 alcance deber&iacute;a tomarse despu&eacute;s del Sprint 1 sin antes contrastar las 2,5 horas por punto contra el tiempo real
 medido, porque toda esta tabla depende de ese &uacute;nico n&uacute;mero.</p>
 
-<h2>11. Distribuci&oacute;n por prioridad y m&oacute;dulo</h2>
+<h2>12. Distribuci&oacute;n por prioridad y m&oacute;dulo</h2>
 
 <table>
   <colgroup><col><col style="width:40pt"><col style="width:46pt"><col style="width:40pt"><col style="width:36pt"><col style="width:44pt"><col style="width:44pt"></colgroup>
@@ -1330,12 +1561,12 @@ dejando documentados la herramienta, su versi&oacute;n y el prompt utilizado.</p
 
 <div class="page-break"></div>
 
-<h2>12. Registro de cambios</h2>
+<h2>13. Registro de cambios</h2>
 
-<p>Secciones 12.1 a 12.4: cambios de alcance acordados en la reuni&oacute;n con el cliente del 19/09/2026. Secci&oacute;n 12.5:
+<p>Secciones 13.1 a 13.4: cambios de alcance acordados en la reuni&oacute;n con el cliente del 19/09/2026. Secci&oacute;n 13.5:
 cambio en la composici&oacute;n del equipo implementador, que no afecta el alcance pero s&iacute; la planificaci&oacute;n.</p>
 
-<h3>12.1 User Stories dadas de baja</h3>
+<h3>13.1 User Stories dadas de baja</h3>
 
 <table>
   <colgroup><col style="width:46pt"><col style="width:34%"><col></colgroup>
@@ -1355,7 +1586,7 @@ cambio en la composici&oacute;n del equipo implementador, que no afecta el alcan
   </tbody>
 </table>
 
-<h3>12.2 User Stories nuevas</h3>
+<h3>13.2 User Stories nuevas</h3>
 
 <table>
   <colgroup><col style="width:46pt"><col style="width:34%"><col></colgroup>
@@ -1366,7 +1597,7 @@ cambio en la composici&oacute;n del equipo implementador, que no afecta el alcan
   </tbody>
 </table>
 
-<h3>12.3 User Stories modificadas</h3>
+<h3>13.3 User Stories modificadas</h3>
 
 <table>
   <colgroup><col style="width:46pt"><col></colgroup>
@@ -1401,7 +1632,7 @@ cambio en la composici&oacute;n del equipo implementador, que no afecta el alcan
   </tbody>
 </table>
 
-<h3>12.4 Saldo del cambio</h3>
+<h3>13.4 Saldo del cambio</h3>
 
 <table>
   <colgroup><col><col style="width:80pt"><col style="width:80pt"><col style="width:60pt"></colgroup>
@@ -1419,7 +1650,7 @@ cambio en la composici&oacute;n del equipo implementador, que no afecta el alcan
 diez sin IA y la versi&oacute;n 2, 2,5 horas por punto sobre uno de cinco con IA. La comparaci&oacute;n v&aacute;lida es en puntos, que
 miden tama&ntilde;o y no tiempo.</p>
 
-<h3>12.5 Cambio de equipo implementador</h3>
+<h3>13.5 Cambio de equipo implementador</h3>
 
 <p>Con posterioridad a la reuni&oacute;n con el cliente se confirm&oacute; que el equipo implementador es de cinco integrantes y no
 de diez, y que trabajar&aacute; con asistencia de IA. Esto no altera el alcance acordado ni los puntos de ninguna historia:

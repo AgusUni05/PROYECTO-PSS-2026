@@ -122,7 +122,7 @@ la exigencia de interfaces separadas por tipo de usuario y del manejo de datos d
   <tbody>
     <tr>
       <td class="id">RF-USR-01</td>
-      <td>El sistema debe permitir el registro de un usuario con sus datos personales y de contacto (nombre, apellido, documento, fecha de nacimiento, tel&eacute;fono, email) y <strong>su obra social</strong>, y debe permitirle luego consultar y actualizar esos mismos datos. <span class="chg-tag">unifica ex RF-USR-05</span></td>
+      <td>El sistema debe permitir el registro de un usuario con sus datos personales y de contacto (nombre, apellido, documento, fecha de nacimiento, tel&eacute;fono, email) y <strong>su obra social</strong>, y debe permitirle luego consultar y actualizar esos mismos datos.</td>
       <td class="c">Must</td><td class="c">1</td>
     </tr>
     <tr>
@@ -142,12 +142,12 @@ la exigencia de interfaces separadas por tipo de usuario y del manejo de datos d
     </tr>
     <tr>
       <td class="id">RF-USR-07</td>
-      <td>El sistema debe asignar el rol <em>Usuario</em> a toda cuenta creada por autorregistro. &Uacute;nicamente el administrador puede crear una cuenta con un rol distinto, que define en el momento del alta. <span class="new-tag">nuevo</span></td>
+      <td>El sistema debe asignar el rol <em>Usuario</em> a toda cuenta creada por autorregistro. &Uacute;nicamente el administrador puede crear una cuenta con un rol distinto, que define en el momento del alta.</td>
       <td class="c">Must</td><td class="c">1</td>
     </tr>
     <tr>
       <td class="id">RF-USR-08</td>
-      <td>El sistema debe implementar <em>M&eacute;dico</em> como un rol gen&eacute;rico parametrizado por especialidad, de modo que puedan incorporarse nuevas especialidades sin modificar el modelo de roles ni el c&oacute;digo de autorizaci&oacute;n. <span class="new-tag">nuevo</span></td>
+      <td>El sistema debe implementar <em>M&eacute;dico</em> como un rol gen&eacute;rico parametrizado por especialidad, de modo que puedan incorporarse nuevas especialidades sin modificar el modelo de roles ni el c&oacute;digo de autorizaci&oacute;n.</td>
       <td class="c">Must</td><td class="c">1</td>
     </tr>
     <tr class="removed">
@@ -171,7 +171,7 @@ la exigencia de interfaces separadas por tipo de usuario y del manejo de datos d
   <tbody>
     <tr>
       <td class="id">RF-AGE-01</td>
-      <td>El m&eacute;dico debe poder cargar su disponibilidad mensual indicando los d&iacute;as y las franjas horarias en que atender&aacute;, y el sistema debe validar que registre <strong>entre 2 y 7 jornadas de atenci&oacute;n por semana</strong>. <span class="chg-tag">unifica ex RF-AGE-02</span></td>
+      <td>El m&eacute;dico debe poder cargar su disponibilidad mensual indicando los d&iacute;as y las franjas horarias en que atender&aacute;, y el sistema debe validar que registre <strong>entre 2 y 7 jornadas de atenci&oacute;n por semana</strong>.</td>
       <td class="c">Must</td><td class="c">1</td>
     </tr>
     <tr>
@@ -191,7 +191,7 @@ la exigencia de interfaces separadas por tipo de usuario y del manejo de datos d
     </tr>
     <tr>
       <td class="id">RF-AGE-06</td>
-      <td>El m&eacute;dico o el administrativo deben poder bloquear por ausencia o licencia los turnos <strong>a&uacute;n disponibles</strong> de una franja ya publicada. Los turnos ya reservados quedan excluidos del bloqueo y deben gestionarse contactando al paciente. <span class="chg-tag">modificado</span></td>
+      <td>El m&eacute;dico o el administrativo deben poder bloquear por ausencia o licencia los turnos <strong>a&uacute;n disponibles</strong> de una franja ya publicada. Los turnos ya reservados quedan excluidos del bloqueo y deben gestionarse contactando al paciente.</td>
       <td class="c">Should</td><td class="c">2</td>
     </tr>
     <tr>
@@ -201,7 +201,7 @@ la exigencia de interfaces separadas por tipo de usuario y del manejo de datos d
     </tr>
     <tr>
       <td class="id">RF-AGE-09</td>
-      <td>El sistema debe impedir la modificaci&oacute;n de un turno que ya se encuentra reservado: no puede cambiarse su horario, su profesional ni su estado de reserva por edici&oacute;n de la disponibilidad. La &uacute;nica operaci&oacute;n admitida sobre un turno reservado es su cancelaci&oacute;n. <span class="new-tag">nuevo</span></td>
+      <td>El sistema debe impedir la modificaci&oacute;n de un turno que ya se encuentra reservado: no puede cambiarse su horario, su profesional ni su estado de reserva por edici&oacute;n de la disponibilidad. La &uacute;nica operaci&oacute;n admitida sobre un turno reservado es su cancelaci&oacute;n.</td>
       <td class="c">Must</td><td class="c">2</td>
     </tr>
     <tr class="removed">
@@ -227,7 +227,7 @@ la exigencia de interfaces separadas por tipo de usuario y del manejo de datos d
   <tbody>
     <tr>
       <td class="id">RF-TUR-01</td>
-      <td>El usuario debe poder <strong>elegir el tipo de turno</strong> que quiere sacar &mdash;consulta m&eacute;dica o vacunaci&oacute;n&mdash; y buscar los turnos disponibles filtrando por especialidad, profesional y rango de fechas. <span class="chg-tag">modificado</span></td>
+      <td>El usuario debe poder <strong>elegir el tipo de turno</strong> que quiere sacar &mdash;consulta m&eacute;dica o vacunaci&oacute;n&mdash; y buscar los turnos disponibles filtrando por especialidad, profesional y rango de fechas.</td>
       <td class="c">Must</td><td class="c">2</td>
     </tr>
     <tr><td class="id">RF-TUR-02</td><td>El usuario debe poder seleccionar un turno disponible y confirmarlo, quedando el horario reservado a su nombre o al de la persona indicada.</td><td class="c">Must</td><td class="c">2</td></tr>
@@ -238,14 +238,14 @@ la exigencia de interfaces separadas por tipo de usuario y del manejo de datos d
     <tr><td class="id">RF-TUR-07</td><td>El sistema debe registrar el estado de cada turno (reservado, cumplido, ausente, cancelado) para alimentar los reportes de asistencia.</td><td class="c">Must</td><td class="c">2</td></tr>
     <tr>
       <td class="id">RF-TUR-08</td>
-      <td>El sistema debe impedir que un paciente reserve m&aacute;s de un turno simult&aacute;neo del <strong>mismo tipo</strong> con el mismo profesional en la misma fecha. La restricci&oacute;n no aplica entre un turno m&eacute;dico y uno de vacunaci&oacute;n, que s&iacute; pueden superponerse para la misma persona. <span class="chg-tag">modificado</span></td>
+      <td>El sistema debe impedir que un paciente reserve m&aacute;s de un turno simult&aacute;neo del <strong>mismo tipo</strong> con el mismo profesional en la misma fecha. La restricci&oacute;n no aplica entre un turno m&eacute;dico y uno de vacunaci&oacute;n, que s&iacute; pueden superponerse para la misma persona.</td>
       <td class="c">Should</td><td class="c">2</td>
     </tr>
     <tr><td class="id">RF-TUR-09</td><td>El sistema debe garantizar que dos pacientes no puedan reservar el mismo turno ante solicitudes concurrentes.</td><td class="c">Must</td><td class="c">2</td></tr>
     <tr><td class="id">RF-TUR-10</td><td>El sistema debe ofrecer una lista de espera que notifique a los pacientes cuando se libera un turno.</td><td class="c">Could</td><td class="c">&mdash;</td></tr>
     <tr>
       <td class="id">RF-TUR-11</td>
-      <td>Un usuario debe poder reservar turnos <strong>a nombre de otra persona</strong>, para cualquier profesional y para ambos tipos de turno, registrando los datos personales y <strong>la obra social</strong> de esa persona. <span class="new-tag">nuevo</span></td>
+      <td>Un usuario debe poder reservar turnos <strong>a nombre de otra persona</strong>, para cualquier profesional y para ambos tipos de turno, registrando los datos personales y <strong>la obra social</strong> de esa persona.</td>
       <td class="c">Must</td><td class="c">2</td>
     </tr>
   </tbody>
@@ -264,14 +264,14 @@ registro sanitario de las aplicaciones.</p>
     <tr><td class="id">RF-VAC-01</td><td>La enfermera debe poder administrar el cat&aacute;logo de vacunas disponibles en la sala (denominaci&oacute;n, laboratorio, esquema de dosis).</td><td class="c">Must</td><td class="c">2</td></tr>
     <tr>
       <td class="id">RF-VAC-05</td>
-      <td>El usuario debe poder reservar un turno de vacunaci&oacute;n sobre la agenda propia del vacunatorio, y la enfermera o el administrativo deben poder otorgarlo desde el mostrador. No se verifica stock: se asume disponibilidad permanente. <span class="chg-tag">modificado</span></td>
+      <td>El usuario debe poder reservar un turno de vacunaci&oacute;n sobre la agenda propia del vacunatorio, y la enfermera o el administrativo deben poder otorgarlo desde el mostrador. No se verifica stock: se asume disponibilidad permanente.</td>
       <td class="c">Must</td><td class="c">2</td>
     </tr>
     <tr><td class="id">RF-VAC-06</td><td>El sistema debe registrar cada aplicaci&oacute;n indicando paciente, vacuna, dosis del esquema, fecha y enfermera responsable.</td><td class="c">Must</td><td class="c">2</td></tr>
     <tr><td class="id">RF-VAC-08</td><td>El paciente debe poder consultar su esquema de vacunaci&oacute;n aplicado en la sala.</td><td class="c">Should</td><td class="c">3</td></tr>
     <tr>
       <td class="id">RF-VAC-09</td>
-      <td>La enfermera debe poder cargar la disponibilidad del vacunatorio y el sistema debe generar su agenda de turnos, <strong>independiente de las agendas m&eacute;dicas</strong>. <span class="new-tag">nuevo</span></td>
+      <td>La enfermera debe poder cargar la disponibilidad del vacunatorio y el sistema debe generar su agenda de turnos, <strong>independiente de las agendas m&eacute;dicas</strong>.</td>
       <td class="c">Must</td><td class="c">2</td>
     </tr>
     <tr class="removed"><td class="id">RF-VAC-02</td><td><strong>Eliminado.</strong> Registro de ingreso de stock por lote. Se asume stock permanente.</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr>
@@ -291,28 +291,28 @@ registro sanitario de las aplicaciones.</p>
   <tbody>
     <tr>
       <td class="id">RF-PAG-01</td>
-      <td>El paciente o el administrativo deben poder consultar y corregir la cobertura m&eacute;dica registrada (entidad, plan y n&uacute;mero de afiliado), tanto la propia como la de las personas a cuyo nombre se reservaron turnos. El alta inicial se realiza en el registro del usuario (RF-USR-01) o al reservar para un tercero (RF-TUR-11). <span class="chg-tag">modificado</span></td>
+      <td>El paciente o el administrativo deben poder consultar y corregir la cobertura m&eacute;dica registrada (entidad, plan y n&uacute;mero de afiliado), tanto la propia como la de las personas a cuyo nombre se reservaron turnos. El alta inicial se realiza en el registro del usuario (RF-USR-01) o al reservar para un tercero (RF-TUR-11).</td>
       <td class="c">Must</td><td class="c">3</td>
     </tr>
     <tr>
       <td class="id">RF-PAG-02</td>
-      <td><strong>El m&eacute;dico</strong> debe poder definir el costo de su consulta. El administrador conserva la configuraci&oacute;n de los valores de coseguro por entidad de cobertura. <span class="chg-tag">modificado</span></td>
+      <td><strong>El m&eacute;dico</strong> debe poder definir el costo de su consulta. El administrador conserva la configuraci&oacute;n de los valores de coseguro por entidad de cobertura.</td>
       <td class="c">Must</td><td class="c">3</td>
     </tr>
     <tr><td class="id">RF-PAG-03</td><td>El sistema debe calcular el importe a abonar seg&uacute;n la cobertura registrada, distinguiendo consulta particular de consulta con cobertura.</td><td class="c">Must</td><td class="c">3</td></tr>
     <tr>
       <td class="id">RF-PAG-04</td>
-      <td>El sistema debe permitir registrar el pago de una consulta indicando el medio utilizado. Los medios admitidos son <strong>efectivo y transferencia</strong>, ambos presenciales; el pago en efectivo lo registra el personal administrativo. <span class="chg-tag">modificado</span></td>
+      <td>El sistema debe permitir registrar el pago de una consulta indicando el medio utilizado. Los medios admitidos son <strong>efectivo y transferencia</strong>, ambos presenciales; el pago en efectivo lo registra el personal administrativo.</td>
       <td class="c">Must</td><td class="c">3</td>
     </tr>
     <tr>
       <td class="id">RF-PAG-05</td>
-      <td>El sistema debe generar un <strong>comprobante de pago en formato PDF</strong> por cada pago registrado. No se emite documento fiscal homologado. <span class="chg-tag">modificado</span></td>
+      <td>El sistema debe generar un <strong>comprobante de pago en formato PDF</strong> por cada pago registrado. No se emite documento fiscal homologado.</td>
       <td class="c">Must</td><td class="c">3</td>
     </tr>
     <tr>
       <td class="id">RF-PAG-06</td>
-      <td>El paciente debe poder descargar en PDF los comprobantes de sus consultas. <span class="chg-tag">modificado</span></td>
+      <td>El paciente debe poder descargar en PDF los comprobantes de sus consultas.</td>
       <td class="c">Must</td><td class="c">3</td>
     </tr>
     <tr><td class="id">RF-PAG-07</td><td>El paciente debe poder consultar el historial de sus pagos y comprobantes.</td><td class="c">Should</td><td class="c">3</td></tr>
@@ -331,7 +331,7 @@ funcionales de seguridad y auditor&iacute;a (RNF-02 a RNF-05).</p>
   <tbody>
     <tr>
       <td class="id">RF-HIS-01</td>
-      <td>El m&eacute;dico debe poder cargar diagn&oacute;stico y tratamiento asociados a la consulta de un paciente. <strong>Existe una &uacute;nica ficha de diagn&oacute;stico por cada par paciente&ndash;m&eacute;dico</strong>, sobre la que ese profesional acumula todas sus entradas. <span class="chg-tag">modificado</span></td>
+      <td>El m&eacute;dico debe poder cargar diagn&oacute;stico y tratamiento asociados a la consulta de un paciente. <strong>Existe una &uacute;nica ficha de diagn&oacute;stico por cada par paciente&ndash;m&eacute;dico</strong>, sobre la que ese profesional acumula todas sus entradas.</td>
       <td class="c">Must</td><td class="c">3</td>
     </tr>
     <tr><td class="id">RF-HIS-02</td><td>El m&eacute;dico debe poder consultar la ficha completa del paciente, incluidas las entradas cargadas por otros profesionales de la sala.</td><td class="c">Must</td><td class="c">3</td></tr>
@@ -349,7 +349,7 @@ funcionales de seguridad y auditor&iacute;a (RNF-02 a RNF-05).</p>
   <colgroup><col class="w-id"><col><col class="w-prio"><col class="w-sprint"></colgroup>
   <thead><tr><th class="id">ID</th><th>Requerimiento</th><th class="c">Prioridad</th><th class="c">Sprint</th></tr></thead>
   <tbody>
-    <tr><td class="id">RF-REP-01</td><td>El administrador debe poder generar un reporte de cantidad de turnos por tipo de turno, especialidad y per&iacute;odo. <span class="chg-tag">modificado</span></td><td class="c">Must</td><td class="c">3</td></tr>
+    <tr><td class="id">RF-REP-01</td><td>El administrador debe poder generar un reporte de cantidad de turnos por tipo de turno, especialidad y per&iacute;odo.</td><td class="c">Must</td><td class="c">3</td></tr>
     <tr><td class="id">RF-REP-03</td><td>El administrador debe poder generar un reporte de pagos realizados por per&iacute;odo, medio de pago y cobertura.</td><td class="c">Must</td><td class="c">3</td></tr>
     <tr><td class="id">RF-REP-04</td><td>El administrador debe poder generar un reporte de asistencia de pacientes que exponga el nivel de ausentismo.</td><td class="c">Must</td><td class="c">3</td></tr>
     <tr><td class="id">RF-REP-05</td><td>Todos los reportes deben admitir filtros por rango de fechas, profesional y especialidad.</td><td class="c">Should</td><td class="c">3</td></tr>
@@ -387,7 +387,7 @@ cliente y es el principal candidato a reducci&oacute;n de alcance.</p>
     <tr><td class="id">RF-MOV-02</td><td>El paciente debe poder buscar, reservar y cancelar turnos de ambos tipos desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">3</td></tr>
     <tr><td class="id">RF-MOV-03</td><td>El paciente debe poder consultar su historial cl&iacute;nico desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">3</td></tr>
     <tr><td class="id">RF-MOV-04</td><td>El paciente debe recibir los recordatorios de turno en la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-MOV-05</td><td>El paciente debe poder consultar sus pagos y descargar los comprobantes en PDF desde la aplicaci&oacute;n m&oacute;vil. El registro del pago es siempre presencial. <span class="chg-tag">modificado</span></td><td class="c">Should</td><td class="c">3</td></tr>
+    <tr><td class="id">RF-MOV-05</td><td>El paciente debe poder consultar sus pagos y descargar los comprobantes en PDF desde la aplicaci&oacute;n m&oacute;vil. El registro del pago es siempre presencial.</td><td class="c">Should</td><td class="c">3</td></tr>
   </tbody>
 </table>
 
@@ -401,7 +401,7 @@ cliente y es el principal candidato a reducci&oacute;n de alcance.</p>
     <tr><td class="id">RNF-02</td><td>Confidencialidad</td><td>Los datos de salud deben tratarse como informaci&oacute;n sensible conforme a la normativa argentina de protecci&oacute;n de datos personales y derechos del paciente.</td><td class="c">Must</td></tr>
     <tr>
       <td class="id">RNF-03</td><td>Control de acceso</td>
-      <td><strong>Requerimiento transversal a todo el proyecto.</strong> El sistema debe restringir el acceso a cada funcionalidad y a cada dato seg&uacute;n el rol del usuario autenticado, verific&aacute;ndolo del lado del servidor y no solo ocultando opciones en la interfaz. Un paciente nunca accede al historial, los turnos ni los pagos de otro paciente. <strong>Afecta a la totalidad de las User Stories</strong> y su verificaci&oacute;n forma parte de la definici&oacute;n de terminado de cada una, por lo que no se implementa como una historia aislada. <span class="chg-tag">absorbe ex RF-USR-04</span></td>
+      <td><strong>Requerimiento transversal a todo el proyecto.</strong> El sistema debe restringir el acceso a cada funcionalidad y a cada dato seg&uacute;n el rol del usuario autenticado, verific&aacute;ndolo del lado del servidor y no solo ocultando opciones en la interfaz. Un paciente nunca accede al historial, los turnos ni los pagos de otro paciente. <strong>Afecta a la totalidad de las User Stories</strong> y su verificaci&oacute;n forma parte de la definici&oacute;n de terminado de cada una, por lo que no se implementa como una historia aislada.</td>
       <td class="c">Must</td>
     </tr>
     <tr><td class="id">RNF-04</td><td>Auditor&iacute;a</td><td>Las operaciones sobre historial cl&iacute;nico y pagos deben quedar registradas con usuario, acci&oacute;n y marca temporal.</td><td class="c">Should</td></tr>
@@ -414,7 +414,7 @@ cliente y es el principal candidato a reducci&oacute;n de alcance.</p>
     <tr><td class="id">RNF-11</td><td>Localizaci&oacute;n</td><td>La interfaz debe estar en espa&ntilde;ol, con fechas en formato dd/mm/aaaa y montos en pesos argentinos.</td><td class="c">Must</td></tr>
     <tr><td class="id">RNF-12</td><td>Mantenibilidad</td><td>El c&oacute;digo debe versionarse en un repositorio compartido con la comisi&oacute;n de an&aacute;lisis y management, con convenciones acordadas.</td><td class="c">Must</td></tr>
     <tr><td class="id">RNF-13</td><td>Trazabilidad</td><td>Cada User Story debe poder vincularse al requerimiento de este documento que le da origen.</td><td class="c">Must</td></tr>
-    <tr><td class="id">RNF-14</td><td>Extensibilidad</td><td>Los roles del sistema deben modelarse de forma gen&eacute;rica &mdash;en particular el rol M&eacute;dico y sus especialidades&mdash; de modo que incorporar un nuevo tipo de profesional no exija modificar el modelo de autorizaci&oacute;n. <span class="new-tag">nuevo</span></td><td class="c">Must</td></tr>
+    <tr><td class="id">RNF-14</td><td>Extensibilidad</td><td>Los roles del sistema deben modelarse de forma gen&eacute;rica &mdash;en particular el rol M&eacute;dico y sus especialidades&mdash; de modo que incorporar un nuevo tipo de profesional no exija modificar el modelo de autorizaci&oacute;n.</td><td class="c">Must</td></tr>
   </tbody>
 </table>
 
@@ -424,20 +424,20 @@ cliente y es el principal candidato a reducci&oacute;n de alcance.</p>
   <colgroup><col style="width:44pt"><col></colgroup>
   <thead><tr><th class="id">ID</th><th>Regla</th></tr></thead>
   <tbody>
-    <tr><td class="id">RN-01</td><td>La sala cuenta inicialmente con tres profesionales: un cl&iacute;nico, un pediatra y un traumat&oacute;logo. El rol M&eacute;dico es gen&eacute;rico y admite incorporar nuevas especialidades sin cambios en el modelo. <span class="chg-tag">modificada</span></td></tr>
-    <tr><td class="id">RN-02</td><td>Cada m&eacute;dico debe registrar un m&iacute;nimo de <strong>2</strong> y un m&aacute;ximo de <strong>7</strong> jornadas de atenci&oacute;n por semana. <span class="chg-tag">modificada</span></td></tr>
+    <tr><td class="id">RN-01</td><td>La sala cuenta inicialmente con tres profesionales: un cl&iacute;nico, un pediatra y un traumat&oacute;logo. El rol M&eacute;dico es gen&eacute;rico y admite incorporar nuevas especialidades sin cambios en el modelo.</td></tr>
+    <tr><td class="id">RN-02</td><td>Cada m&eacute;dico debe registrar un m&iacute;nimo de <strong>2</strong> y un m&aacute;ximo de <strong>7</strong> jornadas de atenci&oacute;n por semana.</td></tr>
     <tr><td class="id">RN-03</td><td>La agenda de un mes solo se abre a los pacientes despu&eacute;s de que el profesional carg&oacute; su disponibilidad para ese mes.</td></tr>
-    <tr><td class="id">RN-04</td><td>El vacunatorio est&aacute; a cargo de dos enfermeras. <strong>Enfermera y personal administrativo son roles separados</strong>, con permisos y pantallas propias; ninguno hereda las funciones del otro. <span class="chg-tag">modificada</span></td></tr>
-    <tr><td class="id">RN-05</td><td><strong>Se asume que siempre hay stock de vacunas.</strong> El sistema no gestiona existencias, lotes ni vencimientos, y ning&uacute;n turno de vacunaci&oacute;n se rechaza por falta de dosis. <span class="chg-tag">modificada</span></td></tr>
+    <tr><td class="id">RN-04</td><td>El vacunatorio est&aacute; a cargo de dos enfermeras. <strong>Enfermera y personal administrativo son roles separados</strong>, con permisos y pantallas propias; ninguno hereda las funciones del otro.</td></tr>
+    <tr><td class="id">RN-05</td><td><strong>Se asume que siempre hay stock de vacunas.</strong> El sistema no gestiona existencias, lotes ni vencimientos, y ning&uacute;n turno de vacunaci&oacute;n se rechaza por falta de dosis.</td></tr>
     <tr><td class="id">RN-06</td><td>Un paciente puede atenderse como particular o mediante cobertura m&eacute;dica; el importe a abonar depende de esa condici&oacute;n. La obra social se solicita en el registro del usuario.</td></tr>
-    <tr><td class="id">RN-07</td><td>Solo un usuario con rol M&eacute;dico puede cargar diagn&oacute;sticos y tratamientos. <strong>Existe una &uacute;nica ficha de diagn&oacute;stico por cada par paciente&ndash;m&eacute;dico.</strong> <span class="chg-tag">modificada</span></td></tr>
-    <tr><td class="id">RN-08</td><td>Los turnos de vacunaci&oacute;n se gestionan en una agenda propia del vacunatorio, separada de las agendas m&eacute;dicas. Una misma persona <strong>puede</strong> tener un turno m&eacute;dico y uno de vacunaci&oacute;n superpuestos en el mismo horario. <span class="new-tag">nueva</span></td></tr>
-    <tr><td class="id">RN-09</td><td>Toda consulta m&eacute;dica dura <strong>30 minutos</strong>. La franja horaria es el horario corrido que el m&eacute;dico declara trabajar y el sistema la divide en turnos consecutivos de 30 minutos. <span class="new-tag">nueva</span></td></tr>
-    <tr><td class="id">RN-10</td><td>Un turno ya reservado no puede modificarse. La &uacute;nica operaci&oacute;n admitida sobre &eacute;l es la cancelaci&oacute;n; una reprogramaci&oacute;n es una cancelaci&oacute;n seguida de una nueva reserva. <span class="new-tag">nueva</span></td></tr>
-    <tr><td class="id">RN-11</td><td>Toda cuenta creada por autorregistro recibe el rol <em>Usuario</em>. Solo el administrador puede crear una cuenta con otro rol. <span class="new-tag">nueva</span></td></tr>
-    <tr><td class="id">RN-12</td><td>Un usuario puede reservar turnos a nombre de otra persona, para cualquier profesional y tipo de turno, registrando sus datos y su obra social. <span class="new-tag">nueva</span></td></tr>
-    <tr><td class="id">RN-13</td><td>Los medios de pago admitidos son <strong>efectivo y transferencia</strong>, ambos presenciales. El pago en efectivo lo registra el personal administrativo. No hay procesamiento de pagos en l&iacute;nea. <span class="new-tag">nueva</span></td></tr>
-    <tr><td class="id">RN-14</td><td>El costo de la consulta lo define cada m&eacute;dico. <span class="new-tag">nueva</span></td></tr>
+    <tr><td class="id">RN-07</td><td>Solo un usuario con rol M&eacute;dico puede cargar diagn&oacute;sticos y tratamientos. <strong>Existe una &uacute;nica ficha de diagn&oacute;stico por cada par paciente&ndash;m&eacute;dico.</strong></td></tr>
+    <tr><td class="id">RN-08</td><td>Los turnos de vacunaci&oacute;n se gestionan en una agenda propia del vacunatorio, separada de las agendas m&eacute;dicas. Una misma persona <strong>puede</strong> tener un turno m&eacute;dico y uno de vacunaci&oacute;n superpuestos en el mismo horario.</td></tr>
+    <tr><td class="id">RN-09</td><td>Toda consulta m&eacute;dica dura <strong>30 minutos</strong>. La franja horaria es el horario corrido que el m&eacute;dico declara trabajar y el sistema la divide en turnos consecutivos de 30 minutos.</td></tr>
+    <tr><td class="id">RN-10</td><td>Un turno ya reservado no puede modificarse. La &uacute;nica operaci&oacute;n admitida sobre &eacute;l es la cancelaci&oacute;n; una reprogramaci&oacute;n es una cancelaci&oacute;n seguida de una nueva reserva.</td></tr>
+    <tr><td class="id">RN-11</td><td>Toda cuenta creada por autorregistro recibe el rol <em>Usuario</em>. Solo el administrador puede crear una cuenta con otro rol.</td></tr>
+    <tr><td class="id">RN-12</td><td>Un usuario puede reservar turnos a nombre de otra persona, para cualquier profesional y tipo de turno, registrando sus datos y su obra social.</td></tr>
+    <tr><td class="id">RN-13</td><td>Los medios de pago admitidos son <strong>efectivo y transferencia</strong>, ambos presenciales. El pago en efectivo lo registra el personal administrativo. No hay procesamiento de pagos en l&iacute;nea.</td></tr>
+    <tr><td class="id">RN-14</td><td>El costo de la consulta lo define cada m&eacute;dico.</td></tr>
   </tbody>
 </table>
 
