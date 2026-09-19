@@ -1,0 +1,17 @@
+Estamos en la etapa de diseño preparandonos para el sprint 1. Revisa todos los documentos del directorio en el que estas, Somos la comision 6, por lo tanto vamos a diseñar el enunciado 2: Sistema medico de reserva de turnos. Revisa toda la documentacion generada y hace un chequeo de consistencia de los requerimientos, fijate que sean factibles y que no se inventen cosas que no estan en el enunciado. Ademas, agrega al sprint 1 una nueva US con el mismo formato que sea "Administrativo que cargue clientes", para que el administrativo pueda cargar clientes nuevos a mano cuando lo llaman por telefono y estos no estan registrados en el sistema. 
+Al finalizar, dame un resumen de todo lo cambiado, hallado, y propuestas de cambio. Crea archivos nuevos y deja los que ya estan intactos.
+
+
+
+Dado el siguiente enunciado necesito que :
+1. Listado de requerimientos. Funcionales agrupados por módulo, más los no funcionales. Agregá lo que el sistema
+   necesita aunque el enunciado no lo diga (usuarios, permisos, etc.). Al final
+   quiero una tabla con todo lo que el enunciado deja ambiguo: qué supusiste y
+   cuánto impacta si el cliente lo define distinto. 
+
+2. Bosquejo de sprints. Son Sprint 0 (entrega 27/09), Sprint 1 (demo 08/10),
+   Sprint 2 (demo 22/10) y Sprint 3 de 3 semanas (demo 12/11). Explicá el criterio
+   con el que dividiste.
+
+3. User stories de cada requerimiento, agrupadas por sprint con 3 a 5 criterios de aceptación que se puedan verificar en una demo,
+   incluyendo errores y validaciones.
