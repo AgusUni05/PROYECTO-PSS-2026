@@ -1,0 +1,230 @@
+/* Hoja de estilos común a los documentos del Enunciado 2.
+   Pensada para impresión A4 vía Chrome headless (ver build.js). */
+
+@page {
+  size: A4;
+  margin: 18mm 16mm 16mm 16mm;
+}
+
+:root {
+  --ink: #1c1f24;
+  --muted: #5d6570;
+  --rule: #9aa1ab;
+  --rule-light: #d3d8de;
+  --fill: #f2f4f7;
+  --fill-strong: #e6eaef;
+  --accent: #1f4e79;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  font-family: "Segoe UI", "Calibri", "Helvetica Neue", Arial, sans-serif;
+  font-size: 9.6pt;
+  line-height: 1.42;
+  color: var(--ink);
+  margin: 0;
+}
+
+/* ---- Portada / encabezado del documento ---- */
+
+.doc-header {
+  border-bottom: 1.2pt solid var(--rule);
+  padding-bottom: 4pt;
+  margin-bottom: 18pt;
+  font-size: 7.6pt;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  gap: 12pt;
+}
+
+h1.doc-title {
+  font-size: 20pt;
+  text-align: center;
+  margin: 26pt 0 4pt;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: -0.2pt;
+}
+
+.doc-subtitle {
+  text-align: center;
+  font-size: 11pt;
+  color: var(--ink);
+  margin: 0 0 2pt;
+}
+
+.doc-byline {
+  text-align: center;
+  font-size: 8.4pt;
+  color: var(--muted);
+  margin: 0 0 22pt;
+}
+
+/* ---- Jerarquía ---- */
+
+h2 {
+  font-size: 12.5pt;
+  color: var(--accent);
+  margin: 20pt 0 6pt;
+  font-weight: 600;
+  break-after: avoid;
+}
+
+h3 {
+  font-size: 10.6pt;
+  color: var(--ink);
+  margin: 14pt 0 5pt;
+  font-weight: 600;
+  break-after: avoid;
+}
+
+h4 {
+  font-size: 9.8pt;
+  color: var(--accent);
+  margin: 12pt 0 4pt;
+  font-weight: 600;
+  border-bottom: 0.6pt solid var(--rule-light);
+  padding-bottom: 2pt;
+  break-after: avoid;
+}
+
+p { margin: 0 0 7pt; }
+
+ul { margin: 0 0 8pt; padding-left: 14pt; }
+li { margin-bottom: 2.5pt; }
+
+strong { font-weight: 600; }
+
+.lead { color: var(--ink); }
+
+.note {
+  font-size: 8.6pt;
+  color: var(--muted);
+  border-left: 2pt solid var(--rule-light);
+  padding-left: 8pt;
+  margin: 8pt 0 10pt;
+}
+
+.callout {
+  border: 0.8pt solid var(--rule);
+  background: var(--fill);
+  padding: 8pt 10pt;
+  margin: 10pt 0;
+  break-inside: avoid;
+}
+
+.callout h4 { margin-top: 0; border: none; }
+
+/* ---- Tablas ---- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6pt 0 12pt;
+  font-size: 8.8pt;
+}
+
+th {
+  background: var(--fill-strong);
+  text-align: left;
+  font-weight: 600;
+  padding: 4pt 6pt;
+  border: 0.6pt solid var(--rule);
+  vertical-align: bottom;
+}
+
+td {
+  padding: 4pt 6pt;
+  border: 0.6pt solid var(--rule-light);
+  vertical-align: top;
+}
+
+tr { break-inside: avoid; }
+
+tbody tr:nth-child(even) { background: #fafbfc; }
+
+td.c, th.c { text-align: center; }
+td.id, th.id { white-space: nowrap; font-variant-numeric: tabular-nums; }
+td.id { font-weight: 600; }
+
+tfoot td {
+  font-weight: 600;
+  background: var(--fill-strong);
+  border: 0.6pt solid var(--rule);
+}
+
+.w-id { width: 74pt; }
+.w-prio { width: 46pt; }
+.w-pts { width: 30pt; }
+.w-sprint { width: 40pt; }
+
+.removed td { color: var(--muted); background: #fbfbfc; }
+.removed td.id { text-decoration: line-through; }
+
+/* ---- User Stories ---- */
+
+.us {
+  break-inside: avoid;
+  margin: 0 0 12pt;
+}
+
+.us-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10pt;
+  border-bottom: 0.8pt solid var(--rule);
+  padding-bottom: 2.5pt;
+  margin-bottom: 5pt;
+}
+
+.us-name { font-size: 10.2pt; font-weight: 600; }
+.us-name .code { color: var(--accent); }
+.us-meta {
+  font-size: 8.2pt;
+  color: var(--muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.us-story { margin: 0 0 5pt; }
+.us-ac-title {
+  font-size: 8.4pt;
+  text-transform: uppercase;
+  letter-spacing: 0.4pt;
+  color: var(--muted);
+  margin: 0 0 2pt;
+}
+.us ul { margin-bottom: 5pt; }
+.trace {
+  font-size: 8.4pt;
+  color: var(--muted);
+  margin: 0;
+}
+.trace strong { color: var(--ink); }
+
+.new-tag, .chg-tag {
+  display: inline-block;
+  font-size: 7pt;
+  font-weight: 600;
+  letter-spacing: 0.3pt;
+  text-transform: uppercase;
+  padding: 0.5pt 3.5pt;
+  border-radius: 2pt;
+  vertical-align: 1.5pt;
+  margin-left: 4pt;
+}
+.new-tag { background: #dbe8f5; color: #1f4e79; }
+.chg-tag { background: #f0e6d2; color: #7a5a17; }
+
+.sprint-intro {
+  background: var(--fill);
+  border: 0.6pt solid var(--rule-light);
+  padding: 7pt 9pt;
+  margin: 4pt 0 12pt;
+}
+.sprint-intro p:last-child { margin-bottom: 0; }
+
+.page-break { break-before: page; }

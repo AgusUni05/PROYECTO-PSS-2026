@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Cat&aacute;logo de User Stories</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="doc-header">
+  <span>UNS &middot; DCIC &middot; Proyectos de Sistemas de Software &middot; 2do Cuatrimestre 2026</span>
+  <span>Enunciado 2 &middot; Sala M&eacute;dica Privada</span>
+</div>
+
+<h1 class="doc-title">Cat&aacute;logo de User Stories</h1>
+<p class="doc-subtitle">Sistema integral de gesti&oacute;n para sala m&eacute;dica privada</p>
+<p class="doc-byline">Documento elaborado por la comisi&oacute;n de An&aacute;lisis y Management &middot; Enunciado 2<br>
+Versi&oacute;n 2 &middot; definiciones de la reuni&oacute;n con el cliente del 19/09/2026 y equipo implementador de 5 integrantes con asistencia de IA</p>
+
+<h2>1. Prop&oacute;sito y alcance del documento</h2>
+
+<p>Este documento redacta las <strong>53 User Stories</strong> derivadas del listado de requerimientos, con sus criterios de
+aceptaci&oacute;n, prioridad, estimaci&oacute;n y sprint asignado. Es el insumo directo para las reuniones de refinement, para la
+asignaci&oacute;n de tareas al equipo implementador y para la verificaci&oacute;n de las demos.</p>
+
+<p>Las User Stories est&aacute;n agrupadas por sprint, siguiendo la distribuci&oacute;n propuesta en el bosquejo de sprints. La
+asignaci&oacute;n se re-prioriza al cierre de cada sprint junto al ayudante en su rol de cliente.</p>
+
+<div class="callout">
+  <h4>Qu&eacute; cambi&oacute; en esta versi&oacute;n</h4>
+  <p>La reuni&oacute;n con el cliente del 19/09/2026 elimin&oacute; ocho historias, unific&oacute; otras tres con las que ya exist&iacute;an y
+  agreg&oacute; dos nuevas: de 62 se pasa a 53. <strong>Los identificadores de las historias que sobreviven no se renumeraron</strong>, para no romper la trazabilidad con
+  los wireframes del Sprint 1 ya aprobados; por eso la numeraci&oacute;n presenta huecos. El detalle completo est&aacute; en el
+  <strong>registro de cambios de la secci&oacute;n 12</strong>.</p>
+  <p>El cambio de mayor impacto es la baja del control de acceso por rol como historia propia: pas&oacute; a ser el
+  requerimiento no funcional transversal <strong>RNF-03</strong>, que atraviesa todas las historias y se verifica como parte de la
+  definici&oacute;n de terminado (condici&oacute;n 6 de la secci&oacute;n 3).</p>
+  <p>En paralelo se confirm&oacute; que el <strong>equipo implementador es de cinco integrantes que trabajan con asistencia de
+  IA</strong>, no de diez. Los puntos de cada historia no cambian &mdash;miden tama&ntilde;o, no tiempo&mdash;, pero s&iacute; cambia cu&aacute;ntas entran
+  en cada sprint: la equivalencia pasa de 4 a <strong>2,5 horas por punto</strong> y cada historia lleva ahora su estimaci&oacute;n en
+  horas. El c&aacute;lculo est&aacute; en la secci&oacute;n 2.1 y sus consecuencias sobre el plan, en las secciones 10 y 12.5.</p>
+</div>
+
+<h2>2. Formato y convenciones</h2>
+
+<p>Cada User Story se redacta en el formato est&aacute;ndar <em>Como &lt;rol&gt;, quiero &lt;acci&oacute;n&gt;, para &lt;beneficio&gt;</em>, seguido de
+sus criterios de aceptaci&oacute;n verificables y de la trazabilidad al requerimiento que le da origen.</p>
+
+<ul>
+  <li><strong>Prioridad:</strong> escala MoSCoW heredada del listado de requerimientos (Must, Should, Could).</li>
+  <li><strong>Puntos:</strong> estimaci&oacute;n relativa de tama&ntilde;o y complejidad, independiente de qui&eacute;n implemente la historia. No cambian si cambia el equipo.</li>
+  <li><strong>Horas:</strong> traducci&oacute;n de esos puntos a esfuerzo del equipo actual, con la equivalencia <strong>1 punto &asymp; 2,5 horas</strong> justificada en la secci&oacute;n 2.1. La escala se recalibra con la velocidad real del Sprint 1.</li>
+  <li><strong>Sprint:</strong> etapa en la que est&aacute; planificada su implementaci&oacute;n. Las User Stories de la secci&oacute;n 10 no est&aacute;n comprometidas en ning&uacute;n sprint.</li>
+  <li><strong>Trazabilidad:</strong> requerimientos funcionales, no funcionales y reglas de negocio que la User Story satisface.</li>
+</ul>
+
+<p class="note">Las User Stories cuyo rol es <em>sistema</em> o <em>responsable del sistema</em> describen comportamiento autom&aacute;tico o
+transversal sin actor humano directo. Se redactan como historias porque tienen criterios de aceptaci&oacute;n verificables
+en la demo, aunque no correspondan a una pantalla propia.</p>
+
+<h3>2.1 De puntos a horas: el equipo real</h3>
+
+<p>La versi&oacute;n 1 estim&oacute; sobre un equipo implementador de diez integrantes sin asistencia de IA, con una equivalencia
+de <strong>1 punto &asymp; 4 horas</strong>. El equipo confirmado es de <strong>cinco integrantes que trabajan con asistencia de IA</strong>, lo que
+obliga a recalcular la equivalencia. Los puntos de cada historia <strong>no se modificaron</strong>: miden tama&ntilde;o, no tiempo.</p>
+
+<p>El factor de aceleraci&oacute;n no se aplica de forma uniforme, porque la IA no ayuda igual en todas las tareas. Se adopta
+la siguiente descomposici&oacute;n del esfuerzo de una historia t&iacute;pica de este proyecto:</p>
+
+<table>
+  <colgroup><col><col style="width:64pt"><col style="width:64pt"><col></colgroup>
+  <thead><tr><th>Tipo de trabajo</th><th class="c">Peso</th><th class="c">Factor IA</th><th>Fundamento</th></tr></thead>
+  <tbody>
+    <tr><td>Implementaci&oacute;n: formularios, ABM, consultas, casos de prueba</td><td class="c">55%</td><td class="c">2,2&times;</td><td>Es trabajo repetitivo y bien acotado, donde la generaci&oacute;n asistida rinde m&aacute;s.</td></tr>
+    <tr><td>Integraci&oacute;n y depuraci&oacute;n</td><td class="c">25%</td><td class="c">1,3&times;</td><td>La IA acelera el diagn&oacute;stico pero el error sigue siendo espec&iacute;fico del sistema.</td></tr>
+    <tr><td>An&aacute;lisis, revisi&oacute;n, coordinaci&oacute;n y preparaci&oacute;n de la demo</td><td class="c">20%</td><td class="c">1,0&times;</td><td>No se acelera: depende de personas y de reuniones.</td></tr>
+  </tbody>
+  <tfoot><tr><td>Aceleraci&oacute;n ponderada</td><td class="c">100%</td><td class="c">1,6&times;</td><td>4 h &divide; 1,6 &asymp; <strong>2,5 h por punto</strong></td></tr></tfoot>
+</table>
+
+<p class="note">Esta descomposici&oacute;n es una hip&oacute;tesis, no una medici&oacute;n. El valor de 2,5 horas por punto debe contrastarse con el
+tiempo real registrado durante el Sprint 1 y corregirse en el refinement del Sprint 2. Si la aceleraci&oacute;n real resulta
+menor &mdash;por ejemplo 1,3&times;, es decir 3 horas por punto&mdash; la capacidad de los tres sprints cae de 98 a 82 puntos y el
+plan de reducci&oacute;n de la secci&oacute;n 10.1 debe aplicarse m&aacute;s a fondo.</p>
+
+<h2>3. Definici&oacute;n de terminado</h2>
+
+<p>Una User Story se considera terminada cuando cumple todas las condiciones siguientes. Este criterio es com&uacute;n a
+todas las historias del documento y no se repite en cada una.</p>
+
+<table>
+  <colgroup><col style="width:20pt"><col></colgroup>
+  <thead><tr><th class="c">#</th><th>Condici&oacute;n</th></tr></thead>
+  <tbody>
+    <tr><td class="c">1</td><td>Todos los criterios de aceptaci&oacute;n de la historia se verifican como cumplidos.</td></tr>
+    <tr><td class="c">2</td><td>El c&oacute;digo est&aacute; integrado en la rama principal del repositorio compartido con la comisi&oacute;n de An&aacute;lisis y Management.</td></tr>
+    <tr><td class="c">3</td><td>La funcionalidad fue probada por alguien distinto de quien la desarroll&oacute;.</td></tr>
+    <tr><td class="c">4</td><td>Los casos de prueba y los bugs detectados est&aacute;n documentados seg&uacute;n el mecanismo acordado entre ambas comisiones.</td></tr>
+    <tr><td class="c">5</td><td>No quedan bugs de severidad alta abiertos sobre la historia.</td></tr>
+    <tr><td class="c">6</td><td><strong>El control de acceso por rol (RNF-03) fue verificado del lado del servidor para la funcionalidad incorporada.</strong> Ninguna historia se da por terminada sin esta verificaci&oacute;n.</td></tr>
+    <tr><td class="c">7</td><td>La historia es demostrable de punta a punta en la reuni&oacute;n de demo.</td></tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>4. &Iacute;ndice de User Stories</h2>
+
+<table>
+  <colgroup><col style="width:40pt"><col><col style="width:84pt"><col class="w-prio"><col class="w-pts"><col style="width:36pt"><col class="w-sprint"></colgroup>
+  <thead><tr><th class="id">ID</th><th>T&iacute;tulo</th><th>M&oacute;dulo</th><th class="c">Prio.</th><th class="c">Pts</th><th class="c">Horas</th><th class="c">Sprint</th></tr></thead>
+  <tbody>
+    <tr><td class="id">US-01</td><td>Registro y gesti&oacute;n de la cuenta de usuario</td><td>Usuarios y acceso</td><td class="c">Must</td><td class="c">4</td><td class="c">10</td><td class="c">1</td></tr>
+    <tr><td class="id">US-02</td><td>Inicio de sesi&oacute;n con interfaz seg&uacute;n rol</td><td>Usuarios y acceso</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">1</td></tr>
+    <tr><td class="id">US-03</td><td>Alta y baja de usuarios internos</td><td>Usuarios y acceso</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">1</td></tr>
+    <tr><td class="id">US-06</td><td>Carga de disponibilidad mensual y validaci&oacute;n de jornadas</td><td>Agenda m&eacute;dica</td><td class="c">Must</td><td class="c">5</td><td class="c">12,5</td><td class="c">1</td></tr>
+    <tr><td class="id">US-08</td><td>Generaci&oacute;n autom&aacute;tica de turnos de 30 minutos</td><td>Agenda m&eacute;dica</td><td class="c">Must</td><td class="c">4</td><td class="c">10</td><td class="c">1</td></tr>
+    <tr><td class="id">US-10</td><td>Apertura autom&aacute;tica de la agenda</td><td>Agenda m&eacute;dica</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">1</td></tr>
+    <tr><td class="id">US-11</td><td>Vista de agenda del profesional</td><td>Agenda m&eacute;dica</td><td class="c">Must</td><td class="c">4</td><td class="c">10</td><td class="c">1</td></tr>
+    <tr><td class="id">US-12</td><td>Elecci&oacute;n del tipo de turno y b&uacute;squeda de disponibilidad</td><td>Reserva de turnos</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-13</td><td>Reserva de turno</td><td>Reserva de turnos</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-14</td><td>Confirmaci&oacute;n de reserva por email</td><td>Reserva de turnos</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-15</td><td>Recordatorio autom&aacute;tico de turno</td><td>Reserva de turnos</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-16</td><td>Cancelaci&oacute;n de turno por el paciente</td><td>Reserva de turnos</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-17</td><td>Gesti&oacute;n de turnos desde mostrador</td><td>Reserva de turnos</td><td class="c">Should</td><td class="c">3</td><td class="c">7,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-18</td><td>Registro del estado del turno</td><td>Reserva de turnos</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-19</td><td>Prevenci&oacute;n de turnos duplicados del mismo tipo</td><td>Reserva de turnos</td><td class="c">Should</td><td class="c">1</td><td class="c">2,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-20</td><td>Control de concurrencia en la reserva</td><td>Reserva de turnos</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-21</td><td>Servicio de env&iacute;o de notificaciones por email</td><td>Notificaciones</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-22</td><td>Aviso por modificaci&oacute;n de agenda</td><td>Notificaciones</td><td class="c">Must</td><td class="c">1</td><td class="c">2,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-24</td><td>Cat&aacute;logo de vacunas</td><td>Gesti&oacute;n de vacunas</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-28</td><td>Turno de vacunaci&oacute;n</td><td>Gesti&oacute;n de vacunas</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-29</td><td>Registro de aplicaci&oacute;n de dosis</td><td>Gesti&oacute;n de vacunas</td><td class="c">Must</td><td class="c">1</td><td class="c">2,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-30</td><td>Bloqueo de turnos disponibles de una franja publicada</td><td>Agenda m&eacute;dica</td><td class="c">Should</td><td class="c">2</td><td class="c">5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-31</td><td>Recuperaci&oacute;n de contrase&ntilde;a</td><td>Usuarios y acceso</td><td class="c">Should</td><td class="c">1</td><td class="c">2,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-32</td><td>Gesti&oacute;n de la cobertura m&eacute;dica</td><td>Pagos y coberturas</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-33</td><td>Definici&oacute;n del costo de la consulta por el m&eacute;dico</td><td>Pagos y coberturas</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-34</td><td>C&aacute;lculo del importe seg&uacute;n cobertura</td><td>Pagos y coberturas</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-35</td><td>Registro del pago en efectivo o por transferencia</td><td>Pagos y coberturas</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-36</td><td>Comprobante de pago en PDF</td><td>Pagos y coberturas</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-38</td><td>Historial de pagos del paciente</td><td>Pagos y coberturas</td><td class="c">Should</td><td class="c">1</td><td class="c">2,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-39</td><td>Ficha de diagn&oacute;stico del paciente</td><td>Historial cl&iacute;nico</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-40</td><td>Consulta de la ficha del paciente</td><td>Historial cl&iacute;nico</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-41</td><td>Historial cl&iacute;nico del paciente</td><td>Historial cl&iacute;nico</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-42</td><td>Trazabilidad de las entradas cl&iacute;nicas</td><td>Historial cl&iacute;nico</td><td class="c">Should</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-43</td><td>Antecedentes, alergias y medicaci&oacute;n habitual</td><td>Historial cl&iacute;nico</td><td class="c">Should</td><td class="c">1</td><td class="c">2,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-44</td><td>Auditor&iacute;a de accesos al historial</td><td>Historial cl&iacute;nico</td><td class="c">Should</td><td class="c">1</td><td class="c">2,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-45</td><td>Reporte de turnos por tipo y especialidad</td><td>Reportes</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-47</td><td>Reporte de pagos realizados</td><td>Reportes</td><td class="c">Must</td><td class="c">1</td><td class="c">2,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-48</td><td>Reporte de asistencia de pacientes</td><td>Reportes</td><td class="c">Must</td><td class="c">1</td><td class="c">2,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-49</td><td>Filtros comunes de reportes</td><td>Reportes</td><td class="c">Should</td><td class="c">1</td><td class="c">2,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-50</td><td>Exportaci&oacute;n de reportes</td><td>Reportes</td><td class="c">Should</td><td class="c">1</td><td class="c">2,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-51</td><td>Acceso desde la aplicaci&oacute;n m&oacute;vil</td><td>Aplicaci&oacute;n m&oacute;vil</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-52</td><td>Gesti&oacute;n de turnos desde el m&oacute;vil</td><td>Aplicaci&oacute;n m&oacute;vil</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-53</td><td>Historial cl&iacute;nico desde el m&oacute;vil</td><td>Aplicaci&oacute;n m&oacute;vil</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-54</td><td>Recordatorios en el m&oacute;vil</td><td>Aplicaci&oacute;n m&oacute;vil</td><td class="c">Must</td><td class="c">1</td><td class="c">2,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-55</td><td>Pagos y comprobantes desde el m&oacute;vil</td><td>Aplicaci&oacute;n m&oacute;vil</td><td class="c">Should</td><td class="c">2</td><td class="c">5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-57</td><td>Carnet de vacunaci&oacute;n del paciente</td><td>Gesti&oacute;n de vacunas</td><td class="c">Should</td><td class="c">1</td><td class="c">2,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-58</td><td>Registro de notificaciones enviadas</td><td>Notificaciones</td><td class="c">Should</td><td class="c">1</td><td class="c">2,5</td><td class="c">3</td></tr>
+    <tr><td class="id">US-59</td><td>Lista de espera de turnos</td><td>Reserva de turnos</td><td class="c">Could</td><td class="c">3</td><td class="c">7,5</td><td class="c">&mdash;</td></tr>
+    <tr><td class="id">US-60</td><td>Calendario de feriados</td><td>Agenda m&eacute;dica</td><td class="c">Could</td><td class="c">2</td><td class="c">5</td><td class="c">&mdash;</td></tr>
+    <tr><td class="id">US-61</td><td>Anulaci&oacute;n de pagos</td><td>Pagos y coberturas</td><td class="c">Could</td><td class="c">2</td><td class="c">5</td><td class="c">&mdash;</td></tr>
+    <tr><td class="id">US-62</td><td>Adjuntar estudios a la ficha</td><td>Historial cl&iacute;nico</td><td class="c">Could</td><td class="c">3</td><td class="c">7,5</td><td class="c">&mdash;</td></tr>
+    <tr><td class="id">US-63</td><td>Agenda del vacunatorio <span class="new-tag">nueva</span></td><td>Gesti&oacute;n de vacunas</td><td class="c">Must</td><td class="c">3</td><td class="c">7,5</td><td class="c">2</td></tr>
+    <tr><td class="id">US-64</td><td>Reserva de turno a nombre de otra persona <span class="new-tag">nueva</span></td><td>Reserva de turnos</td><td class="c">Must</td><td class="c">2</td><td class="c">5</td><td class="c">2</td></tr>
+  </tbody>
+</table>
+
+<p class="note"><strong>Identificadores dados de baja:</strong> US-04, US-05, US-07, US-09, US-23, US-25, US-26, US-27, US-37,
+US-46 y US-56. No se reutilizan. El motivo de cada baja est&aacute; en la secci&oacute;n 12.</p>
+
+<div class="page-break"></div>
+
+<h2>5. Sprint 1 &mdash; Cimientos y agenda</h2>
+
+<div class="sprint-intro">
+  <p>Demo 08/10, entrega 11/10. Identidad, alta de usuarios y todo el ciclo de la agenda m&eacute;dica: desde la carga de
+  disponibilidad del profesional hasta la publicaci&oacute;n de los turnos a los pacientes.</p>
+  <p><strong>7 User Stories &middot; 25 puntos &middot; 62,5 horas.</strong> Capacidad del sprint: 28 puntos / 70 horas.</p>
+  <p>Es el &uacute;nico sprint que entra dentro de la capacidad del equipo de cinco, y por poco: quedan 3 puntos de holgura.
+  Se recomienda usarlos adelantando US-21 (servicio de env&iacute;o de emails), que no depende de la reserva de turnos y
+  descomprime el Sprint 2.</p>
+</div>
+
+<h4>Usuarios y acceso</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-01</span> Registro y gesti&oacute;n de la cuenta de usuario <span class="chg-tag">unifica ex US-05</span></span>
+    <span class="us-meta">Must | 4 pts | 10 h | Sprint 1</span>
+  </div>
+  <p class="us-story">Como <strong>visitante</strong>, quiero registrarme en la plataforma con mis datos personales, de contacto y mi obra
+  social, y poder mantenerlos actualizados despu&eacute;s, para acceder al sistema y para que la sala me contacte con
+  informaci&oacute;n vigente.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El formulario solicita nombre, apellido, tipo y n&uacute;mero de documento, fecha de nacimiento, tel&eacute;fono, email, contrase&ntilde;a y <strong>obra social</strong> (entidad, plan y n&uacute;mero de afiliado).</li>
+    <li>La obra social puede declararse como &laquo;sin cobertura / particular&raquo;; el dato es declarativo y no se valida contra el padr&oacute;n de la entidad.</li>
+    <li>El sistema rechaza el registro si el documento o el email ya est&aacute;n asociados a otra cuenta.</li>
+    <li><strong>Al completarse el registro, la cuenta queda con rol <em>Usuario</em></strong> y puede iniciar sesi&oacute;n inmediatamente. Ning&uacute;n autorregistro otorga otro rol.</li>
+    <li>Una vez registrado, el usuario puede consultar y modificar tel&eacute;fono, email, domicilio y obra social desde &laquo;Mis datos&raquo;.</li>
+    <li>El n&uacute;mero de documento y la fecha de nacimiento no son editables por el usuario; requieren intervenci&oacute;n administrativa.</li>
+    <li>Al cambiar el email, las notificaciones posteriores se env&iacute;an a la nueva direcci&oacute;n, y el sistema confirma el guardado con un mensaje expl&iacute;cito.</li>
+    <li>El manejo de contrase&ntilde;as se resuelve con un servicio de terceros.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-USR-01, RF-USR-07, RNF-01, RN-06, RN-11</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-02</span> Inicio de sesi&oacute;n con interfaz seg&uacute;n rol</span>
+    <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 1</span>
+  </div>
+  <p class="us-story">Como <strong>usuario registrado</strong>, quiero iniciar sesi&oacute;n con mis credenciales y llegar a la pantalla propia de mi
+  rol, para acceder directamente a las funciones que me corresponden sin navegar por opciones ajenas.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El sistema valida las credenciales y redirige seg&uacute;n el rol: usuario, m&eacute;dico, enfermera, administrativo o administrador.</li>
+    <li>Enfermera y administrativo son roles separados y llegan a pantallas distintas; ninguno ve el men&uacute; del otro.</li>
+    <li>Ante credenciales inv&aacute;lidas muestra un mensaje gen&eacute;rico que no revela si el usuario existe.</li>
+    <li>El usuario puede cerrar sesi&oacute;n desde cualquier pantalla.</li>
+    <li>Cada rol ve un men&uacute; distinto sobre una misma identidad visual.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-USR-02, RNF-06, RN-04</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-03</span> Alta y baja de usuarios internos</span>
+    <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 1</span>
+  </div>
+  <p class="us-story">Como <strong>administrador</strong>, quiero dar de alta, modificar y desactivar las cuentas de m&eacute;dicos, enfermeras y
+  administrativos asign&aacute;ndoles su rol, para controlar qui&eacute;n accede al sistema sin depender del &aacute;rea t&eacute;cnica.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El administrador puede crear un usuario indicando datos personales y <strong>el rol que le asigna</strong>; es la &uacute;nica v&iacute;a para crear una cuenta con un rol distinto de <em>Usuario</em>.</li>
+    <li>Al asignar el rol M&eacute;dico se indica la especialidad. <strong>El rol M&eacute;dico es gen&eacute;rico</strong>: las especialidades son datos administrables, no roles distintos, de modo que incorporar una nueva no exige tocar el modelo de autorizaci&oacute;n.</li>
+    <li>Las especialidades iniciales son cl&iacute;nica, pediatr&iacute;a y traumatolog&iacute;a.</li>
+    <li>Los roles Enfermera y Administrativo se asignan por separado y no son intercambiables.</li>
+    <li>Posteriormente al registro, el sistema env&iacute;a un correo al nuevo usuario para que defina su contrase&ntilde;a.</li>
+    <li>Un usuario desactivado no puede iniciar sesi&oacute;n pero conserva su historial de actividad.</li>
+    <li>No se permite eliminar f&iacute;sicamente usuarios que tengan turnos o registros asociados.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-USR-03, RF-USR-07, RF-USR-08, RNF-14, RN-01, RN-04, RN-11</p>
+</div>
+
+<h4>Agenda m&eacute;dica</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-06</span> Carga de disponibilidad mensual y validaci&oacute;n de jornadas <span class="chg-tag">unifica ex US-07</span></span>
+    <span class="us-meta">Must | 5 pts | 12,5 h | Sprint 1</span>
+  </div>
+  <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero cargar los d&iacute;as y las franjas horarias en que atender&eacute; durante el pr&oacute;ximo mes y que
+  el sistema verifique que respeto la cantidad de jornadas exigida, para que mi agenda se abra a los pacientes sin
+  quedar incompleta.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El m&eacute;dico selecciona un mes y agrega franjas indicando d&iacute;a, hora de inicio y hora de fin. <strong>La franja es el horario corrido que trabaja ese d&iacute;a</strong>.</li>
+    <li>El sistema no permite cargar franjas sobre fechas ya pasadas.</li>
+    <li>Al confirmar, el sistema recorre cada semana del mes y verifica que existan <strong>como m&iacute;nimo 2 y como m&aacute;ximo 7 jornadas</strong> con franjas cargadas.</li>
+    <li>Si alguna semana queda por debajo del m&iacute;nimo o por encima del m&aacute;ximo, la confirmaci&oacute;n se bloquea y el sistema indica qu&eacute; semanas incumplen y en qu&eacute; sentido.</li>
+    <li>Los l&iacute;mites de 2 y 7 jornadas semanales son par&aacute;metros configurables por el administrador.</li>
+    <li>Las semanas parcialmente incluidas en el mes se eval&uacute;an seg&uacute;n el criterio acordado con el cliente.</li>
+    <li>El m&eacute;dico puede modificar o eliminar una franja mientras la disponibilidad no est&eacute; confirmada.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-01, RN-02, RN-09</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-08</span> Generaci&oacute;n autom&aacute;tica de turnos de 30 minutos <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 4 pts | 10 h | Sprint 1</span>
+  </div>
+  <p class="us-story">Como <strong>sistema</strong>, quiero dividir cada franja horaria confirmada en turnos de 30 minutos, para que los pacientes
+  tengan horarios concretos para reservar.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Al confirmarse la disponibilidad, el sistema genera un turno por cada intervalo consecutivo de <strong>30 minutos</strong> dentro de la franja.</li>
+    <li><strong>La duraci&oacute;n es fija para todas las consultas y todas las especialidades</strong>: no es configurable.</li>
+    <li>Un intervalo sobrante menor a 30 minutos no genera turno.</li>
+    <li>Cada turno generado queda en estado disponible, asociado al m&eacute;dico, la fecha y la hora.</li>
+    <li>La generaci&oacute;n es idempotente: reconfirmar la misma disponibilidad no duplica turnos.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-03, RN-09</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-10</span> Apertura autom&aacute;tica de la agenda</span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 1</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero ver publicada la agenda de un profesional apenas queda confirmada su disponibilidad,
+  para poder planificar mi consulta sin llamar por tel&eacute;fono.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Al confirmar la disponibilidad, los turnos generados quedan visibles para los pacientes sin intervenci&oacute;n manual.</li>
+    <li>Antes de la confirmaci&oacute;n, ning&uacute;n turno de ese mes es visible.</li>
+    <li>La agenda muestra &uacute;nicamente los turnos futuros y disponibles.</li>
+    <li>El paciente ve especialidad, profesional, fecha y hora de cada turno.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-04, RN-03</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-11</span> Vista de agenda del profesional</span>
+    <span class="us-meta">Must | 4 pts | 10 h | Sprint 1</span>
+  </div>
+  <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero consultar mi agenda en vista diaria, semanal y mensual, para organizar mi trabajo y
+  saber a qui&eacute;n voy a atender.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Las tres vistas muestran los turnos con su estado: disponible, reservado, cumplido, ausente o cancelado.</li>
+    <li>En los turnos reservados se muestra el nombre del paciente y el motivo si fue indicado; si el turno fue reservado por otra persona, se identifica tambi&eacute;n a qui&eacute;n lo reserv&oacute;.</li>
+    <li>El m&eacute;dico puede navegar entre per&iacute;odos sin recargar toda la pantalla.</li>
+    <li>La vista diaria ordena los turnos cronol&oacute;gicamente e identifica los huecos libres.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-05</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>6. Sprint 2 &mdash; Turnos y vacunas</h2>
+
+<div class="sprint-intro">
+  <p>Demo 22/10, entrega 25/10. El ciclo completo de reserva de turnos con sus notificaciones, y el m&oacute;dulo de
+  vacunas, que puede avanzar en paralelo porque casi no comparte c&oacute;digo con el resto.</p>
+  <p><strong>18 User Stories &middot; 38 puntos &middot; 95 horas</strong>; con la reserva para bugs, 41 puntos / 102,5 horas. Capacidad del
+  sprint: 28 puntos / 70 horas.</p>
+  <p>Es el sprint cr&iacute;tico del plan: pide un 46% m&aacute;s de trabajo del que el equipo de cinco puede entregar. No se
+  resuelve con esfuerzo, sino corriendo historias al Sprint 3 o sacando alcance (ver secci&oacute;n 10.1).</p>
+</div>
+
+<h4>Reserva de turnos</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-12</span> Elecci&oacute;n del tipo de turno y b&uacute;squeda de disponibilidad <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>usuario</strong>, quiero elegir si quiero sacar un turno m&eacute;dico o uno de vacunaci&oacute;n y buscar la disponibilidad
+  filtrando por especialidad, profesional y rango de fechas, para encontrar r&aacute;pidamente un horario que me sirva.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li><strong>El primer paso del flujo es elegir el tipo de turno: consulta m&eacute;dica o vacunaci&oacute;n.</strong> Cada tipo consulta su propia agenda.</li>
+    <li>Con tipo &laquo;consulta m&eacute;dica&raquo;, el usuario puede filtrar por especialidad, por profesional o por ambos.</li>
+    <li>Con tipo &laquo;vacunaci&oacute;n&raquo;, el usuario selecciona la vacuna del cat&aacute;logo y ve la disponibilidad del vacunatorio.</li>
+    <li>El rango de fechas por defecto son los pr&oacute;ximos treinta d&iacute;as.</li>
+    <li>Los resultados se agrupan por d&iacute;a y se ordenan cronol&oacute;gicamente.</li>
+    <li>Si no hay turnos que cumplan el filtro, se informa con un mensaje claro y se sugiere ampliar el rango.</li>
+    <li>La b&uacute;squeda responde en menos de tres segundos en condiciones normales de uso.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-01, RF-VAC-05, RNF-07, RN-08</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-13</span> Reserva de turno</span>
+    <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>usuario</strong>, quiero seleccionar un turno disponible y confirmarlo, para asegurarme la atenci&oacute;n en el
+  horario elegido.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El usuario ve un resumen con tipo de turno, profesional o vacunatorio, especialidad o vacuna, fecha y hora antes de confirmar.</li>
+    <li>Al confirmar, el turno pasa a estado reservado y deja de aparecer en las b&uacute;squedas.</li>
+    <li>El turno reservado queda visible en la secci&oacute;n de turnos del usuario, identificando a nombre de qui&eacute;n est&aacute;.</li>
+    <li>El usuario puede indicar opcionalmente un motivo de consulta.</li>
+    <li>No se puede reservar un turno cuyo horario ya pas&oacute;.</li>
+    <li><strong>Una vez reservado, el turno no puede modificarse</strong>: la &uacute;nica operaci&oacute;n disponible sobre &eacute;l es la cancelaci&oacute;n.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-02, RF-AGE-09, RN-10</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-14</span> Confirmaci&oacute;n de reserva por email</span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>usuario</strong>, quiero recibir un email al confirmar el turno, para tener constancia de la reserva fuera del
+  sistema.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El email se env&iacute;a dentro del minuto posterior a la confirmaci&oacute;n.</li>
+    <li>Incluye tipo de turno, profesional o vacuna, fecha, hora y direcci&oacute;n de la sala.</li>
+    <li>Si el turno se reserv&oacute; a nombre de otra persona, el email indica de qui&eacute;n es el turno.</li>
+    <li>Incluye instrucciones para cancelar el turno.</li>
+    <li>Si el env&iacute;o falla, la reserva se mantiene v&aacute;lida y el fallo queda registrado para reintento.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-03, RF-NOT-01</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-15</span> Recordatorio autom&aacute;tico de turno</span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero recibir un recordatorio por email antes de mi turno, para no olvidarme de asistir.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El sistema env&iacute;a el recordatorio con la antelaci&oacute;n configurada por el administrador; el valor inicial son 24 horas.</li>
+    <li>Aplica por igual a turnos m&eacute;dicos y de vacunaci&oacute;n.</li>
+    <li>No se env&iacute;a recordatorio de turnos cancelados.</li>
+    <li>Se env&iacute;a un &uacute;nico recordatorio por turno, sin duplicados ante reintentos del proceso.</li>
+    <li>El proceso corre de forma autom&aacute;tica y deja registro de cada env&iacute;o.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-04, RF-NOT-01</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-16</span> Cancelaci&oacute;n de turno por el paciente</span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>usuario</strong>, quiero cancelar un turno que reserv&eacute;, para liberar el horario si no se va a poder asistir.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El usuario puede cancelar desde su listado de turnos, con confirmaci&oacute;n previa, tanto los propios como los reservados a nombre de otra persona.</li>
+    <li>El turno cancelado vuelve al estado disponible y reaparece en las b&uacute;squedas.</li>
+    <li>La cancelaci&oacute;n se permite hasta la antelaci&oacute;n m&iacute;nima configurada; el valor inicial son 24 horas.</li>
+    <li><strong>La cancelaci&oacute;n es la &uacute;nica modificaci&oacute;n admitida sobre un turno reservado.</strong> Cambiar de horario implica cancelar y volver a reservar.</li>
+    <li>El usuario y la sala reciben un email de aviso de la cancelaci&oacute;n.</li>
+    <li>El turno cancelado queda registrado en el historial, no se elimina.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-05, RF-AGE-09, RN-10</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-17</span> Gesti&oacute;n de turnos desde mostrador <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Should | 3 pts | 7,5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>personal administrativo</strong>, quiero reservar, reprogramar y cancelar turnos en nombre de un paciente,
+  para atender a quienes se comunican por tel&eacute;fono o vienen presencialmente.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El administrativo busca al paciente por documento, apellido o email.</li>
+    <li>Puede registrar un paciente nuevo desde el mismo flujo si no est&aacute; en el sistema, incluyendo su obra social.</li>
+    <li>Puede gestionar turnos de ambos tipos: consulta m&eacute;dica y vacunaci&oacute;n.</li>
+    <li><strong>La reprogramaci&oacute;n se resuelve como cancelaci&oacute;n del turno original m&aacute;s reserva de uno nuevo, en una sola operaci&oacute;n atendida por el sistema.</strong> En ning&uacute;n caso se edita un turno reservado.</li>
+    <li>El paciente recibe el email correspondiente a la acci&oacute;n realizada.</li>
+    <li>Toda operaci&oacute;n queda registrada indicando qu&eacute; usuario la realiz&oacute;.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-06, RF-AGE-09, RN-10</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-18</span> Registro del estado del turno</span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>m&eacute;dico o administrativo</strong>, quiero marcar si el paciente asisti&oacute;, no asisti&oacute; o fue atendido, para que los
+  reportes de asistencia reflejen lo que realmente ocurri&oacute;.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Los estados posibles son reservado, cumplido, ausente y cancelado.</li>
+    <li>El estado solo puede modificarse el d&iacute;a del turno o posteriormente; el cambio de estado no constituye una modificaci&oacute;n de la reserva en los t&eacute;rminos de RF-AGE-09.</li>
+    <li>Un turno cumplido habilita la carga de la ficha de diagn&oacute;stico y el registro del pago.</li>
+    <li>El sistema deja constancia de qui&eacute;n cambi&oacute; el estado y cu&aacute;ndo.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-07</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-19</span> Prevenci&oacute;n de turnos duplicados del mismo tipo <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Should | 1 pt | 2,5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>sistema</strong>, quiero impedir que un paciente reserve m&aacute;s de un turno del mismo tipo con el mismo
+  profesional en la misma fecha, para evitar reservas por error y el bloqueo innecesario de horarios.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Al intentar la segunda reserva del mismo tipo, el sistema informa el turno ya existente y ofrece cancelarlo para reservar otro.</li>
+    <li><strong>La restricci&oacute;n no aplica entre un turno m&eacute;dico y uno de vacunaci&oacute;n: ambos pueden coexistir e incluso superponerse en el mismo horario para la misma persona.</strong></li>
+    <li>La restricci&oacute;n no aplica a turnos con profesionales de distinta especialidad.</li>
+    <li>Un turno cancelado previamente no cuenta para esta validaci&oacute;n.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-08, RN-08</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-20</span> Control de concurrencia en la reserva</span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>sistema</strong>, quiero garantizar que dos pacientes no puedan reservar el mismo turno simult&aacute;neamente,
+  para evitar sobreventa de horarios y conflictos en el mostrador.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>La reserva se resuelve de forma at&oacute;mica sobre el registro del turno.</li>
+    <li>El segundo paciente recibe un mensaje indicando que el turno ya no est&aacute; disponible y vuelve a los resultados de b&uacute;squeda actualizados.</li>
+    <li>Existe una prueba que simula dos reservas concurrentes sobre el mismo turno y verifica que solo una prospere.</li>
+    <li>En ning&uacute;n caso el sistema queda con dos reservas activas para el mismo turno.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-09, RNF-05</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-64</span> Reserva de turno a nombre de otra persona <span class="new-tag">nueva</span></span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>usuario</strong>, quiero reservar turnos a nombre de otra persona cargando sus datos y su obra social, para
+  gestionar los turnos de un familiar o de alguien a mi cargo sin que tenga que registrarse.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Al reservar, el usuario elige entre &laquo;para m&iacute;&raquo; y &laquo;para otra persona&raquo;.</li>
+    <li>Si reserva para otra persona, el formulario solicita nombre, apellido, documento, fecha de nacimiento y <strong>obra social</strong> (entidad, plan y n&uacute;mero de afiliado) de esa persona.</li>
+    <li><strong>La opci&oacute;n est&aacute; disponible para todos los profesionales y para ambos tipos de turno</strong>, m&eacute;dico y de vacunaci&oacute;n.</li>
+    <li>Si la persona ya fue cargada antes, el usuario la selecciona de su listado sin reingresar los datos.</li>
+    <li>El importe de la consulta se calcula con la cobertura de la persona atendida, no con la de quien reserva.</li>
+    <li>Las confirmaciones, recordatorios y avisos de cancelaci&oacute;n se env&iacute;an al usuario que reserv&oacute;.</li>
+    <li>El turno queda visible en el listado de turnos del usuario que lo reserv&oacute;, identificado con el nombre de la persona atendida.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-11, RF-PAG-01, RN-12</p>
+</div>
+
+<h4>Notificaciones</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-21</span> Servicio de env&iacute;o de notificaciones por email</span>
+    <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>responsable del sistema</strong>, quiero contar con un servicio &uacute;nico de env&iacute;o de correo con plantillas y
+  reintentos, para que todas las notificaciones del sistema sean consistentes y auditables.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Existe un &uacute;nico componente responsable del env&iacute;o, usado por todos los m&oacute;dulos.</li>
+    <li>Las plantillas de cada tipo de notificaci&oacute;n est&aacute;n parametrizadas y son editables sin tocar el c&oacute;digo de negocio.</li>
+    <li>Los env&iacute;os fallidos se reintentan una cantidad acotada de veces antes de marcarse como fallidos.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-NOT-01</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-22</span> Aviso por modificaci&oacute;n de agenda <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 1 pt | 2,5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero ser avisado si el profesional bloquea la franja en la que ten&iacute;a mi turno, para poder
+  reprogramar a tiempo.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Al bloquearse una franja, el sistema identifica los turnos reservados dentro de ella y notifica por email a los pacientes afectados.</li>
+    <li><strong>Los turnos reservados no se modifican autom&aacute;ticamente</strong> (RF-AGE-09): su cancelaci&oacute;n la resuelve el personal administrativo en acuerdo con el paciente.</li>
+    <li>El email indica el turno afectado y c&oacute;mo reprogramarlo.</li>
+    <li>El personal administrativo obtiene un listado de los pacientes a contactar.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-NOT-02, RF-AGE-06, RF-AGE-09, RN-10</p>
+</div>
+
+<h4>Gesti&oacute;n de vacunas</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-24</span> Cat&aacute;logo de vacunas</span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>enfermera</strong>, quiero administrar el listado de vacunas que aplica la sala, para trabajar sobre datos
+  normalizados y no sobre texto libre.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Se pueden crear, modificar y desactivar vacunas indicando denominaci&oacute;n, laboratorio y esquema de dosis.</li>
+    <li>Una vacuna desactivada no puede asignarse a turnos nuevos.</li>
+    <li>No se permiten dos vacunas activas con la misma denominaci&oacute;n y laboratorio.</li>
+    <li>El cat&aacute;logo es la &uacute;nica fuente de datos para el resto del m&oacute;dulo y para la b&uacute;squeda de turnos de vacunaci&oacute;n.</li>
+    <li><strong>El cat&aacute;logo no administra existencias</strong>: se asume que toda vacuna activa tiene stock disponible.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-VAC-01, RN-05</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-63</span> Agenda del vacunatorio <span class="new-tag">nueva</span></span>
+    <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>enfermera</strong>, quiero cargar la disponibilidad del vacunatorio para que el sistema publique sus turnos, para
+  que los pacientes puedan reservar la vacunaci&oacute;n sin pasar por el mostrador.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>La enfermera carga d&iacute;as y franjas horarias de atenci&oacute;n del vacunatorio del mismo modo en que el m&eacute;dico carga la suya.</li>
+    <li><strong>La agenda del vacunatorio es independiente de las agendas m&eacute;dicas</strong>: no comparte turnos, disponibilidad ni reglas de validaci&oacute;n.</li>
+    <li>La regla de 2 a 7 jornadas semanales no aplica al vacunatorio: la enfermera define libremente sus jornadas.</li>
+    <li>Confirmada la disponibilidad, el sistema genera los turnos y los publica a los pacientes autom&aacute;ticamente.</li>
+    <li>Las dos enfermeras ven y administran la misma agenda del vacunatorio.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-VAC-09, RF-AGE-04, RN-08</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-28</span> Turno de vacunaci&oacute;n <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>usuario</strong>, quiero sacar un turno de vacunaci&oacute;n eligiendo la vacuna y el horario, para vacunarme sin
+  tener que llamar ni acercarme a la sala.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El usuario selecciona la vacuna del cat&aacute;logo y un turno disponible de la agenda del vacunatorio.</li>
+    <li><strong>No se verifica stock: se asume disponibilidad permanente de dosis</strong>, por lo que ninguna reserva se rechaza por ese motivo.</li>
+    <li>La enfermera y el personal administrativo tambi&eacute;n pueden otorgar el turno desde el mostrador, en nombre del paciente.</li>
+    <li>Puede reservarse a nombre de otra persona, igual que un turno m&eacute;dico.</li>
+    <li><strong>El turno de vacunaci&oacute;n puede superponerse con un turno m&eacute;dico de la misma persona</strong>; el sistema no lo impide ni lo advierte como error.</li>
+    <li>El paciente recibe la confirmaci&oacute;n del turno por email.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-VAC-05, RF-TUR-01, RF-TUR-11, RN-05, RN-08</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-29</span> Registro de aplicaci&oacute;n de dosis <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 1 pt | 2,5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>enfermera</strong>, quiero registrar cada dosis aplicada con todos sus datos, para dejar trazabilidad sanitaria
+  de qu&eacute; se aplic&oacute; y a qui&eacute;n.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El registro guarda paciente, vacuna, dosis del esquema, fecha, hora y enfermera responsable.</li>
+    <li>La enfermera responsable se toma del usuario autenticado, no se ingresa manualmente.</li>
+    <li><strong>No se registra lote ni se descuenta stock</strong>, por la decisi&oacute;n de asumir disponibilidad permanente.</li>
+    <li>El registro no puede eliminarse; una correcci&oacute;n se hace por anulaci&oacute;n con motivo.</li>
+    <li>La aplicaci&oacute;n registrada queda vinculada al turno de vacunaci&oacute;n si existi&oacute;.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-VAC-06, RNF-04, RN-05</p>
+</div>
+
+<h4>Agenda m&eacute;dica</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-30</span> Bloqueo de turnos disponibles de una franja publicada <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Should | 2 pts | 5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero bloquear los turnos a&uacute;n libres de una franja ya publicada por ausencia o licencia, para
+  evitar que los pacientes reserven horarios que no voy a poder atender.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El m&eacute;dico selecciona un rango de fechas u horas y confirma el bloqueo indicando el motivo.</li>
+    <li>El personal administrativo tambi&eacute;n puede bloquear franjas a pedido de los m&eacute;dicos.</li>
+    <li>Los turnos disponibles del rango dejan de ofrecerse.</li>
+    <li><strong>Los turnos ya reservados quedan fuera del bloqueo y no se modifican</strong> (RF-AGE-09): el sistema los lista aparte y dispara el aviso a los pacientes afectados para que el mostrador acuerde la cancelaci&oacute;n con cada uno.</li>
+    <li>El sistema advierte la cantidad de turnos reservados involucrados antes de confirmar.</li>
+    <li>El bloqueo puede revertirse mientras no hayan pasado las fechas involucradas.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-06, RF-AGE-09, RF-NOT-02, RN-10</p>
+</div>
+
+<h4>Usuarios y acceso</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-31</span> Recuperaci&oacute;n de contrase&ntilde;a</span>
+    <span class="us-meta">Should | 1 pt | 2,5 h | Sprint 2</span>
+  </div>
+  <p class="us-story">Como <strong>usuario registrado</strong>, quiero recuperar el acceso si olvido mi contrase&ntilde;a, para no depender del personal
+  de la sala para volver a entrar.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El usuario solicita la recuperaci&oacute;n indicando su email.</li>
+    <li>El sistema env&iacute;a un enlace de un solo uso con vencimiento acotado.</li>
+    <li>La respuesta en pantalla es la misma exista o no la cuenta, para no revelar usuarios registrados.</li>
+    <li>Al definirse la nueva contrase&ntilde;a, el enlace queda invalidado.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-USR-06, RNF-01</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>7. Sprint 3 &mdash; Pagos, historial cl&iacute;nico, reportes y m&oacute;vil</h2>
+
+<div class="sprint-intro">
+  <p>Demo 12/11, entrega 15/11. Todo lo que se apoya sobre el turno ya existente, m&aacute;s la aplicaci&oacute;n m&oacute;vil para
+  pacientes.</p>
+  <p><strong>24 User Stories &middot; 41 puntos &middot; 102,5 horas</strong>; con la reserva para bugs, 46 puntos / 115 horas. Capacidad del
+  sprint: 42 puntos / 105 horas, sobre tres semanas.</p>
+  <p>Excede la capacidad en un 10%. Es el sprint con m&aacute;s margen de negociaci&oacute;n, porque concentra la mayor parte de
+  las historias Should y la aplicaci&oacute;n m&oacute;vil.</p>
+</div>
+
+<h4>Pagos y coberturas</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-32</span> Gesti&oacute;n de la cobertura m&eacute;dica <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero consultar y corregir la obra social o prepaga registrada &mdash;la m&iacute;a y la de las personas
+  para las que saco turnos&mdash;, para que se aplique la cobertura correcta al abonar la consulta.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li><strong>El alta de la cobertura ocurre en el registro del usuario (US-01) o al cargar a una persona para reservar en su nombre (US-64);</strong> esta historia cubre su consulta y correcci&oacute;n posterior.</li>
+    <li>La entidad se selecciona de un listado administrado por el administrador.</li>
+    <li>Se registran entidad, plan y n&uacute;mero de afiliado.</li>
+    <li>Un paciente puede no tener cobertura, en cuyo caso se lo considera particular.</li>
+    <li>El dato es declarativo: el sistema no valida contra el padr&oacute;n de la entidad.</li>
+    <li>El personal administrativo tambi&eacute;n puede cargar o corregir la cobertura de cualquier paciente.</li>
+    <li>Cada cambio de cobertura queda registrado con autor y fecha; los pagos ya registrados conservan la cobertura aplicada en su momento.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-01, RF-USR-01, RF-TUR-11, RN-06, RN-12</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-33</span> Definici&oacute;n del costo de la consulta por el m&eacute;dico <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero definir el costo de mi consulta, para que el sistema calcule solo el importe que debe
+  abonar cada paciente que atiendo.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li><strong>Cada m&eacute;dico define el valor de su propia consulta</strong> desde su perfil; el administrador no lo fija por especialidad.</li>
+    <li>El valor rige desde una fecha determinada y el sistema conserva el historial de vigencias.</li>
+    <li>El administrador mantiene la configuraci&oacute;n del coseguro por entidad de cobertura.</li>
+    <li>Al modificarse el costo, los pagos ya registrados conservan el valor vigente al momento del cobro.</li>
+    <li>Un m&eacute;dico solo puede ver y modificar el costo de sus propias consultas.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-02, RNF-03, RN-14</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-34</span> C&aacute;lculo del importe seg&uacute;n cobertura</span>
+    <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>sistema</strong>, quiero calcular el importe a abonar seg&uacute;n la cobertura registrada del paciente, para cobrar el
+  valor correcto sin c&aacute;lculos manuales en el mostrador.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Un paciente sin cobertura abona el costo completo definido por el m&eacute;dico que lo atendi&oacute;.</li>
+    <li>Un paciente con cobertura abona el coseguro definido para su entidad.</li>
+    <li>El c&aacute;lculo usa el costo vigente a la fecha de la consulta.</li>
+    <li>Si el turno fue reservado a nombre de otra persona, se aplica la cobertura de la persona atendida.</li>
+    <li>La pantalla muestra el desglose: costo de la consulta, cobertura aplicada e importe final.</li>
+    <li>Si la entidad no tiene coseguro configurado, el sistema lo advierte y no permite cerrar el cobro.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-03, RN-06, RN-12, RN-14</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-35</span> Registro del pago en efectivo o por transferencia <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>personal administrativo</strong>, quiero registrar el pago de una consulta indicando si fue en efectivo o por
+  transferencia, para dejar asentado el cobro y poder emitir el comprobante.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El pago se asocia a un turno en estado cumplido.</li>
+    <li><strong>Los medios de pago admitidos son &uacute;nicamente efectivo y transferencia, ambos presenciales</strong>; no son configurables.</li>
+    <li><strong>El pago en efectivo solo puede registrarlo el personal administrativo.</strong></li>
+    <li>El pago por transferencia se registra contra el comprobante que presenta el paciente en el mostrador, asentando la referencia de la operaci&oacute;n.</li>
+    <li>Un turno no puede tener dos pagos activos simult&aacute;neos.</li>
+    <li>El sistema registra fecha, hora, importe, medio de pago y usuario que lo registr&oacute;.</li>
+    <li>El sistema solo registra el pago; no procesa la transacci&oacute;n en l&iacute;nea.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-04, RNF-04, RN-13</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-36</span> Comprobante de pago en PDF <span class="chg-tag">unifica ex US-37</span></span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero obtener y descargar en PDF un comprobante por cada pago que realizo, para tener
+  constancia de lo abonado y poder present&aacute;rselo a mi cobertura.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El comprobante se genera autom&aacute;ticamente al registrarse el pago, <strong>en formato PDF</strong>.</li>
+    <li>Incluye numeraci&oacute;n correlativa, datos de la sala, datos del paciente atendido, prestaci&oacute;n, profesional, importe y medio de pago.</li>
+    <li><strong>Es un comprobante interno, sin homologaci&oacute;n fiscal</strong>: no se emite factura electr&oacute;nica ni ning&uacute;n otro documento aparte.</li>
+    <li>El comprobante queda disponible en la cuenta del paciente y puede descargarse las veces que haga falta.</li>
+    <li>La descarga solo est&aacute; disponible para el paciente titular, para quien reserv&oacute; el turno y para el personal administrativo.</li>
+    <li>La numeraci&oacute;n no presenta huecos ni duplicados.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-05, RF-PAG-06, RNF-03</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-38</span> Historial de pagos del paciente</span>
+    <span class="us-meta">Should | 1 pt | 2,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero consultar el listado de mis pagos y comprobantes, para revisar lo abonado sin tener
+  que pedirlo en el mostrador.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El listado muestra fecha, prestaci&oacute;n, profesional, importe y medio de pago.</li>
+    <li>Puede filtrarse por rango de fechas.</li>
+    <li>Desde cada fila se accede al comprobante en PDF.</li>
+    <li>El paciente solo ve sus propios pagos y los de las personas a cuyo nombre reserv&oacute; turnos.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-07, RNF-03</p>
+</div>
+
+<h4>Historial cl&iacute;nico</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-39</span> Ficha de diagn&oacute;stico del paciente <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero registrar el diagn&oacute;stico y el tratamiento de cada consulta sobre la ficha que mantengo
+  de ese paciente, para dejar asentada la evoluci&oacute;n cl&iacute;nica en un solo lugar.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li><strong>Existe una &uacute;nica ficha de diagn&oacute;stico por cada par paciente&ndash;m&eacute;dico.</strong> La primera consulta del paciente con ese profesional la crea; todas las siguientes agregan entradas a la misma ficha.</li>
+    <li>Un mismo paciente tiene tantas fichas como m&eacute;dicos distintos lo hayan atendido, y cada m&eacute;dico es el autor de una sola de ellas.</li>
+    <li>La carga se realiza sobre un turno en estado cumplido.</li>
+    <li>Se registran diagn&oacute;stico, tratamiento indicado y observaciones.</li>
+    <li>Cada entrada queda firmada con el profesional, la fecha y la hora, tomados del usuario autenticado.</li>
+    <li>Solo un usuario con rol M&eacute;dico puede realizar la carga.</li>
+    <li>La entrada guardada no puede editarse ni borrarse; se corrige mediante una entrada nueva sobre la misma ficha.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-01, RNF-03, RN-07</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-40</span> Consulta de la ficha del paciente <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero ver el historial completo del paciente con las fichas de todos los profesionales de la
+  sala, para atender con el contexto cl&iacute;nico completo.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>La vista consolida las fichas de todos los m&eacute;dicos que atendieron al paciente, identificando autor y especialidad de cada una.</li>
+    <li>Dentro de cada ficha, las entradas se muestran en orden cronol&oacute;gico inverso.</li>
+    <li>El m&eacute;dico edita &uacute;nicamente su propia ficha; las de los dem&aacute;s las ve en modo lectura.</li>
+    <li>La vista muestra tambi&eacute;n las vacunas aplicadas en la sala.</li>
+    <li>El m&eacute;dico puede filtrar por profesional, especialidad o rango de fechas.</li>
+    <li>El acceso queda registrado en el log de auditor&iacute;a.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-02, RNF-03, RN-07</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-41</span> Historial cl&iacute;nico del paciente</span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero consultar mi historial m&eacute;dico desde la plataforma, para tener acceso a mis
+  diagn&oacute;sticos y tratamientos sin pedir una copia.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El paciente accede en modo de solo lectura, sin posibilidad de modificar ni eliminar.</li>
+    <li>Ve las entradas de todas sus fichas, con el mismo texto cargado por cada profesional y sin notas internas.</li>
+    <li>Solo accede a su propia informaci&oacute;n; cualquier intento de acceder a la de otro paciente es rechazado y registrado.</li>
+    <li>El historial puede descargarse en PDF.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-03, RNF-03</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-42</span> Trazabilidad de las entradas cl&iacute;nicas</span>
+    <span class="us-meta">Should | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>responsable del sistema</strong>, quiero que ninguna entrada del historial pueda eliminarse y que toda
+  correcci&oacute;n quede trazada, para preservar la integridad de la informaci&oacute;n cl&iacute;nica.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>No existe ninguna funci&oacute;n de eliminaci&oacute;n de entradas del historial en ninguna interfaz.</li>
+    <li>Una correcci&oacute;n se registra como entrada nueva vinculada a la original, sobre la misma ficha.</li>
+    <li>La ficha muestra las correcciones junto a la entrada corregida, sin ocultar la versi&oacute;n previa.</li>
+    <li>Cada entrada conserva autor, fecha y hora de creaci&oacute;n.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-04, RNF-02, RNF-04</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-43</span> Antecedentes, alergias y medicaci&oacute;n habitual</span>
+    <span class="us-meta">Should | 1 pt | 2,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero consultar y actualizar los antecedentes, alergias y medicaci&oacute;n habitual del paciente,
+  para evitar indicaciones que puedan ser riesgosas.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Estos datos son del paciente, no de una ficha en particular: son comunes a todas sus fichas de diagn&oacute;stico.</li>
+    <li>La vista cl&iacute;nica tiene una secci&oacute;n destacada con alergias, visible para todos los profesionales.</li>
+    <li>Se registran antecedentes personales y medicaci&oacute;n habitual.</li>
+    <li>El paciente puede consultar esta secci&oacute;n pero no modificarla.</li>
+    <li>Cada modificaci&oacute;n queda registrada con autor y fecha.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-05, RN-07</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-44</span> Auditor&iacute;a de accesos al historial</span>
+    <span class="us-meta">Should | 1 pt | 2,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>responsable del sistema</strong>, quiero registrar cada acceso al historial cl&iacute;nico de un paciente, para poder
+  investigar accesos indebidos a informaci&oacute;n sensible.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Se registra usuario, paciente consultado, fecha, hora y tipo de acceso.</li>
+    <li>El registro incluye tanto los accesos exitosos como los intentos rechazados por RNF-03.</li>
+    <li>El log es de solo lectura y accesible &uacute;nicamente para el administrador.</li>
+    <li>El administrador puede filtrar el log por usuario, paciente y rango de fechas.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-06, RNF-03, RNF-04</p>
+</div>
+
+<h4>Reportes</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-45</span> Reporte de turnos por tipo y especialidad <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>administrador</strong>, quiero obtener la cantidad de turnos por tipo, especialidad y per&iacute;odo, para evaluar la
+  demanda de cada profesional y del vacunatorio y ajustar la disponibilidad.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El reporte separa turnos m&eacute;dicos de turnos de vacunaci&oacute;n.</li>
+    <li>Muestra turnos totales, cumplidos, ausentes y cancelados por especialidad.</li>
+    <li>Puede desglosarse por profesional.</li>
+    <li>Admite un rango de fechas definido por el usuario.</li>
+    <li>Incluye una representaci&oacute;n gr&aacute;fica de la distribuci&oacute;n.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-REP-01, RN-08</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-47</span> Reporte de pagos realizados</span>
+    <span class="us-meta">Must | 1 pt | 2,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>administrador</strong>, quiero obtener el detalle de los pagos por per&iacute;odo, medio de pago y cobertura, para
+  controlar la recaudaci&oacute;n de la sala.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El reporte totaliza importes por per&iacute;odo, medio de pago (efectivo y transferencia) y entidad de cobertura.</li>
+    <li>Distingue consultas particulares de consultas con cobertura.</li>
+    <li>Los pagos anulados se muestran identificados y no suman al total.</li>
+    <li>Admite desglose por especialidad y por profesional.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-REP-03, RN-13</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-48</span> Reporte de asistencia de pacientes</span>
+    <span class="us-meta">Must | 1 pt | 2,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>administrador</strong>, quiero conocer el nivel de ausentismo a los turnos, para tomar medidas sobre los turnos
+  que se pierden.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El reporte calcula el porcentaje de ausentismo sobre los turnos reservados del per&iacute;odo.</li>
+    <li>Puede desglosarse por profesional, especialidad, tipo de turno y d&iacute;a de la semana.</li>
+    <li>Identifica a los pacientes con mayor cantidad de ausencias.</li>
+    <li>Excluye del c&aacute;lculo los turnos cancelados por la sala.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-REP-04</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-49</span> Filtros comunes de reportes</span>
+    <span class="us-meta">Should | 1 pt | 2,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>administrador</strong>, quiero aplicar los mismos filtros en todos los reportes, para no tener que aprender una
+  l&oacute;gica distinta en cada pantalla.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Todos los reportes admiten rango de fechas, profesional, especialidad y tipo de turno.</li>
+    <li>Los filtros no aplicables a un reporte determinado se ocultan.</li>
+    <li>El rango de fechas por defecto es el mes en curso.</li>
+    <li>El reporte indica en su encabezado los filtros aplicados.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-REP-05</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-50</span> Exportaci&oacute;n de reportes</span>
+    <span class="us-meta">Should | 1 pt | 2,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>administrador</strong>, quiero exportar cualquier reporte a PDF o CSV, para compartirlo o analizarlo fuera del
+  sistema.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El archivo exportado respeta los filtros aplicados en pantalla.</li>
+    <li>El PDF incluye encabezado con nombre del reporte, filtros y fecha de generaci&oacute;n.</li>
+    <li>El CSV incluye la fila de encabezados de columna.</li>
+    <li>La exportaci&oacute;n est&aacute; disponible &uacute;nicamente para el rol Administrador.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-REP-06, RNF-03</p>
+</div>
+
+<h4>Aplicaci&oacute;n m&oacute;vil</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-51</span> Acceso desde la aplicaci&oacute;n m&oacute;vil</span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero ingresar a la aplicaci&oacute;n m&oacute;vil con las mismas credenciales del sistema web, para no
+  tener que gestionar dos cuentas distintas.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Las credenciales son las mismas que en la web; no existe un registro separado.</li>
+    <li>La sesi&oacute;n en el m&oacute;vil es independiente de la sesi&oacute;n web.</li>
+    <li>La aplicaci&oacute;n solo est&aacute; disponible para el rol Usuario.</li>
+    <li>El dise&ntilde;o mantiene la identidad visual del sistema web.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-MOV-01, RNF-03, RNF-06</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-52</span> Gesti&oacute;n de turnos desde el m&oacute;vil <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Must | 3 pts | 7,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero buscar, reservar y cancelar turnos desde mi tel&eacute;fono, para resolver el turno en el
+  momento en que me acuerdo, sin abrir la computadora.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El flujo replica las reglas de la versi&oacute;n web, incluida <strong>la elecci&oacute;n del tipo de turno</strong> y la reserva a nombre de otra persona.</li>
+    <li>La pantalla est&aacute; adaptada a dispositivos m&oacute;viles.</li>
+    <li>Los turnos reservados desde el m&oacute;vil son los mismos que se ven en la web.</li>
+    <li>Las validaciones de concurrencia, duplicados y no modificaci&oacute;n de turnos reservados se aplican por igual.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-MOV-02, RF-TUR-01, RF-TUR-11, RF-AGE-09</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-53</span> Historial cl&iacute;nico desde el m&oacute;vil</span>
+    <span class="us-meta">Must | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero consultar mi historial m&eacute;dico desde la aplicaci&oacute;n, para tenerlo a mano cuando lo
+  necesito.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Se muestra la misma informaci&oacute;n que en la web, en modo de solo lectura.</li>
+    <li>El acceso exige sesi&oacute;n activa y se registra en el log de auditor&iacute;a.</li>
+    <li>La informaci&oacute;n no se almacena en el dispositivo tras cerrar sesi&oacute;n.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-MOV-03, RNF-02, RNF-03</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-54</span> Recordatorios en el m&oacute;vil</span>
+    <span class="us-meta">Must | 1 pt | 2,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero recibir los recordatorios de turno en la aplicaci&oacute;n, para enterarme sin depender de
+  revisar el correo.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Los recordatorios se muestran en una secci&oacute;n de avisos dentro de la aplicaci&oacute;n.</li>
+    <li>Incluyen los turnos de ambos tipos.</li>
+    <li>El env&iacute;o por email se mantiene en paralelo.</li>
+    <li>La notificaci&oacute;n emergente queda fuera del alcance de esta versi&oacute;n, seg&uacute;n lo acordado con el cliente.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-MOV-04</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-55</span> Pagos y comprobantes desde el m&oacute;vil <span class="chg-tag">modificada</span></span>
+    <span class="us-meta">Should | 2 pts | 5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero consultar mis pagos y descargar los comprobantes desde la aplicaci&oacute;n, para no tener
+  que pasar por el mostrador para pedirlos.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El listado de pagos replica el de la versi&oacute;n web.</li>
+    <li>El comprobante en PDF puede descargarse o compartirse desde el dispositivo.</li>
+    <li><strong>El registro del pago se sigue realizando presencialmente en el mostrador</strong>, en efectivo o por transferencia; la aplicaci&oacute;n solo consulta.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-MOV-05, RN-13</p>
+</div>
+
+<h4>Gesti&oacute;n de vacunas</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-57</span> Carnet de vacunaci&oacute;n del paciente</span>
+    <span class="us-meta">Should | 1 pt | 2,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero consultar las vacunas que me aplicaron en la sala, para conocer mi esquema sin tener
+  que preguntarlo.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El listado muestra vacuna, fecha de aplicaci&oacute;n y dosis del esquema.</li>
+    <li>Se indica si el esquema qued&oacute; incompleto seg&uacute;n las dosis definidas para esa vacuna.</li>
+    <li>El listado puede descargarse en PDF.</li>
+    <li>Solo incluye aplicaciones registradas en la sala.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-VAC-08, RNF-03</p>
+</div>
+
+<h4>Notificaciones</h4>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-58</span> Registro de notificaciones enviadas</span>
+    <span class="us-meta">Should | 1 pt | 2,5 h | Sprint 3</span>
+  </div>
+  <p class="us-story">Como <strong>administrador</strong>, quiero consultar el registro de las notificaciones que envi&oacute; el sistema, para
+  diagnosticar reclamos por avisos que el paciente dice no haber recibido.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El log guarda destinatario, tipo de notificaci&oacute;n, fecha, hora y estado de env&iacute;o.</li>
+    <li>Los env&iacute;os fallidos quedan identificados con el motivo del fallo.</li>
+    <li>El log puede filtrarse por paciente, tipo y rango de fechas.</li>
+    <li>Solo es accesible para el rol Administrador.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-NOT-04, RNF-03</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>8. Backlog no comprometido</h2>
+
+<div class="sprint-intro">
+  <p>Candidatas a reducci&oacute;n de alcance. User Stories de prioridad Could, no asignadas a ning&uacute;n sprint. Se incorporan
+  solo si la velocidad real supera lo planificado, y son las primeras en descartarse si ocurre lo contrario.</p>
+  <p><strong>4 User Stories &middot; 10 puntos &middot; 25 horas.</strong> Con el equipo de cinco, la probabilidad de incorporar cualquiera de
+  estas historias es pr&aacute;cticamente nula: el plan comprometido ya excede la capacidad.</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-59</span> Lista de espera de turnos</span>
+    <span class="us-meta">Could | 3 pts | 7,5 h</span>
+  </div>
+  <p class="us-story">Como <strong>paciente</strong>, quiero anotarme en una lista de espera cuando no hay turnos disponibles, para aprovechar
+  los horarios que se liberan por cancelaciones.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El paciente se anota indicando tipo de turno, especialidad, profesional y rango de fechas de inter&eacute;s.</li>
+    <li>Al liberarse un turno que cumple el criterio, se notifica a los anotados en orden de inscripci&oacute;n.</li>
+    <li>La notificaci&oacute;n otorga un plazo acotado de prioridad antes de liberar el turno al p&uacute;blico general.</li>
+    <li>El paciente puede darse de baja de la lista en cualquier momento.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-TUR-10</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-60</span> Calendario de feriados</span>
+    <span class="us-meta">Could | 2 pts | 5 h</span>
+  </div>
+  <p class="us-story">Como <strong>administrador</strong>, quiero cargar los feriados y d&iacute;as no laborables de la sala, para que no se generen turnos
+  en fechas en que no se atiende.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>El administrador carga fechas puntuales o rangos con una descripci&oacute;n.</li>
+    <li>La generaci&oacute;n autom&aacute;tica de turnos excluye esas fechas, tanto para las agendas m&eacute;dicas como para el vacunatorio.</li>
+    <li>Si se agrega un feriado sobre fechas con turnos ya reservados, el sistema advierte antes de aplicarlo y no los modifica.</li>
+    <li>El calendario puede consultarse por a&ntilde;o.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-AGE-08, RF-AGE-09</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-61</span> Anulaci&oacute;n de pagos</span>
+    <span class="us-meta">Could | 2 pts | 5 h</span>
+  </div>
+  <p class="us-story">Como <strong>personal administrativo</strong>, quiero anular un pago registrado por error, para corregir el cobro sin alterar
+  la trazabilidad contable.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>La anulaci&oacute;n exige indicar un motivo.</li>
+    <li>El pago original no se elimina; queda marcado como anulado y su comprobante en PDF, invalidado.</li>
+    <li>Los reportes descuentan el importe anulado del total del per&iacute;odo.</li>
+    <li>Se registra qui&eacute;n realiz&oacute; la anulaci&oacute;n y cu&aacute;ndo.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-PAG-08, RNF-04</p>
+</div>
+
+<div class="us">
+  <div class="us-head">
+    <span class="us-name"><span class="code">US-62</span> Adjuntar estudios a la ficha</span>
+    <span class="us-meta">Could | 3 pts | 7,5 h</span>
+  </div>
+  <p class="us-story">Como <strong>m&eacute;dico</strong>, quiero adjuntar estudios y archivos a la ficha del paciente, para centralizar la informaci&oacute;n
+  cl&iacute;nica en un solo lugar.</p>
+  <p class="us-ac-title">Criterios de aceptaci&oacute;n</p>
+  <ul>
+    <li>Se admiten formatos de imagen y PDF con un tama&ntilde;o m&aacute;ximo configurable.</li>
+    <li>Cada adjunto queda vinculado a una entrada de la ficha de diagn&oacute;stico del profesional que lo carga.</li>
+    <li>El paciente puede descargar sus propios adjuntos.</li>
+    <li>El acceso a los adjuntos se registra en el log de auditor&iacute;a.</li>
+  </ul>
+  <p class="trace"><strong>Trazabilidad:</strong> RF-HIS-07, RNF-03</p>
+</div>
+
+<div class="page-break"></div>
+
+<h2>9. Pantallas referenciadas (insumo para wireframes y sitemap)</h2>
+
+<p>Listado de las vistas que surgen de las User Stories anteriores. Cada una necesita su wireframe antes de que la
+historia correspondiente entre a un sprint.</p>
+
+<table>
+  <colgroup><col style="width:86pt"><col><col class="w-sprint"></colgroup>
+  <thead><tr><th>Rol</th><th>Pantallas</th><th class="c">Sprint</th></tr></thead>
+  <tbody>
+    <tr><td class="id">P&uacute;blico</td><td>Registro de usuario (con obra social), inicio de sesi&oacute;n, recuperaci&oacute;n de contrase&ntilde;a.</td><td class="c">1 y 2</td></tr>
+    <tr><td class="id">Usuario / Paciente (web)</td><td>Panel de inicio, <strong>elecci&oacute;n del tipo de turno</strong>, b&uacute;squeda de turnos m&eacute;dicos, b&uacute;squeda de turnos de vacunaci&oacute;n, detalle y confirmaci&oacute;n de reserva, <strong>reserva a nombre de otra persona</strong>, mis turnos, mis datos, mi historial cl&iacute;nico, mis pagos y comprobantes, mi carnet de vacunaci&oacute;n.</td><td class="c">1 a 3</td></tr>
+    <tr><td class="id">M&eacute;dico</td><td>Carga de disponibilidad mensual con validaci&oacute;n de jornadas, agenda diaria, semanal y mensual, bloqueo de turnos disponibles, <strong>costo de la consulta</strong>, ficha de diagn&oacute;stico del paciente, historial consolidado.</td><td class="c">1 a 3</td></tr>
+    <tr><td class="id">Enfermera</td><td>Panel de vacunas, cat&aacute;logo, <strong>carga de disponibilidad del vacunatorio</strong>, agenda del vacunatorio, registro de aplicaci&oacute;n.</td><td class="c">2 y 3</td></tr>
+    <tr><td class="id">Administrativo</td><td>B&uacute;squeda de paciente, gesti&oacute;n de turnos por mostrador (ambos tipos), control de asistencia, <strong>registro de pago en efectivo o transferencia</strong>, emisi&oacute;n de comprobante en PDF, carga y correcci&oacute;n de coberturas.</td><td class="c">2 y 3</td></tr>
+    <tr><td class="id">Administrador</td><td>Gesti&oacute;n de usuarios internos con asignaci&oacute;n de rol, par&aacute;metros del sistema, entidades de cobertura y coseguros, los cuatro reportes, log de auditor&iacute;a, log de notificaciones.</td><td class="c">1 a 3</td></tr>
+    <tr><td class="id">Paciente (m&oacute;vil)</td><td>Acceso, turnos de ambos tipos, historial, avisos, pagos y comprobantes.</td><td class="c">3</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <h4>Wireframes a rehacer tras la reuni&oacute;n</h4>
+  <p>Los wireframes del Sprint 1 ya aprobados quedaron desactualizados en cuatro puntos:
+  <strong>registro de paciente</strong> (falta la obra social y el rol inicial <em>Usuario</em>),
+  <strong>carga de disponibilidad mensual</strong> (la validaci&oacute;n pasa de &laquo;exactamente 2&raquo; a &laquo;entre 2 y 7&raquo; jornadas),
+  <strong>mis datos</strong> (se integra a la pantalla de cuenta al unificarse US-01 y US-05) y
+  <strong>acceso denegado</strong> (dejaba de corresponder a una US propia al pasar el control de acceso a RNF-03; se conserva como
+  pantalla transversal del sistema).
+  Deben revisarse antes del refinement del Sprint 1.</p>
+</div>
+
+<h2>10. Resumen de esfuerzo</h2>
+
+<p>Equipo implementador: <strong>5 integrantes</strong>, tope de 10 horas semanales cada uno, factor de foco del 70% y
+equivalencia de 2,5 horas por punto (secci&oacute;n 2.1). Eso da 70 horas efectivas por sprint de dos semanas y 105 en el
+Sprint 3, de tres semanas.</p>
+
+<table>
+  <colgroup><col><col style="width:40pt"><col style="width:40pt"><col style="width:40pt"><col style="width:46pt"><col style="width:42pt"><col style="width:46pt"><col style="width:42pt"><col style="width:46pt"></colgroup>
+  <thead><tr>
+    <th>Etapa</th><th class="c">US</th><th class="c">Puntos en US</th><th class="c">Reserva bugs</th>
+    <th class="c">Demanda (pts)</th><th class="c">Demanda (h)</th>
+    <th class="c">Capacidad (pts)</th><th class="c">Capacidad (h)</th><th class="c">Saldo (pts)</th>
+  </tr></thead>
+  <tbody>
+    <tr><td>Sprint 1</td><td class="c">7</td><td class="c">25</td><td class="c">0</td><td class="c">25</td><td class="c">62,5</td><td class="c">28</td><td class="c">70</td><td class="c">+3</td></tr>
+    <tr><td>Sprint 2</td><td class="c">18</td><td class="c">38</td><td class="c">3</td><td class="c">41</td><td class="c">102,5</td><td class="c">28</td><td class="c">70</td><td class="c">&minus;13</td></tr>
+    <tr><td>Sprint 3</td><td class="c">24</td><td class="c">41</td><td class="c">5</td><td class="c">46</td><td class="c">115</td><td class="c">42</td><td class="c">105</td><td class="c">&minus;4</td></tr>
+    <tr><td>Backlog no comprometido</td><td class="c">4</td><td class="c">10</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c">25</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr>
+  </tbody>
+  <tfoot>
+    <tr><td>Total comprometido</td><td class="c">49</td><td class="c">104</td><td class="c">8</td><td class="c">112</td><td class="c">280</td><td class="c">98</td><td class="c">245</td><td class="c">&minus;14</td></tr>
+  </tfoot>
+</table>
+
+<div class="callout">
+  <h4>Con cinco implementadores el plan vuelve a estar sobrecomprometido: faltan 14 puntos</h4>
+  <p>Reducir el equipo de diez a cinco integrantes divide la capacidad bruta por dos. La asistencia de IA recupera
+  parte de esa p&eacute;rdida &mdash;1,6&times; sobre el trabajo de implementaci&oacute;n&mdash; y el factor de foco sube del 60% al 70%, porque un
+  equipo de cinco pierde menos tiempo en coordinaci&oacute;n que uno de diez. Aun as&iacute;, la capacidad de los tres sprints cae
+  de 105 a <strong>98 puntos</strong> frente a una demanda de <strong>112</strong>: el d&eacute;ficit vuelve a 14 puntos (35 horas), un 12,5% del alcance.</p>
+  <p>El problema es de alcance <em>y</em> de distribuci&oacute;n. El Sprint 1 entra con 3 puntos de holgura, pero el Sprint 2 pide un
+  46% m&aacute;s de lo que el equipo puede entregar. Ning&uacute;n reacomodamiento interno resuelve eso: <strong>hay que sacar
+  alcance antes de empezar el Sprint 1</strong>, no descubrirlo en la demo del 22/10.</p>
+</div>
+
+<h3>10.1 Escenario de ajuste propuesto</h3>
+
+<p>Orden de descarte sugerido, con la demanda acumulada resultante. La decisi&oacute;n se negocia con el cliente en la
+re-priorizaci&oacute;n; esta tabla existe para que esa conversaci&oacute;n se tenga con n&uacute;meros y no con impresiones.</p>
+
+<table>
+  <colgroup><col style="width:22pt"><col><col style="width:36pt"><col style="width:52pt"><col style="width:40pt"></colgroup>
+  <thead><tr><th class="c">#</th><th>Qu&eacute; se reduce o posterga</th><th class="c">Pts</th><th class="c">Demanda</th><th class="c">Saldo</th></tr></thead>
+  <tbody>
+    <tr><td class="c">1</td><td>App m&oacute;vil reducida a aplicaci&oacute;n web progresiva sobre el front-end existente (US-51 a US-55)</td><td class="c">&minus;6</td><td class="c">106</td><td class="c">&minus;8</td></tr>
+    <tr><td class="c">2</td><td>US-50 Exportaci&oacute;n de reportes</td><td class="c">&minus;1</td><td class="c">105</td><td class="c">&minus;7</td></tr>
+    <tr><td class="c">3</td><td>US-49 Filtros comunes de reportes</td><td class="c">&minus;1</td><td class="c">104</td><td class="c">&minus;6</td></tr>
+    <tr><td class="c">4</td><td>US-57 Carnet de vacunaci&oacute;n del paciente</td><td class="c">&minus;1</td><td class="c">103</td><td class="c">&minus;5</td></tr>
+    <tr><td class="c">5</td><td>US-58 Registro de notificaciones enviadas</td><td class="c">&minus;1</td><td class="c">102</td><td class="c">&minus;4</td></tr>
+    <tr><td class="c">6</td><td>US-38 Historial de pagos del paciente</td><td class="c">&minus;1</td><td class="c">101</td><td class="c">&minus;3</td></tr>
+    <tr><td class="c">7</td><td>US-43 Antecedentes, alergias y medicaci&oacute;n habitual</td><td class="c">&minus;1</td><td class="c">100</td><td class="c">&minus;2</td></tr>
+    <tr><td class="c">8</td><td>US-19 Prevenci&oacute;n de turnos duplicados del mismo tipo</td><td class="c">&minus;1</td><td class="c">99</td><td class="c">&minus;1</td></tr>
+    <tr><td class="c">9</td><td>US-31 Recuperaci&oacute;n de contrase&ntilde;a</td><td class="c">&minus;1</td><td class="c">98</td><td class="c">0</td></tr>
+    <tr><td class="c">10</td><td>US-30 Bloqueo de turnos disponibles de una franja publicada</td><td class="c">&minus;2</td><td class="c">96</td><td class="c">+2</td></tr>
+    <tr><td class="c">11</td><td>US-17 Gesti&oacute;n de turnos desde mostrador</td><td class="c">&minus;3</td><td class="c">93</td><td class="c">+5</td></tr>
+    <tr><td class="c">12</td><td>US-44 Auditor&iacute;a de accesos al historial &mdash; <strong>no recomendado</strong>: es el control sobre datos sensibles de salud (RNF-04)</td><td class="c">&minus;1</td><td class="c">92</td><td class="c">+6</td></tr>
+    <tr><td class="c">13</td><td>US-42 Trazabilidad de las entradas cl&iacute;nicas &mdash; <strong>no recomendado</strong>: sostiene la integridad de la historia cl&iacute;nica (RNF-02)</td><td class="c">&minus;2</td><td class="c">90</td><td class="c">+8</td></tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <h4>L&iacute;nea de corte recomendada: puntos 1 a 11</h4>
+  <p>Cortar hasta el punto 9 alcanza la capacidad exacta, pero deja el proyecto con <strong>cero holgura</strong>: cualquier desv&iacute;o
+  de estimaci&oacute;n, licencia o bug grave lo vuelve inviable. Se recomienda llegar hasta el punto 11, que baja la demanda a
+  <strong>93 puntos contra 98 de capacidad</strong> y deja un 5% de margen.</p>
+  <p>Los puntos 12 y 13 se listan por completitud, pero descartarlos significa entregar un sistema de historia cl&iacute;nica sin
+  auditor&iacute;a ni trazabilidad. Antes de llegar ah&iacute; conviene negociar la baja de un m&oacute;dulo completo &mdash;la aplicaci&oacute;n m&oacute;vil
+  entera, 4 puntos m&aacute;s&mdash; que degradar el tratamiento de datos sensibles.</p>
+</div>
+
+<p class="note">Documentar este an&aacute;lisis y su evoluci&oacute;n a lo largo de los sprints alimenta directamente dos de las m&eacute;tricas
+definidas en el Start up: el desv&iacute;o de estimaci&oacute;n y la cantidad de re-priorizaciones por sprint. Ninguna decisi&oacute;n de
+alcance deber&iacute;a tomarse despu&eacute;s del Sprint 1 sin antes contrastar las 2,5 horas por punto contra el tiempo real
+medido, porque toda esta tabla depende de ese &uacute;nico n&uacute;mero.</p>
+
+<h2>11. Distribuci&oacute;n por prioridad y m&oacute;dulo</h2>
+
+<table>
+  <colgroup><col><col style="width:40pt"><col style="width:46pt"><col style="width:40pt"><col style="width:36pt"><col style="width:44pt"><col style="width:44pt"></colgroup>
+  <thead><tr><th>M&oacute;dulo</th><th class="c">Must</th><th class="c">Should</th><th class="c">Could</th><th class="c">US</th><th class="c">Puntos</th><th class="c">Horas</th></tr></thead>
+  <tbody>
+    <tr><td>Usuarios y acceso</td><td class="c">3</td><td class="c">1</td><td class="c">0</td><td class="c">4</td><td class="c">11</td><td class="c">27,5</td></tr>
+    <tr><td>Agenda m&eacute;dica</td><td class="c">4</td><td class="c">1</td><td class="c">1</td><td class="c">6</td><td class="c">19</td><td class="c">47,5</td></tr>
+    <tr><td>Reserva de turnos</td><td class="c">8</td><td class="c">2</td><td class="c">1</td><td class="c">11</td><td class="c">25</td><td class="c">62,5</td></tr>
+    <tr><td>Notificaciones</td><td class="c">2</td><td class="c">1</td><td class="c">0</td><td class="c">3</td><td class="c">5</td><td class="c">12,5</td></tr>
+    <tr><td>Gesti&oacute;n de vacunas</td><td class="c">4</td><td class="c">1</td><td class="c">0</td><td class="c">5</td><td class="c">10</td><td class="c">25</td></tr>
+    <tr><td>Pagos y coberturas</td><td class="c">5</td><td class="c">1</td><td class="c">1</td><td class="c">7</td><td class="c">14</td><td class="c">35</td></tr>
+    <tr><td>Historial cl&iacute;nico</td><td class="c">3</td><td class="c">3</td><td class="c">1</td><td class="c">7</td><td class="c">14</td><td class="c">35</td></tr>
+    <tr><td>Reportes</td><td class="c">3</td><td class="c">2</td><td class="c">0</td><td class="c">5</td><td class="c">6</td><td class="c">15</td></tr>
+    <tr><td>Aplicaci&oacute;n m&oacute;vil</td><td class="c">4</td><td class="c">1</td><td class="c">0</td><td class="c">5</td><td class="c">10</td><td class="c">25</td></tr>
+  </tbody>
+  <tfoot>
+    <tr><td>Total</td><td class="c">36</td><td class="c">13</td><td class="c">4</td><td class="c">53</td><td class="c">114</td><td class="c">285</td></tr>
+  </tfoot>
+</table>
+
+<p class="note">Las estimaciones en puntos del Sprint 1 fueron realizadas sin asistencia de herramientas de inteligencia artificial,
+seg&uacute;n lo solicitan las pautas del proyecto; lo que la IA modifica es la <em>velocidad</em> del equipo, no el tama&ntilde;o de las
+historias. El tiempo real de cada User Story debe registrarse durante el sprint para poder comparar contra lo
+estimado, validar la equivalencia de 2,5 horas por punto y alimentar la estimaci&oacute;n asistida de los Sprints 2 y 3,
+dejando documentados la herramienta, su versi&oacute;n y el prompt utilizado.</p>
+
+<div class="page-break"></div>
+
+<h2>12. Registro de cambios</h2>
+
+<p>Secciones 12.1 a 12.4: cambios de alcance acordados en la reuni&oacute;n con el cliente del 19/09/2026. Secci&oacute;n 12.5:
+cambio en la composici&oacute;n del equipo implementador, que no afecta el alcance pero s&iacute; la planificaci&oacute;n.</p>
+
+<h3>12.1 User Stories dadas de baja</h3>
+
+<table>
+  <colgroup><col style="width:46pt"><col style="width:34%"><col></colgroup>
+  <thead><tr><th class="id">ID</th><th>T&iacute;tulo original</th><th>Motivo</th></tr></thead>
+  <tbody>
+    <tr><td class="id">US-04</td><td>Restricci&oacute;n de acceso por rol</td><td>El cliente defini&oacute; que RF-USR-04 afecta a todas las historias. Pas&oacute; a ser el requerimiento no funcional transversal RNF-03 y se verifica en la condici&oacute;n 6 de la definici&oacute;n de terminado, no como historia aislada.</td></tr>
+    <tr><td class="id">US-05</td><td>Actualizaci&oacute;n de datos personales</td><td>Unificada en US-01 junto con el registro, por indicaci&oacute;n de unificar RF-USR-01 y RF-USR-05.</td></tr>
+    <tr><td class="id">US-07</td><td>Validaci&oacute;n de la regla de dos jornadas semanales</td><td>Unificada en US-06, por indicaci&oacute;n de unificar RF-AGE-01 y RF-AGE-02. La regla adem&aacute;s pas&oacute; de &laquo;exactamente 2&raquo; a &laquo;entre 2 y 7&raquo; jornadas.</td></tr>
+    <tr><td class="id">US-09</td><td>Prevenci&oacute;n de turnos superpuestos</td><td>El cliente indic&oacute; eliminar RF-AGE-07.</td></tr>
+    <tr><td class="id">US-23</td><td>Alerta de stock bajo a enfermer&iacute;a</td><td>Se asume stock permanente de vacunas: no hay umbral que cruzar.</td></tr>
+    <tr><td class="id">US-25</td><td>Registro de stock por lote</td><td>Se asume stock permanente de vacunas.</td></tr>
+    <tr><td class="id">US-26</td><td>Descuento autom&aacute;tico de stock</td><td>Se asume stock permanente de vacunas.</td></tr>
+    <tr><td class="id">US-27</td><td>Umbral m&iacute;nimo por vacuna</td><td>Se asume stock permanente de vacunas.</td></tr>
+    <tr><td class="id">US-37</td><td>Factura descargable en PDF</td><td>Unificada en US-36: alcanza con que el comprobante de pago sea un PDF, sin factura como documento aparte.</td></tr>
+    <tr><td class="id">US-46</td><td>Reporte de stock de vacunas</td><td>Sin gesti&oacute;n de existencias no hay datos que reportar.</td></tr>
+    <tr><td class="id">US-56</td><td>Vencimiento y baja de lotes</td><td>Se asume stock permanente de vacunas.</td></tr>
+  </tbody>
+</table>
+
+<h3>12.2 User Stories nuevas</h3>
+
+<table>
+  <colgroup><col style="width:46pt"><col style="width:34%"><col></colgroup>
+  <thead><tr><th class="id">ID</th><th>T&iacute;tulo</th><th>Origen</th></tr></thead>
+  <tbody>
+    <tr><td class="id">US-63</td><td>Agenda del vacunatorio</td><td>Si el usuario elige sacar un turno de vacunaci&oacute;n sobre una agenda separada, alguien debe publicarla. Deriva de RF-VAC-09.</td></tr>
+    <tr><td class="id">US-64</td><td>Reserva de turno a nombre de otra persona</td><td>Deriva de RF-TUR-11: sacar turnos para todos los profesionales a nombre de un tercero, cargando tambi&eacute;n su obra social.</td></tr>
+  </tbody>
+</table>
+
+<h3>12.3 User Stories modificadas</h3>
+
+<table>
+  <colgroup><col style="width:46pt"><col></colgroup>
+  <thead><tr><th class="id">ID</th><th>Cambio aplicado</th></tr></thead>
+  <tbody>
+    <tr><td class="id">US-01</td><td>Absorbe US-05; se agrega la obra social al formulario de registro y se fija el rol inicial <em>Usuario</em>. Pasa de 3 a 4 puntos.</td></tr>
+    <tr><td class="id">US-02</td><td>Se explicita la separaci&oacute;n entre los roles Enfermera y Administrativo en la redirecci&oacute;n por rol.</td></tr>
+    <tr><td class="id">US-03</td><td>El rol lo asigna el administrador en el alta; el rol M&eacute;dico se define como gen&eacute;rico y extensible por especialidad.</td></tr>
+    <tr><td class="id">US-06</td><td>Absorbe US-07; la validaci&oacute;n pasa de &laquo;exactamente dos jornadas&raquo; a &laquo;entre 2 y 7 jornadas&raquo; por semana. Se define la franja como horario corrido. Pasa de 4 a 5 puntos.</td></tr>
+    <tr><td class="id">US-08</td><td>La duraci&oacute;n de consulta deja de ser configurable por especialidad y queda fija en 30 minutos. Baja de 5 a 4 puntos.</td></tr>
+    <tr><td class="id">US-12</td><td>Se antepone la elecci&oacute;n del tipo de turno (m&eacute;dico o vacunaci&oacute;n) a la b&uacute;squeda.</td></tr>
+    <tr><td class="id">US-13</td><td>Se incorpora la imposibilidad de modificar un turno ya reservado.</td></tr>
+    <tr><td class="id">US-16</td><td>Se explicita que la cancelaci&oacute;n es la &uacute;nica modificaci&oacute;n admitida sobre un turno reservado.</td></tr>
+    <tr><td class="id">US-17</td><td>La reprogramaci&oacute;n pasa a resolverse como cancelaci&oacute;n m&aacute;s nueva reserva; alcanza a los turnos de vacunaci&oacute;n.</td></tr>
+    <tr><td class="id">US-19</td><td>La prevenci&oacute;n de duplicados se acota al mismo tipo de turno: m&eacute;dico y vacunaci&oacute;n pueden superponerse.</td></tr>
+    <tr><td class="id">US-22</td><td>Los turnos reservados dejan de cancelarse autom&aacute;ticamente al bloquear una franja.</td></tr>
+    <tr><td class="id">US-24</td><td>El cat&aacute;logo deja de administrar existencias.</td></tr>
+    <tr><td class="id">US-28</td><td>Reescrita: el paciente pasa a poder sacar el turno de vacunaci&oacute;n por s&iacute; mismo y desaparece la verificaci&oacute;n de stock. Pasa de 2 a 3 puntos.</td></tr>
+    <tr><td class="id">US-29</td><td>Se quita el lote y el descuento de stock del registro de aplicaci&oacute;n.</td></tr>
+    <tr><td class="id">US-30</td><td>El bloqueo alcanza solo a los turnos libres. Baja de 3 a 2 puntos.</td></tr>
+    <tr><td class="id">US-32</td><td>El alta de la cobertura se traslada al registro del usuario; la historia queda como consulta y correcci&oacute;n, propia y de terceros.</td></tr>
+    <tr><td class="id">US-33</td><td>El costo de la consulta pasa a definirlo el m&eacute;dico; el administrador conserva los coseguros.</td></tr>
+    <tr><td class="id">US-34</td><td>El c&aacute;lculo usa el costo del m&eacute;dico y la cobertura de la persona atendida.</td></tr>
+    <tr><td class="id">US-35</td><td>Los medios de pago quedan fijados en efectivo y transferencia, ambos presenciales; el efectivo lo registra el administrativo.</td></tr>
+    <tr><td class="id">US-36</td><td>Absorbe US-37: un &uacute;nico comprobante en PDF, sin factura aparte. Pasa de 1 a 2 puntos.</td></tr>
+    <tr><td class="id">US-39</td><td>Reescrita sobre el concepto de ficha &uacute;nica por par paciente&ndash;m&eacute;dico.</td></tr>
+    <tr><td class="id">US-40</td><td>Pasa a consolidar las fichas de todos los profesionales, con edici&oacute;n restringida a la propia.</td></tr>
+    <tr><td class="id">US-43</td><td>Alergias, antecedentes y medicaci&oacute;n quedan a nivel paciente, comunes a todas sus fichas.</td></tr>
+    <tr><td class="id">US-45</td><td>El reporte separa turnos m&eacute;dicos de turnos de vacunaci&oacute;n.</td></tr>
+    <tr><td class="id">US-52</td><td>El flujo m&oacute;vil incorpora la elecci&oacute;n de tipo de turno y la reserva para terceros.</td></tr>
+    <tr><td class="id">US-55</td><td>Se reemplaza la factura por el comprobante en PDF y se explicita que el pago es presencial.</td></tr>
+  </tbody>
+</table>
+
+<h3>12.4 Saldo del cambio</h3>
+
+<table>
+  <colgroup><col><col style="width:80pt"><col style="width:80pt"><col style="width:60pt"></colgroup>
+  <thead><tr><th>Concepto</th><th class="c">Versi&oacute;n 1</th><th class="c">Versi&oacute;n 2</th><th class="c">Variaci&oacute;n</th></tr></thead>
+  <tbody>
+    <tr><td>User Stories totales</td><td class="c">62</td><td class="c">53</td><td class="c">&minus;9</td></tr>
+    <tr><td>User Stories comprometidas</td><td class="c">58</td><td class="c">49</td><td class="c">&minus;9</td></tr>
+    <tr><td>Puntos comprometidos</td><td class="c">117</td><td class="c">104</td><td class="c">&minus;13</td></tr>
+    <tr><td>Demanda total con reserva de bugs</td><td class="c">125</td><td class="c">112</td><td class="c">&minus;13</td></tr>
+    <tr><td>Demanda en horas</td><td class="c">500</td><td class="c">280</td><td class="c">&minus;220</td></tr>
+  </tbody>
+</table>
+
+<p class="note">La columna de horas no es comparable de forma directa: la versi&oacute;n 1 val&iacute;a 4 horas por punto sobre un equipo de
+diez sin IA y la versi&oacute;n 2, 2,5 horas por punto sobre uno de cinco con IA. La comparaci&oacute;n v&aacute;lida es en puntos, que
+miden tama&ntilde;o y no tiempo.</p>
+
+<h3>12.5 Cambio de equipo implementador</h3>
+
+<p>Con posterioridad a la reuni&oacute;n con el cliente se confirm&oacute; que el equipo implementador es de cinco integrantes y no
+de diez, y que trabajar&aacute; con asistencia de IA. Esto no altera el alcance acordado ni los puntos de ninguna historia:
+altera la capacidad y, por lo tanto, cu&aacute;nto de ese alcance entra en el calendario.</p>
+
+<table>
+  <colgroup><col><col style="width:90pt"><col style="width:90pt"></colgroup>
+  <thead><tr><th>Par&aacute;metro</th><th class="c">Hip&oacute;tesis anterior</th><th class="c">Hip&oacute;tesis vigente</th></tr></thead>
+  <tbody>
+    <tr><td>Integrantes del equipo implementador</td><td class="c">10</td><td class="c">5</td></tr>
+    <tr><td>Horas semanales por integrante</td><td class="c">10</td><td class="c">10</td></tr>
+    <tr><td>Factor de foco</td><td class="c">60%</td><td class="c">70%</td></tr>
+    <tr><td>Horas efectivas por sprint de dos semanas</td><td class="c">120</td><td class="c">70</td></tr>
+    <tr><td>Asistencia de IA</td><td class="c">No contemplada</td><td class="c">1,6&times; ponderado</td></tr>
+    <tr><td>Horas por punto de historia</td><td class="c">4</td><td class="c">2,5</td></tr>
+    <tr><td>Velocidad por sprint de dos semanas</td><td class="c">30 pts</td><td class="c">28 pts</td></tr>
+  </tbody>
+  <tfoot>
+    <tr><td>Capacidad acumulada de los tres sprints</td><td class="c">105 pts</td><td class="c">98 pts</td></tr>
+  </tfoot>
+</table>
+
+<p class="note">El resultado es menos malo de lo que sugiere partir el equipo al medio: la capacidad cae solo un 7%, porque la
+asistencia de IA y el menor costo de coordinaci&oacute;n compensan buena parte de los cinco integrantes que faltan. Lo que
+s&iacute; desaparece es el margen: con diez personas el d&eacute;ficit era de 7 puntos y admit&iacute;a absorberse ajustando la
+distribuci&oacute;n; con cinco es de 14 y exige sacar alcance.</p>
+
+</body>
+</html>
