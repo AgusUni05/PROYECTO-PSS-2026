@@ -228,3 +228,6 @@ tfoot td {
 .sprint-intro p:last-child { margin-bottom: 0; }
 
 .page-break { break-before: page; }
+
+.fuera td { background: #fdfaf3; }
+.fuera td.c:last-child { color: #7a5a17; font-weight: 600; }

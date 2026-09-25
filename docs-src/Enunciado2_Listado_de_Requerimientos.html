@@ -15,7 +15,7 @@
 <h1 class="doc-title">Listado de Requerimientos</h1>
 <p class="doc-subtitle">Sistema integral de gesti&oacute;n para sala m&eacute;dica privada</p>
 <p class="doc-byline">Documento elaborado por la comisi&oacute;n de An&aacute;lisis y Management &middot; Enunciado 2<br>
-Versi&oacute;n 2 &middot; incorpora las definiciones de la reuni&oacute;n con el cliente del 19/09/2026</p>
+Versi&oacute;n 5 &middot; definiciones del cliente del 19/09/2026, alcance ajustado a la capacidad y un &uacute;nico implementador por User Story</p>
 
 <h2>1. Prop&oacute;sito y alcance</h2>
 
@@ -23,21 +23,32 @@ Versi&oacute;n 2 &middot; incorpora las definiciones de la reuni&oacute;n con el
 privada. Su objetivo es servir como base para la priorizaci&oacute;n con el cliente, la construcci&oacute;n del WBS, la derivaci&oacute;n
 de las User Stories de cada sprint y la trazabilidad entre lo pedido y lo implementado.</p>
 
-<p><strong>Dentro del alcance:</strong> aplicaci&oacute;n web con interfaces diferenciadas por rol (usuario/paciente, m&eacute;dico, enfermera,
-administrativo y administrador), m&aacute;s una aplicaci&oacute;n m&oacute;vil para pacientes con un subconjunto de funcionalidades.</p>
+<p><strong>Alcance solicitado por el cliente:</strong> aplicaci&oacute;n web con interfaces diferenciadas por rol (usuario/paciente,
+m&eacute;dico, enfermera, administrativo y administrador), m&aacute;s una aplicaci&oacute;n m&oacute;vil para pacientes con un subconjunto de
+funcionalidades.</p>
 
-<p><strong>Fuera del alcance:</strong> integraci&oacute;n con sistemas de terceros para validaci&oacute;n de padrones de obras sociales,
-facturaci&oacute;n electr&oacute;nica homologada ante el organismo fiscal, historia cl&iacute;nica interoperable con otras instituciones,
-telemedicina, gesti&oacute;n de recetas electr&oacute;nicas y <strong>gesti&oacute;n de stock de vacunas</strong> (el cliente defini&oacute; que debe
-asumirse disponibilidad permanente de dosis).</p>
+<p><strong>Alcance comprometido para esta entrega:</strong> la aplicaci&oacute;n web con los m&oacute;dulos de usuarios, agenda m&eacute;dica,
+reserva de turnos, notificaciones por email, pagos y coberturas, historial cl&iacute;nico y reportes. <strong>Entran 31 de los 57
+requerimientos funcionales vigentes</strong>; la gesti&oacute;n de vacunas y la aplicaci&oacute;n m&oacute;vil quedan enteras fuera, no por
+decisi&oacute;n del cliente sino por capacidad del equipo. Siguen siendo requerimientos v&aacute;lidos y est&aacute;n documentados como
+tales. El detalle est&aacute; en la <strong>secci&oacute;n 9</strong>.</p>
+
+<p><strong>Fuera del alcance del producto:</strong> integraci&oacute;n con sistemas de terceros para validaci&oacute;n de padrones de obras
+sociales, facturaci&oacute;n electr&oacute;nica homologada ante el organismo fiscal, historia cl&iacute;nica interoperable con otras
+instituciones, telemedicina, gesti&oacute;n de recetas electr&oacute;nicas y <strong>gesti&oacute;n de stock de vacunas</strong> (el cliente defini&oacute;
+que debe asumirse disponibilidad permanente de dosis).</p>
 
 <div class="callout">
   <h4>Qu&eacute; cambi&oacute; en esta versi&oacute;n</h4>
-  <p>La reuni&oacute;n con el cliente del 19/09/2026 cerr&oacute; las ambig&uuml;edades abiertas en la versi&oacute;n 1 e introdujo cambios de
-  alcance. Las definiciones adoptadas est&aacute;n en la <strong>secci&oacute;n 7</strong> y el detalle de altas, bajas y unificaciones de
-  requerimientos, en el <strong>registro de cambios de la secci&oacute;n 8</strong>. Los identificadores de los requerimientos que
-  sobreviven no se renumeraron, para no romper la trazabilidad con las User Stories y los wireframes ya aprobados;
-  los c&oacute;digos liberados por eliminaci&oacute;n o unificaci&oacute;n no se reutilizan.</p>
+  <p>La versi&oacute;n 2 incorpor&oacute; las definiciones de la reuni&oacute;n con el cliente del 19/09/2026, que est&aacute;n en la
+  <strong>secci&oacute;n 7</strong> con su registro de cambios en la <strong>secci&oacute;n 8</strong>. Nada de eso se modific&oacute;.</p>
+  <p>Lo que cambia en la versi&oacute;n 4 es la <strong>columna Sprint</strong>. El alcance se ajust&oacute; a la capacidad del equipo y el equipo adopt&oacute; adem&aacute;s la regla de que
+  <strong>cada User Story la ejecuta un &uacute;nico integrante</strong>. El primer ajuste define qu&eacute; entra; el segundo, si llega a
+  tiempo. <strong>26 de los 57 requerimientos funcionales
+  vigentes no entran</strong> y aparecen marcados como <em>Fuera</em>. El mecanismo est&aacute; en la secci&oacute;n 9.1.</p>
+  <p>Los identificadores no se renumeraron, para no romper la trazabilidad con las User Stories y los wireframes; los
+  c&oacute;digos liberados por eliminaci&oacute;n o unificaci&oacute;n no se reutilizan. <strong>Un requerimiento marcado <em>Fuera</em> no est&aacute;
+  dado de baja:</strong> est&aacute; sin sprint asignado y se reincorpora seg&uacute;n el orden de la secci&oacute;n 9.3.</p>
 </div>
 
 <h2>2. Actores del sistema</h2>
@@ -90,8 +101,14 @@ expresa seg&uacute;n la escala MoSCoW:</p>
   <li><strong>Could</strong> &mdash; deseable; se implementa si sobra capacidad. Primer candidato a descarte.</li>
 </ul>
 
-<p>La columna <strong>Sprint</strong> indica la asignaci&oacute;n tentativa propuesta en el documento de planificaci&oacute;n de sprints,
-sujeta a la re-priorizaci&oacute;n al cierre de cada etapa.</p>
+<p>La columna <strong>Sprint</strong> indica la asignaci&oacute;n propuesta en el documento de planificaci&oacute;n de sprints, sujeta a la
+re-priorizaci&oacute;n al cierre de cada etapa. Admite tres valores:</p>
+
+<ul>
+  <li><strong>1, 2 o 3</strong> &mdash; el requerimiento est&aacute; comprometido en ese sprint.</li>
+  <li><strong>Fuera</strong> &mdash; el requerimiento sigue vigente pero no tiene sprint asignado en esta entrega, porque la capacidad del equipo no alcanza. Se reincorpora seg&uacute;n el orden de la secci&oacute;n 9.3.</li>
+  <li><strong>&mdash;</strong> &mdash; el requerimiento fue dado de baja o unificado por decisi&oacute;n del cliente y no se construye.</li>
+</ul>
 
 <h3>3.1 Glosario operativo</h3>
 
@@ -110,6 +127,11 @@ sujeta a la re-priorizaci&oacute;n al cierre de cada etapa.</p>
 <div class="page-break"></div>
 
 <h2>4. Requerimientos funcionales</h2>
+
+<p class="note">La columna <strong>Sprint</strong> indica la etapa en la que el requerimiento est&aacute; planificado. El valor <strong>Fuera</strong>
+significa que el requerimiento sigue vigente pero no tiene sprint asignado en esta entrega, por capacidad del equipo
+implementador. Las filas con gui&oacute;n en ambas columnas corresponden a requerimientos dados de baja o unificados por
+decisi&oacute;n del cliente en la reuni&oacute;n del 19/09/2026, y no se construyen.</p>
 
 <h3>4.1 Gesti&oacute;n de usuarios y control de acceso (RF-USR)</h3>
 
@@ -135,10 +157,10 @@ la exigencia de interfaces separadas por tipo de usuario y del manejo de datos d
       <td>El administrador debe poder dar de alta, modificar y desactivar usuarios internos (m&eacute;dicos, enfermeras, administrativos), asign&aacute;ndoles su rol en el momento del alta.</td>
       <td class="c">Must</td><td class="c">1</td>
     </tr>
-    <tr>
+    <tr class="fuera">
       <td class="id">RF-USR-06</td>
       <td>El sistema debe ofrecer un mecanismo de recuperaci&oacute;n de contrase&ntilde;a por email.</td>
-      <td class="c">Should</td><td class="c">2</td>
+      <td class="c">Should</td><td class="c">Fuera</td>
     </tr>
     <tr>
       <td class="id">RF-USR-07</td>
@@ -182,22 +204,22 @@ la exigencia de interfaces separadas por tipo de usuario y del manejo de datos d
     <tr>
       <td class="id">RF-AGE-04</td>
       <td>El sistema debe abrir autom&aacute;ticamente la agenda a los pacientes una vez confirmada la disponibilidad del profesional.</td>
-      <td class="c">Must</td><td class="c">1</td>
+      <td class="c">Must</td><td class="c">2</td>
     </tr>
     <tr>
       <td class="id">RF-AGE-05</td>
       <td>El m&eacute;dico debe poder consultar su agenda con vista diaria, semanal y mensual.</td>
       <td class="c">Must</td><td class="c">1</td>
     </tr>
-    <tr>
+    <tr class="fuera">
       <td class="id">RF-AGE-06</td>
       <td>El m&eacute;dico o el administrativo deben poder bloquear por ausencia o licencia los turnos <strong>a&uacute;n disponibles</strong> de una franja ya publicada. Los turnos ya reservados quedan excluidos del bloqueo y deben gestionarse contactando al paciente.</td>
-      <td class="c">Should</td><td class="c">2</td>
+      <td class="c">Should</td><td class="c">Fuera</td>
     </tr>
-    <tr>
+    <tr class="fuera">
       <td class="id">RF-AGE-08</td>
       <td>El administrador debe poder configurar el calendario de feriados y d&iacute;as no laborables que excluyen la generaci&oacute;n de turnos.</td>
-      <td class="c">Could</td><td class="c">&mdash;</td>
+      <td class="c">Could</td><td class="c">Fuera</td>
     </tr>
     <tr>
       <td class="id">RF-AGE-09</td>
@@ -234,15 +256,15 @@ la exigencia de interfaces separadas por tipo de usuario y del manejo de datos d
     <tr><td class="id">RF-TUR-03</td><td>El sistema debe enviar por email una confirmaci&oacute;n con los datos del turno al momento de la reserva.</td><td class="c">Must</td><td class="c">2</td></tr>
     <tr><td class="id">RF-TUR-04</td><td>El sistema debe enviar un recordatorio por email con una antelaci&oacute;n configurable respecto del horario del turno.</td><td class="c">Must</td><td class="c">2</td></tr>
     <tr><td class="id">RF-TUR-05</td><td>El usuario debe poder cancelar un turno reservado, liberando autom&aacute;ticamente el horario para otros pacientes.</td><td class="c">Must</td><td class="c">2</td></tr>
-    <tr><td class="id">RF-TUR-06</td><td>El personal administrativo debe poder reservar, reprogramar y cancelar turnos en nombre de un paciente. La reprogramaci&oacute;n se resuelve como cancelaci&oacute;n del turno original m&aacute;s reserva de uno nuevo, nunca como edici&oacute;n del turno reservado (RF-AGE-09).</td><td class="c">Should</td><td class="c">2</td></tr>
+    <tr class="fuera"><td class="id">RF-TUR-06</td><td>El personal administrativo debe poder reservar, reprogramar y cancelar turnos en nombre de un paciente. La reprogramaci&oacute;n se resuelve como cancelaci&oacute;n del turno original m&aacute;s reserva de uno nuevo, nunca como edici&oacute;n del turno reservado (RF-AGE-09).</td><td class="c">Should</td><td class="c">Fuera</td></tr>
     <tr><td class="id">RF-TUR-07</td><td>El sistema debe registrar el estado de cada turno (reservado, cumplido, ausente, cancelado) para alimentar los reportes de asistencia.</td><td class="c">Must</td><td class="c">2</td></tr>
-    <tr>
+    <tr class="fuera">
       <td class="id">RF-TUR-08</td>
       <td>El sistema debe impedir que un paciente reserve m&aacute;s de un turno simult&aacute;neo del <strong>mismo tipo</strong> con el mismo profesional en la misma fecha. La restricci&oacute;n no aplica entre un turno m&eacute;dico y uno de vacunaci&oacute;n, que s&iacute; pueden superponerse para la misma persona.</td>
-      <td class="c">Should</td><td class="c">2</td>
+      <td class="c">Should</td><td class="c">Fuera</td>
     </tr>
     <tr><td class="id">RF-TUR-09</td><td>El sistema debe garantizar que dos pacientes no puedan reservar el mismo turno ante solicitudes concurrentes.</td><td class="c">Must</td><td class="c">2</td></tr>
-    <tr><td class="id">RF-TUR-10</td><td>El sistema debe ofrecer una lista de espera que notifique a los pacientes cuando se libera un turno.</td><td class="c">Could</td><td class="c">&mdash;</td></tr>
+    <tr class="fuera"><td class="id">RF-TUR-10</td><td>El sistema debe ofrecer una lista de espera que notifique a los pacientes cuando se libera un turno.</td><td class="c">Could</td><td class="c">Fuera</td></tr>
     <tr>
       <td class="id">RF-TUR-11</td>
       <td>Un usuario debe poder reservar turnos <strong>a nombre de otra persona</strong>, para cualquier profesional y para ambos tipos de turno, registrando los datos personales y <strong>la obra social</strong> de esa persona.</td>
@@ -261,18 +283,18 @@ registro sanitario de las aplicaciones.</p>
   <colgroup><col class="w-id"><col><col class="w-prio"><col class="w-sprint"></colgroup>
   <thead><tr><th class="id">ID</th><th>Requerimiento</th><th class="c">Prioridad</th><th class="c">Sprint</th></tr></thead>
   <tbody>
-    <tr><td class="id">RF-VAC-01</td><td>La enfermera debe poder administrar el cat&aacute;logo de vacunas disponibles en la sala (denominaci&oacute;n, laboratorio, esquema de dosis).</td><td class="c">Must</td><td class="c">2</td></tr>
-    <tr>
+    <tr class="fuera"><td class="id">RF-VAC-01</td><td>La enfermera debe poder administrar el cat&aacute;logo de vacunas disponibles en la sala (denominaci&oacute;n, laboratorio, esquema de dosis).</td><td class="c">Must</td><td class="c">Fuera</td></tr>
+    <tr class="fuera">
       <td class="id">RF-VAC-05</td>
       <td>El usuario debe poder reservar un turno de vacunaci&oacute;n sobre la agenda propia del vacunatorio, y la enfermera o el administrativo deben poder otorgarlo desde el mostrador. No se verifica stock: se asume disponibilidad permanente.</td>
-      <td class="c">Must</td><td class="c">2</td>
+      <td class="c">Must</td><td class="c">Fuera</td>
     </tr>
-    <tr><td class="id">RF-VAC-06</td><td>El sistema debe registrar cada aplicaci&oacute;n indicando paciente, vacuna, dosis del esquema, fecha y enfermera responsable.</td><td class="c">Must</td><td class="c">2</td></tr>
-    <tr><td class="id">RF-VAC-08</td><td>El paciente debe poder consultar su esquema de vacunaci&oacute;n aplicado en la sala.</td><td class="c">Should</td><td class="c">3</td></tr>
-    <tr>
+    <tr class="fuera"><td class="id">RF-VAC-06</td><td>El sistema debe registrar cada aplicaci&oacute;n indicando paciente, vacuna, dosis del esquema, fecha y enfermera responsable.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-VAC-08</td><td>El paciente debe poder consultar su esquema de vacunaci&oacute;n aplicado en la sala.</td><td class="c">Should</td><td class="c">Fuera</td></tr>
+    <tr class="fuera">
       <td class="id">RF-VAC-09</td>
       <td>La enfermera debe poder cargar la disponibilidad del vacunatorio y el sistema debe generar su agenda de turnos, <strong>independiente de las agendas m&eacute;dicas</strong>.</td>
-      <td class="c">Must</td><td class="c">2</td>
+      <td class="c">Must</td><td class="c">Fuera</td>
     </tr>
     <tr class="removed"><td class="id">RF-VAC-02</td><td><strong>Eliminado.</strong> Registro de ingreso de stock por lote. Se asume stock permanente.</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr>
     <tr class="removed"><td class="id">RF-VAC-03</td><td><strong>Eliminado.</strong> Descuento autom&aacute;tico de stock al registrar una aplicaci&oacute;n.</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr>
@@ -315,8 +337,8 @@ registro sanitario de las aplicaciones.</p>
       <td>El paciente debe poder descargar en PDF los comprobantes de sus consultas.</td>
       <td class="c">Must</td><td class="c">3</td>
     </tr>
-    <tr><td class="id">RF-PAG-07</td><td>El paciente debe poder consultar el historial de sus pagos y comprobantes.</td><td class="c">Should</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-PAG-08</td><td>El administrativo debe poder anular un pago registrado por error, dejando constancia de la anulaci&oacute;n.</td><td class="c">Could</td><td class="c">&mdash;</td></tr>
+    <tr class="fuera"><td class="id">RF-PAG-07</td><td>El paciente debe poder consultar el historial de sus pagos y comprobantes.</td><td class="c">Should</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-PAG-08</td><td>El administrativo debe poder anular un pago registrado por error, dejando constancia de la anulaci&oacute;n.</td><td class="c">Could</td><td class="c">Fuera</td></tr>
   </tbody>
 </table>
 
@@ -336,10 +358,10 @@ funcionales de seguridad y auditor&iacute;a (RNF-02 a RNF-05).</p>
     </tr>
     <tr><td class="id">RF-HIS-02</td><td>El m&eacute;dico debe poder consultar la ficha completa del paciente, incluidas las entradas cargadas por otros profesionales de la sala.</td><td class="c">Must</td><td class="c">3</td></tr>
     <tr><td class="id">RF-HIS-03</td><td>El paciente debe poder consultar su historial m&eacute;dico en modo de solo lectura.</td><td class="c">Must</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-HIS-04</td><td>El sistema no debe permitir eliminar entradas del historial; toda correcci&oacute;n debe registrarse como una nueva entrada trazable a su autor y fecha.</td><td class="c">Should</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-HIS-05</td><td>La ficha del paciente debe contemplar alergias, antecedentes y medicaci&oacute;n habitual, comunes a todas las fichas de diagn&oacute;stico del paciente.</td><td class="c">Should</td><td class="c">3</td></tr>
+    <tr class="fuera"><td class="id">RF-HIS-04</td><td>El sistema no debe permitir eliminar entradas del historial; toda correcci&oacute;n debe registrarse como una nueva entrada trazable a su autor y fecha.</td><td class="c">Should</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-HIS-05</td><td>La ficha del paciente debe contemplar alergias, antecedentes y medicaci&oacute;n habitual, comunes a todas las fichas de diagn&oacute;stico del paciente.</td><td class="c">Should</td><td class="c">Fuera</td></tr>
     <tr><td class="id">RF-HIS-06</td><td>El sistema debe registrar un log de auditor&iacute;a de cada acceso al historial cl&iacute;nico de un paciente.</td><td class="c">Should</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-HIS-07</td><td>El m&eacute;dico debe poder adjuntar estudios o archivos a la ficha del paciente.</td><td class="c">Could</td><td class="c">&mdash;</td></tr>
+    <tr class="fuera"><td class="id">RF-HIS-07</td><td>El m&eacute;dico debe poder adjuntar estudios o archivos a la ficha del paciente.</td><td class="c">Could</td><td class="c">Fuera</td></tr>
   </tbody>
 </table>
 
@@ -351,9 +373,9 @@ funcionales de seguridad y auditor&iacute;a (RNF-02 a RNF-05).</p>
   <tbody>
     <tr><td class="id">RF-REP-01</td><td>El administrador debe poder generar un reporte de cantidad de turnos por tipo de turno, especialidad y per&iacute;odo.</td><td class="c">Must</td><td class="c">3</td></tr>
     <tr><td class="id">RF-REP-03</td><td>El administrador debe poder generar un reporte de pagos realizados por per&iacute;odo, medio de pago y cobertura.</td><td class="c">Must</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-REP-04</td><td>El administrador debe poder generar un reporte de asistencia de pacientes que exponga el nivel de ausentismo.</td><td class="c">Must</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-REP-05</td><td>Todos los reportes deben admitir filtros por rango de fechas, profesional y especialidad.</td><td class="c">Should</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-REP-06</td><td>El sistema debe permitir exportar los reportes generados a PDF o CSV.</td><td class="c">Should</td><td class="c">3</td></tr>
+    <tr class="fuera"><td class="id">RF-REP-04</td><td>El administrador debe poder generar un reporte de asistencia de pacientes que exponga el nivel de ausentismo.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-REP-05</td><td>Todos los reportes deben admitir filtros por rango de fechas, profesional y especialidad.</td><td class="c">Should</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-REP-06</td><td>El sistema debe permitir exportar los reportes generados a PDF o CSV.</td><td class="c">Should</td><td class="c">Fuera</td></tr>
     <tr class="removed"><td class="id">RF-REP-02</td><td><strong>Eliminado.</strong> Reporte de stock de vacunas. Sin gesti&oacute;n de existencias no hay datos que reportar.</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr>
   </tbody>
 </table>
@@ -367,8 +389,8 @@ funcionales de seguridad y auditor&iacute;a (RNF-02 a RNF-05).</p>
   <thead><tr><th class="id">ID</th><th>Requerimiento</th><th class="c">Prioridad</th><th class="c">Sprint</th></tr></thead>
   <tbody>
     <tr><td class="id">RF-NOT-01</td><td>El sistema debe notificar al paciente por email ante la confirmaci&oacute;n o cancelaci&oacute;n de un turno, sea este m&eacute;dico o de vacunaci&oacute;n.</td><td class="c">Must</td><td class="c">2</td></tr>
-    <tr><td class="id">RF-NOT-02</td><td>El sistema debe notificar a los pacientes afectados cuando un profesional bloquea una franja horaria ya publicada.</td><td class="c">Must</td><td class="c">2</td></tr>
-    <tr><td class="id">RF-NOT-04</td><td>El sistema debe registrar un log de las notificaciones enviadas, con su estado de env&iacute;o, para permitir el diagn&oacute;stico de fallas.</td><td class="c">Should</td><td class="c">3</td></tr>
+    <tr class="fuera"><td class="id">RF-NOT-02</td><td>El sistema debe notificar a los pacientes afectados cuando un profesional bloquea una franja horaria ya publicada.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-NOT-04</td><td>El sistema debe registrar un log de las notificaciones enviadas, con su estado de env&iacute;o, para permitir el diagn&oacute;stico de fallas.</td><td class="c">Should</td><td class="c">Fuera</td></tr>
     <tr class="removed"><td class="id">RF-NOT-03</td><td><strong>Eliminado.</strong> Alerta de stock m&iacute;nimo a enfermer&iacute;a, dependiente del m&oacute;dulo de stock eliminado.</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr>
   </tbody>
 </table>
@@ -383,11 +405,11 @@ cliente y es el principal candidato a reducci&oacute;n de alcance.</p>
   <colgroup><col class="w-id"><col><col class="w-prio"><col class="w-sprint"></colgroup>
   <thead><tr><th class="id">ID</th><th>Requerimiento</th><th class="c">Prioridad</th><th class="c">Sprint</th></tr></thead>
   <tbody>
-    <tr><td class="id">RF-MOV-01</td><td>El paciente debe poder autenticarse desde la aplicaci&oacute;n m&oacute;vil con las mismas credenciales del sistema web.</td><td class="c">Must</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-MOV-02</td><td>El paciente debe poder buscar, reservar y cancelar turnos de ambos tipos desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-MOV-03</td><td>El paciente debe poder consultar su historial cl&iacute;nico desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-MOV-04</td><td>El paciente debe recibir los recordatorios de turno en la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">3</td></tr>
-    <tr><td class="id">RF-MOV-05</td><td>El paciente debe poder consultar sus pagos y descargar los comprobantes en PDF desde la aplicaci&oacute;n m&oacute;vil. El registro del pago es siempre presencial.</td><td class="c">Should</td><td class="c">3</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV-01</td><td>El paciente debe poder autenticarse desde la aplicaci&oacute;n m&oacute;vil con las mismas credenciales del sistema web.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV-02</td><td>El paciente debe poder buscar, reservar y cancelar turnos de ambos tipos desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV-03</td><td>El paciente debe poder consultar su historial cl&iacute;nico desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV-04</td><td>El paciente debe recibir los recordatorios de turno en la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV-05</td><td>El paciente debe poder consultar sus pagos y descargar los comprobantes en PDF desde la aplicaci&oacute;n m&oacute;vil. El registro del pago es siempre presencial.</td><td class="c">Should</td><td class="c">Fuera</td></tr>
   </tbody>
 </table>
 
@@ -526,8 +548,124 @@ rige el desarrollo.</p>
 </table>
 
 <p class="note">El saldo neto del alcance es <strong>negativo</strong>: se eliminan ocho requerimientos funcionales y se unifican dos,
-frente a cinco altas. La reducci&oacute;n se concentra en el m&oacute;dulo de vacunas y libera capacidad del Sprint 2, tal como
-se refleja en el bosquejo de sprints y en el resumen de esfuerzo del cat&aacute;logo de User Stories.</p>
+frente a cinco altas. La reducci&oacute;n se concentra en el m&oacute;dulo de vacunas, y dej&oacute; 57 requerimientos funcionales
+vigentes. De esos 57, la secci&oacute;n 9 determina cu&aacute;ntos entran efectivamente en la entrega: son 31.</p>
+
+<div class="page-break"></div>
+
+<h2>9. Alcance comprometido para esta entrega</h2>
+
+<p>Las secciones 7 y 8 recogen lo que el cliente decidi&oacute;. Esta secci&oacute;n recoge algo distinto: <strong>lo que el equipo
+implementador puede construir</strong> en los tres sprints disponibles. Son dos recortes independientes y hay que leerlos
+por separado.</p>
+
+<h3>9.1 Por qu&eacute; hay un segundo recorte</h3>
+
+<p>La planificaci&oacute;n se hizo sobre la capacidad real del equipo, con cuatro par&aacute;metros:</p>
+
+<table>
+  <colgroup><col style="width:180pt"><col><col style="width:80pt"></colgroup>
+  <thead><tr><th>Par&aacute;metro</th><th>Qu&eacute; significa</th><th class="c">Valor</th></tr></thead>
+  <tbody>
+    <tr><td class="id">D&iacute;as de implementaci&oacute;n por sprint</td><td>De los diez d&iacute;as h&aacute;biles del sprint, tres se consumen en refinement y conocimiento de las US, demo y testing de regresi&oacute;n.</td><td class="c">7 d&iacute;as</td></tr>
+    <tr><td class="id">Dedicaci&oacute;n diaria por integrante</td><td>La dedicaci&oacute;n real declarada es de 2 a 3 horas diarias, no el tope reglamentario de 10 horas semanales.</td><td class="c">2,5 h/d&iacute;a</td></tr>
+    <tr><td class="id">Horas por punto de historia</td><td>Aceleraci&oacute;n neta de 1,2&times; sobre las 4 horas de la l&iacute;nea de base, contemplando el costo de retomar contexto en bloques cortos.</td><td class="c">3,30 h/punto</td></tr>
+    <tr><td class="id"><strong>Implementadores por User Story</strong></td><td>Cada historia tiene un due&ntilde;o &uacute;nico que la ejecuta de punta a punta. La verificaci&oacute;n la hace otro integrante, pero la implementaci&oacute;n no se reparte.</td><td class="c"><strong>1</strong></td></tr>
+  </tbody>
+  <tfoot><tr><td>Capacidad de los tres sprints</td><td>5 integrantes &times; 21 d&iacute;as &times; 2,5 h</td><td class="c">262,5 h</td></tr></tfoot>
+</table>
+
+<p>Contra esa capacidad, la demanda derivada de los 57 requerimientos vigentes era de <strong>113 puntos</strong>. El recorte
+por capacidad deja <strong>31 de los 57 requerimientos</strong> dentro de la entrega, con un 92% de ocupaci&oacute;n del equipo.</p>
+
+<div class="callout">
+  <h4>El alcance entra en horas pero no en cronograma</h4>
+  <p>Los 31 requerimientos comprometidos se traducen en 27 User Stories y 240,9 horas sobre 262,5 disponibles: el
+  reparto entre los cinco integrantes queda en <strong>16,5 horas por persona y por sprint</strong>, un 94% de
+  aprovechamiento. En capacidad, el plan cierra mejor que ninguna versi&oacute;n anterior.</p>
+  <p>Lo que no cierra es el orden. Con un &uacute;nico due&ntilde;o por historia, un requerimiento de 4 puntos ocupa 5,3 d&iacute;as de
+  una persona y los encadenados no se pueden acelerar poniendo gente en paralelo. El camino cr&iacute;tico pasa de unos 15
+  d&iacute;as a 48,8, y el proyecto necesita <strong>47,9 d&iacute;as de implementaci&oacute;n contra los 21 disponibles</strong>.</p>
+  <p class="trace">El an&aacute;lisis completo, requerimiento por requerimiento y con las cuatro palancas para resolverlo,
+  est&aacute; en la secci&oacute;n 5.8 del cat&aacute;logo de User Stories. Es el punto principal de la re-priorizaci&oacute;n del Sprint 0.</p>
+</div>
+
+<h3>9.2 Cobertura por m&oacute;dulo</h3>
+
+<table>
+  <colgroup><col style="width:56pt"><col style="width:96pt"><col style="width:44pt"><col style="width:44pt"><col></colgroup>
+  <thead><tr><th class="id">M&oacute;dulo</th><th>Comprometidos</th><th class="c">Entran</th><th class="c">Fuera</th><th>Qu&eacute; queda sin cubrir</th></tr></thead>
+  <tbody>
+    <tr><td class="id">RF-USR</td><td>01, 02, 03, 07, 08</td><td class="c">5</td><td class="c">1</td><td>Recuperaci&oacute;n de contrase&ntilde;a por email (RF-USR-06): todo olvido de clave exige intervenci&oacute;n administrativa.</td></tr>
+    <tr><td class="id">RF-AGE</td><td>01, 03, 04, 05, 09</td><td class="c">5</td><td class="c">2</td><td>Bloqueo de turnos libres de una franja publicada (RF-AGE-06) y calendario de feriados (RF-AGE-08).</td></tr>
+    <tr><td class="id">RF-TUR</td><td>01, 02, 03, 04, 05, 07, 09, 11</td><td class="c">8</td><td class="c">3</td><td>Gesti&oacute;n desde mostrador (RF-TUR-06), prevenci&oacute;n de duplicados (RF-TUR-08) y lista de espera (RF-TUR-10).</td></tr>
+    <tr><td class="id">RF-PAG</td><td>01, 02, 03, 04, 05, 06</td><td class="c">6</td><td class="c">2</td><td>Historial de pagos del paciente (RF-PAG-07) y anulaci&oacute;n de pagos (RF-PAG-08).</td></tr>
+    <tr><td class="id">RF-HIS</td><td>01, 02, 03, 06</td><td class="c">4</td><td class="c">3</td><td>Trazabilidad de entradas (RF-HIS-04), antecedentes y alergias (RF-HIS-05) y adjuntos (RF-HIS-07). <strong>La auditor&iacute;a de accesos (RF-HIS-06) se conserva pese a ser Should</strong>, por RNF-04.</td></tr>
+    <tr><td class="id">RF-REP</td><td>01, 03</td><td class="c">2</td><td class="c">3</td><td>Reporte de asistencia de pacientes (RF-REP-04), filtros comunes (RF-REP-05) y exportaci&oacute;n a PDF o CSV (RF-REP-06).</td></tr>
+    <tr><td class="id">RF-NOT</td><td>01</td><td class="c">1</td><td class="c">2</td><td>Aviso por modificaci&oacute;n de agenda (RF-NOT-02), que cae junto con RF-AGE-06 por no tener disparador, y log de notificaciones (RF-NOT-04).</td></tr>
+    <tr class="fuera"><td class="id">RF-VAC</td><td>&mdash;</td><td class="c">0</td><td class="c">5</td><td><strong>M&oacute;dulo completo.</strong> No hay cat&aacute;logo, ni agenda del vacunatorio, ni turnos de vacunaci&oacute;n, ni registro de aplicaciones, ni carnet.</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV</td><td>&mdash;</td><td class="c">0</td><td class="c">5</td><td><strong>M&oacute;dulo completo.</strong> Se propone negociar una aplicaci&oacute;n web progresiva sobre el front-end existente, que cubre parcialmente RF-MOV-01 a RF-MOV-04 por 4 puntos en lugar de 10.</td></tr>
+  </tbody>
+  <tfoot><tr><td>Total</td><td>&mdash;</td><td class="c">31</td><td class="c">26</td><td>57 requerimientos funcionales vigentes</td></tr></tfoot>
+</table>
+
+<p class="note">Los requerimientos no funcionales <strong>se mantienen todos</strong>. RNF-03 (control de acceso) y RNF-04
+(auditor&iacute;a) no admiten recorte: son transversales y se verifican dentro de cada User Story, seg&uacute;n la definici&oacute;n de
+terminado.</p>
+
+<h3>9.3 El problema de cronograma y sus palancas</h3>
+
+<p>Con un &uacute;nico implementador por User Story, los 31 requerimientos comprometidos <strong>no entran en los 21 d&iacute;as de
+implementaci&oacute;n</strong>. Se midieron cinco escenarios de asignaci&oacute;n y solapamiento; ninguno alcanza.</p>
+
+<table>
+  <colgroup><col><col style="width:64pt"><col></colgroup>
+  <thead><tr><th>Escenario</th><th class="c">D&iacute;as</th><th>Comentario</th></tr></thead>
+  <tbody>
+    <tr><td>Reparto de cada historia entre varios integrantes</td><td class="c">22,2</td><td>Es el plan de la versi&oacute;n anterior. Entra con los tres sprints al 92% de ocupaci&oacute;n.</td></tr>
+    <tr><td><strong>Un due&ntilde;o por historia, 2,5 h/d&iacute;a</strong></td><td class="c"><strong>47,9</strong></td><td><strong>Este plan.</strong> Faltan 26,9 d&iacute;as. Solo 6 de las 27 historias cierran a tiempo.</td></tr>
+    <tr><td>Un due&ntilde;o por historia, 3 h/d&iacute;a</td><td class="c">41,1</td><td>Extremo alto del rango declarado. Mejora un 14% y no alcanza.</td></tr>
+    <tr><td>Un due&ntilde;o por historia, solapamiento al l&iacute;mite</td><td class="c">38,1</td><td>Comienzo&ndash;comienzo con un d&iacute;a de demora y 3 h/d&iacute;a.</td></tr>
+    <tr><td>Un due&ntilde;o por historia, solapamiento total</td><td class="c">25,2</td><td><strong>Escenario imposible</strong>, listado como cota inferior: supone que toda sucesora arranca el mismo d&iacute;a que su predecesora.</td></tr>
+  </tbody>
+</table>
+
+<p>Las cuatro palancas para resolverlo, de menor a mayor costo. Las tres primeras no abandonan la regla de un &uacute;nico
+implementador por historia.</p>
+
+<table>
+  <colgroup><col style="width:22pt"><col style="width:24%"><col><col style="width:70pt"></colgroup>
+  <thead><tr><th class="c">#</th><th>Palanca</th><th>C&oacute;mo funciona y qu&eacute; cuesta</th><th class="c">Resultado</th></tr></thead>
+  <tbody>
+    <tr><td class="c">1</td><td><strong>Partir los requerimientos grandes</strong></td><td>RF-USR-01, RF-USR-02, RF-USR-03, RF-AGE-01, RF-AGE-03, RF-AGE-05, RF-TUR-02, RF-PAG-03 y RF-HIS-01 se dividen en historias de 1 y 2 puntos, cada una con su due&ntilde;o. Donde las piezas sean independientes, dos personas avanzan en paralelo sin compartir una historia. Exige reescribir el cat&aacute;logo de User Stories y sus criterios de aceptaci&oacute;n.</td><td class="c">La m&aacute;s efectiva sin tocar la regla</td></tr>
+    <tr><td class="c">2</td><td><strong>Subir la dedicaci&oacute;n a 3 h diarias</strong></td><td>Extremo alto del rango ya declarado por el equipo. No cambia el alcance ni exige renegociar con el cliente.</td><td class="c">47,9 &rarr; 41,1 d&iacute;as</td></tr>
+    <tr><td class="c">3</td><td><strong>Ampliar el plazo</strong></td><td>Cada semana de calendario aporta 5 d&iacute;as de implementaci&oacute;n. Cubrir los 26,9 d&iacute;as faltantes exige unas seis semanas m&aacute;s. Depende de la c&aacute;tedra.</td><td class="c">+5 d&iacute;as por semana</td></tr>
+    <tr><td class="c">4</td><td>Dos due&ntilde;os en los requerimientos del camino cr&iacute;tico</td><td><strong>Abandona la regla</strong>, pero solo en los 13 requerimientos cr&iacute;ticos; el resto conserva un &uacute;nico implementador.</td><td class="c">Vuelve a ~22 d&iacute;as</td></tr>
+  </tbody>
+</table>
+
+<p class="note">Las palancas 1 y 2 son compatibles entre s&iacute; y ninguna toca la regla. Es la combinaci&oacute;n que recomienda
+el equipo de an&aacute;lisis. La decisi&oacute;n se toma en la re-priorizaci&oacute;n del Sprint 0, antes de que empiece el Sprint 1.</p>
+
+<h3>9.4 Orden de reincorporaci&oacute;n</h3>
+
+<p>Si se acciona alguna palanca y queda capacidad, los requerimientos hoy fuera del alcance vuelven en este orden:</p>
+
+<table>
+  <colgroup><col style="width:22pt"><col style="width:120pt"><col></colgroup>
+  <thead><tr><th class="c">#</th><th>Requerimiento</th><th>Fundamento</th></tr></thead>
+  <tbody>
+    <tr><td class="c">1</td><td class="id">RF-TUR-06</td><td>Gesti&oacute;n de turnos desde mostrador. El cliente la pidi&oacute; expl&iacute;citamente y es la operatoria diaria de la sala.</td></tr>
+    <tr><td class="c">2</td><td class="id">RF-REP-04</td><td>Reporte de asistencia de pacientes. Completa los reportes pedidos y depende solo del estado del turno.</td></tr>
+    <tr><td class="c">3</td><td class="id">RF-USR-06</td><td>Recuperaci&oacute;n de contrase&ntilde;a. Rama independiente; su ausencia genera carga administrativa desde el primer d&iacute;a de uso real.</td></tr>
+    <tr><td class="c">4</td><td class="id">RF-AGE-06 + RF-NOT-02</td><td>Bloqueo de franja publicada con aviso a los afectados. Entran juntos: sin bloqueo no hay aviso que enviar.</td></tr>
+    <tr><td class="c">5</td><td class="id">RF-HIS-04</td><td>Trazabilidad de las entradas cl&iacute;nicas. Sostiene la integridad de la historia cl&iacute;nica exigida por RNF-02.</td></tr>
+    <tr><td class="c">6</td><td class="id">RF-VAC (completo)</td><td>M&oacute;dulo de vacunas. Es el bloque m&aacute;s grande y el que menos c&oacute;digo comparte con el resto.</td></tr>
+  </tbody>
+</table>
+
+<p class="note">En sentido inverso, si la dedicaci&oacute;n real resulta de 2 horas diarias en lugar de 2,5, el primer
+requerimiento en caer es <strong>RF-AGE-05</strong> (vistas de la agenda del profesional), que ya hoy cierra fuera de plazo.</p>
 
 </body>
 </html>
