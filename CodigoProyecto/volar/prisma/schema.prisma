@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum DayOfWeek {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+// US-01: ABML de Aeropuertos
+model Airport {
+  id        String   @id @default(uuid())
+  code      String   @unique // Ej: EZE, AEP, JFK (IATA code)
+  name      String   // Ej: Aeropuerto Internacional Ministro Pistarini
+  city      String   // Ej: Buenos Aires
+  isActive  Boolean  @default(true) // Para baja lógica (ABML)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relaciones con Trayectos (Route)
+  departingRoutes Route[] @relation("DepartureAirport")
+  arrivingRoutes  Route[] @relation("ArrivalAirport")
+
+  @@map("airports")
+}
+
+// US-02: ABML de Aviones
+model Airplane {
+  id                   String   @id @default(uuid())
+  identifier           String   @unique // Ej: Matrícula / LV-ABC
+  model                String   // Ej: Boeing 737-800, Airbus A320
+  economySeats         Int      // Cantidad de asientos Economy
+  firstClassSeats      Int      // Cantidad de asientos Primera Clase
+  isActive             Boolean  @default(true) // Para baja lógica (ABML)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@map("airplanes")
+}
+
+// US-03: ABML de Trayectos
+model Route {
+  id                 String      @id @default(uuid())
+  originId           String
+  origin             Airport     @relation("DepartureAirport", fields: [originId], references: [id])
+  destinationId      String
+  destination        Airport     @relation("ArrivalAirport", fields: [destinationId], references: [id])
+  operatingDays      DayOfWeek[] // Días de la semana en que opera el trayecto
+  departureTime      String      // Horario de partida (ej. "08:30" formato HH:mm o Time)
+  arrivalTime        String      // Horario de llegada (ej. "11:45" formato HH:mm o Time)
+  isActive           Boolean     @default(true) // Para baja lógica (ABML)
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+
+  @@map("routes")
+}
