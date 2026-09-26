@@ -1,0 +1,16 @@
+Revisa completament el repo en el que estas, se trata de la comision 6 diseniadora del sistema AuraHealth para que la comision 5 la implemente, actualmente
+  estamos proximos a hacer la entrega del sprint 0 (27/09), entregamos entre otras cosas, el bosquejo de sprints, los requerimientos funcionales, y las user
+  stories, el tema, es que el agente que nos hizo los pdf, Claude, agrego demasiadas cosas a los pdfs, como estimaciones y fundamentos que realmente no vimos en
+  la materia y son innecesarias para la entrega 0, por eso notas que los 3 pdf que mencione estan duplicados como @[Bosquejo de sprints AuraHealth.pdf] (el que
+  entregamos) y @[Enunciado2_Bosquejo_de_Sprints.pdf] , (el que hizo claude que tiene demasiada info), por eso, quiero que revises los 3 que entregamos
+  @[Bosquejo de sprints AuraHealth.pdf] ,@[User Stories Aura health.pdf]  y @[Requerimientos AuraHealth.pdf], y NO modifiques la informacion ni la agregues, ya
+  que al hacer limpieza manual, ya decidimos que lo que esta es lo correcto, y borramos lo que no necesitamos, el problema fue que al hacer limpieza quedaron
+  algunos typos y errores graficos, como por ejemplo requerimientos funcionales marcados como que estaban fuera, estan en los sprints, (marcados con ese color
+  amarillento) y esto es erroneo (esto paso en el archivo de req funcionales), o bien tablas que quedaban cortadas entre las hojas y eso. Por ello, tu trabajo va
+  a ser revisar esos tres pdfs que fueron los que entregamos, y rehacerlos SIN AGREGAR NI QUITAR MAS INFORMACION DE LA QUE ESTA,solamente reacomodarla para que
+  quede un archivo mas profesional, rehacelos en docx o pdf segun tu gusto, NO BORRES NI REEMPLAZES LOS QUE ESTAN, HACE 3 ARCHIVOS NUEVOS. En @[docs-src]  tenes
+  los scripts por si necesitas que uso el agente claude para hacer los pdfs anteriores, podes basarte en ellos o rehacer nuevos scripts, si tenes alguna duda
+  decimela, no pushees
+
+
+revisa por favor que sea consistente los pdf con el project libre, para mas facilidad podes revisar el xml en vez del pod
