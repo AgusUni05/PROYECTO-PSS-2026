@@ -15,7 +15,8 @@
 <h1 class="doc-title">Bosquejo de divisi&oacute;n en sprints</h1>
 <p class="doc-subtitle">Sistema integral de gesti&oacute;n para sala m&eacute;dica privada</p>
 <p class="doc-byline">Documento elaborado por la comisi&oacute;n de An&aacute;lisis y Management &middot; Enunciado 2<br>
-Versi&oacute;n 5 &middot; mismo alcance que la versi&oacute;n anterior, con <strong>un &uacute;nico implementador por User Story</strong></p>
+Versi&oacute;n 6 &middot; <strong>alcance ampliado</strong>: m&oacute;dulo de vacunas, m&oacute;dulo de reportes, US-17, US-30 y US-62<br>
+La aplicaci&oacute;n m&oacute;vil deja de ser un m&oacute;dulo: la web se construye <strong>responsive</strong> (RNF-08)</p>
 
 <h2>1. Prop&oacute;sito</h2>
 
@@ -23,27 +24,48 @@ Versi&oacute;n 5 &middot; mismo alcance que la versi&oacute;n anterior, con <str
 la c&aacute;tedra y con la capacidad real del equipo implementador. Es el insumo de partida para la reuni&oacute;n de
 priorizaci&oacute;n del Sprint 0 y para la planificaci&oacute;n formal en ProjectLibre.</p>
 
-<p class="note"><strong>Archivo de planificaci&oacute;n:</strong> <code>projectlibre/AuraHealth_v5.xml</code>, en formato MS Project XML,
-que ProjectLibre abre desde <em>Archivo &rarr; Abrir</em>. Contiene las 45 tareas del plan, los cinco implementadores como
-recursos y <strong>una &uacute;nica asignaci&oacute;n de recurso por tarea</strong>. Su calendario modela la dedicaci&oacute;n real: 2,5 horas
-por d&iacute;a h&aacute;bil, de modo que la duraci&oacute;n de cada historia es la que le lleva a su due&ntilde;o trabajando solo. Se regenera
-con <code>node projectlibre/build-plan.js</code>. El <code>.pod</code> de la versi&oacute;n 2 se conserva como registro hist&oacute;rico.</p>
+<p class="note"><strong>Archivo de planificaci&oacute;n:</strong> <code>ProjectLibre/AuraHealth_v6.xml</code>, en formato MS Project XML,
+que ProjectLibre abre desde <em>Archivo &rarr; Abrir</em>. Contiene las 59 tareas del plan, los cinco implementadores como
+recursos y 62 asignaciones: una por integrante que trabaja en cada historia. Su calendario modela la dedicaci&oacute;n
+planificada, 2,65 horas por d&iacute;a h&aacute;bil (09:00&ndash;11:39). Se regenera con <code>node ProjectLibre/build-plan.js</code>, que
+adem&aacute;s verifica que ning&uacute;n integrante supere el tope de horas de su sprint y recalcula el cronograma de la
+secci&oacute;n 7. El <code>.pod</code> y el <code>AuraHealth_v5.xml</code> se conservan como registro hist&oacute;rico.</p>
 
 <div class="callout">
   <h4>Qu&eacute; cambi&oacute; en esta versi&oacute;n</h4>
-  <p>Una sola cosa: <strong>cada User Story la ejecuta un &uacute;nico integrante, de punta a punta</strong>. La versi&oacute;n anterior
-  repart&iacute;a cada historia entre dos o tres personas.</p>
-  <p><strong>El alcance no se toc&oacute;.</strong> Las mismas 27 User Stories, los mismos 73 puntos, la misma distribuci&oacute;n por
-  sprint (23 / 25 / 25) y las mismas estimaciones. No se retir&oacute; ninguna historia ni se movi&oacute; ninguna de sprint.</p>
-  <p><strong>En horas, el plan mejora.</strong> Las 27 historias se reparten entre los cinco integrantes con una carga de
-  <strong>16,5 horas por persona y por sprint</strong> sobre 17,5 disponibles: un 92% de ocupaci&oacute;n del equipo, el mejor
-  n&uacute;mero de todas las versiones del plan. La secci&oacute;n 4.4 tiene el detalle.</p>
-  <p><strong>En cronograma, el plan deja de cerrar.</strong> Con un solo due&ntilde;o a 2,5 horas diarias, una historia de 4 puntos
-  tarda 5,3 d&iacute;as en lugar de 1,8, y la cadena de dependencias deja de poder comprimirse poniendo gente en paralelo.
-  El proyecto pasa a necesitar <strong>47,9 d&iacute;as de implementaci&oacute;n contra los 21 disponibles</strong>. La secci&oacute;n 7 lo
-  cuantifica historia por historia y enumera las cuatro palancas para resolverlo.</p>
-  <p class="trace">Las dos cosas son ciertas a la vez y no se contradicen: sobra gente para hacer el trabajo, pero el
-  trabajo est&aacute; encadenado y cada eslab&oacute;n ahora lo levanta una sola persona.</p>
+  <p><strong>Se reincorpora al alcance lo que el cliente pidi&oacute; recuperar.</strong> El plan pasa de 27 a
+  <strong>39 User Stories</strong> y de 67 a <strong>89 puntos</strong> de historias, m&aacute;s los 6 de reserva para bugs. Entran:</p>
+  <ul>
+    <li><strong>M&oacute;dulo de vacunas completo</strong> &mdash; US-24, US-63, US-28, US-29 y US-57 (10 puntos).</li>
+    <li><strong>M&oacute;dulo de reportes completo</strong> &mdash; se suman US-48, US-49 y US-50 a las ya comprometidas US-45 y US-47 (3 puntos).</li>
+    <li><strong>US-17</strong> gesti&oacute;n de turnos desde mostrador, <strong>US-30</strong> bloqueo de una franja publicada y
+    <strong>US-62</strong> adjuntar estudios a la ficha (8 puntos).</li>
+    <li><strong>US-22</strong> aviso por modificaci&oacute;n de agenda (1 punto), arrastrada por US-30: avisar a los pacientes
+    afectados es uno de sus criterios de aceptaci&oacute;n, de modo que sin US-22 la historia no se puede verificar.</li>
+  </ul>
+  <p><strong>La aplicaci&oacute;n m&oacute;vil no se implementa como m&oacute;dulo.</strong> En lugar de las cinco historias US-51 a US-55
+  se construye la web con dise&ntilde;o adaptable. No hace falta inventar un requerimiento: <strong>RNF-08 ya exist&iacute;a</strong>
+  &mdash;compatibilidad y dise&ntilde;o adaptable&mdash;, as&iacute; que absorbe RF-MOV-01 a RF-MOV-05, se explicita como transversal y
+  <strong>pasa de Should a Must</strong>. Es el mismo mecanismo con el que RNF-03 absorbi&oacute; a RF-USR-04 el 19/09: el
+  esfuerzo no desaparece, se distribuye entre las historias que construyen pantallas.</p>
+  <p><strong>Para absorberlo se accionan tres palancas</strong> de las que la versi&oacute;n anterior dejaba planteadas en su
+  secci&oacute;n 7.3:</p>
+  <ul>
+    <li>La jornada sube de 2,5 a <strong>2,65 horas diarias</strong>, dentro del rango de 2 a 3 h que declar&oacute; el equipo.</li>
+    <li>El Sprint 3 <strong>implementa durante la semana del parcial</strong> (02&ndash;06/11). El proyecto pasa de 21 a
+    <strong>26 d&iacute;as de implementaci&oacute;n</strong>.</li>
+    <li>Se relaja la regla de un &uacute;nico implementador: cada historia conserva <strong>un due&ntilde;o responsable</strong>, pero
+    las de 3 puntos las ejecuta una pareja y las de 4 o 5, un tr&iacute;o.</li>
+  </ul>
+  <p><strong>En horas el plan cierra con margen.</strong> Las 313,5 horas de demanda entran en las 344,5 de capacidad
+  &mdash;un 91% de ocupaci&oacute;n&mdash; y <strong>ning&uacute;n integrante supera el tope de horas de su sprint</strong>. La secci&oacute;n 4.4
+  tiene el detalle.</p>
+  <p><strong>En cronograma el plan sigue sin cerrar, pero la brecha se reduce a menos de la mitad.</strong> El proyecto
+  necesita <strong>37,7 d&iacute;as de implementaci&oacute;n contra los 26 disponibles</strong>: faltan 11,7, cuando en la versi&oacute;n
+  anterior faltaban 26,9. La secci&oacute;n 7 lo cuantifica historia por historia.</p>
+  <p class="trace">El equipo de an&aacute;lisis dej&oacute; constancia de que el alcance ampliado no cierra en el plazo y el cliente
+  resolvi&oacute; incorporarlo igual. La secci&oacute;n 7.3 enumera qu&eacute; falta accionar y la 7.4, el orden en que se recortar&iacute;a si
+  hubiera que recortar.</p>
 </div>
 
 <h2>2. Calendario del proyecto</h2>
@@ -56,41 +78,45 @@ con <code>node projectlibre/build-plan.js</code>. El <code>.pod</code> de la ver
     <tr><td class="id">Sprint 0</td><td>2 semanas</td><td>&mdash; (revisi&oacute;n con el ayudante 24/09)</td><td>Domingo 27/09</td></tr>
     <tr><td class="id">Sprint 1</td><td>2 semanas &middot; d&iacute;as 1 a 7 de implementaci&oacute;n</td><td>Jueves 08/10</td><td>Domingo 11/10</td></tr>
     <tr><td class="id">Sprint 2</td><td>2 semanas &middot; d&iacute;as 8 a 14</td><td>Jueves 22/10</td><td>Domingo 25/10</td></tr>
-    <tr><td class="id">Sprint 3</td><td>3 semanas &middot; d&iacute;as 15 a 21 (parcial de la materia en el medio)</td><td>Jueves 12/11</td><td>Domingo 15/11</td></tr>
+    <tr><td class="id">Sprint 3</td><td>3 semanas &middot; d&iacute;as 15 a 26 (<strong>se implementa tambi&eacute;n en la semana del parcial</strong>)</td><td>Jueves 12/11</td><td>Domingo 15/11</td></tr>
     <tr><td class="id">Cierre del proyecto</td><td>1 semana</td><td>&mdash;</td><td>Informe final 22/11</td></tr>
     <tr><td class="id">Presentaci&oacute;n</td><td>&mdash;</td><td>&mdash;</td><td>Slides 24/11 12:00 &middot; Presentaci&oacute;n 24/11 y 26/11</td></tr>
   </tbody>
 </table>
 
-<p class="note"><strong>Numeraci&oacute;n continua de los d&iacute;as.</strong> Con un &uacute;nico due&ntilde;o por historia varias historias duran m&aacute;s
-que un sprint y cruzan el l&iacute;mite entre etapas. Por eso este documento numera los <strong>21 d&iacute;as de implementaci&oacute;n de
-forma continua, del 1 al 21</strong>: d&iacute;as 1 a 7 el Sprint 1, 8 a 14 el Sprint 2, 15 a 21 el Sprint 3. La correspondencia
+<p class="note"><strong>Numeraci&oacute;n continua de los d&iacute;as.</strong> Varias historias duran m&aacute;s que un sprint y cruzan el
+l&iacute;mite entre etapas. Por eso este documento numera los <strong>26 d&iacute;as de implementaci&oacute;n de
+forma continua, del 1 al 26</strong>: d&iacute;as 1 a 7 el Sprint 1, 8 a 14 el Sprint 2, 15 a 26 el Sprint 3. La correspondencia
 con las fechas est&aacute; en la secci&oacute;n 4.1.</p>
 
 <h2>3. Criterios utilizados para dividir los sprints</h2>
 
 <ul>
-  <li><strong>Un &uacute;nico implementador por User Story.</strong> Cada historia tiene un due&ntilde;o que la ejecuta entera; nadie m&aacute;s escribe c&oacute;digo sobre ella. La verificaci&oacute;n la hace otro integrante, seg&uacute;n la condici&oacute;n 3 de la definici&oacute;n de terminado.</li>
+  <li><strong>Un due&ntilde;o responsable por User Story, con copiloto en las grandes.</strong> Cada historia tiene un &uacute;nico due&ntilde;o, que la dise&ntilde;a y responde por ella. Las de 1 y 2 puntos las ejecuta el due&ntilde;o solo; las de 3 puntos, una pareja; las de 4 y 5, un tr&iacute;o. La verificaci&oacute;n la hace un integrante <strong>ajeno al equipo de la historia</strong>, seg&uacute;n la condici&oacute;n 3 de la definici&oacute;n de terminado. La secci&oacute;n 4.4 explica por qu&eacute; el alcance ampliado no entra sin esta relajaci&oacute;n.</li>
   <li><strong>Dependencia t&eacute;cnica.</strong> No hay reserva de turnos sin agenda publicada, ni cobro sin turno registrado, ni ficha de diagn&oacute;stico sin consulta asociada. El grafo completo est&aacute; en la secci&oacute;n 5 del cat&aacute;logo de User Stories.</li>
-  <li><strong>Reparto equilibrado en horas, no en cantidad de historias.</strong> Lo que se consume es tiempo: I2 toma siete historias y I5, cuatro, pero ambos quedan cerca de las 16,5 horas por sprint. La secci&oacute;n 4.4 lo detalla.</li>
+  <li><strong>Reparto equilibrado en horas, no en cantidad de historias.</strong> Lo que se consume es tiempo. Ning&uacute;n integrante supera el tope de horas de su sprint y entre el m&aacute;s y el menos cargado hay menos de 4 horas en todo el proyecto. La secci&oacute;n 4.4 lo detalla.</li>
   <li><strong>Ninguna historia cr&iacute;tica sin respaldo documental.</strong> Con un solo autor por historia desaparece el segundo integrante con contexto. El dise&ntilde;o de cada historia del camino cr&iacute;tico se documenta antes de empezarla.</li>
   <li><strong>Valor demostrable en cada demo.</strong> Cada sprint cierra con al menos un flujo completo de punta a punta.</li>
+  <li><strong>Los m&oacute;dulos entran completos.</strong> El de vacunas y el de reportes se incorporan enteros. Un m&oacute;dulo a medias deja funcionalidad que no se puede demostrar ni verificar; es el mismo criterio con el que se hab&iacute;an retirado.</li>
+  <li><strong>El dise&ntilde;o adaptable es transversal.</strong> RNF-08 se verifica dentro de cada historia con interfaz, igual que el control de acceso por rol (RNF-03). No genera historias propias, ni precedencias, ni puntos.</li>
   <li><strong>Bugs del sprint anterior.</strong> Los Sprints 2 y 3 reservan 3 puntos cada uno, asignados a los carriles que no est&aacute;n sobre el camino cr&iacute;tico.</li>
 </ul>
 
 <h2>4. Hip&oacute;tesis de capacidad</h2>
 
-<p>La comisi&oacute;n implementadora es de <strong>5 integrantes con asistencia de herramientas de IA</strong>. Los par&aacute;metros de
-horas no cambiaron respecto de la versi&oacute;n anterior; lo que cambi&oacute; es c&oacute;mo se asignan.</p>
+<p>La comisi&oacute;n implementadora es de <strong>5 integrantes con asistencia de herramientas de IA</strong>. La equivalencia de
+3,30 horas por punto y las estimaciones de cada historia no cambiaron. Lo que cambi&oacute; son los d&iacute;as disponibles
+&mdash;26 en lugar de 21&mdash;, la jornada planificada &mdash;2,65 h en lugar de 2,5&mdash; y cu&aacute;nta gente trabaja en cada
+historia.</p>
 
-<h3>4.1 D&iacute;as disponibles: siete por sprint, veintiuno en total</h3>
+<h3>4.1 D&iacute;as disponibles: 7 + 7 + 12, veintis&eacute;is en total</h3>
 
 <table>
   <colgroup><col style="width:56pt"><col style="width:150pt"><col></colgroup>
   <thead><tr><th class="c">D&iacute;a</th><th>Actividad</th><th>Qu&eacute; ocurre</th></tr></thead>
   <tbody>
     <tr><td class="c id">1</td><td>Refinement y conocimiento de las US</td><td>Ambas comisiones recorren las historias del sprint, sus criterios de aceptaci&oacute;n y sus wireframes, y se confirma qui&eacute;n es due&ntilde;o de cada una.</td></tr>
-    <tr><td class="c id">2 a 8</td><td><strong>Implementaci&oacute;n &mdash; 7 d&iacute;as netos</strong></td><td>&Uacute;nica ventana con capacidad de desarrollo: 5 integrantes &times; 7 d&iacute;as &times; 2,5 h = <strong>87,5 horas</strong>.</td></tr>
+    <tr><td class="c id">2 a 8</td><td><strong>Implementaci&oacute;n</strong></td><td>&Uacute;nica ventana con capacidad de desarrollo: 5 integrantes &times; 2,65 h = 13,25 horas por d&iacute;a. <strong>92,8 horas</strong> en los Sprints 1 y 2, de 7 d&iacute;as; <strong>159,0 horas</strong> en el Sprint 3, de 12.</td></tr>
     <tr><td class="c id">9</td><td>Demo</td><td>Reuni&oacute;n evaluada con el ayudante en su rol de cliente, en la consulta de proyecto del jueves.</td></tr>
     <tr><td class="c id">10</td><td>Testing de regresi&oacute;n y cierre</td><td>Pruebas de regresi&oacute;n, cierre de observaciones, retrospectiva y armado de la entrega del domingo.</td></tr>
   </tbody>
@@ -102,29 +128,33 @@ horas no cambiaron respecto de la versi&oacute;n anterior; lo que cambi&oacute; 
   <tbody>
     <tr><td class="id">Sprint 1</td><td>Lun 28/09</td><td><strong>1</strong> 29/09 &middot; <strong>2</strong> 30/09 &middot; <strong>3</strong> 01/10 &middot; <strong>4</strong> 02/10 &middot; <strong>5</strong> 05/10 &middot; <strong>6</strong> 06/10 &middot; <strong>7</strong> 07/10</td><td>Jue 08/10</td><td>Vie 09/10</td></tr>
     <tr><td class="id">Sprint 2</td><td>Lun 12/10</td><td><strong>8</strong> 13/10 &middot; <strong>9</strong> 14/10 &middot; <strong>10</strong> 15/10 &middot; <strong>11</strong> 16/10 &middot; <strong>12</strong> 19/10 &middot; <strong>13</strong> 20/10 &middot; <strong>14</strong> 21/10</td><td>Jue 22/10</td><td>Vie 23/10</td></tr>
-    <tr><td class="id">Sprint 3</td><td>Lun 26/10</td><td><strong>15</strong> 27/10 &middot; <strong>16</strong> 28/10 &middot; <strong>17</strong> 29/10 &middot; <strong>18</strong> 30/10 &middot; <em>parcial 02&ndash;06/11</em> &middot; <strong>19</strong> 09/11 &middot; <strong>20</strong> 10/11 &middot; <strong>21</strong> 11/11</td><td>Jue 12/11</td><td>Vie 13/11</td></tr>
+    <tr><td class="id">Sprint 3</td><td>Lun 26/10</td><td><strong>15</strong> 27/10 &middot; <strong>16</strong> 28/10 &middot; <strong>17</strong> 29/10 &middot; <strong>18</strong> 30/10 &middot; <strong>19</strong> 02/11 &middot; <strong>20</strong> 03/11 &middot; <strong>21</strong> 04/11 &middot; <strong>22</strong> 05/11 &middot; <strong>23</strong> 06/11 &middot; <strong>24</strong> 09/11 &middot; <strong>25</strong> 10/11 &middot; <strong>26</strong> 11/11</td><td>Jue 12/11</td><td>Vie 13/11</td></tr>
   </tbody>
 </table>
 
-<h3>4.2 Horas disponibles: 2,5 diarias por integrante</h3>
+<h3>4.2 Horas disponibles: 2,65 diarias por integrante</h3>
 
-<p>La c&aacute;tedra fija un tope de 10 horas semanales por alumno, pero el tope no es la dedicaci&oacute;n. La hip&oacute;tesis adoptada
-es la declarada por el equipo: <strong>entre 2 y 3 horas diarias</strong>, planificada sobre el punto medio.</p>
+<p>La c&aacute;tedra fija un tope de 10 horas semanales por alumno, pero el tope no es la dedicaci&oacute;n. La hip&oacute;tesis sigue
+siendo la declarada por el equipo, <strong>entre 2 y 3 horas diarias</strong>; lo que cambia es que el plan ya no se apoya
+en el punto medio sino un escal&oacute;n por encima, en <strong>2,65 horas</strong>. Es la primera de las tres palancas que
+absorben el alcance ampliado.</p>
 
 <table>
-  <colgroup><col><col style="width:64pt"><col style="width:64pt"><col style="width:64pt"></colgroup>
-  <thead><tr><th>Escenario</th><th class="c">Piso (2 h/d&iacute;a)</th><th class="c"><strong>Plan (2,5 h/d&iacute;a)</strong></th><th class="c">Techo (3 h/d&iacute;a)</th></tr></thead>
+  <colgroup><col><col style="width:64pt"><col style="width:64pt"><col style="width:64pt"><col style="width:64pt"></colgroup>
+  <thead><tr><th>Escenario</th><th class="c">Piso (2 h/d&iacute;a)</th><th class="c">2,5 h/d&iacute;a</th><th class="c"><strong>Plan (2,65 h/d&iacute;a)</strong></th><th class="c">Techo (3 h/d&iacute;a)</th></tr></thead>
   <tbody>
-    <tr><td>Horas por integrante y por sprint</td><td class="c">14</td><td class="c"><strong>17,5</strong></td><td class="c">21</td></tr>
-    <tr><td>Horas del equipo en los tres sprints</td><td class="c">210</td><td class="c"><strong>262,5</strong></td><td class="c">315</td></tr>
-    <tr><td>Duraci&oacute;n de una historia de 4 puntos</td><td class="c">6,6 d&iacute;as</td><td class="c"><strong>5,3 d&iacute;as</strong></td><td class="c">4,4 d&iacute;as</td></tr>
-    <tr><td>D&iacute;as que necesita el proyecto</td><td class="c">59,9</td><td class="c"><strong>47,9</strong></td><td class="c">41,1</td></tr>
+    <tr><td>Horas por integrante, Sprints 1 y 2 (7 d&iacute;as)</td><td class="c">14,0</td><td class="c">17,5</td><td class="c"><strong>18,6</strong></td><td class="c">21,0</td></tr>
+    <tr><td>Horas por integrante, Sprint 3 (12 d&iacute;as)</td><td class="c">24,0</td><td class="c">30,0</td><td class="c"><strong>31,8</strong></td><td class="c">36,0</td></tr>
+    <tr><td>Horas del equipo en los tres sprints</td><td class="c">260,0</td><td class="c">325,0</td><td class="c"><strong>344,5</strong></td><td class="c">390,0</td></tr>
+    <tr><td>Duraci&oacute;n de una historia de 4 puntos, con tr&iacute;o</td><td class="c">2,2 d&iacute;as</td><td class="c">1,8 d&iacute;as</td><td class="c"><strong>1,7 d&iacute;as</strong></td><td class="c">1,5 d&iacute;as</td></tr>
+    <tr><td>D&iacute;as que necesita el proyecto</td><td class="c">44,4</td><td class="c">39,1</td><td class="c"><strong>37,7</strong></td><td class="c">34,9</td></tr>
   </tbody>
 </table>
 
-<p class="note">Con un &uacute;nico implementador por historia, la fila que gobierna el plan no es la de horas sino la de
-<strong>duraci&oacute;n de una historia</strong>. Las horas entran en los tres escenarios; lo que determina si el proyecto llega a
-tiempo es cu&aacute;nto tarda una persona sola en cerrar cada eslab&oacute;n de la cadena.</p>
+<p class="note">La &uacute;ltima fila la calcula <code>build-plan.js</code> con una pasada hacia adelante sobre el grafo de
+precedencias. <strong>Subir la dedicaci&oacute;n rinde poco</strong>: del piso al techo, un 50% m&aacute;s de horas diarias, el proyecto
+solo se acorta un 21%. Lo que gobierna el cronograma no son las horas disponibles sino la longitud de la cadena de
+dependencias, y eso se ataca con las otras dos palancas: m&aacute;s d&iacute;as y m&aacute;s gente por historia.</p>
 
 <h3>4.3 Horas por punto de historia</h3>
 
@@ -145,55 +175,64 @@ sobre las 4 horas de la l&iacute;nea de base sin asistencia de IA.</p>
 
 <h3>4.4 El efecto de la regla de asignaci&oacute;n</h3>
 
+<p>La regla de un &uacute;nico implementador multiplicaba la duraci&oacute;n de cada eslab&oacute;n de la cadena. Con 39 historias en
+lugar de 27 era insostenible, as&iacute; que se relaja: el due&ntilde;o sigue siendo uno y responde por su historia, pero las
+grandes se ejecutan acompa&ntilde;adas. <strong>Las horas no cambian; se reparten entre m&aacute;s manos y la historia dura
+menos.</strong></p>
+
 <table>
-  <colgroup><col style="width:56pt"><col style="width:56pt"><col style="width:92pt"><col style="width:92pt"><col></colgroup>
-  <thead><tr><th class="c">Puntos</th><th class="c">Horas</th><th class="c">Repartida</th><th class="c">Con un due&ntilde;o</th><th>Historias de este tama&ntilde;o</th></tr></thead>
+  <colgroup><col style="width:52pt"><col style="width:52pt"><col style="width:58pt"><col style="width:66pt"><col style="width:80pt"><col></colgroup>
+  <thead><tr><th class="c">Puntos</th><th class="c">Horas</th><th class="c">Equipo</th><th class="c">H. por persona</th><th class="c">Duraci&oacute;n</th><th>Historias de este tama&ntilde;o</th></tr></thead>
   <tbody>
-    <tr><td class="c">1</td><td class="c">3,3</td><td class="c">0,4 d&iacute;as</td><td class="c">1,3 d&iacute;as</td><td>US-44, US-47</td></tr>
-    <tr><td class="c">2</td><td class="c">6,6</td><td class="c">0,9 d&iacute;as</td><td class="c">2,6 d&iacute;as</td><td>Quince historias, entre ellas US-10, US-12, US-18 y US-35</td></tr>
-    <tr><td class="c">3</td><td class="c">9,9</td><td class="c">1,3 d&iacute;as</td><td class="c">4,0 d&iacute;as</td><td>US-02, US-03, US-13, US-21, US-34, US-39</td></tr>
-    <tr><td class="c">4</td><td class="c">13,2</td><td class="c">1,8 d&iacute;as</td><td class="c"><strong>5,3 d&iacute;as</strong></td><td>US-01, US-08, US-11</td></tr>
-    <tr><td class="c">5</td><td class="c">16,5</td><td class="c">2,2 d&iacute;as</td><td class="c"><strong>6,6 d&iacute;as</strong></td><td>US-06</td></tr>
+    <tr><td class="c">1</td><td class="c">3,3</td><td class="c">1</td><td class="c">3,3</td><td class="c">1,2 d&iacute;as</td><td>US-22, US-29, US-44, US-47, US-48, US-49, US-50, US-57</td></tr>
+    <tr><td class="c">2</td><td class="c">6,6</td><td class="c">1</td><td class="c">6,6</td><td class="c">2,5 d&iacute;as</td><td>Trece historias, entre ellas US-10, US-12, US-18, US-24, US-30 y US-35</td></tr>
+    <tr><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>2</strong></td><td class="c">4,9</td><td class="c"><strong>1,9 d&iacute;as</strong></td><td>US-02, US-03, US-13, US-17, US-21, US-28, US-34, US-39, US-62, US-63</td></tr>
+    <tr><td class="c">4</td><td class="c">13,2</td><td class="c"><strong>3</strong></td><td class="c">4,4</td><td class="c"><strong>1,7 d&iacute;as</strong></td><td>US-01, US-08 &mdash; y US-11, que va en pareja y tarda 2,5</td></tr>
+    <tr><td class="c">5</td><td class="c">16,5</td><td class="c"><strong>3</strong></td><td class="c">5,5</td><td class="c"><strong>2,1 d&iacute;as</strong></td><td>US-06</td></tr>
   </tbody>
 </table>
 
-<p>Sobre una historia aislada el efecto es manejable. Sobre la <strong>cadena</strong> de historias encadenadas se acumula: el
-camino cr&iacute;tico son 13 historias y 122,1 horas, que con una sola persona por eslab&oacute;n se convierten en
-<strong>48,8 d&iacute;as</strong> de trabajo estrictamente secuencial.</p>
+<p class="note">La contrapartida es de calidad, no de cronograma: <strong>la condici&oacute;n 3 de la definici&oacute;n de terminado se
+endurece</strong>. Antes bastaba con que la probara alguien distinto del due&ntilde;o; ahora la tiene que probar alguien
+<strong>ajeno al equipo completo</strong> de la historia. En las de 4 y 5 puntos, donde trabajan tres, solo quedan dos
+candidatos posibles.</p>
 
-<h4>Reparto de las 27 historias entre los cinco integrantes</h4>
+<h4>Reparto de las 39 historias entre los cinco integrantes</h4>
 
 <table>
-  <colgroup><col style="width:28pt"><col style="width:120pt"><col><col style="width:44pt"></colgroup>
-  <thead><tr><th class="c">ID</th><th>Perfil</th><th>Historias que ejecuta</th><th class="c">Horas</th></tr></thead>
+  <colgroup><col style="width:28pt"><col style="width:104pt"><col><col style="width:40pt"></colgroup>
+  <thead><tr><th class="c">ID</th><th>Perfil</th><th>Due&ntilde;o de &middot; <span class="trace">copiloto en</span></th><th class="c">Horas</th></tr></thead>
   <tbody>
-    <tr><td class="c id">I1</td><td>Dominio y reglas de negocio</td><td>US-01, US-21, US-18, US-32, US-34</td><td class="c">46,2</td></tr>
-    <tr><td class="c id">I2</td><td>Persistencia y servicios</td><td>US-02, US-03, US-13, US-20, US-35, US-36, US-47</td><td class="c">52,8</td></tr>
-    <tr><td class="c id">I3</td><td>Front-end: vistas y navegaci&oacute;n</td><td>US-08, US-10, US-14, US-39, US-40 &middot; <span class="trace">bugs S1</span></td><td class="c">46,2</td></tr>
-    <tr><td class="c id">I4</td><td>Front-end: formularios y UX</td><td>US-11, US-12, US-16, US-41, US-44, US-45 &middot; <span class="trace">bugs S1</span></td><td class="c">46,2</td></tr>
-    <tr><td class="c id">I5</td><td>Integraci&oacute;n y pruebas</td><td>US-06, US-15, US-64, US-33 &middot; <span class="trace">bugs S1 y S2</span></td><td class="c">49,5</td></tr>
+    <tr><td class="c id">I1</td><td>Dominio y reglas de negocio</td><td>US-01, US-21, US-24, US-18, US-32, US-48, US-34, US-49 &middot; <span class="trace">copiloto en US-06, US-08, US-63 &middot; bugs S2</span></td><td class="c">62,1</td></tr>
+    <tr><td class="c id">I2</td><td>Persistencia y servicios</td><td>US-02, US-03, US-13, US-20, US-64, US-35, US-36, US-47, US-50 &middot; <span class="trace">copiloto en US-11, US-34, US-62</span></td><td class="c">64,3</td></tr>
+    <tr><td class="c id">I3</td><td>Front-end: vistas y navegaci&oacute;n</td><td>US-08, US-10, US-14, US-39, US-22, US-40, US-62, US-57 &middot; <span class="trace">copiloto en US-01, US-06, US-21, US-28</span></td><td class="c">60,5</td></tr>
+    <tr><td class="c id">I4</td><td>Front-end: formularios y UX</td><td>US-11, US-12, US-16, US-45, US-41, US-29, US-44 &middot; <span class="trace">copiloto en US-02, US-03, US-39, US-17 &middot; bugs S1</span></td><td class="c">62,7</td></tr>
+    <tr><td class="c id">I5</td><td>Integraci&oacute;n y pruebas</td><td>US-06, US-15, US-63, US-33, US-30, US-28, US-17 &middot; <span class="trace">copiloto en US-01, US-08, US-13 &middot; bugs S1 y S2</span></td><td class="c">63,8</td></tr>
   </tbody>
-  <tfoot><tr><td colspan="3">27 historias &middot; 5 due&ntilde;os &middot; ninguna historia compartida &middot; capacidad 262,5 h</td><td class="c">240,9</td></tr></tfoot>
+  <tfoot><tr><td colspan="3">39 historias &middot; 5 due&ntilde;os &middot; capacidad 344,5 h &middot; entre el m&aacute;s y el menos cargado hay 3,8 h</td><td class="c">313,5</td></tr></tfoot>
 </table>
 
 <table>
   <colgroup><col style="width:150pt"><col style="width:46pt"><col style="width:46pt"><col style="width:46pt"><col style="width:46pt"><col style="width:46pt"><col style="width:52pt"></colgroup>
   <thead><tr><th>Horas comprometidas</th><th class="c">I1</th><th class="c">I2</th><th class="c">I3</th><th class="c">I4</th><th class="c">I5</th><th class="c">Total</th></tr></thead>
   <tbody>
-    <tr><td>Sprint 1</td><td class="c">13,2</td><td class="c"><strong>19,8</strong></td><td class="c">13,2</td><td class="c">13,2</td><td class="c">16,5</td><td class="c">75,9</td></tr>
-    <tr><td>Sprint 2 (con reserva de bugs)</td><td class="c">16,5</td><td class="c">16,5</td><td class="c">16,5</td><td class="c">16,5</td><td class="c">16,5</td><td class="c">82,5</td></tr>
-    <tr><td>Sprint 3 (con reserva de bugs)</td><td class="c">16,5</td><td class="c">16,5</td><td class="c">16,5</td><td class="c">16,5</td><td class="c">16,5</td><td class="c">82,5</td></tr>
+    <tr><td>Sprint 1 &middot; <span class="trace">tope 18,6</span></td><td class="c">14,3</td><td class="c">16,5</td><td class="c">14,3</td><td class="c">16,5</td><td class="c">14,3</td><td class="c">75,9</td></tr>
+    <tr><td>Sprint 2 &middot; <span class="trace">tope 18,6</span></td><td class="c">18,1</td><td class="c">18,1</td><td class="c">18,1</td><td class="c">16,5</td><td class="c">18,1</td><td class="c">89,1</td></tr>
+    <tr><td>Sprint 3 &middot; <span class="trace">tope 31,8</span></td><td class="c">29,7</td><td class="c">29,7</td><td class="c">28,0</td><td class="c">29,7</td><td class="c">31,3</td><td class="c">148,5</td></tr>
   </tbody>
-  <tfoot><tr><td>Horas diarias que implica, m&aacute;ximo</td><td class="c">2,36</td><td class="c"><strong>2,83</strong></td><td class="c">2,36</td><td class="c">2,36</td><td class="c">2,36</td><td class="c">&mdash;</td></tr></tfoot>
+  <tfoot><tr><td>Total del proyecto &middot; <span class="trace">tope 68,9</span></td><td class="c">62,1</td><td class="c">64,3</td><td class="c">60,5</td><td class="c">62,7</td><td class="c">63,8</td><td class="c"><strong>313,5</strong></td></tr></tfoot>
 </table>
 
 <div class="callout">
-  <h4>El reparto en horas es el mejor de todas las versiones del plan</h4>
-  <p>Los Sprints 2 y 3 quedan con <strong>16,5 horas exactas para cada integrante</strong>, un 94% de las 17,5 disponibles. La
-  &uacute;nica excepci&oacute;n es <strong>I2 en el Sprint 1</strong>, que toma US-02 y US-03 y llega a 19,8 horas, es decir 2,83 horas
-  diarias: dentro del rango declarado de 2 a 3, pero por encima del valor de planificaci&oacute;n. Es inevitable: son seis
-  historias para cinco personas y el par m&aacute;s barato suma 19,8 horas.</p>
-  <p class="trace">Lo que no cierra es el cronograma, no la capacidad. La secci&oacute;n 7 lo cuantifica.</p>
+  <h4>En horas el alcance ampliado entra, y entra parejo</h4>
+  <p><strong>Ning&uacute;n integrante supera el tope de horas de ning&uacute;n sprint.</strong> Lo verifica
+  <code>build-plan.js</code> en cada corrida. El sprint m&aacute;s ajustado es el 2, al 96% de su capacidad; el 3, que absorbe
+  20 de los 22 puntos nuevos, queda al 93% porque tiene 12 d&iacute;as en lugar de 7.</p>
+  <p>La dispersi&oacute;n entre el integrante m&aacute;s y el menos cargado es de <strong>3,8 horas en todo el proyecto</strong>, sobre
+  algo m&aacute;s de 60. Es el reparto m&aacute;s parejo de todas las versiones del plan, y ninguna persona queda como punto
+  &uacute;nico de falla de un m&oacute;dulo entero: el de vacunas lo llevan I5 e I1 con copiloto de I3, y el de reportes se
+  reparte entre I1, I2 y I4.</p>
+  <p class="trace">Lo que no cierra sigue siendo el cronograma. La secci&oacute;n 7 lo cuantifica.</p>
 </div>
 
 <h2>5. Distribuci&oacute;n general</h2>
@@ -203,15 +242,18 @@ camino cr&iacute;tico son 13 historias y 122,1 horas, que con una sola persona p
   <thead><tr><th>Etapa</th><th>Foco</th><th>M&oacute;dulos abordados</th><th class="c">Pts</th><th class="c">Horas</th><th class="c">Capacidad</th><th class="c">Ocupaci&oacute;n</th></tr></thead>
   <tbody>
     <tr><td class="id">Sprint 0</td><td>Preparaci&oacute;n</td><td>Sin implementaci&oacute;n funcional. Arquitectura, modelo de datos, repositorio, entorno y asignaci&oacute;n nominal de cada historia.</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr>
-    <tr><td class="id">Sprint 1</td><td>Cimientos y agenda</td><td>Usuarios y control de acceso (RF-USR), agenda m&eacute;dica hasta la generaci&oacute;n de turnos y la vista del profesional.</td><td class="c">23</td><td class="c">75,9</td><td class="c">87,5 h</td><td class="c">87%</td></tr>
-    <tr><td class="id">Sprint 2</td><td>Ciclo de reserva de turnos</td><td>Apertura de la agenda, reserva de turnos (RF-TUR), notificaciones (RF-NOT-01), bugs del Sprint 1.</td><td class="c">25</td><td class="c">82,5</td><td class="c">87,5 h</td><td class="c">94%</td></tr>
-    <tr><td class="id">Sprint 3</td><td>Dinero, datos cl&iacute;nicos y reportes</td><td>Pagos y coberturas (RF-PAG), historial cl&iacute;nico (RF-HIS), reportes (RF-REP-01 y 03), bugs del Sprint 2.</td><td class="c">25</td><td class="c">82,5</td><td class="c">87,5 h</td><td class="c">94%</td></tr>
+    <tr><td class="id">Sprint 1</td><td>Cimientos y agenda</td><td>Usuarios y control de acceso (RF-USR), agenda m&eacute;dica hasta la generaci&oacute;n de turnos y la vista del profesional. <span class="trace">6 US</span></td><td class="c">23</td><td class="c">75,9</td><td class="c">92,8 h</td><td class="c">82%</td></tr>
+    <tr><td class="id">Sprint 2</td><td>Ciclo de reserva de turnos</td><td>Apertura de la agenda, reserva de turnos (RF-TUR), notificaciones (RF-NOT-01), cat&aacute;logo de vacunas, bugs del Sprint 1. <span class="trace">11 US</span></td><td class="c">27</td><td class="c">89,1</td><td class="c">92,8 h</td><td class="c">96%</td></tr>
+    <tr><td class="id">Sprint 3</td><td>Vacunas, dinero, datos cl&iacute;nicos y reportes</td><td>Vacunatorio (RF-VAC), pagos y coberturas (RF-PAG), historial cl&iacute;nico (RF-HIS), reportes completos (RF-REP-01 a 06), mostrador y bloqueo de agenda, bugs del Sprint 2. <span class="trace">22 US</span></td><td class="c">43</td><td class="c">148,5</td><td class="c">159,0 h</td><td class="c">93%</td></tr>
   </tbody>
-  <tfoot><tr><td>Total</td><td>&mdash;</td><td>26 User Stories fuera del alcance &mdash; secci&oacute;n 8</td><td class="c">73</td><td class="c">240,9</td><td class="c">262,5 h</td><td class="c">92%</td></tr></tfoot>
+  <tfoot><tr><td>Total</td><td>&mdash;</td><td>39 User Stories comprometidas &middot; 14 fuera del alcance &mdash; secci&oacute;n 8</td><td class="c">95</td><td class="c">313,5</td><td class="c">344,5 h</td><td class="c">91%</td></tr></tfoot>
 </table>
 
-<p class="note">Los puntos incluyen la reserva para bugs de los Sprints 2 y 3. Esta distribuci&oacute;n es <strong>id&eacute;ntica a la de
-la versi&oacute;n anterior</strong>: lo &uacute;nico que cambi&oacute; es qui&eacute;n ejecuta cada historia.</p>
+<p class="note">Los puntos incluyen la reserva para bugs de los Sprints 2 y 3, 3 en cada uno. El
+<strong>Sprint 3 concentra 20 de los 22 puntos nuevos</strong>: es el &uacute;nico con 12 d&iacute;as de implementaci&oacute;n y el &uacute;nico
+donde las dependencias del m&oacute;dulo de vacunas y de los reportes ya est&aacute;n resueltas. En el Sprint 2 solo entra
+US-24, el cat&aacute;logo de vacunas, que depende &uacute;nicamente de US-03 y por eso puede arrancar mientras el resto del
+equipo espera que US-13 libere el ciclo de reserva.</p>
 
 <div class="page-break"></div>
 
@@ -261,8 +303,9 @@ a su due&ntilde;o</strong> y decidir cu&aacute;l de las palancas de la secci&oac
 
 <h4>Riesgos y puntos de atenci&oacute;n</h4>
 <ul>
-  <li><strong>La decisi&oacute;n sobre el cronograma es de este sprint.</strong> El alcance comprometido necesita 47,9 d&iacute;as de implementaci&oacute;n y hay 21. Llevar la secci&oacute;n 7 a la re-priorizaci&oacute;n y elegir palanca es el entregable m&aacute;s importante de esta etapa.</li>
-  <li><strong>La asignaci&oacute;n nominal deja de ser un detalle de gesti&oacute;n.</strong> Con un due&ntilde;o por historia, qui&eacute;n toma US-06 y US-08 determina la fecha de entrega. Conviene asignar las historias del camino cr&iacute;tico a quienes tengan la dedicaci&oacute;n diaria m&aacute;s estable.</li>
+  <li><strong>La decisi&oacute;n sobre el cronograma es de este sprint.</strong> El alcance ampliado necesita 37,7 d&iacute;as de implementaci&oacute;n y hay 26. El cliente pidi&oacute; incorporar las historias sabiendo que no cierra; llevar la secci&oacute;n 7 a la re-priorizaci&oacute;n y acordar qu&eacute; palanca se acciona es el entregable m&aacute;s importante de esta etapa.</li>
+  <li><strong>La asignaci&oacute;n nominal deja de ser un detalle de gesti&oacute;n.</strong> Qui&eacute;n toma US-06, US-08 y US-13 determina la fecha de entrega. Conviene asignar las historias del camino cr&iacute;tico a quienes tengan la dedicaci&oacute;n diaria m&aacute;s estable, y definir ah&iacute; mismo el verificador de cada una.</li>
+  <li><strong>Hay que acordar con el ayudante el uso de la semana del parcial.</strong> De ella dependen 5 de los 26 d&iacute;as de implementaci&oacute;n. Si no se puede usar, el Sprint 3 pierde 66,2 horas de capacidad y queda por debajo de lo que tiene comprometido.</li>
   <li><strong>Restricci&oacute;n cr&iacute;tica:</strong> si alg&uacute;n integrante de la comisi&oacute;n implementadora no curs&oacute; desarrollo web, la implementaci&oacute;n debe hacerse como aplicaci&oacute;n de escritorio. Hay que confirmarlo ac&aacute;.</li>
   <li><strong>Los wireframes est&aacute;n actualizados</strong> e indican al pie el due&ntilde;o de cada pantalla.</li>
   <li>El modelo de roles debe contemplar desde el inicio que <strong>M&eacute;dico es un rol gen&eacute;rico parametrizado por especialidad</strong> (RNF-14).</li>
@@ -277,22 +320,24 @@ autom&aacute;ticamente los turnos de 30 minutos.</p>
 
 <table>
   <colgroup><col style="width:46pt"><col><col style="width:30pt"><col style="width:40pt"><col style="width:44pt"><col style="width:40pt"><col style="width:66pt"></colgroup>
-  <thead><tr><th class="id">US</th><th>Alcance funcional</th><th class="c">Pts</th><th class="c">Horas</th><th class="c">Due&ntilde;o</th><th class="c">Dur.</th><th class="c">D&iacute;as reales</th></tr></thead>
+  <thead><tr><th class="id">US</th><th>Alcance funcional</th><th class="c">Pts</th><th class="c">Horas</th><th class="c">Equipo</th><th class="c">Dur.</th><th class="c">D&iacute;as reales</th></tr></thead>
   <tbody>
-    <tr><td class="id">US-01</td><td>Registro de usuarios con obra social y rol inicial <em>Usuario</em>, con gesti&oacute;n de los datos propios. <span class="trace">RF-USR-01, RF-USR-07</span></td><td class="c">4</td><td class="c">13,2</td><td class="c"><strong>I1</strong></td><td class="c">5,3 d</td><td class="c">1,0&ndash;6,3</td></tr>
-    <tr><td class="id">US-02</td><td>Autenticaci&oacute;n con credenciales e interfaz por rol. <span class="trace">RF-USR-02</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I2</strong></td><td class="c">4,0 d</td><td class="c">3,0&ndash;7,0</td></tr>
-    <tr><td class="id">US-03</td><td>Alta de usuarios internos con rol asignado y rol M&eacute;dico gen&eacute;rico por especialidad. <span class="trace">RF-USR-03, RF-USR-08</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I2</strong></td><td class="c">4,0 d</td><td class="c">7,0&ndash;10,9</td></tr>
-    <tr><td class="id">US-06</td><td>Carga de disponibilidad mensual y validaci&oacute;n de entre 2 y 7 jornadas semanales. <span class="trace">RF-AGE-01</span></td><td class="c">5</td><td class="c">16,5</td><td class="c"><strong>I5</strong></td><td class="c">6,6 d</td><td class="c">9,0&ndash;15,6</td></tr>
-    <tr><td class="id">US-08</td><td>Generaci&oacute;n autom&aacute;tica de turnos dividiendo cada franja en intervalos de 30 minutos. <span class="trace">RF-AGE-03</span></td><td class="c">4</td><td class="c">13,2</td><td class="c"><strong>I3</strong></td><td class="c">5,3 d</td><td class="c">15,6&ndash;20,8</td></tr>
-    <tr><td class="id">US-11</td><td>Vistas diaria, semanal y mensual de la agenda del profesional. <span class="trace">RF-AGE-05</span></td><td class="c">4</td><td class="c">13,2</td><td class="c"><strong>I4</strong></td><td class="c">5,3 d</td><td class="c">17,6&ndash;22,8</td></tr>
+    <tr><td class="id">US-01</td><td>Registro de usuarios con obra social y rol inicial Usuario. <span class="trace">RF-USR-01, RF-USR-07</span></td><td class="c">4</td><td class="c">13,2</td><td class="c"><strong>I1 + I3 + I5</strong></td><td class="c">1,7 d</td><td class="c">0,0&ndash;1,7</td></tr>
+    <tr><td class="id">US-02</td><td>Autenticaci&oacute;n con credenciales e interfaz por rol. <span class="trace">RF-USR-02</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I2 + I4</strong></td><td class="c">1,9 d</td><td class="c">2,0&ndash;3,9</td></tr>
+    <tr><td class="id">US-03</td><td>Alta de usuarios internos con rol asignado. <span class="trace">RF-USR-03, RF-USR-08</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I2 + I4</strong></td><td class="c">1,9 d</td><td class="c">4,0&ndash;5,9</td></tr>
+    <tr class="fuera"><td class="id">US-06</td><td>Carga de disponibilidad mensual y validaci&oacute;n de 2 a 7 jornadas semanales. <span class="trace">RF-AGE-01</span></td><td class="c">5</td><td class="c">16,5</td><td class="c"><strong>I5 + I1 + I3</strong></td><td class="c">2,1 d</td><td class="c">6,0&ndash;8,1</td></tr>
+    <tr class="fuera"><td class="id">US-08</td><td>Generaci&oacute;n autom&aacute;tica de turnos de 30 minutos. <span class="trace">RF-AGE-03</span></td><td class="c">4</td><td class="c">13,2</td><td class="c"><strong>I3 + I1 + I5</strong></td><td class="c">1,7 d</td><td class="c">8,1&ndash;9,7</td></tr>
+    <tr class="fuera"><td class="id">US-11</td><td>Vistas diaria, semanal y mensual de la agenda del profesional. <span class="trace">RF-AGE-05</span></td><td class="c">4</td><td class="c">13,2</td><td class="c"><strong>I4 + I2</strong></td><td class="c">2,5 d</td><td class="c">10,1&ndash;12,6</td></tr>
   </tbody>
   <tfoot><tr><td colspan="2">6 User Stories &middot; RNF-03 se verifica dentro de cada una</td><td class="c">23</td><td class="c">75,9</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr></tfoot>
 </table>
 
-<p class="note"><strong>Dur.</strong> son los d&iacute;as que la historia le lleva a su due&ntilde;o a 2,5 horas diarias. <strong>D&iacute;as reales</strong>
-es la ventana que resulta de aplicar las precedencias y la disponibilidad del due&ntilde;o sobre los 21 d&iacute;as del proyecto.
-De las seis historias, solo <strong>US-01 y US-02 cierran dentro del Sprint 1</strong>; las otras cuatro se corren. El
-an&aacute;lisis completo est&aacute; en la secci&oacute;n 7.</p>
+<p class="note"><strong>Dur.</strong> son los d&iacute;as que la historia le lleva a su equipo a 2,65 horas diarias cada uno.
+<strong>D&iacute;as reales</strong> es la ventana que resulta de aplicar las precedencias y la disponibilidad del equipo sobre
+los 26 d&iacute;as del proyecto, contados desde el d&iacute;a 0,0. De las seis historias, <strong>US-01, US-02 y US-03 cierran
+dentro del Sprint 1</strong>; las otras tres se corren. El alcance de este sprint no se modific&oacute; respecto de la versi&oacute;n
+anterior: lo &uacute;nico que cambi&oacute; es que las historias se ejecutan en equipo, y eso adelanta su cierre de 22,8 a 12,6.
+El an&aacute;lisis completo est&aacute; en la secci&oacute;n 7.</p>
 
 <h4>Gui&oacute;n propuesto para la demo</h4>
 <ul>
@@ -317,9 +362,9 @@ an&aacute;lisis completo est&aacute; en la secci&oacute;n 7.</p>
 
 <h4>Riesgos y puntos de atenci&oacute;n</h4>
 <ul>
-  <li><strong>US-01 es un punto &uacute;nico de falla durante dos d&iacute;as.</strong> Si su due&ntilde;o se atrasa o falta, el proyecto entero se corre: ninguna otra historia puede arrancar y nadie puede sustituirlo sin romper la regla.</li>
-  <li><strong>I2 trabaja a 2,83 horas diarias</strong> por tomar US-02 y US-03. Est&aacute; dentro del rango declarado, pero es el carril con menos tolerancia a un desv&iacute;o.</li>
-  <li><strong>US-06 y US-08 son 11,9 d&iacute;as seguidos sin solapamiento posible.</strong> Por s&iacute; solos consumen m&aacute;s de la mitad de los 21 d&iacute;as del proyecto. Es el tramo que hace que el cronograma no cierre.</li>
+  <li><strong>US-01 bloquea el proyecto entero durante 1,7 d&iacute;as.</strong> Hasta que no cierra, ninguna otra historia puede arrancar. La trabajan tres personas justamente por eso, y aun as&iacute; es el tramo con menos tolerancia del plan.</li>
+  <li><strong>I2 e I4 hacen US-02 y US-03 en serie</strong> y son los &uacute;nicos con 16,5 horas en el sprint. Es el carril con menos margen; medir sus horas reales desde el d&iacute;a 1.</li>
+  <li><strong>US-06 y US-08 son 3,8 d&iacute;as seguidos en el medio de la cadena</strong>, y de US-08 cuelga toda la agenda. Con equipos de tres bajaron de 11,9 d&iacute;as a 3,8, pero siguen siendo el tramo a partir si se acciona la palanca 1 de la secci&oacute;n 7.3.</li>
   <li>La estimaci&oacute;n de este sprint debe hacerse <strong>sin herramientas de IA</strong>, seg&uacute;n lo pide la c&aacute;tedra. Hay que registrar el tiempo real de cada US para poder comparar despu&eacute;s.</li>
   <li>El modelo de datos se consolida en US-01 y lo define una sola persona. Conviene revisarlo entre ambas comisiones el d&iacute;a 2, antes de que US-02 construya encima.</li>
   <li>El control de acceso por rol no tiene puntos propios. <strong>Ese es su riesgo:</strong> es f&aacute;cil que nadie lo estime ni lo pruebe. La condici&oacute;n 6 de la definici&oacute;n de terminado existe para evitarlo.</li>
@@ -330,29 +375,32 @@ an&aacute;lisis completo est&aacute; en la secci&oacute;n 7.</p>
 <h3>6.4 Sprint 2 &mdash; demo 22/10, entrega 25/10</h3>
 
 <p><strong>Objetivo del sprint:</strong> cerrar el ciclo completo de reserva de turnos, desde la apertura de la agenda hasta la
-cancelaci&oacute;n, con confirmaci&oacute;n y recordatorio por email.</p>
+cancelaci&oacute;n, con confirmaci&oacute;n y recordatorio por email, y dejar cargado el cat&aacute;logo de vacunas que el Sprint 3
+necesita para abrir el vacunatorio.</p>
 
 <table>
   <colgroup><col style="width:46pt"><col><col style="width:30pt"><col style="width:40pt"><col style="width:44pt"><col style="width:40pt"><col style="width:66pt"></colgroup>
-  <thead><tr><th class="id">US</th><th>Alcance funcional</th><th class="c">Pts</th><th class="c">Horas</th><th class="c">Due&ntilde;o</th><th class="c">Dur.</th><th class="c">D&iacute;as reales</th></tr></thead>
+  <thead><tr><th class="id">US</th><th>Alcance funcional</th><th class="c">Pts</th><th class="c">Horas</th><th class="c">Equipo</th><th class="c">Dur.</th><th class="c">D&iacute;as reales</th></tr></thead>
   <tbody>
-    <tr><td class="id">US-21</td><td>Infraestructura de env&iacute;o de correo. <span class="trace">RF-NOT-01</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I1</strong></td><td class="c">4,0 d</td><td class="c">6,3&ndash;10,2</td></tr>
-    <tr><td class="id">US-10</td><td>Apertura autom&aacute;tica de la agenda a los pacientes. <span class="trace">RF-AGE-04</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I3</strong></td><td class="c">2,6 d</td><td class="c">20,8&ndash;23,5</td></tr>
-    <tr><td class="id">US-12</td><td>B&uacute;squeda de disponibilidad por especialidad, profesional y rango de fechas. <span class="trace">RF-TUR-01</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I4</strong></td><td class="c">2,6 d</td><td class="c">23,5&ndash;26,1</td></tr>
-    <tr><td class="id">US-13</td><td>Reserva del turno, que no puede modificarse despu&eacute;s. <span class="trace">RF-TUR-02, RF-AGE-09</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I2</strong></td><td class="c">4,0 d</td><td class="c">25,5&ndash;29,4</td></tr>
-    <tr><td class="id">US-14</td><td>Confirmaci&oacute;n de la reserva por email. <span class="trace">RF-TUR-03</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I3</strong></td><td class="c">2,6 d</td><td class="c">29,4&ndash;32,1</td></tr>
-    <tr><td class="id">US-15</td><td>Recordatorio autom&aacute;tico de turno. <span class="trace">RF-TUR-04</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I5</strong></td><td class="c">2,6 d</td><td class="c">29,4&ndash;32,1</td></tr>
-    <tr><td class="id">US-16</td><td>Cancelaci&oacute;n del turno con liberaci&oacute;n del horario. <span class="trace">RF-TUR-05</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I4</strong></td><td class="c">2,6 d</td><td class="c">29,4&ndash;32,1</td></tr>
-    <tr><td class="id">US-18</td><td>Registro del estado del turno: cumplido, ausente o cancelado. <span class="trace">RF-TUR-07</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I1</strong></td><td class="c">2,6 d</td><td class="c">29,4&ndash;32,1</td></tr>
-    <tr><td class="id">US-20</td><td>Control de concurrencia en la reserva. <span class="trace">RF-TUR-09, RNF-05</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I2</strong></td><td class="c">2,6 d</td><td class="c">29,4&ndash;32,1</td></tr>
-    <tr><td class="id">US-64</td><td>Reserva de turnos a nombre de otra persona, con su obra social. <span class="trace">RF-TUR-11</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I5</strong></td><td class="c">2,6 d</td><td class="c">32,1&ndash;34,7</td></tr>
-    <tr><td class="id">Bugs</td><td>Reserva para las correcciones del Sprint 1, repartida entre I3, I4 e I5.</td><td class="c">3</td><td class="c">9,9</td><td class="c">I3 I4 I5</td><td class="c">1,3 d</td><td class="c">&mdash;</td></tr>
+    <tr><td class="id">US-21</td><td>Infraestructura de env&iacute;o de correo con plantillas y reintentos. <span class="trace">RF-NOT-01</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I1 + I3</strong></td><td class="c">1,9 d</td><td class="c">9,7&ndash;11,6</td></tr>
+    <tr class="fuera"><td class="id">US-24</td><td>Cat&aacute;logo de vacunas: denominaci&oacute;n, laboratorio y esquema de dosis. <strong>Nueva</strong> <span class="trace">RF-VAC-01</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I1</strong></td><td class="c">2,5 d</td><td class="c">11,6&ndash;14,1</td></tr>
+    <tr class="fuera"><td class="id">US-10</td><td>Apertura autom&aacute;tica de la agenda a los pacientes. <span class="trace">RF-AGE-04</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I3</strong></td><td class="c">2,5 d</td><td class="c">11,6&ndash;14,1</td></tr>
+    <tr class="fuera"><td class="id">US-12</td><td>B&uacute;squeda de disponibilidad por especialidad, profesional y rango de fechas. <span class="trace">RF-TUR-01</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I4</strong></td><td class="c">2,5 d</td><td class="c">12,6&ndash;15,1</td></tr>
+    <tr class="fuera"><td class="id">US-13</td><td>Reserva del turno, que no puede modificarse despu&eacute;s. <span class="trace">RF-TUR-02, RF-AGE-09</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I2 + I5</strong></td><td class="c">1,9 d</td><td class="c">16,5&ndash;18,4</td></tr>
+    <tr class="fuera"><td class="id">US-14</td><td>Confirmaci&oacute;n de la reserva por email. <span class="trace">RF-TUR-03</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I3</strong></td><td class="c">2,5 d</td><td class="c">18,5&ndash;21,0</td></tr>
+    <tr class="fuera"><td class="id">US-15</td><td>Recordatorio autom&aacute;tico de turno. <span class="trace">RF-TUR-04</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I5</strong></td><td class="c">2,5 d</td><td class="c">20,8&ndash;23,3</td></tr>
+    <tr class="fuera"><td class="id">US-16</td><td>Cancelaci&oacute;n del turno con liberaci&oacute;n del horario. <span class="trace">RF-TUR-05</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I4</strong></td><td class="c">2,5 d</td><td class="c">18,5&ndash;21,0</td></tr>
+    <tr class="fuera"><td class="id">US-18</td><td>Registro del estado del turno: cumplido, ausente o cancelado. <span class="trace">RF-TUR-07</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I1</strong></td><td class="c">2,5 d</td><td class="c">19,1&ndash;21,6</td></tr>
+    <tr class="fuera"><td class="id">US-20</td><td>Control de concurrencia en la reserva. <span class="trace">RF-TUR-09, RNF-05</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I2</strong></td><td class="c">2,5 d</td><td class="c">18,4&ndash;20,8</td></tr>
+    <tr class="fuera"><td class="id">US-64</td><td>Reserva de turnos a nombre de otra persona, con su obra social. <span class="trace">RF-TUR-11</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I2</strong></td><td class="c">2,5 d</td><td class="c">20,8&ndash;23,3</td></tr>
+    <tr><td class="id">Bugs</td><td>Reserva para las correcciones del Sprint 1, repartida en tres bloques de 1 punto entre I4 e I5.</td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I4 I5</strong></td><td class="c">1,2 d</td><td class="c">&mdash;</td></tr>
   </tbody>
-  <tfoot><tr><td colspan="2">10 User Stories m&aacute;s la reserva de bugs</td><td class="c">25</td><td class="c">82,5</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr></tfoot>
+  <tfoot><tr><td colspan="2">11 User Stories m&aacute;s la reserva de bugs</td><td class="c">27</td><td class="c">89,1</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr></tfoot>
 </table>
 
-<p class="note"><strong>Ninguna de las diez cierra dentro del Sprint 2.</strong> Todas cuelgan de US-13, que a su vez cuelga de
-US-08, y esa cadena no termina antes del d&iacute;a 29. Secci&oacute;n 7.</p>
+<p class="note"><strong>Solo US-21 cierra dentro del Sprint 2.</strong> Las otras diez cuelgan de US-13, que a su vez cuelga de
+US-12, US-10 y US-08: esa cadena no libera el ciclo de reserva antes del d&iacute;a 18,4. US-24 y US-10 quedan a 0,1 d&iacute;a
+del cierre del sprint. Secci&oacute;n 7.</p>
 
 <h4>Gui&oacute;n propuesto para la demo</h4>
 <ul>
@@ -363,6 +411,7 @@ US-08, y esa cadena no termina antes del d&iacute;a 29. Secci&oacute;n 7.</p>
   <li>Cancelaci&oacute;n del turno y verificaci&oacute;n de que el horario vuelve a estar disponible.</li>
   <li>Dos sesiones simult&aacute;neas reservando el mismo horario, para evidenciar el control de concurrencia.</li>
   <li>Administrativo: registro del estado del turno como cumplido o ausente.</li>
+  <li><strong>Enfermera:</strong> alta de vacunas en el cat&aacute;logo con denominaci&oacute;n, laboratorio y esquema de dosis, y rechazo de una vacuna duplicada. Es la base sobre la que el Sprint 3 abre el vacunatorio.</li>
 </ul>
 
 <h4>Entregables de gesti&oacute;n exigidos por la c&aacute;tedra</h4>
@@ -378,7 +427,8 @@ US-08, y esa cadena no termina antes del d&iacute;a 29. Secci&oacute;n 7.</p>
 
 <h4>Riesgos y puntos de atenci&oacute;n</h4>
 <ul>
-  <li><strong>US-13 bloquea seis historias</strong> y la hace una sola persona. Es el cuello de botella del sprint y del proyecto: hasta que no cierre, cinco integrantes quedan sin trabajo desbloqueado.</li>
+  <li><strong>US-13 bloquea diecis&eacute;is historias</strong>, la mitad del backlog. Es el cuello de botella del sprint y del proyecto: no cierra antes del d&iacute;a 18,4 y hasta entonces buena parte del equipo trabaja sobre lo poco que est&aacute; desbloqueado. La ejecutan I2 e I5 en pareja justamente para acortarla.</li>
+  <li><strong>El sprint est&aacute; al 96% de su capacidad</strong>, el m&aacute;s ajustado de los tres. No tiene margen para absorber un desv&iacute;o: si algo se atrasa, lo primero que se mueve es US-24, que es la &uacute;nica historia del sprint sin sucesoras dentro de &eacute;l.</li>
   <li>Ac&aacute; entra la IA en la estimaci&oacute;n. Las pautas piden comparar lo estimado en el Sprint 1 con el tiempo real y llevar esa informaci&oacute;n a la herramienta. El prompt y la versi&oacute;n deben quedar documentados en el informe.</li>
   <li>El env&iacute;o de emails es una dependencia externa: US-21 arranca temprano y conviene prever un modo de simulaci&oacute;n para la demo.</li>
   <li>El control de concurrencia (RF-TUR-09) es f&aacute;cil de pasar por alto en la demo y dif&iacute;cil de corregir despu&eacute;s. El gui&oacute;n lo incluye expl&iacute;citamente.</li>
@@ -389,31 +439,46 @@ US-08, y esa cadena no termina antes del d&iacute;a 29. Secci&oacute;n 7.</p>
 
 <h3>6.5 Sprint 3 &mdash; demo 12/11, entrega 15/11</h3>
 
-<p><strong>Objetivo del sprint:</strong> completar el sistema con todo lo que se apoya sobre el turno ya existente: dinero,
-datos cl&iacute;nicos y reportes.</p>
+<p><strong>Objetivo del sprint:</strong> completar el sistema con todo lo que se apoya sobre el turno ya existente
+&mdash;dinero, datos cl&iacute;nicos y reportes&mdash; y agregar el vacunatorio como segundo tipo de turno. Es el sprint que
+absorbe el alcance reincorporado: 22 historias, la mitad de ellas nuevas.</p>
 
 <table>
   <colgroup><col style="width:46pt"><col><col style="width:30pt"><col style="width:40pt"><col style="width:44pt"><col style="width:40pt"><col style="width:66pt"></colgroup>
-  <thead><tr><th class="id">US</th><th>Alcance funcional</th><th class="c">Pts</th><th class="c">Horas</th><th class="c">Due&ntilde;o</th><th class="c">Dur.</th><th class="c">D&iacute;as reales</th></tr></thead>
+  <thead><tr><th class="id">US</th><th>Alcance funcional</th><th class="c">Pts</th><th class="c">Horas</th><th class="c">Equipo</th><th class="c">Dur.</th><th class="c">D&iacute;as reales</th></tr></thead>
   <tbody>
-    <tr><td class="id">US-33</td><td>Costo de la consulta definido por cada m&eacute;dico, con historial de vigencias. <span class="trace">RF-PAG-02</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I5</strong></td><td class="c">2,6 d</td><td class="c">34,7&ndash;37,4</td></tr>
-    <tr><td class="id">US-32</td><td>Gesti&oacute;n de la cobertura m&eacute;dica del paciente. <span class="trace">RF-PAG-01</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I1</strong></td><td class="c">2,6 d</td><td class="c">34,7&ndash;37,4</td></tr>
-    <tr><td class="id">US-34</td><td>C&aacute;lculo del importe seg&uacute;n cobertura. <span class="trace">RF-PAG-03</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I1</strong></td><td class="c">4,0 d</td><td class="c">37,4&ndash;41,3</td></tr>
-    <tr><td class="id">US-35</td><td>Registro del pago en efectivo o por transferencia. <span class="trace">RF-PAG-04</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I2</strong></td><td class="c">2,6 d</td><td class="c">41,3&ndash;44,0</td></tr>
-    <tr><td class="id">US-36</td><td>Comprobante &uacute;nico de pago en PDF. <span class="trace">RF-PAG-05, RF-PAG-06</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I2</strong></td><td class="c">2,6 d</td><td class="c">44,0&ndash;46,6</td></tr>
-    <tr><td class="id">US-39</td><td>Ficha de diagn&oacute;stico &uacute;nica por par paciente&ndash;m&eacute;dico. <span class="trace">RF-HIS-01</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I3</strong></td><td class="c">4,0 d</td><td class="c">32,1&ndash;36,0</td></tr>
-    <tr><td class="id">US-40</td><td>Historial consolidado para el profesional. <span class="trace">RF-HIS-02</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I3</strong></td><td class="c">2,6 d</td><td class="c">36,0&ndash;38,7</td></tr>
-    <tr><td class="id">US-41</td><td>Historial cl&iacute;nico en modo lectura para el paciente. <span class="trace">RF-HIS-03</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I4</strong></td><td class="c">2,6 d</td><td class="c">34,1&ndash;36,7</td></tr>
-    <tr><td class="id">US-44</td><td>Auditor&iacute;a de accesos al historial. <span class="trace">RF-HIS-06, RNF-04</span></td><td class="c">1</td><td class="c">3,3</td><td class="c"><strong>I4</strong></td><td class="c">1,3 d</td><td class="c">38,7&ndash;40,0</td></tr>
-    <tr><td class="id">US-45</td><td>Reporte de turnos por especialidad. <span class="trace">RF-REP-01</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I4</strong></td><td class="c">2,6 d</td><td class="c">40,0&ndash;42,6</td></tr>
-    <tr><td class="id">US-47</td><td>Reporte de pagos realizados. <span class="trace">RF-REP-03</span></td><td class="c">1</td><td class="c">3,3</td><td class="c"><strong>I2</strong></td><td class="c">1,3 d</td><td class="c">46,6&ndash;47,9</td></tr>
-    <tr><td class="id">Bugs</td><td>Reserva para las correcciones del Sprint 2, a cargo de I5.</td><td class="c">3</td><td class="c">9,9</td><td class="c">I5</td><td class="c">4,0 d</td><td class="c">&mdash;</td></tr>
+    <tr><td class="id">US-63</td><td>Agenda del vacunatorio, independiente de las agendas m&eacute;dicas. <strong>Nueva</strong> <span class="trace">RF-VAC-09, RF-AGE-04</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I5 + I1</strong></td><td class="c">1,9 d</td><td class="c">23,3&ndash;25,2</td></tr>
+    <tr><td class="id">US-33</td><td>Costo de la consulta definido por cada m&eacute;dico, con historial de vigencias. <span class="trace">RF-PAG-02</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I5</strong></td><td class="c">2,5 d</td><td class="c">14,0&ndash;16,5</td></tr>
+    <tr><td class="id">US-32</td><td>Gesti&oacute;n de la cobertura m&eacute;dica del paciente. <span class="trace">RF-PAG-01</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I1</strong></td><td class="c">2,5 d</td><td class="c">14,1&ndash;16,6</td></tr>
+    <tr><td class="id">US-39</td><td>Ficha de diagn&oacute;stico &uacute;nica por par paciente&ndash;m&eacute;dico. <span class="trace">RF-HIS-01</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I3 + I4</strong></td><td class="c">1,9 d</td><td class="c">21,0&ndash;22,8</td></tr>
+    <tr><td class="id">US-45</td><td>Reporte de turnos por especialidad. <span class="trace">RF-REP-01</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I4</strong></td><td class="c">2,5 d</td><td class="c">22,8&ndash;25,3</td></tr>
+    <tr><td class="id">US-48</td><td>Reporte de asistencia y ausentismo de pacientes. <strong>Nueva</strong> <span class="trace">RF-REP-04</span></td><td class="c">1</td><td class="c">3,3</td><td class="c"><strong>I1</strong></td><td class="c">1,2 d</td><td class="c">21,6&ndash;22,8</td></tr>
+    <tr><td class="id">US-30</td><td>Bloqueo de los turnos libres de una franja ya publicada. <strong>Nueva</strong> <span class="trace">RF-AGE-06, RF-AGE-09</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I5</strong></td><td class="c">2,5 d</td><td class="c">18,4&ndash;20,8</td></tr>
+    <tr class="fuera"><td class="id">US-28</td><td>Turno de vacunaci&oacute;n eligiendo vacuna y horario. <strong>Nueva</strong> <span class="trace">RF-VAC-05, RF-TUR-11</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I5 + I3</strong></td><td class="c">1,9 d</td><td class="c">26,6&ndash;28,5</td></tr>
+    <tr class="fuera"><td class="id">US-34</td><td>C&aacute;lculo del importe seg&uacute;n cobertura. <span class="trace">RF-PAG-03</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I1 + I2</strong></td><td class="c">1,9 d</td><td class="c">25,2&ndash;27,1</td></tr>
+    <tr><td class="id">US-22</td><td>Aviso por email a los pacientes de una franja bloqueada. <strong>Nueva</strong> <span class="trace">RF-NOT-02</span></td><td class="c">1</td><td class="c">3,3</td><td class="c"><strong>I3</strong></td><td class="c">1,2 d</td><td class="c">22,8&ndash;24,1</td></tr>
+    <tr class="fuera"><td class="id">US-40</td><td>Historial consolidado para el profesional. <span class="trace">RF-HIS-02</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I3</strong></td><td class="c">2,5 d</td><td class="c">24,1&ndash;26,6</td></tr>
+    <tr class="fuera"><td class="id">US-41</td><td>Historial cl&iacute;nico en modo lectura para el paciente. <span class="trace">RF-HIS-03</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I4</strong></td><td class="c">2,5 d</td><td class="c">25,3&ndash;27,8</td></tr>
+    <tr class="fuera"><td class="id">US-62</td><td>Adjuntar estudios e im&aacute;genes a la ficha. <strong>Nueva</strong> <span class="trace">RF-HIS-07</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I3 + I2</strong></td><td class="c">1,9 d</td><td class="c">32,1&ndash;33,9</td></tr>
+    <tr class="fuera"><td class="id">US-29</td><td>Registro de la dosis aplicada, con enfermera responsable. <strong>Nueva</strong> <span class="trace">RF-VAC-06</span></td><td class="c">1</td><td class="c">3,3</td><td class="c"><strong>I4</strong></td><td class="c">1,2 d</td><td class="c">27,8&ndash;29,1</td></tr>
+    <tr class="fuera"><td class="id">US-17</td><td>Gesti&oacute;n de turnos desde mostrador, de ambos tipos. <strong>Nueva</strong> <span class="trace">RF-TUR-06, RF-AGE-09</span></td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I5 + I4</strong></td><td class="c">1,9 d</td><td class="c">29,1&ndash;30,9</td></tr>
+    <tr class="fuera"><td class="id">US-35</td><td>Registro del pago en efectivo o por transferencia. <span class="trace">RF-PAG-04</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I2</strong></td><td class="c">2,5 d</td><td class="c">27,1&ndash;29,6</td></tr>
+    <tr class="fuera"><td class="id">US-44</td><td>Auditor&iacute;a de accesos al historial. <span class="trace">RF-HIS-06, RNF-04</span></td><td class="c">1</td><td class="c">3,3</td><td class="c"><strong>I4</strong></td><td class="c">1,2 d</td><td class="c">30,9&ndash;32,2</td></tr>
+    <tr class="fuera"><td class="id">US-57</td><td>Carnet de vacunaci&oacute;n descargable en PDF. <strong>Nueva</strong> <span class="trace">RF-VAC-08</span></td><td class="c">1</td><td class="c">3,3</td><td class="c"><strong>I3</strong></td><td class="c">1,2 d</td><td class="c">29,1&ndash;30,3</td></tr>
+    <tr class="fuera"><td class="id">US-36</td><td>Comprobante &uacute;nico de pago en PDF. <span class="trace">RF-PAG-05, RF-PAG-06</span></td><td class="c">2</td><td class="c">6,6</td><td class="c"><strong>I2</strong></td><td class="c">2,5 d</td><td class="c">29,6&ndash;32,1</td></tr>
+    <tr class="fuera"><td class="id">US-47</td><td>Reporte de pagos realizados. <span class="trace">RF-REP-03</span></td><td class="c">1</td><td class="c">3,3</td><td class="c"><strong>I2</strong></td><td class="c">1,2 d</td><td class="c">33,9&ndash;35,2</td></tr>
+    <tr class="fuera"><td class="id">US-49</td><td>Filtros comunes a todos los reportes. <strong>Nueva</strong> <span class="trace">RF-REP-05</span></td><td class="c">1</td><td class="c">3,3</td><td class="c"><strong>I1</strong></td><td class="c">1,2 d</td><td class="c">35,2&ndash;36,4</td></tr>
+    <tr class="fuera"><td class="id">US-50</td><td>Exportaci&oacute;n de cualquier reporte a PDF o CSV. <strong>Nueva</strong> <span class="trace">RF-REP-06</span></td><td class="c">1</td><td class="c">3,3</td><td class="c"><strong>I2</strong></td><td class="c">1,2 d</td><td class="c">36,4&ndash;37,7</td></tr>
+    <tr><td class="id">Bugs</td><td>Reserva para las correcciones del Sprint 2, en tres bloques de 1 punto entre I1 e I5.</td><td class="c">3</td><td class="c">9,9</td><td class="c"><strong>I1 I5</strong></td><td class="c">1,2 d</td><td class="c">&mdash;</td></tr>
   </tbody>
-  <tfoot><tr><td colspan="2">11 User Stories m&aacute;s la reserva de bugs</td><td class="c">25</td><td class="c">82,5</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr></tfoot>
+  <tfoot><tr><td colspan="2">22 User Stories m&aacute;s la reserva de bugs &middot; <span class="trace">11 de ellas nuevas</span></td><td class="c">43</td><td class="c">148,5</td><td class="c">&mdash;</td><td class="c">&mdash;</td><td class="c">&mdash;</td></tr></tfoot>
 </table>
 
-<p class="note"><strong>Ninguna de las once cierra dentro del plazo.</strong> La cadena de pagos US-32 &rarr; US-34 &rarr; US-35 &rarr;
-US-36 es fin&ndash;comienzo estricta en sus tres eslabones y termina el d&iacute;a 46,6; el &uacute;ltimo reporte, el 47,9. Secci&oacute;n 7.</p>
+<p class="note"><strong>Ocho de las veintid&oacute;s cierran dentro del sprint</strong> &mdash;US-30, US-32, US-33, US-39, US-45,
+US-48, US-22 y US-63&mdash; y son justamente las que no dependen del ciclo de reserva. Las otras catorce se corren:
+la cadena de pagos US-32 &rarr; US-34 &rarr; US-35 &rarr; US-36 cierra el d&iacute;a 32,1, la de vacunas
+US-63 &rarr; US-28 &rarr; US-29 &rarr; US-57 el 30,3, y la de reportes US-49 &rarr; US-50 el 37,7, que es el fin del
+proyecto. Secci&oacute;n 7.</p>
 
 <h4>Gui&oacute;n propuesto para la demo</h4>
 <ul>
@@ -421,8 +486,14 @@ US-36 es fin&ndash;comienzo estricta en sus tres eslabones y termina el d&iacute
   <li>Segundo m&eacute;dico atiende al mismo paciente: se crea una <strong>ficha distinta</strong> y el historial consolidado las re&uacute;ne, con la del otro profesional en modo lectura.</li>
   <li>El m&eacute;dico define el costo de su consulta y se verifica que el importe calculado lo refleja seg&uacute;n la cobertura del paciente.</li>
   <li>Registro del pago en efectivo y por transferencia; descarga del comprobante en PDF.</li>
-  <li>Generaci&oacute;n en vivo de los dos reportes administrativos.</li>
+  <li><strong>Vacunatorio de punta a punta:</strong> la enfermera carga la disponibilidad del vacunatorio, el paciente saca un turno de vacunaci&oacute;n eligiendo la vacuna del cat&aacute;logo, la enfermera registra la dosis aplicada y el paciente descarga su carnet en PDF.</li>
+  <li>Se muestra que un turno de vacunaci&oacute;n <strong>puede superponerse con uno m&eacute;dico</strong> de la misma persona sin que el sistema lo impida.</li>
+  <li><strong>Mostrador:</strong> el administrativo busca a un paciente por documento, le reserva un turno y reprograma otro como cancelaci&oacute;n m&aacute;s reserva nueva, en una sola operaci&oacute;n.</li>
+  <li><strong>Bloqueo de agenda:</strong> el m&eacute;dico bloquea los turnos libres de una franja ya publicada, el sistema advierte cu&aacute;ntos turnos reservados quedan involucrados y dispara el aviso por email a esos pacientes.</li>
+  <li>El m&eacute;dico adjunta un estudio a la ficha del paciente y el paciente lo descarga desde su historial.</li>
+  <li>Generaci&oacute;n en vivo de los <strong>cuatro reportes</strong> administrativos, aplicando los mismos filtros a todos y exportando uno a PDF y otro a CSV.</li>
   <li>Consulta del log de auditor&iacute;a mostrando qui&eacute;n accedi&oacute; al historial y cu&aacute;ndo (RNF-04).</li>
+  <li>Verificaci&oacute;n de <strong>RNF-08</strong>: el recorrido del paciente se repite desde el navegador de un tel&eacute;fono.</li>
   <li>Repaso de las m&eacute;tricas del proyecto medidas a lo largo de los tres sprints.</li>
 </ul>
 
@@ -438,127 +509,201 @@ US-36 es fin&ndash;comienzo estricta en sus tres eslabones y termina el d&iacute
 
 <h4>Riesgos y puntos de atenci&oacute;n</h4>
 <ul>
-  <li><strong>La cadena de pagos la ejecutan dos personas en serie:</strong> I1 hace US-32 y US-34, I2 hace US-35, US-36 y US-47. Son cinco historias encadenadas sin posibilidad de solapamiento y sin nadie m&aacute;s que pueda ayudar.</li>
-  <li>El historial cl&iacute;nico exige cuidado con permisos: es el punto donde una falla de control de acceso tiene mayor costo. La ficha &uacute;nica por par paciente&ndash;m&eacute;dico agrega un matiz: cada m&eacute;dico edita solo la suya, pero lee las de los dem&aacute;s.</li>
-  <li>El parcial de la materia parte los siete d&iacute;as del sprint en bloques de cuatro y tres. Conviene dejar el estado de cada historia abierta documentado por escrito antes del 31/10.</li>
-  <li>No dejar los reportes para el final: dependen de que los datos de turnos y pagos est&eacute;n bien cargados desde los sprints anteriores.</li>
+  <li><strong>Este sprint concentra 22 historias, 43 puntos y 11 de las 12 nuevas.</strong> Es consecuencia del grafo, no del reparto: hasta que US-13 no cierra, casi nada del alcance reincorporado se puede empezar. Llevar al refinement las 22 historias con criterios de aceptaci&oacute;n y wireframes ya revisados; no queda tiempo para hacer an&aacute;lisis dentro del sprint.</li>
+  <li><strong>Implementar durante la semana del parcial es el supuesto m&aacute;s fr&aacute;gil del plan.</strong> Aporta 5 de los 26 d&iacute;as y 66,2 de las 159 horas de capacidad del sprint. Si esa semana se pierde, el sprint queda con 92,8 horas contra 148,5 comprometidas. Conviene colocar ah&iacute; historias hoja &mdash;US-44, US-47, US-57 y la reserva de bugs&mdash; y no eslabones de cadena.</li>
+  <li><strong>Tres cadenas largas corren en paralelo y ninguna cierra dentro del sprint:</strong> pagos (US-32 &rarr; US-34 &rarr; US-35 &rarr; US-36, cierra el d&iacute;a 32,1), vacunas (US-63 &rarr; US-28 &rarr; US-29 &rarr; US-57, el 30,3) y reportes (US-45, US-47, US-48 &rarr; US-49 &rarr; US-50, el 37,7). La de reportes es la que fija el fin del proyecto.</li>
+  <li><strong>US-17 depende del turno de vacunaci&oacute;n</strong> porque gestiona turnos de ambos tipos. Es el &uacute;ltimo eslab&oacute;n de la cadena de vacunas y el primero que cae si el vacunatorio se atrasa.</li>
+  <li>El historial cl&iacute;nico exige cuidado con permisos: es el punto donde una falla de control de acceso tiene mayor costo. La ficha &uacute;nica por par paciente&ndash;m&eacute;dico agrega un matiz: cada m&eacute;dico edita solo la suya, pero lee las de los dem&aacute;s. US-62 lo extiende a los adjuntos, cuyo acceso tambi&eacute;n se audita.</li>
+  <li>No dejar los reportes para el final aunque el grafo los ponga ah&iacute;: dependen de que los datos de turnos y pagos est&eacute;n bien cargados desde los sprints anteriores. US-45 y US-48 pueden empezar apenas cierre US-18.</li>
 </ul>
 
 <div class="page-break"></div>
 
 <h2>7. An&aacute;lisis de factibilidad del cronograma</h2>
 
-<p>Esta secci&oacute;n es nueva y es la m&aacute;s importante del documento. Aplicando las precedencias del cat&aacute;logo de User
-Stories, los solapamientos de su secci&oacute;n 5.5 y la restricci&oacute;n de que cada due&ntilde;o hace una historia por vez, el
-alcance comprometido <strong>no entra en los 21 d&iacute;as de implementaci&oacute;n</strong>.</p>
+<p>Es la secci&oacute;n m&aacute;s importante del documento. Aplicando las precedencias del cat&aacute;logo de User Stories, los
+solapamientos comienzo&ndash;comienzo de su secci&oacute;n 5.5 y la restricci&oacute;n de que cada integrante trabaja en una
+historia por vez, el alcance ampliado <strong>no entra en los 26 d&iacute;as de implementaci&oacute;n</strong>: necesita 37,7.</p>
+
+<p>Las tres palancas accionadas &mdash;2,65 h diarias, 26 d&iacute;as en lugar de 21 y equipos de dos o tres en las
+historias grandes&mdash; <strong>redujeron la brecha de 26,9 a 11,7 d&iacute;as</strong> mientras el alcance crec&iacute;a de 27 a 39
+historias. No alcanzan para cerrarla.</p>
+
+<p class="note"><strong>C&oacute;mo leer la columna de d&iacute;as.</strong> Los d&iacute;as se cuentan como tiempo transcurrido desde el
+primer d&iacute;a de implementaci&oacute;n del Sprint 1, que es el d&iacute;a 0,0. Los sprints terminan en los d&iacute;as 7, 14 y 26
+respectivamente. Los valores los calcula <code>build-plan.js</code> y se regeneran con el plan.</p>
 
 <h3>7.1 Cu&aacute;ndo cierra cada historia</h3>
 
 <table>
   <colgroup><col style="width:46pt"><col style="width:36pt"><col style="width:40pt"><col style="width:70pt"><col style="width:52pt"><col></colgroup>
-  <thead><tr><th class="id">US</th><th class="c">Due&ntilde;o</th><th class="c">Dur.</th><th class="c">D&iacute;as</th><th class="c">Sprint</th><th>Estado</th></tr></thead>
+  <thead><tr><th class="id">US</th><th class="c">Equipo</th><th class="c">Dur.</th><th class="c">D&iacute;as</th><th class="c">Sprint</th><th>Estado</th></tr></thead>
   <tbody>
-    <tr><td class="id">US-01</td><td class="c">I1</td><td class="c">5,3 d</td><td class="c">1,0&ndash;6,3</td><td class="c">1</td><td>Cierra en su sprint</td></tr>
-    <tr><td class="id">US-02</td><td class="c">I2</td><td class="c">4,0 d</td><td class="c">3,0&ndash;7,0</td><td class="c">1</td><td>Cierra en su sprint</td></tr>
-    <tr><td class="id">US-21</td><td class="c">I1</td><td class="c">4,0 d</td><td class="c">6,3&ndash;10,2</td><td class="c">2</td><td>Cierra en su sprint</td></tr>
-    <tr><td class="id">US-03</td><td class="c">I2</td><td class="c">4,0 d</td><td class="c">7,0&ndash;10,9</td><td class="c">1</td><td>Se corre al Sprint 2</td></tr>
-    <tr><td class="id">US-06</td><td class="c">I5</td><td class="c">6,6 d</td><td class="c">9,0&ndash;15,6</td><td class="c">1</td><td>Se corre al Sprint 3</td></tr>
-    <tr><td class="id">US-08</td><td class="c">I3</td><td class="c">5,3 d</td><td class="c">15,6&ndash;20,8</td><td class="c">1</td><td>Se corre al Sprint 3</td></tr>
-    <tr class="fuera"><td class="id">US-11</td><td class="c">I4</td><td class="c">5,3 d</td><td class="c">17,6&ndash;22,8</td><td class="c">1</td><td><strong>No entra:</strong> cierra el d&iacute;a 22,8</td></tr>
-    <tr class="fuera"><td class="id">US-10</td><td class="c">I3</td><td class="c">2,6 d</td><td class="c">20,8&ndash;23,5</td><td class="c">2</td><td><strong>No entra:</strong> cierra el d&iacute;a 23,5</td></tr>
-    <tr class="fuera"><td class="id">US-12</td><td class="c">I4</td><td class="c">2,6 d</td><td class="c">23,5&ndash;26,1</td><td class="c">2</td><td><strong>No entra:</strong> cierra el d&iacute;a 26,1</td></tr>
-    <tr class="fuera"><td class="id">US-13</td><td class="c">I2</td><td class="c">4,0 d</td><td class="c">25,5&ndash;29,4</td><td class="c">2</td><td><strong>No entra:</strong> cierra el d&iacute;a 29,4</td></tr>
-    <tr class="fuera"><td class="id">US-14</td><td class="c">I3</td><td class="c">2,6 d</td><td class="c">29,4&ndash;32,1</td><td class="c">2</td><td><strong>No entra:</strong> cierra el d&iacute;a 32,1</td></tr>
-    <tr class="fuera"><td class="id">US-15</td><td class="c">I5</td><td class="c">2,6 d</td><td class="c">29,4&ndash;32,1</td><td class="c">2</td><td><strong>No entra:</strong> cierra el d&iacute;a 32,1</td></tr>
-    <tr class="fuera"><td class="id">US-16</td><td class="c">I4</td><td class="c">2,6 d</td><td class="c">29,4&ndash;32,1</td><td class="c">2</td><td><strong>No entra:</strong> cierra el d&iacute;a 32,1</td></tr>
-    <tr class="fuera"><td class="id">US-18</td><td class="c">I1</td><td class="c">2,6 d</td><td class="c">29,4&ndash;32,1</td><td class="c">2</td><td><strong>No entra:</strong> cierra el d&iacute;a 32,1</td></tr>
-    <tr class="fuera"><td class="id">US-20</td><td class="c">I2</td><td class="c">2,6 d</td><td class="c">29,4&ndash;32,1</td><td class="c">2</td><td><strong>No entra:</strong> cierra el d&iacute;a 32,1</td></tr>
-    <tr class="fuera"><td class="id">US-64</td><td class="c">I5</td><td class="c">2,6 d</td><td class="c">32,1&ndash;34,7</td><td class="c">2</td><td><strong>No entra:</strong> cierra el d&iacute;a 34,7</td></tr>
-    <tr class="fuera"><td class="id">US-39</td><td class="c">I3</td><td class="c">4,0 d</td><td class="c">32,1&ndash;36,0</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 36,0</td></tr>
-    <tr class="fuera"><td class="id">US-41</td><td class="c">I4</td><td class="c">2,6 d</td><td class="c">34,1&ndash;36,7</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 36,7</td></tr>
-    <tr class="fuera"><td class="id">US-32</td><td class="c">I1</td><td class="c">2,6 d</td><td class="c">34,7&ndash;37,4</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 37,4</td></tr>
-    <tr class="fuera"><td class="id">US-33</td><td class="c">I5</td><td class="c">2,6 d</td><td class="c">34,7&ndash;37,4</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 37,4</td></tr>
-    <tr class="fuera"><td class="id">US-40</td><td class="c">I3</td><td class="c">2,6 d</td><td class="c">36,0&ndash;38,7</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 38,7</td></tr>
-    <tr class="fuera"><td class="id">US-44</td><td class="c">I4</td><td class="c">1,3 d</td><td class="c">38,7&ndash;40,0</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 40,0</td></tr>
-    <tr class="fuera"><td class="id">US-34</td><td class="c">I1</td><td class="c">4,0 d</td><td class="c">37,4&ndash;41,3</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 41,3</td></tr>
-    <tr class="fuera"><td class="id">US-45</td><td class="c">I4</td><td class="c">2,6 d</td><td class="c">40,0&ndash;42,6</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 42,6</td></tr>
-    <tr class="fuera"><td class="id">US-35</td><td class="c">I2</td><td class="c">2,6 d</td><td class="c">41,3&ndash;44,0</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 44,0</td></tr>
-    <tr class="fuera"><td class="id">US-36</td><td class="c">I2</td><td class="c">2,6 d</td><td class="c">44,0&ndash;46,6</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 46,6</td></tr>
-    <tr class="fuera"><td class="id">US-47</td><td class="c">I2</td><td class="c">1,3 d</td><td class="c">46,6&ndash;47,9</td><td class="c">3</td><td><strong>No entra:</strong> cierra el d&iacute;a 47,9</td></tr>
+    <tr><td class="id">US-01</td><td class="c">I1 + I3 + I5</td><td class="c">1,7 d</td><td class="c">0,0&ndash;1,7</td><td class="c">1</td><td>Cierra en su sprint</td></tr>
+    <tr><td class="id">US-02</td><td class="c">I2 + I4</td><td class="c">1,9 d</td><td class="c">2,0&ndash;3,9</td><td class="c">1</td><td>Cierra en su sprint</td></tr>
+    <tr><td class="id">US-03</td><td class="c">I2 + I4</td><td class="c">1,9 d</td><td class="c">4,0&ndash;5,9</td><td class="c">1</td><td>Cierra en su sprint</td></tr>
+    <tr class="fuera"><td class="id">US-06</td><td class="c">I5 + I1 + I3</td><td class="c">2,1 d</td><td class="c">6,0&ndash;8,1</td><td class="c">1</td><td><strong>Se corre:</strong> cierra el d&iacute;a 8,1 y el sprint termina el 7</td></tr>
+    <tr class="fuera"><td class="id">US-08</td><td class="c">I3 + I1 + I5</td><td class="c">1,7 d</td><td class="c">8,1&ndash;9,7</td><td class="c">1</td><td><strong>Se corre:</strong> cierra el d&iacute;a 9,7 y el sprint termina el 7</td></tr>
+    <tr><td class="id">US-21</td><td class="c">I1 + I3</td><td class="c">1,9 d</td><td class="c">9,7&ndash;11,6</td><td class="c">2</td><td>Cierra en su sprint</td></tr>
+    <tr class="fuera"><td class="id">US-11</td><td class="c">I4 + I2</td><td class="c">2,5 d</td><td class="c">10,1&ndash;12,6</td><td class="c">1</td><td><strong>Se corre:</strong> cierra el d&iacute;a 12,6 y el sprint termina el 7</td></tr>
+    <tr class="fuera"><td class="id">US-24</td><td class="c">I1</td><td class="c">2,5 d</td><td class="c">11,6&ndash;14,1</td><td class="c">2</td><td><strong>Se corre:</strong> cierra el d&iacute;a 14,1 y el sprint termina el 14</td></tr>
+    <tr class="fuera"><td class="id">US-10</td><td class="c">I3</td><td class="c">2,5 d</td><td class="c">11,6&ndash;14,1</td><td class="c">2</td><td><strong>Se corre:</strong> cierra el d&iacute;a 14,1 y el sprint termina el 14</td></tr>
+    <tr class="fuera"><td class="id">US-12</td><td class="c">I4</td><td class="c">2,5 d</td><td class="c">12,6&ndash;15,1</td><td class="c">2</td><td><strong>Se corre:</strong> cierra el d&iacute;a 15,1 y el sprint termina el 14</td></tr>
+    <tr><td class="id">US-33</td><td class="c">I5</td><td class="c">2,5 d</td><td class="c">14,0&ndash;16,5</td><td class="c">3</td><td>Cierra en su sprint</td></tr>
+    <tr><td class="id">US-32</td><td class="c">I1</td><td class="c">2,5 d</td><td class="c">14,1&ndash;16,6</td><td class="c">3</td><td>Cierra en su sprint</td></tr>
+    <tr class="fuera"><td class="id">US-13</td><td class="c">I2 + I5</td><td class="c">1,9 d</td><td class="c">16,5&ndash;18,4</td><td class="c">2</td><td><strong>Se corre:</strong> cierra el d&iacute;a 18,4 y el sprint termina el 14</td></tr>
+    <tr class="fuera"><td class="id">US-20</td><td class="c">I2</td><td class="c">2,5 d</td><td class="c">18,4&ndash;20,8</td><td class="c">2</td><td><strong>Se corre:</strong> cierra el d&iacute;a 20,8 y el sprint termina el 14</td></tr>
+    <tr><td class="id">US-30</td><td class="c">I5</td><td class="c">2,5 d</td><td class="c">18,4&ndash;20,8</td><td class="c">3</td><td>Cierra en su sprint</td></tr>
+    <tr class="fuera"><td class="id">US-14</td><td class="c">I3</td><td class="c">2,5 d</td><td class="c">18,5&ndash;21,0</td><td class="c">2</td><td><strong>Se corre:</strong> cierra el d&iacute;a 21,0 y el sprint termina el 14</td></tr>
+    <tr class="fuera"><td class="id">US-16</td><td class="c">I4</td><td class="c">2,5 d</td><td class="c">18,5&ndash;21,0</td><td class="c">2</td><td><strong>Se corre:</strong> cierra el d&iacute;a 21,0 y el sprint termina el 14</td></tr>
+    <tr class="fuera"><td class="id">US-18</td><td class="c">I1</td><td class="c">2,5 d</td><td class="c">19,1&ndash;21,6</td><td class="c">2</td><td><strong>Se corre:</strong> cierra el d&iacute;a 21,6 y el sprint termina el 14</td></tr>
+    <tr><td class="id">US-39</td><td class="c">I3 + I4</td><td class="c">1,9 d</td><td class="c">21,0&ndash;22,8</td><td class="c">3</td><td>Cierra en su sprint</td></tr>
+    <tr><td class="id">US-48</td><td class="c">I1</td><td class="c">1,2 d</td><td class="c">21,6&ndash;22,8</td><td class="c">3</td><td>Cierra en su sprint</td></tr>
+    <tr class="fuera"><td class="id">US-15</td><td class="c">I5</td><td class="c">2,5 d</td><td class="c">20,8&ndash;23,3</td><td class="c">2</td><td><strong>Se corre:</strong> cierra el d&iacute;a 23,3 y el sprint termina el 14</td></tr>
+    <tr class="fuera"><td class="id">US-64</td><td class="c">I2</td><td class="c">2,5 d</td><td class="c">20,8&ndash;23,3</td><td class="c">2</td><td><strong>Se corre:</strong> cierra el d&iacute;a 23,3 y el sprint termina el 14</td></tr>
+    <tr><td class="id">US-22</td><td class="c">I3</td><td class="c">1,2 d</td><td class="c">22,8&ndash;24,1</td><td class="c">3</td><td>Cierra en su sprint</td></tr>
+    <tr><td class="id">US-63</td><td class="c">I5 + I1</td><td class="c">1,9 d</td><td class="c">23,3&ndash;25,2</td><td class="c">3</td><td>Cierra en su sprint</td></tr>
+    <tr><td class="id">US-45</td><td class="c">I4</td><td class="c">2,5 d</td><td class="c">22,8&ndash;25,3</td><td class="c">3</td><td>Cierra en su sprint</td></tr>
+    <tr class="fuera"><td class="id">US-40</td><td class="c">I3</td><td class="c">2,5 d</td><td class="c">24,1&ndash;26,6</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 26,6 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-34</td><td class="c">I1 + I2</td><td class="c">1,9 d</td><td class="c">25,2&ndash;27,1</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 27,1 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-41</td><td class="c">I4</td><td class="c">2,5 d</td><td class="c">25,3&ndash;27,8</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 27,8 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-28</td><td class="c">I5 + I3</td><td class="c">1,9 d</td><td class="c">26,6&ndash;28,5</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 28,5 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-29</td><td class="c">I4</td><td class="c">1,2 d</td><td class="c">27,8&ndash;29,1</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 29,1 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-35</td><td class="c">I2</td><td class="c">2,5 d</td><td class="c">27,1&ndash;29,6</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 29,6 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-57</td><td class="c">I3</td><td class="c">1,2 d</td><td class="c">29,1&ndash;30,3</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 30,3 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-17</td><td class="c">I5 + I4</td><td class="c">1,9 d</td><td class="c">29,1&ndash;30,9</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 30,9 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-36</td><td class="c">I2</td><td class="c">2,5 d</td><td class="c">29,6&ndash;32,1</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 32,1 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-44</td><td class="c">I4</td><td class="c">1,2 d</td><td class="c">30,9&ndash;32,2</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 32,2 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-62</td><td class="c">I3 + I2</td><td class="c">1,9 d</td><td class="c">32,1&ndash;33,9</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 33,9 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-47</td><td class="c">I2</td><td class="c">1,2 d</td><td class="c">33,9&ndash;35,2</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 35,2 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-49</td><td class="c">I1</td><td class="c">1,2 d</td><td class="c">35,2&ndash;36,4</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 36,4 y el sprint termina el 26</td></tr>
+    <tr class="fuera"><td class="id">US-50</td><td class="c">I2</td><td class="c">1,2 d</td><td class="c">36,4&ndash;37,7</td><td class="c">3</td><td><strong>Se corre:</strong> cierra el d&iacute;a 37,7 y el sprint termina el 26</td></tr>
   </tbody>
-  <tfoot><tr><td colspan="3">Fin del proyecto</td><td class="c">47,9</td><td class="c">&mdash;</td><td>Disponibles: 21 d&iacute;as. <strong>Faltan 26,9.</strong></td></tr></tfoot>
+  <tfoot><tr><td colspan="3">Fin del proyecto</td><td class="c">37,7</td><td class="c">&mdash;</td><td>Disponibles: 26 d&iacute;as. <strong>Faltan 11,7.</strong></td></tr></tfoot>
 </table>
 
 <div class="callout">
   <h4>El plan cierra en horas y no cierra en cronograma</h4>
   <p>Las dos afirmaciones son ciertas a la vez y conviene presentarlas juntas:</p>
-  <p><strong>En horas sobra margen.</strong> Los cinco integrantes trabajan al 92% de su disponibilidad y ninguno supera las
-  2,83 horas diarias. Las 240,9 horas de las 27 historias entran en las 262,5 de capacidad.</p>
-  <p><strong>En cronograma faltan 26,9 d&iacute;as.</strong> El proyecto necesita 47,9 d&iacute;as de implementaci&oacute;n y tiene 21. Solo
-  <strong>6 de las 27 historias</strong> cierran dentro del plazo: US-01, US-02, US-03, US-06, US-08 y US-21.</p>
-  <p>No es un problema de reparto. Se midieron cinco pol&iacute;ticas de asignaci&oacute;n y solapamiento; ninguna alcanza.</p>
+  <p><strong>En horas sobra margen.</strong> Los cinco integrantes trabajan al 91% de su disponibilidad y ninguno supera el
+  tope de horas de ning&uacute;n sprint. Las 313,5 horas de las 39 historias entran en las 344,5 de capacidad.</p>
+  <p><strong>En cronograma faltan 11,7 d&iacute;as.</strong> El proyecto necesita 37,7 d&iacute;as de implementaci&oacute;n y tiene 26.
+  <strong>12 de las 39 historias</strong> cierran dentro de su sprint: US-01, US-02, US-03, US-21, US-22, US-30, US-32,
+  US-33, US-39, US-45, US-48 y US-63.</p>
+  <p>La causa es geom&eacute;trica y no de reparto: <strong>todo el sistema cuelga de una sola cadena</strong>. US-01 habilita
+  US-02, que habilita US-03, que habilita US-06, que habilita US-08; de US-08 sale la agenda y de la agenda, US-13;
+  y de US-13 cuelgan diecis&eacute;is historias. Hasta que US-13 no cierra &mdash;d&iacute;a 18,4 de 26&mdash; la mitad del backlog
+  est&aacute; bloqueada, por m&aacute;s gente libre que haya.</p>
+  <p class="trace">Es exactamente por eso que el Sprint 3 recibi&oacute; 20 de los 22 puntos nuevos: son los &uacute;nicos que se
+  pueden colocar despu&eacute;s de que la cadena se libera. Y por eso el vacunatorio, que solo depende de US-08, arranca
+  antes que los pagos.</p>
 </div>
 
 <h3>7.2 Escenarios medidos</h3>
 
 <table>
-  <colgroup><col><col style="width:64pt"><col style="width:90pt"><col></colgroup>
-  <thead><tr><th>Escenario</th><th class="c">D&iacute;as</th><th class="c">Cierran en 21 d&iacute;as</th><th>Comentario</th></tr></thead>
+  <colgroup><col><col style="width:40pt"><col style="width:56pt"><col style="width:74pt"><col></colgroup>
+  <thead><tr><th>Escenario</th><th class="c">Alc.</th><th class="c">D&iacute;as</th><th class="c">Cierran</th><th>Comentario</th></tr></thead>
   <tbody>
-    <tr><td>Reparto de cada historia entre varios integrantes</td><td class="c">22,2</td><td class="c">27 de 27 US</td><td>Es el plan de la versi&oacute;n anterior. Entra con los tres sprints al 92% de ocupaci&oacute;n.</td></tr>
-    <tr><td><strong>Un due&ntilde;o por historia, 2,5 h/d&iacute;a &mdash; este plan</strong></td><td class="c"><strong>47,9</strong></td><td class="c"><strong>6 de 27 US</strong></td><td>Con los solapamientos defendibles de la secci&oacute;n 5.5 del cat&aacute;logo.</td></tr>
-    <tr><td>Un due&ntilde;o por historia, 3 h/d&iacute;a</td><td class="c">41,1</td><td class="c">9 de 27 US</td><td>Extremo alto del rango declarado. Mejora un 14% y no alcanza.</td></tr>
-    <tr><td>Un due&ntilde;o por historia, solapamiento al l&iacute;mite</td><td class="c">38,1</td><td class="c">9 de 27 US</td><td>Comienzo&ndash;comienzo con un d&iacute;a de demora y 3 h/d&iacute;a.</td></tr>
-    <tr><td>Un due&ntilde;o por historia, solapamiento total</td><td class="c">25,2</td><td class="c">19 de 27 US</td><td><strong>Escenario imposible</strong>, listado como cota inferior: supone que toda sucesora arranca el mismo d&iacute;a que su predecesora.</td></tr>
+    <tr><td>Versi&oacute;n 5: un due&ntilde;o por historia, 2,5 h/d&iacute;a, 21 d&iacute;as</td><td class="c">27 US</td><td class="c">47,9</td><td class="c">6 de 27</td><td>Punto de partida. Faltaban 26,9 d&iacute;as con 12 historias menos que ahora.</td></tr>
+    <tr><td>Alcance ampliado sin accionar ninguna palanca</td><td class="c">39 US</td><td class="c">&gt;60</td><td class="c">6 de 39</td><td>No se midi&oacute; en detalle: no tiene sentido planificar sobre un escenario que duplica el plazo disponible.</td></tr>
+    <tr><td>Alcance ampliado, equipos de 2 y 3, 2,0 h/d&iacute;a, 26 d&iacute;as</td><td class="c">39 US</td><td class="c">44,4</td><td class="c">7 de 39</td><td>Piso del rango declarado. Es el escenario a vigilar si la dedicaci&oacute;n real no llega a lo planificado.</td></tr>
+    <tr><td>Alcance ampliado, equipos de 2 y 3, 2,5 h/d&iacute;a, 26 d&iacute;as</td><td class="c">39 US</td><td class="c">39,1</td><td class="c">12 de 39</td><td>Con la jornada de la versi&oacute;n anterior. Comparado con sus 47,9 d&iacute;as, las otras dos palancas ya aportan 8,8 d&iacute;as.</td></tr>
+    <tr><td><strong>Alcance ampliado, equipos de 2 y 3, 2,65 h/d&iacute;a, 26 d&iacute;as &mdash; este plan</strong></td><td class="c"><strong>39 US</strong></td><td class="c"><strong>37,7</strong></td><td class="c"><strong>12 de 39</strong></td><td>Las tres palancas accionadas. Faltan 11,7 d&iacute;as.</td></tr>
+    <tr><td>Alcance ampliado, equipos de 2 y 3, 3,0 h/d&iacute;a, 26 d&iacute;as</td><td class="c">39 US</td><td class="c">34,9</td><td class="c">12 de 39</td><td>Techo del rango declarado. Aporta 2,8 d&iacute;as m&aacute;s y deja la brecha en 8,9: sigue sin cerrar.</td></tr>
   </tbody>
 </table>
 
-<p class="note">Aun el escenario imposible &mdash;que nadie sostendr&iacute;a en la pr&aacute;ctica&mdash; queda 4,2 d&iacute;as por encima de los
-21 disponibles. <strong>Con una persona por historia, el alcance de 73 puntos no cabe en 21 d&iacute;as bajo ninguna
-asignaci&oacute;n.</strong></p>
+<p class="note">Los cinco escenarios medidos los calcula <code>build-plan.js</code> sobre el mismo grafo de precedencias,
+variando solo la dedicaci&oacute;n diaria. La conclusi&oacute;n es la misma que en la versi&oacute;n anterior, con el alcance ampliado:
+<strong>subir horas rinde poco</strong>. Del piso al techo &mdash;un 50% m&aacute;s de dedicaci&oacute;n diaria&mdash; el proyecto se
+acorta 9,5 d&iacute;as, y hacen falta 11,7. <strong>Lo que sobra no es trabajo sino espera</strong>: en el d&iacute;a 15 hay tres
+integrantes libres y ninguna historia habilitada para empezar.</p>
 
-<h3>7.3 Las cuatro palancas</h3>
+<h3>7.3 Las palancas: las accionadas y las que quedan</h3>
+
+<p>Tres de las cuatro palancas que esta secci&oacute;n planteaba en la versi&oacute;n anterior ya est&aacute;n accionadas y son las que
+permitieron absorber 22 puntos nuevos reduciendo la brecha a la vez. Quedan dos disponibles.</p>
 
 <table>
   <colgroup><col style="width:22pt"><col style="width:22%"><col><col style="width:70pt"></colgroup>
-  <thead><tr><th class="c">#</th><th>Palanca</th><th>C&oacute;mo funciona y qu&eacute; cuesta</th><th class="c">Resultado</th></tr></thead>
+  <thead><tr><th class="c">#</th><th>Palanca accionada</th><th>Qu&eacute; se hizo</th><th class="c">Aporte</th></tr></thead>
   <tbody>
-    <tr><td class="c">1</td><td><strong>Partir las historias del camino cr&iacute;tico</strong></td><td>Dividir US-01, US-02, US-03, US-06, US-08, US-11, US-13, US-34 y US-39 en sub-historias de 1 y 2 puntos, cada una con su due&ntilde;o. Donde las piezas sean independientes &mdash;por ejemplo, el formulario de carga de disponibilidad y la validaci&oacute;n de jornadas&mdash; dos personas avanzan en paralelo sin compartir una historia. Exige reescribir el cat&aacute;logo y los criterios de aceptaci&oacute;n: pasa de 27 a unas 40 historias.</td><td class="c">La m&aacute;s efectiva sin tocar la regla</td></tr>
-    <tr><td class="c">2</td><td><strong>Subir la dedicaci&oacute;n a 3 h diarias</strong></td><td>Extremo alto del rango ya declarado por el equipo. No cambia el alcance de ninguna historia ni exige renegociar nada con el cliente.</td><td class="c">47,9 &rarr; 41,1 d&iacute;as</td></tr>
-    <tr><td class="c">3</td><td><strong>Ampliar el plazo</strong></td><td>Cada semana de calendario aporta 5 d&iacute;as de implementaci&oacute;n. Cubrir los 26,9 d&iacute;as faltantes exige unas seis semanas m&aacute;s. Depende de la c&aacute;tedra, no del equipo.</td><td class="c">+5 d&iacute;as por semana</td></tr>
-    <tr><td class="c">4</td><td>Dos due&ntilde;os en las historias del camino cr&iacute;tico</td><td><strong>Abandona la regla</strong>, pero solo en las 13 historias cr&iacute;ticas; las otras 14 conservan un &uacute;nico implementador.</td><td class="c">Vuelve a ~22 d&iacute;as</td></tr>
+    <tr><td class="c">A</td><td><strong>Equipos de 2 y 3 en las historias grandes</strong></td><td>Las de 3 puntos las ejecuta una pareja y las de 4 y 5 un tr&iacute;o. Cada historia conserva un due&ntilde;o responsable. Es la palanca 4 de la versi&oacute;n anterior, aplicada de forma graduada en lugar de solo a las cr&iacute;ticas. Cuesta endurecer la condici&oacute;n 3 de la definici&oacute;n de terminado.</td><td class="c">La de mayor efecto</td></tr>
+    <tr><td class="c">B</td><td><strong>Doce d&iacute;as en el Sprint 3</strong></td><td>Se implementa durante la semana del parcial, 02&ndash;06/11. El proyecto pasa de 21 a 26 d&iacute;as. Es la palanca 3, pero sin pedir plazo a la c&aacute;tedra: se aprovecha calendario que el plan anterior dejaba vac&iacute;o. Cuesta solapar implementaci&oacute;n con el estudio del parcial.</td><td class="c">+5 d&iacute;as</td></tr>
+    <tr><td class="c">C</td><td><strong>Dedicaci&oacute;n de 2,65 h diarias</strong></td><td>Un escal&oacute;n por encima del punto medio del rango declarado. No cambia el alcance de ninguna historia ni exige renegociar nada. Es la palanca 2, accionada a medias: queda margen hasta 3 h.</td><td class="c">1,4 d&iacute;as</td></tr>
   </tbody>
 </table>
 
-<p class="note">Las palancas 1 y 2 son compatibles entre s&iacute; y ninguna toca la regla de un &uacute;nico implementador por
-historia. Es la combinaci&oacute;n que recomienda el equipo de an&aacute;lisis. La decisi&oacute;n se toma en la re-priorizaci&oacute;n del
-Sprint 0, antes de que empiece el Sprint 1, y no en la demo del 22/10.</p>
+<table>
+  <colgroup><col style="width:22pt"><col style="width:22%"><col><col style="width:70pt"></colgroup>
+  <thead><tr><th class="c">#</th><th>Palanca disponible</th><th>C&oacute;mo funciona y qu&eacute; cuesta</th><th class="c">Resultado</th></tr></thead>
+  <tbody>
+    <tr><td class="c">1</td><td><strong>Partir las historias del camino cr&iacute;tico</strong></td><td>Dividir US-01, US-02, US-03, US-06, US-08, US-13 y US-28 en sub-historias de 1 y 2 puntos, cada una con su due&ntilde;o, para que la cadena admita m&aacute;s paralelismo del que hoy tolera. Es la palanca m&aacute;s efectiva de las que quedan y la m&aacute;s costosa: exige reescribir el cat&aacute;logo y los criterios de aceptaci&oacute;n, y llevar&iacute;a el plan de 39 a m&aacute;s de 50 historias.</td><td class="c">La m&aacute;s efectiva de las que quedan</td></tr>
+    <tr><td class="c">2</td><td>Llevar la dedicaci&oacute;n al techo de 3 h diarias</td><td>Extremo alto del rango declarado. Con 4 d&iacute;as de implementaci&oacute;n en una misma semana implica 12 h semanales, por encima de las 10 que fija la c&aacute;tedra: hay que acordarlo con el ayudante o compensar con semanas m&aacute;s livianas.</td><td class="c">37,7 &rarr; 34,9 d&iacute;as</td></tr>
+    <tr><td class="c">3</td><td>Recortar alcance</td><td>La &uacute;nica palanca que cierra la brecha con certeza. La secci&oacute;n 7.4 fija el orden en que se recortar&iacute;a. <strong>El cliente resolvi&oacute; no accionarla</strong>: pidi&oacute; incorporar las historias sabiendo que el plazo no alcanza.</td><td class="c">Descartada por el cliente</td></tr>
+  </tbody>
+</table>
+
+<p class="note">La recomendaci&oacute;n del equipo de an&aacute;lisis es accionar la palanca 1 en el refinement del Sprint 1, sobre
+las historias de la cadena US-01 &rarr; US-08, que es donde el paralelismo rinde antes. Partirlas no cambia el alcance
+ni las estimaciones: cambia el tama&ntilde;o del grano, y con &eacute;l cu&aacute;nta gente puede trabajar a la vez.</p>
+
+<h3>7.4 Orden de recorte si hubiera que recortar</h3>
+
+<p>El cliente decidi&oacute; incorporar las historias aun sabiendo que el plazo no alcanza. Esta tabla no propone recortar:
+<strong>fija de antemano el orden</strong>, para que si en la demo del 22/10 o del 12/11 hay que dejar algo afuera la
+decisi&oacute;n est&eacute; tomada y no se improvise. El criterio es inverso al de incorporaci&oacute;n: primero prioridad MoSCoW m&aacute;s
+baja, despu&eacute;s lo que no rompe ninguna cadena.</p>
+
+<table>
+  <colgroup><col style="width:22pt"><col style="width:54pt"><col style="width:40pt"><col style="width:30pt"><col></colgroup>
+  <thead><tr><th class="c">#</th><th class="id">US</th><th class="c">Prio.</th><th class="c">Pts</th><th>Por qu&eacute; es la primera en salir</th></tr></thead>
+  <tbody>
+    <tr><td class="c">1</td><td class="id">US-62</td><td class="c">Could</td><td class="c">3</td><td>Adjuntar estudios a la ficha. &Uacute;nica <em>Could</em> del plan y nadie depende de ella. Sale sin tocar nada.</td></tr>
+    <tr><td class="c">2</td><td class="id">US-50</td><td class="c">Should</td><td class="c">1</td><td>Exportaci&oacute;n de reportes. Es la &uacute;ltima historia del proyecto y es hoja del grafo: los reportes se ven en pantalla igual.</td></tr>
+    <tr><td class="c">3</td><td class="id">US-57</td><td class="c">Should</td><td class="c">1</td><td>Carnet de vacunaci&oacute;n. El m&oacute;dulo de vacunas sigue completo y demostrable sin el carnet del paciente.</td></tr>
+    <tr><td class="c">4</td><td class="id">US-49</td><td class="c">Should</td><td class="c">1</td><td>Filtros comunes de reportes. Arrastra US-50, que ya sali&oacute; en el paso 2. Cada reporte conserva sus filtros propios.</td></tr>
+    <tr><td class="c">5</td><td class="id">US-17</td><td class="c">Should</td><td class="c">3</td><td>Gesti&oacute;n de turnos desde mostrador. Duplica por tel&eacute;fono lo que el paciente ya puede hacer por la web.</td></tr>
+    <tr><td class="c">6</td><td class="id">US-30 + US-22</td><td class="c">Should</td><td class="c">3</td><td>Bloqueo de franja y su aviso. Salen juntas: US-22 existe solo para US-30. El m&eacute;dico queda sin poder bloquear horarios ya publicados.</td></tr>
+  </tbody>
+  <tfoot><tr><td colspan="3">Recorte acumulado</td><td class="c">12</td><td>Deja el plan en 32 historias y 77 puntos de User Stories, y el cronograma en 32,8 d&iacute;as. <strong>Sigue sin cerrar en 26: faltar&iacute;an 6,8.</strong></td></tr></tfoot>
+</table>
+
+<p class="note">Vale la pena leer la &uacute;ltima fila con atenci&oacute;n: <strong>deshacer por completo la incorporaci&oacute;n no
+alcanzar&iacute;a para cerrar el plan</strong>. El problema de cronograma es anterior al alcance ampliado &mdash;ya exist&iacute;a en la
+versi&oacute;n 5, con 26,9 d&iacute;as de brecha&mdash; y se resuelve con la palanca 1, no recortando historias.</p>
 
 <div class="page-break"></div>
 
-<h2>8. Alcance retirado por capacidad</h2>
+<h2>8. Alcance reincorporado y alcance que queda afuera</h2>
 
-<p>Independientemente del problema de cronograma, la demanda derivada de los requerimientos vigentes era de 113
-puntos y la capacidad de los tres sprints, de 78. Se retiraron 46 puntos del alcance. <strong>Este recorte es el mismo
-que el de la versi&oacute;n anterior</strong> y no se modific&oacute;.</p>
+<p>La demanda derivada de los requerimientos vigentes es de 113 puntos. La versi&oacute;n anterior retiraba 46 y dejaba 67.
+<strong>Esta versi&oacute;n reincorpora 22 de esos 46</strong> y deja 24 puntos fuera del alcance, repartidos en 14 historias.
+De esas 14, cinco &mdash;las del m&oacute;dulo m&oacute;vil&mdash; no se retiran sino que se reemplazan por un requerimiento no
+funcional.</p>
 
 <table>
   <colgroup><col style="width:140pt"><col style="width:26pt"><col style="width:30pt"><col></colgroup>
-  <thead><tr><th>Bloque retirado</th><th class="c">US</th><th class="c">Pts</th><th>Fundamento</th></tr></thead>
+  <thead><tr><th>Bloque</th><th class="c">US</th><th class="c">Pts</th><th>Decisi&oacute;n</th></tr></thead>
   <tbody>
-    <tr><td class="id">M&oacute;dulo de vacunas completo &mdash; US-24, US-63, US-28, US-29, US-57</td><td class="c">5</td><td class="c">10</td><td>Es el m&oacute;dulo que menos c&oacute;digo comparte con el resto: agenda propia, cat&aacute;logo propio y registro de aplicaci&oacute;n. Retirarlo solo obliga a simplificar US-12, US-40 y US-45.</td></tr>
-    <tr><td class="id">Aplicaci&oacute;n m&oacute;vil completa &mdash; US-51 a US-55</td><td class="c">5</td><td class="c">10</td><td>Replica funcionalidad que debe existir antes en la web, de modo que su valor incremental es el menor del backlog.</td></tr>
-    <tr><td class="id">Historias Should &mdash; US-17, US-19, US-30, US-31, US-38, US-42, US-43, US-49, US-50, US-58</td><td class="c">10</td><td class="c">14</td><td>Todas las de prioridad Should salvo US-44, que se conserva por RNF-04.</td></tr>
-    <tr><td class="id">US-22 &mdash; Aviso por modificaci&oacute;n de agenda</td><td class="c">1</td><td class="c">1</td><td>Cae por dependencia, no por prioridad: su disparador es US-30, que es Should.</td></tr>
-    <tr><td class="id">US-48 &mdash; Reporte de asistencia de pacientes</td><td class="c">1</td><td class="c">1</td><td>Se recorta para que el Sprint 3 no quede al 100% de su capacidad. Primera candidata a reincorporarse.</td></tr>
-    <tr><td class="id">Backlog Could &mdash; US-59, US-60, US-61, US-62</td><td class="c">4</td><td class="c">10</td><td>Nunca estuvieron comprometidas: lista de espera, calendario de feriados, anulaci&oacute;n de pagos y adjuntos a la ficha.</td></tr>
+    <tr><td class="id"><strong>M&oacute;dulo de vacunas completo</strong> &mdash; US-24, US-63, US-28, US-29, US-57</td><td class="c">5</td><td class="c">10</td><td><strong>Entra.</strong> El m&oacute;dulo se incorpora entero: cat&aacute;logo, agenda del vacunatorio, turno de vacunaci&oacute;n, registro de dosis y carnet. US-24 va al Sprint 2 y los otros cuatro al 3. Se asume stock permanente de dosis, seg&uacute;n lo resuelto el 19/09.</td></tr>
+    <tr><td class="id"><strong>M&oacute;dulo de reportes completo</strong> &mdash; se suman US-48, US-49, US-50</td><td class="c">3</td><td class="c">3</td><td><strong>Entra.</strong> Con US-45 y US-47, que ya estaban comprometidas, el m&oacute;dulo queda completo: los cuatro reportes, los filtros comunes y la exportaci&oacute;n a PDF y CSV. Cubre RF-REP-01 a RF-REP-06 salvo RF-REP-02, que el cliente retir&oacute;.</td></tr>
+    <tr><td class="id"><strong>US-17</strong> gesti&oacute;n de turnos desde mostrador &middot; <strong>US-30</strong> bloqueo de franja publicada &middot; <strong>US-62</strong> adjuntar estudios</td><td class="c">3</td><td class="c">8</td><td><strong>Entran.</strong> Las tres al Sprint 3. US-17 exige que el turno de vacunaci&oacute;n exista, porque gestiona turnos de ambos tipos: es el &uacute;ltimo eslab&oacute;n de la cadena de vacunas.</td></tr>
+    <tr><td class="id"><strong>US-22</strong> aviso por modificaci&oacute;n de agenda</td><td class="c">1</td><td class="c">1</td><td><strong>Entra por dependencia.</strong> No estaba en el pedido, pero avisar a los pacientes de una franja bloqueada es un criterio de aceptaci&oacute;n de US-30: sin US-22, US-30 no se puede verificar.</td></tr>
+    <tr><td class="id">Aplicaci&oacute;n m&oacute;vil completa &mdash; US-51 a US-55</td><td class="c">5</td><td class="c">10</td><td><strong>Absorbida por RNF-08.</strong> No se implementa como m&oacute;dulo: la web se construye con dise&ntilde;o adaptable y se verifica dentro de cada historia con interfaz, igual que RNF-03. RF-MOV-01 a RF-MOV-05 se dan de baja como requerimientos funcionales y RNF-08 pasa de Should a Must; el esfuerzo se distribuye. Lo &uacute;nico que se pierde son las notificaciones emergentes de RF-MOV-04: el recordatorio sigue llegando por email.</td></tr>
+    <tr><td class="id">Reserva de turnos y agenda &mdash; US-19, US-59, US-60</td><td class="c">3</td><td class="c">6</td><td>Queda afuera. Prevenci&oacute;n de turnos duplicados, lista de espera y calendario de feriados. Ninguna habilita a otra historia del alcance.</td></tr>
+    <tr><td class="id">Usuarios y notificaciones &mdash; US-31, US-58</td><td class="c">2</td><td class="c">2</td><td>Queda afuera. Recuperaci&oacute;n de contrase&ntilde;a y registro de notificaciones enviadas. US-31 es la primera candidata a reincorporarse si aparece margen: es 1 punto y es hoja del grafo.</td></tr>
+    <tr><td class="id">Pagos y coberturas &mdash; US-38, US-61</td><td class="c">2</td><td class="c">3</td><td>Queda afuera. Historial de pagos del paciente y anulaci&oacute;n de pagos. US-47 cubre la necesidad de control de la recaudaci&oacute;n del lado administrativo.</td></tr>
+    <tr><td class="id">Historial cl&iacute;nico &mdash; US-42, US-43</td><td class="c">2</td><td class="c">3</td><td>Queda afuera. Trazabilidad de las entradas cl&iacute;nicas y antecedentes, alergias y medicaci&oacute;n habitual. US-44 conserva la auditor&iacute;a de accesos, que es lo que exige RNF-04.</td></tr>
   </tbody>
-  <tfoot><tr><td>Total retirado</td><td class="c">26</td><td class="c">46</td><td>La demanda pasa de 113 a 67 puntos en User Stories, m&aacute;s 6 de reserva para bugs.</td></tr></tfoot>
+  <tfoot><tr><td>Total fuera del alcance</td><td class="c">14</td><td class="c">24</td><td>La demanda pasa de 113 a 89 puntos en User Stories, m&aacute;s 6 de reserva para bugs.</td></tr></tfoot>
 </table>
 
-<p class="note">Con el problema de cronograma de la secci&oacute;n 7 sin resolver, <strong>reincorporar cualquiera de estas
-historias es imposible</strong>: el alcance ya comprometido no entra en el plazo. La conversaci&oacute;n de la re-priorizaci&oacute;n no
-es qu&eacute; agregar sino cu&aacute;l palanca accionar.</p>
+<p class="note">El equipo de an&aacute;lisis dej&oacute; constancia de que el alcance ampliado <strong>no entra en el plazo</strong> y de
+que la brecha es de 11,7 d&iacute;as. El cliente resolvi&oacute; incorporarlo igual, y las historias entran. La secci&oacute;n 7.4 fija
+el orden de recorte para que, si hay que dejar algo afuera en la demo del 22/10 o del 12/11, la decisi&oacute;n ya est&eacute;
+tomada.</p>
 
 <h2>9. Requerimientos retirados por decisi&oacute;n del cliente</h2>
 
@@ -585,7 +730,7 @@ de la secci&oacute;n 8: estos no se construyen nunca.</p>
   <colgroup><col style="width:130pt"><col style="width:34%"><col></colgroup>
   <thead><tr><th>M&eacute;trica</th><th>C&oacute;mo se calcula</th><th>Qu&eacute; revela</th></tr></thead>
   <tbody>
-    <tr><td class="id"><strong>Horas efectivas por persona y por d&iacute;a</strong></td><td>Horas registradas de trabajo sobre User Stories dividido por integrantes y por d&iacute;as de implementaci&oacute;n.</td><td><strong>Determina la duraci&oacute;n de cada eslab&oacute;n de la cadena.</strong> A 2 horas diarias el proyecto necesita 59,9 d&iacute;as en lugar de 47,9.</td></tr>
+    <tr><td class="id"><strong>Horas efectivas por persona y por d&iacute;a</strong></td><td>Horas registradas de trabajo sobre User Stories dividido por integrantes y por d&iacute;as de implementaci&oacute;n.</td><td><strong>Determina la duraci&oacute;n de cada eslab&oacute;n de la cadena.</strong> A 2 horas diarias el proyecto necesita 44,4 d&iacute;as en lugar de 37,7, y el Sprint 2 queda por encima de su capacidad.</td></tr>
     <tr><td class="id"><strong>Horas reales por punto</strong></td><td>Horas registradas por User Story dividido por sus puntos estimados.</td><td>Valida la equivalencia de 3,30 horas por punto. Insumo del ejercicio de estimaci&oacute;n con IA que pide la c&aacute;tedra.</td></tr>
     <tr><td class="id"><strong>Desv&iacute;o de la cadena cr&iacute;tica</strong></td><td>D&iacute;a real de cierre de cada historia del camino cr&iacute;tico contra el planificado.</td><td><strong>M&eacute;trica nueva de esta versi&oacute;n.</strong> Con cero holgura, es la &uacute;nica alerta temprana disponible. Se mide en cada daily, no al cierre del sprint.</td></tr>
     <tr><td class="id">US completadas sobre comprometidas</td><td>US que cumplen los criterios de aceptaci&oacute;n dividido por las planificadas al inicio del sprint.</td><td>Confiabilidad del compromiso del equipo.</td></tr>
@@ -607,15 +752,16 @@ de la secci&oacute;n 8: estos no se construyen nunca.</p>
   <colgroup><col style="width:34%"><col style="width:40pt"><col style="width:46pt"><col></colgroup>
   <thead><tr><th>Riesgo</th><th class="c">Prob.</th><th class="c">Impacto</th><th>Mitigaci&oacute;n propuesta</th></tr></thead>
   <tbody>
-    <tr><td><strong>El alcance comprometido necesita 47,9 d&iacute;as de implementaci&oacute;n y hay 21.</strong></td><td class="c">Cierta</td><td class="c">Alto</td><td>No es un riesgo sino un hecho medido. Accionar una palanca de la secci&oacute;n 7.3 en la re-priorizaci&oacute;n del Sprint 0. La combinaci&oacute;n recomendada &mdash;partir las historias cr&iacute;ticas y subir a 3 horas diarias&mdash; no toca la regla de asignaci&oacute;n.</td></tr>
-    <tr><td><strong>Cada historia es un punto &uacute;nico de falla.</strong> Si su due&ntilde;o se atrasa, se enferma o abandona, nadie puede sustituirlo sin romper la regla.</td><td class="c">Alta</td><td class="c">Alto</td><td>Documentar el dise&ntilde;o de cada historia cr&iacute;tica antes de empezarla, revisarla con un segundo integrante en la daily y mantener el repositorio al d&iacute;a. Definir de antemano que una baja prolongada autoriza suspender la regla para esa historia.</td></tr>
-    <tr><td><strong>Un solo autor por historia reduce la revisi&oacute;n de c&oacute;digo a cero.</strong></td><td class="c">Alta</td><td class="c">Alto</td><td>La condici&oacute;n 3 de la definici&oacute;n de terminado &mdash;prueba por un integrante distinto del due&ntilde;o&mdash; deja de ser una formalidad y pasa a ser la &uacute;nica barrera de calidad del proyecto.</td></tr>
-    <tr><td>US-06 y US-08 son 11,9 d&iacute;as seguidos sin solapamiento posible, en el medio de la cadena.</td><td class="c">Alta</td><td class="c">Alto</td><td>Son las dos historias a partir por la palanca 1. Si no se parten, conviene al menos asignarlas a los integrantes con la dedicaci&oacute;n diaria m&aacute;s estable.</td></tr>
-    <tr><td>I2 trabaja a 2,83 horas diarias en el Sprint 1 por tomar dos historias.</td><td class="c">Media</td><td class="c">Medio</td><td>Est&aacute; dentro del rango declarado de 2 a 3 horas, pero es el carril con menos tolerancia. Medir sus horas reales desde el d&iacute;a 1.</td></tr>
-    <tr><td>La dedicaci&oacute;n real resulta de 2 horas diarias y no de 2,5.</td><td class="c">Media</td><td class="c">Alto</td><td>El proyecto pasa de 47,9 a 59,9 d&iacute;as. Medir horas efectivas por persona desde el d&iacute;a 1 y recalcular la cadena en la retrospectiva del 08/10.</td></tr>
+    <tr><td><strong>El alcance ampliado necesita 37,7 d&iacute;as de implementaci&oacute;n y hay 26.</strong></td><td class="c">Cierta</td><td class="c">Alto</td><td>No es un riesgo sino un hecho medido, y el cliente lo asumi&oacute; al pedir la incorporaci&oacute;n. Accionar la palanca 1 de la secci&oacute;n 7.3 &mdash;partir las historias de la cadena US-01 &rarr; US-08&mdash; en el refinement del Sprint 1. Si no alcanza, aplicar el orden de recorte de la secci&oacute;n 7.4 en la demo del 22/10.</td></tr>
+    <tr><td><strong>El Sprint 3 concentra 22 historias, 43 puntos y 11 de las 12 historias nuevas.</strong></td><td class="c">Cierta</td><td class="c">Alto</td><td>Es consecuencia de las dependencias: hasta que US-13 no cierra, casi nada del alcance nuevo se puede empezar. Mitigaci&oacute;n: cerrar US-13 lo antes posible en el Sprint 2 y llevar al refinement del Sprint 3 las 22 historias con criterios de aceptaci&oacute;n y wireframes ya revisados, sin dejar an&aacute;lisis para el sprint.</td></tr>
+    <tr><td><strong>Implementar durante la semana del parcial es la palanca m&aacute;s fr&aacute;gil del plan.</strong> Aporta 5 de los 26 d&iacute;as.</td><td class="c">Alta</td><td class="c">Alto</td><td>Si esa semana se pierde, el Sprint 3 vuelve a 7 d&iacute;as y su capacidad cae de 159 a 92,8 horas, por debajo de las 148,5 que tiene comprometidas. Colocar en esa semana historias hoja &mdash;US-44, US-47, US-57, la reserva de bugs&mdash; y no eslabones de cadena.</td></tr>
+    <tr><td><strong>Cada historia tiene un solo due&ntilde;o responsable.</strong> Si se atrasa, se enferma o abandona, el copiloto tiene contexto pero no el dise&ntilde;o completo.</td><td class="c">Media</td><td class="c">Alto</td><td>Documentar el dise&ntilde;o de cada historia de la cadena cr&iacute;tica antes de empezarla y revisarlo en la daily. Las historias de 3 puntos o m&aacute;s ya tienen una segunda persona con contexto, que es la mitigaci&oacute;n que la versi&oacute;n anterior no ten&iacute;a.</td></tr>
+    <tr><td>La verificaci&oacute;n cruzada se vuelve m&aacute;s dif&iacute;cil de asignar: en las historias de 4 y 5 puntos trabajan tres personas y solo quedan dos candidatos para probarlas.</td><td class="c">Media</td><td class="c">Alto</td><td>Asignar el verificador en el refinement, junto con el equipo, y no cuando la historia ya est&aacute; terminada. Es la condici&oacute;n 3 de la definici&oacute;n de terminado y sigue siendo la barrera de calidad principal.</td></tr>
+    <tr><td>El m&oacute;dulo de vacunas es una cadena de cuatro eslabones &mdash;US-63 &rarr; US-28 &rarr; US-29 &rarr; US-57&mdash; que arranca el d&iacute;a 23,3.</td><td class="c">Alta</td><td class="c">Medio</td><td>US-24 se adelant&oacute; al Sprint 2 justamente para acortarla. Si el vacunatorio no llega, es el bloque que se demuestra parcialmente: con US-63 y US-28 ya hay turno de vacunaci&oacute;n reservable, que es el valor central del m&oacute;dulo.</td></tr>
+    <tr><td>La dedicaci&oacute;n real resulta de 2 horas diarias y no de 2,65.</td><td class="c">Media</td><td class="c">Alto</td><td>El proyecto pasa de 37,7 a 44,4 d&iacute;as y el Sprint 2 queda por encima de su capacidad. Medir horas efectivas por persona desde el d&iacute;a 1 y recalcular la cadena en la retrospectiva del 08/10.</td></tr>
+    <tr><td>El dise&ntilde;o responsive (RNF-08) se subestima al no tener puntos propios, igual que pas&oacute; con RNF-03.</td><td class="c">Alta</td><td class="c">Medio</td><td>Es el riesgo directo de absorber cinco historias de m&oacute;vil en un requerimiento no funcional. Verificarlo en la definici&oacute;n de terminado de cada historia con interfaz y sobre un dispositivo real, no solo redimensionando el navegador. Definir los puntos de corte en el refinement del Sprint 1, antes de la primera pantalla.</td></tr>
     <tr><td>Un punto cuesta 4 horas y no 3,30.</td><td class="c">Media</td><td class="c">Alto</td><td>Registrar horas reales por User Story, no por sprint. Es la &uacute;nica medici&oacute;n que permite recalibrar antes de comprometer el Sprint 2.</td></tr>
-    <tr><td>Los solapamientos comienzo&ndash;comienzo resultan inviables en la pr&aacute;ctica.</td><td class="c">Media</td><td class="c">Alto</td><td>Validarlos en el refinement del Sprint 1, no durante la implementaci&oacute;n. Si US-03 no puede arrancar sin el login terminado, el cronograma empeora todav&iacute;a m&aacute;s.</td></tr>
-    <tr><td>El parcial de la materia parte el Sprint 3 en dos bloques con nueve d&iacute;as de corte.</td><td class="c">Alta</td><td class="c">Medio</td><td>Dejar el estado de cada historia abierta documentado por escrito antes del 31/10. Retomar una historia propia tras nueve d&iacute;as cuesta menos que retomar una ajena, pero cuesta.</td></tr>
+    <tr><td>Los solapamientos comienzo&ndash;comienzo resultan inviables en la pr&aacute;ctica.</td><td class="c">Media</td><td class="c">Alto</td><td>Validarlos en el refinement de cada sprint, no durante la implementaci&oacute;n. Si US-03 no puede arrancar sin el login terminado, el cronograma empeora todav&iacute;a m&aacute;s.</td></tr>
     <tr><td>Control de acceso por rol subestimado al no tener puntos propios.</td><td class="c">Media</td><td class="c">Alto</td><td>Verificarlo en la condici&oacute;n 6 de la definici&oacute;n de terminado de cada US y reservar testing espec&iacute;fico en el d&iacute;a 10 de cada sprint.</td></tr>
     <tr><td>Uso de IA sin registro del prompt o sin control del resultado.</td><td class="c">Media</td><td class="c">Medio</td><td>Documentar herramienta, versi&oacute;n y prompt en cada uso; revisar siempre la salida, dado que la correcta utilizaci&oacute;n forma parte de la evaluaci&oacute;n.</td></tr>
   </tbody>
@@ -625,32 +771,41 @@ de la secci&oacute;n 8: estos no se construyen nunca.</p>
 
 <table>
   <colgroup><col><col style="width:80pt"><col style="width:80pt"><col style="width:56pt"></colgroup>
-  <thead><tr><th>Concepto</th><th class="c">Versi&oacute;n anterior</th><th class="c">Versi&oacute;n 5</th><th class="c">Variaci&oacute;n</th></tr></thead>
+  <thead><tr><th>Concepto</th><th class="c">Versi&oacute;n 5</th><th class="c">Versi&oacute;n 6</th><th class="c">Variaci&oacute;n</th></tr></thead>
   <tbody>
-    <tr><td><strong>Implementadores por User Story</strong></td><td class="c">2 a 5</td><td class="c"><strong>1</strong></td><td class="c">&mdash;</td></tr>
-    <tr><td>User Stories comprometidas</td><td class="c">27</td><td class="c">27</td><td class="c">=</td></tr>
-    <tr><td>Puntos comprometidos</td><td class="c">73</td><td class="c">73</td><td class="c">=</td></tr>
-    <tr><td>Distribuci&oacute;n por sprint</td><td class="c">23 / 25 / 25</td><td class="c">23 / 25 / 25</td><td class="c">=</td></tr>
-    <tr><td>Horas comprometidas</td><td class="c">240,9</td><td class="c">240,9</td><td class="c">=</td></tr>
-    <tr><td>Ocupaci&oacute;n del equipo</td><td class="c">92%</td><td class="c">92%</td><td class="c">=</td></tr>
-    <tr><td>Duraci&oacute;n de una historia de 4 puntos</td><td class="c">1,8 d&iacute;as</td><td class="c">5,3 d&iacute;as</td><td class="c">&times;2,9</td></tr>
-    <tr><td>Camino cr&iacute;tico en d&iacute;as</td><td class="c">~15</td><td class="c">48,8</td><td class="c">&times;3,3</td></tr>
-    <tr><td><strong>D&iacute;as de implementaci&oacute;n necesarios</strong></td><td class="c">22,2</td><td class="c"><strong>47,9</strong></td><td class="c">+25,7</td></tr>
-    <tr><td><strong>Historias que cierran en 21 d&iacute;as</strong></td><td class="c">27 de 27</td><td class="c"><strong>6 de 27</strong></td><td class="c">&minus;21</td></tr>
+    <tr><td><strong>User Stories comprometidas</strong></td><td class="c">27</td><td class="c"><strong>39</strong></td><td class="c">+12</td></tr>
+    <tr><td>Puntos en User Stories</td><td class="c">67</td><td class="c">89</td><td class="c">+22</td></tr>
+    <tr><td>Puntos comprometidos, con reserva de bugs</td><td class="c">73</td><td class="c">95</td><td class="c">+22</td></tr>
+    <tr><td>Distribuci&oacute;n por sprint</td><td class="c">23 / 25 / 25</td><td class="c">23 / 27 / 43</td><td class="c">&mdash;</td></tr>
+    <tr><td>Horas comprometidas</td><td class="c">240,9</td><td class="c">313,5</td><td class="c">+30%</td></tr>
+    <tr><td>Implementadores por User Story</td><td class="c">1</td><td class="c">1 a 3</td><td class="c">&mdash;</td></tr>
+    <tr><td>Dedicaci&oacute;n diaria planificada</td><td class="c">2,5 h</td><td class="c">2,65 h</td><td class="c">+6%</td></tr>
+    <tr><td>D&iacute;as de implementaci&oacute;n disponibles</td><td class="c">21</td><td class="c"><strong>26</strong></td><td class="c">+5</td></tr>
+    <tr><td>Capacidad del equipo</td><td class="c">262,5 h</td><td class="c">344,5 h</td><td class="c">+31%</td></tr>
+    <tr><td>Ocupaci&oacute;n del equipo</td><td class="c">92%</td><td class="c">91%</td><td class="c">&minus;1 pto</td></tr>
+    <tr><td>Integrantes por encima de su tope de horas</td><td class="c">1 (I2 en S1)</td><td class="c"><strong>0</strong></td><td class="c">&minus;1</td></tr>
+    <tr><td>Duraci&oacute;n de una historia de 4 puntos</td><td class="c">5,3 d&iacute;as</td><td class="c">1,7 d&iacute;as</td><td class="c">&divide;3,1</td></tr>
+    <tr><td><strong>D&iacute;as de implementaci&oacute;n necesarios</strong></td><td class="c">47,9</td><td class="c"><strong>37,7</strong></td><td class="c">&minus;10,2</td></tr>
+    <tr><td><strong>Brecha de cronograma</strong></td><td class="c">26,9 d&iacute;as</td><td class="c"><strong>11,7 d&iacute;as</strong></td><td class="c">&minus;15,2</td></tr>
+    <tr><td>Historias que cierran en su sprint</td><td class="c">6 de 27</td><td class="c">12 de 39</td><td class="c">+6</td></tr>
+    <tr><td>Historias fuera del alcance</td><td class="c">26</td><td class="c">14</td><td class="c">&minus;12</td></tr>
   </tbody>
 </table>
 
 <div class="callout">
   <h4>Lectura del cambio</h4>
-  <p>Ninguna cifra de alcance se movi&oacute;: mismas historias, mismos puntos, misma distribuci&oacute;n, mismas horas, misma
-  ocupaci&oacute;n. Lo &uacute;nico que cambi&oacute; es qui&eacute;n ejecuta cada historia, y eso multiplica por 3,3 la duraci&oacute;n del camino
-  cr&iacute;tico.</p>
-  <p>El equipo no tiene capacidad ociosa &mdash;el 92% de ocupaci&oacute;n es el mejor n&uacute;mero de todas las versiones del
-  plan&mdash; pero el trabajo est&aacute; encadenado y cada eslab&oacute;n lo levanta una sola persona. <strong>El problema no es cu&aacute;nto
-  trabajo hay sino en qu&eacute; orden puede hacerse.</strong></p>
-  <p class="trace">Tres acciones concretas para la re-priorizaci&oacute;n del Sprint 0: llevar la tabla 7.1 con el cronograma
-  real; elegir entre las cuatro palancas de la secci&oacute;n 7.3, con la recomendaci&oacute;n de combinar las dos primeras; y
-  comprometer la medici&oacute;n de horas reales por persona y por punto desde el d&iacute;a 1 del Sprint 1.</p>
+  <p>El alcance creci&oacute; un 30% en horas y el plan mejor&oacute; en casi todas las dimensiones de capacidad: la ocupaci&oacute;n
+  queda en el mismo nivel, la dispersi&oacute;n entre integrantes baja a 3,8 horas y <strong>desaparece el &uacute;nico carril que
+  la versi&oacute;n anterior dejaba por encima de su tope</strong>. La brecha de cronograma, que era de 26,9 d&iacute;as, se reduce
+  a 11,7 pese a las 12 historias nuevas.</p>
+  <p><strong>Pero sigue sin cerrar.</strong> Y no por falta de horas: el equipo tiene 31 horas de capacidad libre. El
+  trabajo est&aacute; encadenado en una sola secuencia larga y hay d&iacute;as en que tres integrantes no tienen ninguna
+  historia habilitada para empezar. <strong>El problema no es cu&aacute;nto trabajo hay sino en qu&eacute; orden puede
+  hacerse</strong>, y eso solo se ataca partiendo las historias de la cadena en piezas m&aacute;s chicas.</p>
+  <p class="trace">Cuatro acciones concretas: llevar la tabla 7.1 al refinement del Sprint 1 con el cronograma
+  recalculado; partir US-01, US-02, US-03, US-06 y US-08 en sub-historias de 1 y 2 puntos, que es la palanca 1;
+  acordar con el ayudante si la semana del parcial se usa para implementar, porque de ella dependen 5 de los 26
+  d&iacute;as; y comprometer la medici&oacute;n de horas reales por persona y por punto desde el d&iacute;a 1.</p>
 </div>
 
 <h2>13. Cadencia de trabajo dentro de cada sprint</h2>
@@ -662,7 +817,7 @@ de la secci&oacute;n 8: estos no se construyen nunca.</p>
     <tr><td class="id">D&iacute;a 1</td><td>Refinement y conocimiento de las US</td><td>Ambas comisiones</td><td>US con criterios de aceptaci&oacute;n, wireframes y sitemap revisados</td></tr>
     <tr><td class="id">D&iacute;a 1</td><td>Planning y asignaci&oacute;n de due&ntilde;os</td><td>Ambas comisiones</td><td>Planificaci&oacute;n en ProjectLibre con <strong>un recurso por tarea</strong> y precedencias cargadas</td></tr>
     <tr><td class="id">D&iacute;as 2 a 8</td><td>Daily meeting, 2 veces por semana</td><td>Ambas comisiones</td><td>Minuta con horas reales por integrante y <strong>desv&iacute;o de la cadena cr&iacute;tica</strong></td></tr>
-    <tr><td class="id">D&iacute;as 2 a 8</td><td>Revisi&oacute;n cruzada de cada historia terminada</td><td>Due&ntilde;o y un integrante distinto</td><td>Casos de prueba ejecutados y bugs registrados (condici&oacute;n 3 de la definici&oacute;n de terminado)</td></tr>
+    <tr><td class="id">D&iacute;as 2 a 8</td><td>Revisi&oacute;n cruzada de cada historia terminada</td><td>Equipo de la historia y un verificador ajeno a &eacute;l</td><td>Casos de prueba ejecutados y bugs registrados (condici&oacute;n 3 de la definici&oacute;n de terminado, que ahora exige un verificador ajeno al equipo completo)</td></tr>
     <tr><td class="id">D&iacute;a 8</td><td>Env&iacute;o del plan de demo</td><td>An&aacute;lisis y Management</td><td>Plan de demo</td></tr>
     <tr><td class="id">D&iacute;a 9 (jueves de consulta)</td><td>Reuni&oacute;n de demostraci&oacute;n</td><td>Ayudante y ambas comisiones</td><td>Acta de la demo con las US aceptadas y las observadas</td></tr>
     <tr><td class="id">D&iacute;a 10</td><td>Testing de regresi&oacute;n y cierre de observaciones</td><td>Equipo implementador</td><td>Registro de bugs abiertos que pasan al sprint siguiente</td></tr>

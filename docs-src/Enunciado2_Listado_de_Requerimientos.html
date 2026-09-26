@@ -397,19 +397,30 @@ funcionales de seguridad y auditor&iacute;a (RNF-02 a RNF-05).</p>
 
 <h3>4.9 Aplicaci&oacute;n m&oacute;vil para pacientes (RF-MOV)</h3>
 
-<p>La app m&oacute;vil reutiliza la l&oacute;gica de negocio del sistema web y expone un subconjunto de funcionalidades
-orientadas al paciente. Su alcance t&eacute;cnico (nativa, h&iacute;brida o aplicaci&oacute;n web progresiva) debe acordarse con el
-cliente y es el principal candidato a reducci&oacute;n de alcance.</p>
+<p>La app m&oacute;vil reutilizaba la l&oacute;gica de negocio del sistema web y expon&iacute;a un subconjunto de funcionalidades
+orientadas al paciente, replicando lo que la web ya hace.</p>
+
+<div class="callout">
+  <h4>El m&oacute;dulo deja de ser funcional: lo cubre RNF-08</h4>
+  <p>En lugar de construir una aplicaci&oacute;n aparte, <strong>el sistema web se construye con dise&ntilde;o adaptable</strong> y se
+  accede desde el navegador del tel&eacute;fono. Los cinco requerimientos de este bloque <strong>se dan de baja como
+  requerimientos funcionales</strong> y su contenido se absorbe en <strong>RNF-08</strong>, que pasa de <em>Should</em> a
+  <em>Must</em> y se explicita como transversal a todas las pantallas del sistema.</p>
+  <p>Es el mismo mecanismo que se aplic&oacute; a RF-USR-04, absorbido por RNF-03 en la reuni&oacute;n del 19/09: el esfuerzo no
+  desaparece, se distribuye entre las historias que construyen interfaz y se verifica dentro de cada una.</p>
+  <p class="trace">Lo que se pierde respecto del m&oacute;dulo nativo son las notificaciones emergentes de RF-MOV-04. Los
+  recordatorios siguen llegando por email, que es accesible desde el tel&eacute;fono.</p>
+</div>
 
 <table>
-  <colgroup><col class="w-id"><col><col class="w-prio"><col class="w-sprint"></colgroup>
-  <thead><tr><th class="id">ID</th><th>Requerimiento</th><th class="c">Prioridad</th><th class="c">Sprint</th></tr></thead>
+  <colgroup><col class="w-id"><col><col class="w-prio"><col style="width:36%"></colgroup>
+  <thead><tr><th class="id">ID</th><th>Requerimiento original</th><th class="c">Prio.</th><th>C&oacute;mo queda cubierto por RNF-08</th></tr></thead>
   <tbody>
-    <tr class="fuera"><td class="id">RF-MOV-01</td><td>El paciente debe poder autenticarse desde la aplicaci&oacute;n m&oacute;vil con las mismas credenciales del sistema web.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
-    <tr class="fuera"><td class="id">RF-MOV-02</td><td>El paciente debe poder buscar, reservar y cancelar turnos de ambos tipos desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
-    <tr class="fuera"><td class="id">RF-MOV-03</td><td>El paciente debe poder consultar su historial cl&iacute;nico desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
-    <tr class="fuera"><td class="id">RF-MOV-04</td><td>El paciente debe recibir los recordatorios de turno en la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td class="c">Fuera</td></tr>
-    <tr class="fuera"><td class="id">RF-MOV-05</td><td>El paciente debe poder consultar sus pagos y descargar los comprobantes en PDF desde la aplicaci&oacute;n m&oacute;vil. El registro del pago es siempre presencial.</td><td class="c">Should</td><td class="c">Fuera</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV-01</td><td>El paciente debe poder autenticarse desde la aplicaci&oacute;n m&oacute;vil con las mismas credenciales del sistema web.</td><td class="c">Must</td><td>La sesi&oacute;n web es &uacute;nica y funciona desde el navegador del tel&eacute;fono: no hay credenciales ni registro separados.</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV-02</td><td>El paciente debe poder buscar, reservar y cancelar turnos de ambos tipos desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td>Los flujos de RF-TUR funcionan desde el tel&eacute;fono con la web adaptable.</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV-03</td><td>El paciente debe poder consultar su historial cl&iacute;nico desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td>RF-HIS-03 se accede desde el tel&eacute;fono con la web adaptable.</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV-04</td><td>El paciente debe poder recibir los recordatorios de turno en la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Must</td><td><strong>Cubierto parcialmente:</strong> el recordatorio llega por email (RF-TUR-04), no como notificaci&oacute;n emergente.</td></tr>
+    <tr class="fuera"><td class="id">RF-MOV-05</td><td>El paciente debe poder consultar sus pagos y descargar los comprobantes en PDF desde la aplicaci&oacute;n m&oacute;vil.</td><td class="c">Should</td><td>El comprobante de RF-PAG-05 se descarga desde el navegador del tel&eacute;fono.</td></tr>
   </tbody>
 </table>
 
@@ -430,7 +441,12 @@ cliente y es el principal candidato a reducci&oacute;n de alcance.</p>
     <tr><td class="id">RNF-05</td><td>Integridad</td><td>El sistema debe manejar accesos concurrentes sin permitir sobreventa de turnos.</td><td class="c">Must</td></tr>
     <tr><td class="id">RNF-06</td><td>Usabilidad</td><td>Las interfaces de cada rol deben ser distintas en funcionalidad pero mantener una identidad visual unificada.</td><td class="c">Must</td></tr>
     <tr><td class="id">RNF-07</td><td>Rendimiento</td><td>La b&uacute;squeda de turnos disponibles debe responder en menos de 3 segundos bajo condiciones normales de uso.</td><td class="c">Should</td></tr>
-    <tr><td class="id">RNF-08</td><td>Compatibilidad</td><td>El sistema web debe funcionar en las &uacute;ltimas dos versiones de los navegadores de mayor uso, con dise&ntilde;o adaptable.</td><td class="c">Should</td></tr>
+    <tr><td class="id">RNF-08</td><td>Compatibilidad y dise&ntilde;o adaptable</td>
+      <td>El sistema web debe funcionar en las &uacute;ltimas dos versiones de los navegadores de mayor uso.
+      <strong>Toda pantalla debe ser usable desde el navegador de un tel&eacute;fono, en anchos de 360 px o m&aacute;s y sin
+      desplazamiento horizontal.</strong> <span class="trace">Modificado: absorbe RF-MOV-01 a RF-MOV-05 y pasa de
+      Should a Must. Es transversal, se verifica dentro de cada historia con interfaz y no tiene puntos propios.</span></td>
+      <td class="c"><strong>Must</strong></td></tr>
     <tr><td class="id">RNF-09</td><td>Disponibilidad</td><td>El sistema debe estar operativo durante el horario de atenci&oacute;n de la sala; el mantenimiento se programa fuera de ese horario.</td><td class="c">Should</td></tr>
     <tr><td class="id">RNF-10</td><td>Respaldo</td><td>Debe existir una pol&iacute;tica de copias de seguridad peri&oacute;dicas con procedimiento de restauraci&oacute;n probado.</td><td class="c">Should</td></tr>
     <tr><td class="id">RNF-11</td><td>Localizaci&oacute;n</td><td>La interfaz debe estar en espa&ntilde;ol, con fechas en formato dd/mm/aaaa y montos en pesos argentinos.</td><td class="c">Must</td></tr>
@@ -538,18 +554,19 @@ rige el desarrollo.</p>
   <colgroup><col><col style="width:44pt"><col></colgroup>
   <thead><tr><th>Movimiento</th><th class="c">Cantidad</th><th>Identificadores</th></tr></thead>
   <tbody>
-    <tr><td>Requerimientos funcionales dados de baja</td><td class="c">8</td><td>RF-USR-04, RF-AGE-07, RF-VAC-02, RF-VAC-03, RF-VAC-04, RF-VAC-07, RF-NOT-03, RF-REP-02</td></tr>
+    <tr><td>Requerimientos funcionales dados de baja</td><td class="c">13</td><td>RF-USR-04, RF-AGE-07, RF-VAC-02, RF-VAC-03, RF-VAC-04, RF-VAC-07, RF-NOT-03, RF-REP-02 &middot; <strong>RF-MOV-01 a RF-MOV-05</strong>, absorbidos por RNF-08</td></tr>
     <tr><td>Requerimientos funcionales unificados</td><td class="c">2</td><td>RF-USR-05 &rarr; RF-USR-01; RF-AGE-02 &rarr; RF-AGE-01</td></tr>
     <tr><td>Requerimientos funcionales nuevos</td><td class="c">5</td><td>RF-USR-07, RF-USR-08, RF-AGE-09, RF-TUR-11, RF-VAC-09</td></tr>
     <tr><td>Requerimientos funcionales modificados</td><td class="c">21</td><td>RF-USR-01, RF-USR-03, RF-AGE-01, RF-AGE-03, RF-AGE-06, RF-TUR-01, RF-TUR-06, RF-TUR-08, RF-VAC-05, RF-VAC-06, RF-PAG-01, RF-PAG-02, RF-PAG-04, RF-PAG-05, RF-PAG-06, RF-HIS-01, RF-HIS-05, RF-REP-01, RF-NOT-01, RF-MOV-02, RF-MOV-05</td></tr>
-    <tr><td>Requerimientos no funcionales nuevos o modificados</td><td class="c">2</td><td>RNF-03 (transversal), RNF-14 (nuevo)</td></tr>
+    <tr><td>Requerimientos no funcionales nuevos o modificados</td><td class="c">3</td><td>RNF-03 (transversal), RNF-14 (nuevo), <strong>RNF-08</strong> (absorbe el m&oacute;dulo m&oacute;vil y pasa a Must)</td></tr>
     <tr><td>Reglas de negocio nuevas o modificadas</td><td class="c">12</td><td>RN-01, RN-02, RN-04, RN-05, RN-07 (modificadas); RN-08 a RN-14 (nuevas)</td></tr>
   </tbody>
 </table>
 
-<p class="note">El saldo neto del alcance es <strong>negativo</strong>: se eliminan ocho requerimientos funcionales y se unifican dos,
-frente a cinco altas. La reducci&oacute;n se concentra en el m&oacute;dulo de vacunas, y dej&oacute; 57 requerimientos funcionales
-vigentes. De esos 57, la secci&oacute;n 9 determina cu&aacute;ntos entran efectivamente en la entrega: son 31.</p>
+<p class="note">El saldo neto del alcance es <strong>negativo</strong>: se eliminan trece requerimientos funcionales y se
+unifican dos, frente a cinco altas. Ocho bajas vienen de la reuni&oacute;n del 19/09 &mdash;concentradas en el m&oacute;dulo de
+vacunas&mdash; y cinco del m&oacute;dulo m&oacute;vil, que se absorbe en RNF-08. Quedan <strong>52 requerimientos funcionales
+vigentes</strong>, y las 39 User Stories comprometidas cubren 45 de ellos.</p>
 
 <div class="page-break"></div>
 
