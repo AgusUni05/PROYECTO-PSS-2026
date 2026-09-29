@@ -80,3 +80,32 @@ async function getRoutesWithSoldTickets(routeIds: string[]): Promise<Set<string>
 export async function getRouteById(id: string) {
   return prisma.route.findUnique({ where: { id } });
 }
+
+export type ActiveRouteOption = {
+  id: string;
+  code: string;
+  originCode: string;
+  destinationCode: string;
+  operatingDays: DayOfWeek[];
+  departureTime: string;
+  arrivalTime: string;
+};
+
+/** Trayectos activos, para el select del generador de vuelos (US-04). */
+export async function listActiveRoutes(): Promise<ActiveRouteOption[]> {
+  const routes = await prisma.route.findMany({
+    where: { isActive: true },
+    orderBy: { code: "asc" },
+    include: { origin: { select: { code: true } }, destination: { select: { code: true } } },
+  });
+
+  return routes.map((r) => ({
+    id: r.id,
+    code: r.code,
+    originCode: r.origin.code,
+    destinationCode: r.destination.code,
+    operatingDays: r.operatingDays,
+    departureTime: r.departureTime,
+    arrivalTime: r.arrivalTime,
+  }));
+}

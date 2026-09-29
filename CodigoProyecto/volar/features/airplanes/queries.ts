@@ -79,3 +79,20 @@ export async function listAirplanes(rawFilters: Record<string, string | undefine
 export async function getAirplaneById(id: string) {
   return prisma.airplane.findUnique({ where: { id } });
 }
+
+export type ActiveAirplaneOption = {
+  id: string;
+  identifier: string;
+  model: string;
+  economySeats: number;
+  firstClassSeats: number;
+};
+
+/** Aviones activos, para el select del generador de vuelos (US-04). */
+export async function listActiveAirplanes(): Promise<ActiveAirplaneOption[]> {
+  return prisma.airplane.findMany({
+    where: { isActive: true },
+    orderBy: { identifier: "asc" },
+    select: { id: true, identifier: true, model: true, economySeats: true, firstClassSeats: true },
+  });
+}
