@@ -121,7 +121,7 @@ enum EmailStatus {
 
 // US-28 / US-29 / US-30 / US-31
 model User {
-  id             String        @id @default(uuid())
+  id             String        @id
   clerkId        String        @unique // Id del usuario en Clerk (la autenticación y las credenciales las gestiona Clerk)
   email          String        @unique // Copia del email de Clerk, para comprobantes y búsquedas
   firstName      String
@@ -155,7 +155,7 @@ model User {
 
 // US-01: ABML de Aeropuertos
 model Airport {
-  id        String   @id @default(uuid())
+  id        String   @id
   code      String   @unique @db.VarChar(4) // Código IATA (3) / ICAO (4). Ej: EZE, SAEZ
   name      String // Ej: Aeropuerto Internacional Ministro Pistarini
   city      String // Ej: Buenos Aires
@@ -173,7 +173,7 @@ model Airport {
 
 // US-02: ABML de Aviones
 model Airplane {
-  id              String   @id @default(uuid())
+  id              String   @id
   identifier      String   @unique // Ej: Matrícula / LV-ABC
   model           String // Ej: Boeing 737-800, Airbus A320
   economySeats    Int // Cantidad de asientos Economy (>= 0)
@@ -194,7 +194,7 @@ model Airplane {
 
 // US-03: ABML de Trayectos (programación semanal)
 model Route {
-  id            String      @id @default(uuid())
+  id            String      @id
   code          String      @unique // Ej: TR-001
   originId      String
   origin        Airport     @relation("DepartureAirport", fields: [originId], references: [id])
@@ -218,7 +218,7 @@ model Route {
 // Es también el rango sobre el que se generan los vuelos (US-04) y guarda
 // los valores por defecto de avión, capacidad (US-09) y tarifas (US-11).
 model SalesPeriod {
-  id                 String   @id @default(uuid())
+  id                 String   @id
   routeId            String
   route              Route    @relation(fields: [routeId], references: [id])
   startDate          DateTime @db.Date // Inicio de venta / primer vuelo
@@ -243,7 +243,7 @@ model SalesPeriod {
 
 // US-04: vuelo con fecha real. US-05 / US-06 / US-09 / US-11 / US-12 operan sobre esta entidad.
 model Flight {
-  id            String      @id @default(uuid())
+  id            String      @id
   code          String      @unique // Ej: VU-20261002-01
   routeId       String
   route         Route       @relation(fields: [routeId], references: [id])
@@ -295,7 +295,7 @@ model Flight {
 
 // US-15 / US-16 / US-17 / US-33 / US-35: una compra (1 a 9 pasajes, una sola clase)
 model Booking {
-  id            String        @id @default(uuid())
+  id            String        @id
   code          String        @unique @db.VarChar(8) // Código de reserva (US-34)
   flightId      String
   flight        Flight        @relation(fields: [flightId], references: [id])
@@ -333,7 +333,7 @@ model Booking {
 
 // US-18 / US-23 / US-36: pasaje electrónico, uno por pasajero
 model Ticket {
-  id        String    @id @default(uuid())
+  id        String    @id
   number    String?   @unique // Número de e-ticket, asignado al emitirse
   bookingId String
   booking   Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
@@ -371,7 +371,7 @@ model Ticket {
 
 // US-20 / US-21 / US-22: cada intento de pago. RNF-08: no se persisten datos sensibles de tarjeta.
 model Payment {
-  id              String        @id @default(uuid())
+  id              String        @id
   bookingId       String
   booking         Booking       @relation(fields: [bookingId], references: [id])
   amount          Decimal       @db.Decimal(12, 2)
@@ -391,7 +391,7 @@ model Payment {
 
 // US-23 / US-36: factura de la compra confirmada
 model Invoice {
-  id            String   @id @default(uuid())
+  id            String   @id
   number        Int      @unique @default(autoincrement())
   bookingId     String   @unique
   booking       Booking  @relation(fields: [bookingId], references: [id])
@@ -409,7 +409,7 @@ model Invoice {
 
 // US-23: desglose de la factura
 model InvoiceItem {
-  id          String  @id @default(uuid())
+  id          String  @id
   invoiceId   String
   invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
   description String // Ej: "Pasaje Economy VU-20261002-01 - PÉREZ, JUAN"
@@ -427,7 +427,7 @@ model InvoiceItem {
 
 // US-05 / US-06 / US-25: cambio de horario o cancelación de un vuelo con su detalle
 model FlightChange {
-  id                  String           @id @default(uuid())
+  id                  String           @id
   flightId            String
   flight              Flight           @relation(fields: [flightId], references: [id])
   type                FlightChangeType
@@ -449,7 +449,7 @@ model FlightChange {
 
 // US-26: pasaje afectado por un cambio y la opción elegida (reembolso o reprogramación)
 model TicketContingency {
-  id             String                @id @default(uuid())
+  id             String                @id
   flightChangeId String
   flightChange   FlightChange          @relation(fields: [flightChangeId], references: [id])
   ticketId       String
@@ -469,7 +469,7 @@ model TicketContingency {
 
 // US-26: restitución del importe de un pasaje
 model Refund {
-  id              String             @id @default(uuid())
+  id              String             @id
   ticketId        String
   ticket          Ticket             @relation(fields: [ticketId], references: [id])
   contingencyId   String?            @unique
@@ -486,7 +486,7 @@ model Refund {
 
 // US-24 / US-25: registro de emails enviados (RNF-02: envío dentro de los 2 minutos)
 model EmailNotification {
-  id             String        @id @default(uuid())
+  id             String        @id
   type           EmailType
   recipientEmail String
   subject        String
