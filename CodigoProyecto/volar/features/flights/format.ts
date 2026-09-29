@@ -22,3 +22,17 @@ export function formatDate(date: Date): string {
 export function formatTime(date: Date): string {
   return date.toISOString().slice(11, 16);
 }
+
+const longDateFormatter = new Intl.DateTimeFormat("es-AR", {
+  weekday: "long",
+  day: "2-digit",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+});
+
+/** Fecha larga, ej: "Viernes 02 de octubre de 2026". */
+export function formatLongDate(date: Date): string {
+  const text = longDateFormatter.format(date).replace(",", "");
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}

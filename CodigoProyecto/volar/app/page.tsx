@@ -1,51 +1,34 @@
-import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
-import { getCurrentUser, isAdmin } from "@/lib/auth";
+import { SiteHeader } from "@/components/site-header";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FlightSearchForm } from "@/features/flight-search/components/flight-search-form";
+import { listActiveAirports } from "@/features/airports/queries";
 
-// Sitio público (US-28/US-29): no exige sesión para nada. La sesión es un
-// control chico y secundario en la esquina, no el CTA principal de la página
-// — estilo despegar.com.ar, la cuenta se pide recién al comprar un pasaje
-// (US-15+, fuera de este alcance).
+// Sitio público (US-28/US-29): no exige sesión para nada. La acción principal
+// es buscar vuelos (US-13); la cuenta se pide recién al iniciar una compra.
 export default async function Home() {
-  const user = await getCurrentUser();
+  const airports = await listActiveAirports();
 
   return (
     <div className="flex flex-1 flex-col">
-      <header className="flex justify-end px-6 py-4">
-        {!user && (
-          <Link
-            href="/sign-in"
-            className="text-sm text-muted-foreground underline underline-offset-2 hover:text-foreground"
-          >
-            Iniciar sesión
-          </Link>
-        )}
-        {user && (
-          <div className="flex items-center gap-4 text-sm">
-            <span className="text-muted-foreground">
-              {user.firstName} {user.lastName}
-            </span>
-            <Link href="/cuenta" className="underline underline-offset-2 hover:text-foreground">
-              Mi cuenta
-            </Link>
-            {isAdmin(user) && (
-              <Link href="/admin" className="underline underline-offset-2 hover:text-foreground">
-                Panel de administración
-              </Link>
-            )}
-            <UserButton />
-          </div>
-        )}
-      </header>
+      <SiteHeader />
 
-      <main className="flex flex-1 flex-col items-center justify-center gap-6 px-6 pb-24 text-center">
-        <span className="font-mono text-xs tracking-[0.3em] text-muted-foreground uppercase">
-          Sistema de Gestión de Vuelos
-        </span>
-        <h1 className="font-heading text-4xl font-semibold tracking-tight sm:text-5xl">VolAR</h1>
-        <p className="max-w-md text-sm text-muted-foreground sm:text-base">
-          Volá por Argentina con VolAR.
-        </p>
+      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col justify-center gap-8 px-6 py-16">
+        <div className="space-y-3 text-center">
+          <span className="font-mono text-xs tracking-[0.3em] text-muted-foreground uppercase">
+            Sistema de Gestión de Vuelos
+          </span>
+          <h1 className="font-heading text-4xl font-semibold tracking-tight sm:text-5xl">VolAR</h1>
+          <p className="text-sm text-muted-foreground sm:text-base">Volá por Argentina con VolAR.</p>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>¿A dónde querés viajar?</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FlightSearchForm airports={airports} />
+          </CardContent>
+        </Card>
       </main>
     </div>
   );

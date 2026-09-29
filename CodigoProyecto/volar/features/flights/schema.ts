@@ -1,12 +1,6 @@
 import { z } from "zod";
 import { idSchema } from "@/lib/id";
-
-const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
-
-/** Fecha de hoy en UTC, formato "YYYY-MM-DD" (mismo criterio de fechas que generation.ts). */
-function todayDateString(): string {
-  return new Date().toISOString().slice(0, 10);
-}
+import { DATE_REGEX, todayDateString } from "@/lib/dates";
 
 // US-09: capacidad por clase, entero no negativo (mismas reglas al generar y al editar un vuelo).
 const capacityField = z
