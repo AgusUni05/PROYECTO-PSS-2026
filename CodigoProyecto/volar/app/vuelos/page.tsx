@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FlightSearchForm } from "@/features/flight-search/components/flight-search-form";
+import { FlightResultCard } from "@/features/flight-search/components/flight-result-card";
 import { flightSearchSchema, type FlightSearchValues } from "@/features/flight-search/schema";
 import { searchFlights, type FlightSearchResult } from "@/features/flight-search/queries";
 import { listActiveAirports } from "@/features/airports/queries";
-import { formatLongDate, formatTime } from "@/features/flights/format";
+import { formatLongDate } from "@/features/flights/format";
 import { parseDateString } from "@/lib/dates";
 
 export const metadata: Metadata = {
@@ -18,7 +18,8 @@ export const metadata: Metadata = {
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
-// US-13: búsqueda pública de vuelos (busqueda_pasajero.html). Sin sesión.
+// US-13/US-14: búsqueda pública de vuelos y detalle de cada opción
+// (busqueda_pasajero.html). Sin sesión: se pide recién al iniciar la compra.
 export default async function VuelosPage({
   searchParams,
 }: {
@@ -136,19 +137,7 @@ function SearchResults({
         <ul className="space-y-3">
           {flights.map((f) => (
             <li key={f.id}>
-              <Card>
-                <CardContent className="flex flex-wrap items-center gap-4">
-                  <Badge variant="secondary" className="font-mono">
-                    {f.code}
-                  </Badge>
-                  <span className="font-mono text-base font-semibold">
-                    {formatTime(f.departureAt)} → {formatTime(f.arrivalAt)}
-                  </span>
-                  <span className="text-muted-foreground">
-                    {f.origin.code} → {f.destination.code}
-                  </span>
-                </CardContent>
-              </Card>
+              <FlightResultCard flight={f} />
             </li>
           ))}
         </ul>

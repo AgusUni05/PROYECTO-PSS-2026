@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { prismaMock } from "@/tests/prisma-mock";
-import { searchFlights } from "./queries";
+import { getFlightOnSale, searchFlights } from "./queries";
 
 const inOneWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
@@ -19,8 +19,8 @@ function flightRow(overrides: Record<string, unknown> = {}) {
     economyFare: { toString: () => "45000" },
     firstClassFare: { toString: () => "95000" },
     route: {
-      origin: { code: "AEP", city: "Buenos Aires" },
-      destination: { code: "COR", city: "Córdoba" },
+      origin: { id: "AER_AEP", code: "AEP", city: "Buenos Aires" },
+      destination: { id: "AER_COR", code: "COR", city: "Córdoba" },
     },
     airplane: { model: "Boeing 737-800" },
     salesPeriod: {
@@ -60,8 +60,8 @@ describe("searchFlights (US-13)", () => {
       id: "VUE_1",
       code: "VU-20261002-001",
       airplaneModel: "Boeing 737-800",
-      origin: { code: "AEP", city: "Buenos Aires" },
-      destination: { code: "COR", city: "Córdoba" },
+      origin: { id: "AER_AEP", code: "AEP", city: "Buenos Aires" },
+      destination: { id: "AER_COR", code: "COR", city: "Córdoba" },
       economyFare: "45000",
       economyAvailable: 142,
       firstClassFare: "95000",
@@ -87,5 +87,39 @@ describe("searchFlights (US-13)", () => {
     const results = await searchFlights(params);
 
     expect(results.map((r) => r.id)).toEqual(["VUE_TEMPRANO", "VUE_TARDE"]);
+  });
+});
+
+describe("getFlightOnSale (US-14 / US-08)", () => {
+  it("devuelve el vuelo si sigue a la venta", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flightRow() as never);
+
+    const result = await getFlightOnSale("VUE_1");
+
+    expect(result).toMatchObject({ id: "VUE_1", economyAvailable: 142, firstClassAvailable: 0 });
+    expect(prismaMock.flight.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { id: "VUE_1" } }),
+    );
+  });
+
+  it("devuelve null si el vuelo no existe", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(null);
+
+    expect(await getFlightOnSale("VUE_1")).toBeNull();
+  });
+
+  it("rechaza un intento directo sobre un vuelo cancelado o fuera de período", async () => {
+    prismaMock.flight.findUnique.mockResolvedValueOnce(flightRow({ status: "CANCELLED" }) as never);
+    expect(await getFlightOnSale("VUE_1")).toBeNull();
+
+    prismaMock.flight.findUnique.mockResolvedValueOnce(
+      flightRow({
+        salesPeriod: {
+          startDate: new Date("2000-01-01T00:00:00.000Z"),
+          endDate: new Date("2000-01-02T00:00:00.000Z"),
+        },
+      }) as never,
+    );
+    expect(await getFlightOnSale("VUE_1")).toBeNull();
   });
 });
