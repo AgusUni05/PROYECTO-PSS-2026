@@ -167,7 +167,7 @@ describe("generateFlights", () => {
   });
 });
 
-describe("updateFlight (US-09)", () => {
+describe("updateFlight (US-09/US-11)", () => {
   const inOneWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
   const flight = {
@@ -181,7 +181,12 @@ describe("updateFlight (US-09)", () => {
     airplane: { identifier: "LV-ARG01", economySeats: 150, firstClassSeats: 16 },
   };
 
-  const values = { economyCapacity: 120, firstClassCapacity: 12 };
+  const values = {
+    economyCapacity: 120,
+    firstClassCapacity: 12,
+    economyFare: 50000,
+    firstClassFare: 99999.99,
+  };
 
   it("rechaza si el vuelo no existe", async () => {
     prismaMock.flight.findUnique.mockResolvedValue(null);
@@ -218,7 +223,7 @@ describe("updateFlight (US-09)", () => {
 
     const result = await updateFlight(
       "VUE_1",
-      { economyCapacity: 7, firstClassCapacity: 3 },
+      { ...values, economyCapacity: 7, firstClassCapacity: 3 },
       "USU_admin",
     );
 
@@ -236,7 +241,7 @@ describe("updateFlight (US-09)", () => {
 
     const result = await updateFlight(
       "VUE_1",
-      { economyCapacity: 8, firstClassCapacity: 4 },
+      { ...values, economyCapacity: 8, firstClassCapacity: 4 },
       "USU_admin",
     );
 
@@ -248,7 +253,7 @@ describe("updateFlight (US-09)", () => {
 
     const result = await updateFlight(
       "VUE_1",
-      { economyCapacity: 151, firstClassCapacity: 16 },
+      { ...values, economyCapacity: 151, firstClassCapacity: 16 },
       "USU_admin",
     );
 
@@ -267,7 +272,7 @@ describe("updateFlight (US-09)", () => {
     if (!result.ok) expect(result.error).toBeDefined();
   });
 
-  it("actualiza la capacidad condicionada a lo ocupado y registra quién la modificó", async () => {
+  it("actualiza capacidad y tarifas (US-11) condicionado a lo ocupado y registra quién lo modificó", async () => {
     prismaMock.flight.findUnique.mockResolvedValue(flight as never);
     prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
 
@@ -281,7 +286,13 @@ describe("updateFlight (US-09)", () => {
         economyOccupied: { lte: 120 },
         firstClassOccupied: { lte: 12 },
       },
-      data: { economyCapacity: 120, firstClassCapacity: 12, updatedById: "USU_admin" },
+      data: {
+        economyCapacity: 120,
+        firstClassCapacity: 12,
+        economyFare: 50000,
+        firstClassFare: 99999.99,
+        updatedById: "USU_admin",
+      },
     });
   });
 });

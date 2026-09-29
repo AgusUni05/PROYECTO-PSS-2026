@@ -14,6 +14,14 @@ const capacityField = z
   .int("Debe ser un número entero")
   .min(0, "No puede ser negativo");
 
+// US-11: tarifa por clase, obligatoria y mayor a 0; hasta 2 decimales y dentro
+// de lo que admite la columna Decimal(12,2).
+const fareField = z
+  .number({ error: "Ingresá un número" })
+  .positive("Debe ser mayor a 0")
+  .multipleOf(0.01, "Máximo 2 decimales")
+  .max(9_999_999_999.99, "Monto demasiado alto");
+
 function hasSomeCapacity(data: { economyCapacity: number; firstClassCapacity: number }) {
   return data.economyCapacity > 0 || data.firstClassCapacity > 0;
 }
@@ -32,12 +40,8 @@ export const generateFlightsFormSchema = z
     airplaneId: idSchema("Airplane"),
     economyCapacity: capacityField,
     firstClassCapacity: capacityField,
-    economyFare: z
-      .number({ error: "Ingresá un número" })
-      .positive("Debe ser mayor a 0"),
-    firstClassFare: z
-      .number({ error: "Ingresá un número" })
-      .positive("Debe ser mayor a 0"),
+    economyFare: fareField,
+    firstClassFare: fareField,
   })
   .refine((data) => data.startDate >= todayDateString(), {
     message: "La fecha de inicio no puede ser anterior a hoy",
@@ -51,13 +55,15 @@ export const generateFlightsFormSchema = z
 
 export type GenerateFlightsFormValues = z.infer<typeof generateFlightsFormSchema>;
 
-// US-09: edición puntual de un vuelo generado. Las reglas que dependen del
-// vuelo (no bajar de lo vendido, no superar los asientos del avión) las valida
-// el servicio contra la base.
+// US-09/US-11: edición puntual de capacidad y tarifas de un vuelo generado. Las
+// reglas que dependen del vuelo (no bajar de lo vendido, no superar los
+// asientos del avión) las valida el servicio contra la base.
 export const editFlightFormSchema = z
   .object({
     economyCapacity: capacityField,
     firstClassCapacity: capacityField,
+    economyFare: fareField,
+    firstClassFare: fareField,
   })
   .refine(hasSomeCapacity, SOME_CAPACITY_ERROR);
 

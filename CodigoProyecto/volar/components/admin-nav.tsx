@@ -8,7 +8,7 @@ export const ADMIN_NAV_ITEMS = [
   { href: "/admin/aeropuertos", label: "Aeropuertos", us: "US-01" },
   { href: "/admin/aviones", label: "Aviones", us: "US-02" },
   { href: "/admin/trayectos", label: "Trayectos", us: "US-03" },
-  { href: "/admin/vuelos", label: "Vuelos", us: "US-04/07/09" },
+  { href: "/admin/vuelos", label: "Vuelos", us: "US-04/07/09/11" },
 ] as const;
 
 export function AdminNav() {

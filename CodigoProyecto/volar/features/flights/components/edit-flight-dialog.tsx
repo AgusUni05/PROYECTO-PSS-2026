@@ -36,9 +36,11 @@ type EditableFlight = Pick<
   | "airplaneIdentifier"
   | "airplaneEconomySeats"
   | "airplaneFirstClassSeats"
+  | "economyFare"
+  | "firstClassFare"
 >;
 
-// US-09: edición puntual de un vuelo generado (modal del wireframe vuelos_admin.html).
+// US-09/US-11: edición puntual de capacidad y tarifas de un vuelo generado (modal del wireframe vuelos_admin.html).
 export function EditFlightDialog({ flight }: { flight: EditableFlight }) {
   const [open, setOpen] = useState(false);
 
@@ -66,6 +68,8 @@ function EditFlightForm({ flight, onSaved }: { flight: EditableFlight; onSaved: 
     defaultValues: {
       economyCapacity: flight.economyCapacity,
       firstClassCapacity: flight.firstClassCapacity,
+      economyFare: Number(flight.economyFare),
+      firstClassFare: Number(flight.firstClassFare),
     },
   });
   const { errors } = form.formState;
@@ -110,6 +114,20 @@ function EditFlightForm({ flight, onSaved }: { flight: EditableFlight; onSaved: 
           )}
         </div>
         <div className="space-y-1.5">
+          <Label htmlFor="edit-economyFare">Tarifa Economy $ (US-11)</Label>
+          <Input
+            id="edit-economyFare"
+            type="number"
+            min={0.01}
+            step={0.01}
+            aria-invalid={!!errors.economyFare}
+            {...form.register("economyFare", { valueAsNumber: true })}
+          />
+          {errors.economyFare && (
+            <p className="text-xs text-destructive">{errors.economyFare.message}</p>
+          )}
+        </div>
+        <div className="space-y-1.5">
           <Label htmlFor="edit-firstClassCapacity">Capacidad Primera (US-09)</Label>
           <Input
             id="edit-firstClassCapacity"
@@ -127,7 +145,26 @@ function EditFlightForm({ flight, onSaved }: { flight: EditableFlight; onSaved: 
             <p className="text-xs text-destructive">{errors.firstClassCapacity.message}</p>
           )}
         </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="edit-firstClassFare">Tarifa Primera $ (US-11)</Label>
+          <Input
+            id="edit-firstClassFare"
+            type="number"
+            min={0.01}
+            step={0.01}
+            aria-invalid={!!errors.firstClassFare}
+            {...form.register("firstClassFare", { valueAsNumber: true })}
+          />
+          {errors.firstClassFare && (
+            <p className="text-xs text-destructive">{errors.firstClassFare.message}</p>
+          )}
+        </div>
       </div>
+
+      <p className="text-xs text-muted-foreground">
+        Una tarifa nueva aplica a las compras futuras; las ventas ya confirmadas conservan el precio
+        pagado.
+      </p>
 
       <DialogFooter>
         <DialogClose render={<Button type="button" variant="outline" />}>

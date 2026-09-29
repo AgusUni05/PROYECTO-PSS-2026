@@ -73,6 +73,20 @@ describe("generateFlightsFormSchema", () => {
     );
   });
 
+  it("rechaza tarifas con más de 2 decimales (US-11)", () => {
+    const result = generateFlightsFormSchema.safeParse({ ...base, economyFare: 45000.555 });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.economyFare).toBeDefined();
+    }
+  });
+
+  it("acepta tarifas con centavos (US-11)", () => {
+    expect(generateFlightsFormSchema.safeParse({ ...base, economyFare: 45999.99 }).success).toBe(
+      true,
+    );
+  });
+
   it("rechaza cuando ambas capacidades son 0", () => {
     const result = generateFlightsFormSchema.safeParse({
       ...base,
@@ -108,8 +122,13 @@ describe("flightFiltersSchema", () => {
   });
 });
 
-describe("editFlightFormSchema (US-09)", () => {
-  const capacity = { economyCapacity: 150, firstClassCapacity: 16 };
+describe("editFlightFormSchema (US-09/US-11)", () => {
+  const capacity = {
+    economyCapacity: 150,
+    firstClassCapacity: 16,
+    economyFare: 45000,
+    firstClassFare: 95000,
+  };
 
   it("acepta capacidades enteras no negativas", () => {
     expect(editFlightFormSchema.safeParse(capacity).success).toBe(true);
@@ -139,10 +158,30 @@ describe("editFlightFormSchema (US-09)", () => {
   });
 
   it("rechaza cuando ambas capacidades son 0", () => {
-    const result = editFlightFormSchema.safeParse({ economyCapacity: 0, firstClassCapacity: 0 });
+    const result = editFlightFormSchema.safeParse({
+      ...capacity,
+      economyCapacity: 0,
+      firstClassCapacity: 0,
+    });
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error.flatten().fieldErrors.economyCapacity).toBeDefined();
     }
+  });
+
+  it("rechaza tarifas en 0, negativas o vacías: ningún vuelo queda sin tarifa (US-11)", () => {
+    for (const fare of [0, -100, NaN]) {
+      const result = editFlightFormSchema.safeParse({ ...capacity, firstClassFare: fare });
+      expect(result.success).toBe(false);
+      if (!result.success) {
+        expect(result.error.flatten().fieldErrors.firstClassFare).toBeDefined();
+      }
+    }
+  });
+
+  it("rechaza tarifas con más de 2 decimales (US-11)", () => {
+    expect(editFlightFormSchema.safeParse({ ...capacity, economyFare: 10.001 }).success).toBe(
+      false,
+    );
   });
 });

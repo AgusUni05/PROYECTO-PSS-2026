@@ -23,7 +23,7 @@ type Props = {
   filters: FlightFilters;
 };
 
-// US-04: listado de vuelos reales generados. US-09: edición puntual de capacidad
+// US-04: listado de vuelos reales generados. US-09/US-11: edición puntual de capacidad y tarifas
 // (solo vuelos programados que no partieron; cancelación puntual es US-06).
 export function FlightTable({ flights, total, page, pageCount, filters }: Props) {
   const now = new Date();

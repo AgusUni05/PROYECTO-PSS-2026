@@ -267,7 +267,8 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
                 <Input
                   id="economyFare"
                   type="number"
-                  min={1}
+                  min={0.01}
+                  step={0.01}
                   placeholder="Ej: 45000"
                   aria-invalid={!!form.formState.errors.economyFare}
                   {...form.register("economyFare", { valueAsNumber: true })}
@@ -285,7 +286,8 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
                 <Input
                   id="firstClassFare"
                   type="number"
-                  min={1}
+                  min={0.01}
+                  step={0.01}
                   placeholder="Ej: 95000"
                   aria-invalid={!!form.formState.errors.firstClassFare}
                   {...form.register("firstClassFare", { valueAsNumber: true })}

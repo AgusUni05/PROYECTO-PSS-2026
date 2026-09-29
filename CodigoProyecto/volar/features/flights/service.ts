@@ -169,9 +169,11 @@ function capacityAboveSeatsErrors(
 }
 
 /**
- * US-09: modifica la capacidad por clase de un vuelo puntual. Solo vuelos
- * programados que todavía no partieron. La capacidad de cada clase no puede
- * quedar por debajo de los asientos ya ocupados ni superar los del avión.
+ * US-09/US-11: modifica la capacidad y la tarifa por clase de un vuelo
+ * puntual. Solo vuelos programados que todavía no partieron. La capacidad de
+ * cada clase no puede quedar por debajo de los asientos ya ocupados ni superar
+ * los del avión. La tarifa nueva aplica a las compras futuras: las ya hechas
+ * conservan el precio pagado (Booking/Ticket.unitPrice).
  */
 export async function updateFlight(
   id: string,
@@ -215,6 +217,8 @@ export async function updateFlight(
     data: {
       economyCapacity: data.economyCapacity,
       firstClassCapacity: data.firstClassCapacity,
+      economyFare: data.economyFare,
+      firstClassFare: data.firstClassFare,
       updatedById,
     },
   });
