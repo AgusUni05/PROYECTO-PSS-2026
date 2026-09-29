@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-04, 07, 09, 11: Generación y Gestión de Vuelos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Panel Administración</div>
+      <div class="wf-user-session">
+        <span>Usuario: <strong>admin@vuelos.com</strong> (Administrador)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Cerrar Sesión</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="aeropuertos.html" class="wf-nav-link">Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link">Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link">Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link active">Generación de Vuelos <span class="wf-badge-us">US-04/07/09/11</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero (Búsqueda) <span class="wf-badge-us">US-13/14</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Administración > Operaciones > <strong>Generación y Configuración de Vuelos</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Programación de Vuelos con Fechas Reales</h1>
+        <p class="wf-subtitle">Generación por período, asignación de avión, configuración de capacidad por clase y definición de tarifas comerciales.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-04</span>
+        <span class="wf-badge-us">US-07</span>
+        <span class="wf-badge-us">US-09</span>
+        <span class="wf-badge-us">US-11</span>
+      </div>
+    </div>
+
+    <!-- Panel de Reglas Integradas -->
+    <div class="wf-alert">
+      <div>
+        <strong>Reglas Integradas:</strong><br>
+        • <strong>US-04:</strong> Vuelos generados con fecha concreta, avión, cupos y estado Programado.<br>
+        • <strong>US-07:</strong> Rango de disponibilidad obligatorio (Fecha Fin &ge; Fecha Inicio).<br>
+        • <strong>US-09:</strong> Capacidad configurable por clase (Economy / Primera). Cupo = Capacidad - Vendidos.<br>
+        • <strong>US-11:</strong> Tarifas comerciales obligatorias mayores a cero para ambas clases.
+      </div>
+      <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ocultar Info</button>
+    </div>
+
+    <!-- Formulario de Generación de Vuelos -->
+    <section class="wf-card" id="form-generador">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Generador Masivo] Programar Vuelos desde Trayecto y Período</h2>
+        <span class="wf-tag wf-tag-active">Paso 1: Parámetros del Trayecto</span>
+      </div>
+
+      <form action="#" method="POST" onsubmit="return false;">
+        
+        <!-- Bloque 1: Trayecto y Período (US-04, US-07) -->
+        <fieldset style="border: 1px solid var(--wf-gray-light); padding: 16px; margin-bottom: 20px; border-radius: var(--wf-radius);">
+          <legend style="font-weight: 700; font-size: 0.9rem; padding: 0 8px;">1. Trayecto y Período de Disponibilidad (US-07)</legend>
+          
+          <div class="wf-grid-3">
+            <div class="wf-form-group">
+              <label class="wf-label" for="trayecto-sel">Seleccionar Trayecto Base <span class="required">(*)</span></label>
+              <select id="trayecto-sel" class="wf-select">
+                <option value="TR-001">TR-001: AEP (BsAs) &rarr; COR (Córdoba) [Lun, Mié, Vie, Dom - 08:30]</option>
+                <option value="TR-002">TR-002: COR (Córdoba) &rarr; AEP (BsAs) [Lun, Mié, Vie, Dom - 11:00]</option>
+                <option value="TR-003">TR-003: EZE (BsAs) &rarr; MDZ (Mendoza) [Mar, Jue, Sáb - 23:30]</option>
+              </select>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="fecha-inicio">Fecha Inicio de Venta / Vuelos <span class="required">(*)</span></label>
+              <input type="date" id="fecha-inicio" class="wf-input" value="2026-10-01">
+              <span class="wf-help-text">Inicio de la temporada/oferta.</span>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="fecha-fin">Fecha Fin de Venta / Vuelos <span class="required">(*)</span></label>
+              <input type="date" id="fecha-fin" class="wf-input" value="2026-10-31">
+              <span class="wf-help-text">Debe ser igual o posterior al inicio.</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Bloque 2: Asignación de Avión y Capacidad por Clase (US-02, US-09) -->
+        <fieldset style="border: 1px solid var(--wf-gray-light); padding: 16px; margin-bottom: 20px; border-radius: var(--wf-radius);">
+          <legend style="font-weight: 700; font-size: 0.9rem; padding: 0 8px;">2. Aeronave y Capacidad por Clase (US-09)</legend>
+          
+          <div class="wf-grid-3">
+            <div class="wf-form-group">
+              <label class="wf-label" for="avion-sel">Asignar Avión de la Flota <span class="required">(*)</span></label>
+              <select id="avion-sel" class="wf-select">
+                <option value="LV-ARG01">LV-ARG01 (Boeing 737-800 - 150 Eco / 16 First)</option>
+                <option value="LV-ARG02">LV-ARG02 (Airbus A320 - 160 Eco / 12 First)</option>
+                <option value="LV-ARG03">LV-ARG03 (Embraer 190 - 88 Eco / 8 First)</option>
+              </select>
+              <span class="wf-help-text">El sistema valida que no existan vuelos superpuestos.</span>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="cap-eco">Capacidad Asientos Economy <span class="required">(*)</span></label>
+              <input type="number" id="cap-eco" class="wf-input" value="150" min="0">
+              <span class="wf-help-text">Heredado del avión, ajustable.</span>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="cap-primera">Capacidad Asientos Primera Clase <span class="required">(*)</span></label>
+              <input type="number" id="cap-primera" class="wf-input" value="16" min="0">
+              <span class="wf-help-text">Heredado del avión, ajustable.</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Bloque 3: Tarifas Comerciales por Clase (US-11) -->
+        <fieldset style="border: 1px solid var(--wf-gray-light); padding: 16px; margin-bottom: 20px; border-radius: var(--wf-radius);">
+          <legend style="font-weight: 700; font-size: 0.9rem; padding: 0 8px;">3. Tarifas por Clase (US-11)</legend>
+          
+          <div class="wf-grid-2">
+            <div class="wf-form-group">
+              <label class="wf-label" for="precio-eco">Precio Tarifa Economy ($ ARS) <span class="required">(*)</span></label>
+              <input type="number" id="precio-eco" class="wf-input" placeholder="Ej: 45000" value="45000" min="1">
+              <span class="wf-help-text">Obligatorio mayor a 0 para publicar a la venta.</span>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="precio-primera">Precio Tarifa Primera Clase ($ ARS) <span class="required">(*)</span></label>
+              <input type="number" id="precio-primera" class="wf-input" placeholder="Ej: 95000" value="95000" min="1">
+              <span class="wf-help-text">Obligatorio mayor a 0 para publicar a la venta.</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <!-- Botones de Acción de Generación -->
+        <div class="wf-annotation">
+          <strong>Impacto de Generación:</strong> Se generarán <strong>18 vuelos reales</strong> en el calendario para el mes de Octubre 2026 (frecuencia: Lun, Mié, Vie, Dom).
+        </div>
+
+        <div class="wf-btn-group" style="margin-top: 16px;">
+          <button class="wf-btn wf-btn-primary wf-btn-lg" type="submit">Generar y Publicar Vuelos Reales</button>
+          <button class="wf-btn wf-btn-secondary" type="button">Previsualizar Calendario</button>
+          <button class="wf-btn wf-btn-outline" type="reset">Restablecer Formulario</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Filtros de Vuelos Generados (US-04) -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Buscador de Vuelos Reales] Filtros de Consulta (US-04)</h2>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Limpiar Filtros</button>
+      </div>
+
+      <div class="wf-grid-4">
+        <div class="wf-form-group">
+          <label class="wf-label" for="f-fecha">Fecha de Vuelo</label>
+          <input type="date" id="f-fecha" class="wf-input" value="2026-10-02">
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="f-origen">Origen</label>
+          <select id="f-origen" class="wf-select">
+            <option value="">Todos</option>
+            <option value="AEP" selected>AEP - Buenos Aires</option>
+            <option value="COR">COR - Córdoba</option>
+          </select>
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="f-destino">Destino</label>
+          <select id="f-destino" class="wf-select">
+            <option value="">Todos</option>
+            <option value="COR" selected>COR - Córdoba</option>
+          </select>
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="f-estado">Estado del Vuelo</label>
+          <select id="f-estado" class="wf-select">
+            <option value="">Todos los estados</option>
+            <option value="prog" selected>Programado</option>
+            <option value="canc">Cancelado</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="wf-btn-group">
+        <button class="wf-btn wf-btn-primary" type="button">Buscar Vuelos Reales</button>
+        <button class="wf-btn wf-btn-secondary" type="button">Exportar Grilla (CSV/Excel)</button>
+      </div>
+    </section>
+
+    <!-- Grilla de Vuelos Reales Generados -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Listado de Vuelos Reales] Cronograma y Ocupación</h2>
+        <div class="wf-btn-group">
+          <span class="wf-tag wf-tag-active">Total Vuelos: 3 mostrados</span>
+        </div>
+      </div>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>ID Vuelo</th>
+              <th>Fecha Real</th>
+              <th>Horarios</th>
+              <th>Ruta (Trayecto)</th>
+              <th>Avión Asignado</th>
+              <th>Cupos Economy (US-09)</th>
+              <th>Cupos Primera (US-09)</th>
+              <th>Tarifas (US-11)</th>
+              <th>Estado</th>
+              <th style="text-align: right;">Botones de Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>VU-20261002-01</strong></td>
+              <td>02/10/2026 (Vie)</td>
+              <td>08:30 &rarr; 10:00</td>
+              <td>AEP &rarr; COR (TR-001)</td>
+              <td>LV-ARG01 (B738)</td>
+              <td>
+                <div>Disp: <strong>142</strong> / 150</div>
+                <small style="color: var(--wf-gray-dark);">(8 vendidos)</small>
+              </td>
+              <td>
+                <div>Disp: <strong>12</strong> / 16</div>
+                <small style="color: var(--wf-gray-dark);">(4 vendidos)</small>
+              </td>
+              <td>
+                <div>Eco: $45.000</div>
+                <div>1ra: $95.000</div>
+              </td>
+              <td><span class="wf-tag wf-tag-active">Programado</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" title="Modificar cupos, tarifas u horario puntual">Editar Vuelo</button>
+                  <button class="wf-btn wf-btn-danger wf-btn-sm" type="button">Cancelar</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><strong>VU-20261004-01</strong></td>
+              <td>04/10/2026 (Dom)</td>
+              <td>08:30 &rarr; 10:00</td>
+              <td>AEP &rarr; COR (TR-001)</td>
+              <td>LV-ARG01 (B738)</td>
+              <td>
+                <div>Disp: <strong>150</strong> / 150</div>
+                <small style="color: var(--wf-gray-dark);">(0 vendidos)</small>
+              </td>
+              <td>
+                <div>Disp: <strong>16</strong> / 16</div>
+                <small style="color: var(--wf-gray-dark);">(0 vendidos)</small>
+              </td>
+              <td>
+                <div>Eco: $45.000</div>
+                <div>1ra: $95.000</div>
+              </td>
+              <td><span class="wf-tag wf-tag-active">Programado</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar Vuelo</button>
+                  <button class="wf-btn wf-btn-danger wf-btn-sm" type="button">Cancelar</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><strong>VU-20261005-01</strong></td>
+              <td>05/10/2026 (Lun)</td>
+              <td>08:30 &rarr; 10:00</td>
+              <td>AEP &rarr; COR (TR-001)</td>
+              <td>LV-ARG01 (B738)</td>
+              <td>
+                <div>Disp: <strong>0</strong> / 150 <span class="wf-tag wf-tag-inactive">Agotado</span></div>
+                <small style="color: var(--wf-gray-dark);">(150 vendidos)</small>
+              </td>
+              <td>
+                <div>Disp: <strong>2</strong> / 16</div>
+                <small style="color: var(--wf-gray-dark);">(14 vendidos)</small>
+              </td>
+              <td>
+                <div>Eco: $45.000</div>
+                <div>1ra: $95.000</div>
+              </td>
+              <td><span class="wf-tag wf-tag-active">Programado</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar Vuelo</button>
+                  <button class="wf-btn wf-btn-danger wf-btn-sm" type="button">Cancelar</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="wf-pagination">
+        <span>Mostrando 3 de 18 vuelos generados para este período</span>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>&laquo; Anterior</button>
+          <button class="wf-btn wf-btn-primary wf-btn-sm">1</button>
+          <button class="wf-btn wf-btn-secondary wf-btn-sm">2</button>
+          <button class="wf-btn wf-btn-secondary wf-btn-sm">Siguiente &raquo;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Modal Simulado para Edición Puntual de Capacidad y Tarifas (US-09, US-11) -->
+    <div class="wf-modal-overlay">
+      <div class="wf-modal-box">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">[Modal / Edición Puntual] Vuelo: VU-20261002-01</h3>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">&times;</button>
+        </div>
+
+        <form action="#" method="POST" onsubmit="return false;">
+          <div class="wf-annotation">
+            Modificación de parámetros operativos para la fecha: <strong>02/10/2026</strong> (AEP &rarr; COR).
+          </div>
+
+          <div class="wf-grid-2">
+            <div class="wf-form-group">
+              <label class="wf-label" for="mod-cap-eco">Capacidad Economy (US-09)</label>
+              <input type="number" id="mod-cap-eco" class="wf-input" value="150" min="8">
+              <span class="wf-help-text">Mínimo permitido: 8 (pasajes vendidos).</span>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="mod-tarifa-eco">Tarifa Economy $ (US-11)</label>
+              <input type="number" id="mod-tarifa-eco" class="wf-input" value="45000" min="1">
+            </div>
+          </div>
+
+          <div class="wf-grid-2">
+            <div class="wf-form-group">
+              <label class="wf-label" for="mod-cap-pri">Capacidad Primera (US-09)</label>
+              <input type="number" id="mod-cap-pri" class="wf-input" value="16" min="4">
+              <span class="wf-help-text">Mínimo permitido: 4 (pasajes vendidos).</span>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="mod-tarifa-pri">Tarifa Primera $ (US-11)</label>
+              <input type="number" id="mod-tarifa-pri" class="wf-input" value="95000" min="1">
+            </div>
+          </div>
+
+          <div class="wf-btn-group" style="justify-content: flex-end; margin-top: 16px;">
+            <button class="wf-btn wf-btn-secondary" type="button">Cerrar / Descartar</button>
+            <button class="wf-btn wf-btn-primary" type="submit">Guardar Cambios de Vuelo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

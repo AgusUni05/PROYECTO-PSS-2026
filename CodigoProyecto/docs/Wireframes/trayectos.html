@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-03: ABML de Trayectos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Panel Administración</div>
+      <div class="wf-user-session">
+        <span>Usuario: <strong>admin@vuelos.com</strong> (Administrador)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Cerrar Sesión</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="aeropuertos.html" class="wf-nav-link">Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link">Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link active">Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Generación de Vuelos <span class="wf-badge-us">US-04/07/09/11</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero (Búsqueda) <span class="wf-badge-us">US-13/14</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Administración > Planificación Operativa > <strong>Gestión de Trayectos</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Gestión de Trayectos (Rutas y Frecuencias)</h1>
+        <p class="wf-subtitle">Definición de origen, destino, frecuencia semanal de días y horarios de salida/llegada.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-03 | RF-01</span>
+        <button class="wf-btn wf-btn-primary" type="button" onclick="document.getElementById('form-trayecto').scrollIntoView();">+ Nuevo Trayecto</button>
+      </div>
+    </div>
+
+    <!-- Alert / Regla Negocio US-03 -->
+    <div class="wf-alert">
+      <div>
+        <strong>Regla de Negocio US-03:</strong> Origen y destino deben ser aeropuertos distintos. Se debe marcar al menos un día de la semana. Si el horario de llegada es menor al de partida, se muestra como llegada del día siguiente (+1 día).
+      </div>
+      <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Entendido</button>
+    </div>
+
+    <!-- Formulario de Alta / Modificación de Trayecto -->
+    <section class="wf-card" id="form-trayecto">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Formulario] Definición de Trayecto / Ruta Periódica</h2>
+        <span class="wf-tag wf-tag-active">Modo: Nuevo Trayecto</span>
+      </div>
+
+      <form action="#" method="POST" onsubmit="return false;">
+        <div class="wf-grid-2">
+          <div class="wf-form-group">
+            <label class="wf-label" for="origen">Aeropuerto de Origen <span class="required">(*)</span></label>
+            <select id="origen" class="wf-select">
+              <option value="">-- Seleccionar Aeropuerto de Salida --</option>
+              <option value="AEP">AEP - Buenos Aires (Aeroparque)</option>
+              <option value="EZE">EZE - Buenos Aires (Ezeiza)</option>
+              <option value="COR">COR - Córdoba (Pajas Blancas)</option>
+              <option value="MDZ">MDZ - Mendoza (El Plumerillo)</option>
+            </select>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="destino">Aeropuerto de Destino <span class="required">(*)</span></label>
+            <select id="destino" class="wf-select">
+              <option value="">-- Seleccionar Aeropuerto de Llegada --</option>
+              <option value="COR" selected>COR - Córdoba (Pajas Blancas)</option>
+              <option value="AEP">AEP - Buenos Aires (Aeroparque)</option>
+              <option value="EZE">EZE - Buenos Aires (Ezeiza)</option>
+              <option value="MDZ">MDZ - Mendoza (El Plumerillo)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label">Días de Operación Semanal <span class="required">(*) (Seleccionar al menos uno)</span></label>
+          <div class="wf-checkbox-group">
+            <label class="wf-checkbox-label"><input type="checkbox" name="dia" value="LUN" checked> Lunes</label>
+            <label class="wf-checkbox-label"><input type="checkbox" name="dia" value="MAR"> Martes</label>
+            <label class="wf-checkbox-label"><input type="checkbox" name="dia" value="MIE" checked> Miércoles</label>
+            <label class="wf-checkbox-label"><input type="checkbox" name="dia" value="JUE"> Jueves</label>
+            <label class="wf-checkbox-label"><input type="checkbox" name="dia" value="VIE" checked> Viernes</label>
+            <label class="wf-checkbox-label"><input type="checkbox" name="dia" value="SAB"> Sábado</label>
+            <label class="wf-checkbox-label"><input type="checkbox" name="dia" value="DOM" checked> Domingo</label>
+          </div>
+        </div>
+
+        <div class="wf-grid-2">
+          <div class="wf-form-group">
+            <label class="wf-label" for="hora-salida">Horario de Partida (HH:MM) <span class="required">(*)</span></label>
+            <input type="time" id="hora-salida" class="wf-input" value="08:30">
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="hora-llegada">Horario de Llegada (HH:MM) <span class="required">(*)</span></label>
+            <input type="time" id="hora-llegada" class="wf-input" value="10:00">
+            <span class="wf-help-text">Duración estimada: 1h 30m (Mismo día).</span>
+          </div>
+        </div>
+
+        <div class="wf-btn-group" style="margin-top: 20px;">
+          <button class="wf-btn wf-btn-primary" type="submit">Guardar Trayecto</button>
+          <button class="wf-btn wf-btn-secondary" type="reset">Limpiar Campos</button>
+          <button class="wf-btn wf-btn-outline" type="button">Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Filtros de Búsqueda de Trayectos -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Buscador] Filtrar Trayectos</h2>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Limpiar Filtros</button>
+      </div>
+
+      <div class="wf-grid-3">
+        <div class="wf-form-group">
+          <label class="wf-label" for="filtro-origen">Filtrar por Origen</label>
+          <select id="filtro-origen" class="wf-select">
+            <option value="">Todos los orígenes</option>
+            <option value="AEP">AEP - Buenos Aires</option>
+            <option value="COR">COR - Córdoba</option>
+          </select>
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="filtro-destino">Filtrar por Destino</label>
+          <select id="filtro-destino" class="wf-select">
+            <option value="">Todos los destinos</option>
+            <option value="COR">COR - Córdoba</option>
+            <option value="MDZ">MDZ - Mendoza</option>
+          </select>
+        </div>
+
+        <div class="wf-form-group" style="align-self: flex-end; margin-bottom: 16px;">
+          <button class="wf-btn wf-btn-primary" style="width: 100%;" type="button">Filtrar Trayectos</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabla de Listado de Trayectos -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Listado] Trayectos Operativos</h2>
+        <div class="wf-btn-group">
+          <a href="vuelos_admin.html" class="wf-btn wf-btn-primary wf-btn-sm">&rarr; Ir a Generador de Vuelos (US-04)</a>
+        </div>
+      </div>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>ID Trayecto</th>
+              <th>Origen & Destino</th>
+              <th>Días de Operación</th>
+              <th>Horario Salida</th>
+              <th>Horario Llegada</th>
+              <th>Estado</th>
+              <th style="text-align: right;">Botones de Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>TR-001</strong></td>
+              <td><strong>AEP</strong> &rarr; <strong>COR</strong></td>
+              <td><span class="wf-tag wf-tag-inactive">Lun, Mié, Vie, Dom</span></td>
+              <td>08:30 hs</td>
+              <td>10:00 hs</td>
+              <td><span class="wf-tag wf-tag-active">Activo</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <a href="vuelos_admin.html" class="wf-btn wf-btn-primary wf-btn-sm" title="Generar vuelos reales para este trayecto">Generar Vuelos</a>
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar</button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled title="Bloqueado: Existen pasajes vendidos en vuelos de este trayecto">Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><strong>TR-002</strong></td>
+              <td><strong>COR</strong> &rarr; <strong>AEP</strong></td>
+              <td><span class="wf-tag wf-tag-inactive">Lun, Mié, Vie, Dom</span></td>
+              <td>11:00 hs</td>
+              <td>12:25 hs</td>
+              <td><span class="wf-tag wf-tag-active">Activo</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <a href="vuelos_admin.html" class="wf-btn wf-btn-primary wf-btn-sm">Generar Vuelos</a>
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar</button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td><strong>TR-003</strong></td>
+              <td><strong>EZE</strong> &rarr; <strong>MDZ</strong></td>
+              <td><span class="wf-tag wf-tag-inactive">Mar, Jue, Sáb</span></td>
+              <td>23:30 hs</td>
+              <td>01:15 hs <span class="wf-tag wf-tag-inactive">+1 día</span></td>
+              <td><span class="wf-tag wf-tag-active">Activo</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <a href="vuelos_admin.html" class="wf-btn wf-btn-primary wf-btn-sm">Generar Vuelos</a>
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar</button>
+                  <button class="wf-btn wf-btn-danger wf-btn-sm" type="button">Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="wf-pagination">
+        <span>Mostrando 3 trayectos</span>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>&laquo; Anterior</button>
+          <button class="wf-btn wf-btn-primary wf-btn-sm">1</button>
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>Siguiente &raquo;</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

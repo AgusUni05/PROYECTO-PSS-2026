@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-13 y US-14: Portal Pasajero (Búsqueda y Detalle de Vuelos)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation Pasajero -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[AERO-LÍNEAS] - Portal de Pasajeros</div>
+      <div class="wf-user-session">
+        <span>Hola, <strong>Pasajero Invitado</strong></span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ingresar / Mi Cuenta</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="aeropuertos.html" class="wf-nav-link">Admin: Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link">Admin: Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link">Admin: Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Admin: Generación de Vuelos <span class="wf-badge-us">US-04/07/09/11</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link active">Portal Pasajero (Búsqueda) <span class="wf-badge-us">US-13/14</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Portal Web > <strong>Búsqueda y Selección de Vuelos</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Buscador y Selección de Vuelos</h1>
+        <p class="wf-subtitle">Consulta de disponibilidad por origen, destino y fecha con visualización detallada de tarifas y cupos por clase.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-13: Búsqueda</span>
+        <span class="wf-badge-us">US-14: Detalle y Tarifas</span>
+      </div>
+    </div>
+
+    <!-- Buscador de Vuelos (US-13) -->
+    <section class="wf-card" id="buscador">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Buscador Principal] ¿A dónde querés viajar? (US-13)</h2>
+        <div class="wf-btn-group">
+          <label class="wf-checkbox-label" style="font-weight: 600;"><input type="radio" name="tipo_viaje" value="ida" checked> Solo Ida</label>
+          <label class="wf-checkbox-label"><input type="radio" name="tipo_viaje" value="ida_vuelta"> Ida y Vuelta</label>
+        </div>
+      </div>
+
+      <form action="#" method="GET" onsubmit="return false;">
+        <div class="wf-grid-3">
+          <div class="wf-form-group">
+            <label class="wf-label" for="busq-origen">Origen <span class="required">(*)</span></label>
+            <select id="busq-origen" class="wf-select">
+              <option value="">Seleccionar ciudad u origen</option>
+              <option value="AEP" selected>Buenos Aires - Aeroparque (AEP)</option>
+              <option value="EZE">Buenos Aires - Ezeiza (EZE)</option>
+              <option value="COR">Córdoba - Pajas Blancas (COR)</option>
+              <option value="MDZ">Mendoza - El Plumerillo (MDZ)</option>
+            </select>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="busq-destino">Destino <span class="required">(*)</span></label>
+            <select id="busq-destino" class="wf-select">
+              <option value="">Seleccionar ciudad de destino</option>
+              <option value="COR" selected>Córdoba - Pajas Blancas (COR)</option>
+              <option value="AEP">Buenos Aires - Aeroparque (AEP)</option>
+              <option value="EZE">Buenos Aires - Ezeiza (EZE)</option>
+              <option value="MDZ">Mendoza - El Plumerillo (MDZ)</option>
+            </select>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="busq-fecha">Fecha de Salida <span class="required">(*)</span></label>
+            <input type="date" id="busq-fecha" class="wf-input" value="2026-10-02">
+          </div>
+        </div>
+
+        <div class="wf-btn-group" style="justify-content: space-between; margin-top: 10px; flex-wrap: wrap;">
+          <div class="wf-btn-group">
+            <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">&harr; Invertir Origen / Destino</button>
+            <button class="wf-btn wf-btn-secondary wf-btn-sm" type="reset">Limpiar Búsqueda</button>
+          </div>
+          <button class="wf-btn wf-btn-primary wf-btn-lg" type="submit">Buscar Vuelos Disponibles &rarr;</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Resumen de Resultados y Filtros de Orden (US-14) -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <h2 style="font-size: 1.25rem; font-weight: 700;">Resultados para: Buenos Aires (AEP) &rarr; Córdoba (COR)</h2>
+        <p class="wf-subtitle">Fecha: <strong>Viernes 02 de Octubre de 2026</strong> &bull; <strong>2 vuelos encontrados</strong> (ordenados cronológicamente por hora de salida)</p>
+      </div>
+      <div class="wf-btn-group">
+        <label class="wf-label" style="margin: 0;" for="ordenar">Ordenar por:</label>
+        <select id="ordenar" class="wf-select" style="width: auto;">
+          <option value="hora" selected>Hora de salida (Más temprano)</option>
+          <option value="precio_eco">Precio Economy (Más bajo)</option>
+          <option value="precio_primera">Precio Primera Clase</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- TARJETA 1 DE VUELO CON AMBAS CLASES DISPONIBLES (US-14) -->
+    <article class="wf-flight-card">
+      <div class="wf-flight-main">
+        <!-- Detalle de Itinerario y Ruta -->
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="wf-tag wf-tag-active">Vuelo VU-20261002-01</span>
+            <span style="font-size: 0.8rem; color: var(--wf-gray-dark);">Aeronave: Boeing 737-800</span>
+          </div>
+
+          <div class="wf-flight-route">
+            <div>
+              <div class="wf-flight-time">08:30</div>
+              <div class="wf-flight-airport">AEP (Buenos Aires)</div>
+            </div>
+
+            <div class="wf-flight-arrow">
+              <div class="wf-flight-duration">1h 30m directo</div>
+              &rarr;
+            </div>
+
+            <div>
+              <div class="wf-flight-time">10:00</div>
+              <div class="wf-flight-airport">COR (Córdoba)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Opción Tarifa Economy (US-14) -->
+        <div class="wf-class-box">
+          <div class="wf-class-title">Clase Economy</div>
+          <div class="wf-class-price">$ 45.000</div>
+          <div class="wf-class-seats">Cupos disponibles: <strong>142</strong></div>
+          <button class="wf-btn wf-btn-primary" style="width: 100%;" type="button">Seleccionar Economy</button>
+        </div>
+
+        <!-- Opción Tarifa Primera Clase (US-14) -->
+        <div class="wf-class-box">
+          <div class="wf-class-title">Primera Clase</div>
+          <div class="wf-class-price">$ 95.000</div>
+          <div class="wf-class-seats">Cupos disponibles: <strong>12</strong></div>
+          <button class="wf-btn wf-btn-outline" style="width: 100%;" type="button">Seleccionar Primera</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- TARJETA 2 DE VUELO CON PRIMERA CLASE AGOTADA (US-14) -->
+    <article class="wf-flight-card">
+      <div class="wf-flight-main">
+        <!-- Detalle de Itinerario y Ruta -->
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span class="wf-tag wf-tag-active">Vuelo VU-20261002-02</span>
+            <span style="font-size: 0.8rem; color: var(--wf-gray-dark);">Aeronave: Airbus A320</span>
+          </div>
+
+          <div class="wf-flight-route">
+            <div>
+              <div class="wf-flight-time">17:45</div>
+              <div class="wf-flight-airport">AEP (Buenos Aires)</div>
+            </div>
+
+            <div class="wf-flight-arrow">
+              <div class="wf-flight-duration">1h 30m directo</div>
+              &rarr;
+            </div>
+
+            <div>
+              <div class="wf-flight-time">19:15</div>
+              <div class="wf-flight-airport">COR (Córdoba)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Opción Tarifa Economy (US-14) -->
+        <div class="wf-class-box">
+          <div class="wf-class-title">Clase Economy</div>
+          <div class="wf-class-price">$ 48.000</div>
+          <div class="wf-class-seats">Últimos <strong>5</strong> cupos</div>
+          <button class="wf-btn wf-btn-primary" style="width: 100%;" type="button">Seleccionar Economy</button>
+        </div>
+
+        <!-- Opción Tarifa Primera Clase AGOTADA (US-14 Criterio de Aceptación) -->
+        <div class="wf-class-box soldout">
+          <div class="wf-class-title">Primera Clase</div>
+          <div class="wf-class-price" style="text-decoration: line-through; color: var(--wf-gray-mid);">$ 98.000</div>
+          <div class="wf-class-seats"><span class="wf-tag wf-tag-inactive">Agotado / Sin Cupo</span></div>
+          <button class="wf-btn wf-btn-secondary disabled" style="width: 100%;" disabled>No Disponible</button>
+        </div>
+      </div>
+    </article>
+
+    <!-- ESTADO ALTERNATIVO: MENSAJE SIN RESULTADOS / VUELO FUERA DE PERÍODO (US-13 Criterio) -->
+    <section class="wf-card" style="border-style: dashed; margin-top: 30px;">
+      <div class="wf-card-header">
+        <h3 class="wf-card-title">[Vista de Validación] Estado cuando no hay vuelos en la fecha seleccionada</h3>
+        <span class="wf-tag wf-tag-inactive">Simulación US-13</span>
+      </div>
+      <div style="text-align: center; padding: 20px 0;">
+        <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;">No encontramos vuelos programados para la fecha seleccionada</div>
+        <p class="wf-subtitle" style="margin-bottom: 16px;">
+          No hay vuelos disponibles para el trayecto seleccionado o la fecha se encuentra fuera del período de disponibilidad comercial.
+        </p>
+        <div class="wf-btn-group" style="justify-content: center;">
+          <button class="wf-btn wf-btn-primary" type="button">Buscar en Fechas Cercanas (&plusmn;3 días)</button>
+          <button class="wf-btn wf-btn-outline" type="button">Cambiar Origen / Destino</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

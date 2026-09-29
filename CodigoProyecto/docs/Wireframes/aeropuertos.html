@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-01: ABML de Aeropuertos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Panel Administración</div>
+      <div class="wf-user-session">
+        <span>Usuario: <strong>admin@vuelos.com</strong> (Administrador)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Cerrar Sesión</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="aeropuertos.html" class="wf-nav-link active">Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link">Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link">Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Generación de Vuelos <span class="wf-badge-us">US-04/07/09/11</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero (Búsqueda) <span class="wf-badge-us">US-13/14</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Administración > Catálogo Maestro > <strong>Gestión de Aeropuertos</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Gestión de Aeropuertos</h1>
+        <p class="wf-subtitle">Alta, modificación, baja y listado de aeropuertos para orígenes y destinos de trayectos.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-01 | RF-01, RFO-04</span>
+        <button class="wf-btn wf-btn-primary" type="button" onclick="document.getElementById('form-aeropuerto').scrollIntoView();">+ Nuevo Aeropuerto</button>
+      </div>
+    </div>
+
+    <!-- Alert / Validation Notice example -->
+    <div class="wf-alert">
+      <div>
+        <strong>Regla de Negocio US-01:</strong> El código IATA/ICAO es único y obligatorio. No se permite dar de baja un aeropuerto con vuelos futuros programados.
+      </div>
+      <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Entendido</button>
+    </div>
+
+    <div class="wf-grid-2">
+      <!-- Formulario de Alta / Edición -->
+      <section class="wf-card" id="form-aeropuerto">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Formulario] Alta / Modificación de Aeropuerto</h2>
+          <span class="wf-tag wf-tag-active">Modo: Nuevo Registro</span>
+        </div>
+
+        <form action="#" method="POST" onsubmit="return false;">
+          <div class="wf-form-group">
+            <label class="wf-label" for="codigo">Código Aeropuerto (IATA / ICAO) <span class="required">(*)</span></label>
+            <input type="text" id="codigo" class="wf-input" placeholder="Ej: EZE, COR, MDZ, AEP" maxlength="4" style="text-transform: uppercase;">
+            <span class="wf-help-text">Código único e irrepetible de 3 o 4 caracteres.</span>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="nombre">Nombre Oficial del Aeropuerto <span class="required">(*)</span></label>
+            <input type="text" id="nombre" class="wf-input" placeholder="Ej: Ministro Pistarini / Aeroparque J. Newbery">
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="ciudad">Ciudad / Localidad <span class="required">(*)</span></label>
+            <input type="text" id="ciudad" class="wf-input" placeholder="Ej: Buenos Aires, Córdoba, Mendoza">
+          </div>
+
+          <div class="wf-annotation">
+            <strong>Distribución de Botones de Acción:</strong>
+          </div>
+
+          <div class="wf-btn-group" style="margin-top: 20px;">
+            <button class="wf-btn wf-btn-primary" type="submit">Guardar Aeropuerto</button>
+            <button class="wf-btn wf-btn-secondary" type="reset">Limpiar Campos</button>
+            <button class="wf-btn wf-btn-outline" type="button">Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Panel de Búsqueda y Filtros -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Buscador] Filtros de Búsqueda</h2>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Restablecer</button>
+        </div>
+
+        <form action="#" method="GET" onsubmit="return false;">
+          <div class="wf-form-group">
+            <label class="wf-label" for="filtro-texto">Buscar por Código, Nombre o Ciudad</label>
+            <input type="text" id="filtro-texto" class="wf-input" placeholder="Ingresar texto a buscar...">
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="filtro-estado">Estado Operativo</label>
+            <select id="filtro-estado" class="wf-select">
+              <option value="todos">Todos los estados</option>
+              <option value="activos" selected>Activos</option>
+              <option value="inactivos">Inactivos / Dados de baja</option>
+            </select>
+          </div>
+
+          <div class="wf-btn-group" style="margin-top: 24px;">
+            <button class="wf-btn wf-btn-primary" type="submit">Aplicar Filtros</button>
+            <button class="wf-btn wf-btn-secondary" type="button">Exportar Listado</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <!-- Tabla de Listado de Aeropuertos -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Listado] Aeropuertos Registrados (Total: 4)</h2>
+        <div class="wf-btn-group">
+          <span class="wf-tag wf-tag-inactive">Mostrando 1-4 de 4</span>
+        </div>
+      </div>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>Código</th>
+              <th>Nombre del Aeropuerto</th>
+              <th>Ciudad</th>
+              <th>Trayectos Asociados</th>
+              <th>Estado</th>
+              <th style="text-align: right;">Botones de Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>EZE</strong></td>
+              <td>Ministro Pistarini (Ezeiza)</td>
+              <td>Buenos Aires</td>
+              <td>3 trayectos activos</td>
+              <td><span class="wf-tag wf-tag-active">Activo</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar</button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled title="Bloqueado: Posee vuelos futuros programados">Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>AEP</strong></td>
+              <td>Aeroparque Jorge Newbery</td>
+              <td>Buenos Aires</td>
+              <td>5 trayectos activos</td>
+              <td><span class="wf-tag wf-tag-active">Activo</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar</button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled title="Bloqueado: Posee vuelos futuros programados">Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>COR</strong></td>
+              <td>Ing. Ambrosio Taravella</td>
+              <td>Córdoba</td>
+              <td>2 trayectos activos</td>
+              <td><span class="wf-tag wf-tag-active">Activo</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar</button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled title="Bloqueado: Posee vuelos futuros programados">Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>MDZ</strong></td>
+              <td>Gdor. Francisco Gabrielli (El Plumerillo)</td>
+              <td>Mendoza</td>
+              <td>0 trayectos (Sin vuelos)</td>
+              <td><span class="wf-tag wf-tag-active">Activo</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar</button>
+                  <button class="wf-btn wf-btn-danger wf-btn-sm" type="button">Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="wf-pagination">
+        <span>Página 1 de 1</span>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>&laquo; Anterior</button>
+          <button class="wf-btn wf-btn-primary wf-btn-sm">1</button>
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>Siguiente &raquo;</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

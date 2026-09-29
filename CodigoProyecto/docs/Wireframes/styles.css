@@ -1,0 +1,538 @@
+/* ==========================================================================
+   WIREFRAME STYLES - STRICT GRAYSCALE (BLANCO, GRISES, NEGRO)
+   Enfocado exclusivamente en distribución espacial, estructura y botones
+   ========================================================================== */
+
+:root {
+  --wf-black: #111111;
+  --wf-dark: #333333;
+  --wf-gray-dark: #555555;
+  --wf-gray-mid: #777777;
+  --wf-gray-light: #cccccc;
+  --wf-gray-lighter: #e9ecef;
+  --wf-gray-bg: #f5f5f5;
+  --wf-white: #ffffff;
+  --wf-border: 1px solid #777777;
+  --wf-border-dark: 2px solid #111111;
+  --wf-border-dashed: 2px dashed #999999;
+  --wf-radius: 4px;
+  --wf-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --wf-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--wf-font);
+  background-color: var(--wf-gray-bg);
+  color: var(--wf-dark);
+  line-height: 1.5;
+  padding-bottom: 50px;
+}
+
+/* Header & Top Navigation */
+.wf-header {
+  background-color: var(--wf-white);
+  border-bottom: var(--wf-border-dark);
+  padding: 12px 24px;
+}
+
+.wf-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.wf-logo {
+  font-size: 1.25rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-transform: uppercase;
+  border: 2px solid var(--wf-black);
+  padding: 4px 10px;
+  background-color: var(--wf-gray-lighter);
+  display: inline-block;
+}
+
+.wf-user-session {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.875rem;
+}
+
+.wf-nav-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--wf-gray-light);
+  padding-top: 10px;
+}
+
+.wf-nav-link {
+  text-decoration: none;
+  color: var(--wf-dark);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 6px 14px;
+  border: 1px solid var(--wf-gray-mid);
+  border-radius: var(--wf-radius);
+  background-color: var(--wf-white);
+  transition: all 0.15s ease;
+}
+
+.wf-nav-link:hover {
+  background-color: var(--wf-gray-lighter);
+}
+
+.wf-nav-link.active {
+  background-color: var(--wf-black);
+  color: var(--wf-white);
+  border-color: var(--wf-black);
+}
+
+.wf-badge-us {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-family: var(--wf-font-mono);
+  background-color: var(--wf-gray-lighter);
+  border: 1px solid var(--wf-gray-mid);
+  color: var(--wf-black);
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-weight: 700;
+}
+
+/* Container */
+.wf-container {
+  max-width: 1200px;
+  margin: 24px auto;
+  padding: 0 20px;
+}
+
+/* Breadcrumb & Section Title */
+.wf-breadcrumb {
+  font-size: 0.85rem;
+  color: var(--wf-gray-dark);
+  margin-bottom: 12px;
+}
+
+.wf-page-title-box {
+  background-color: var(--wf-white);
+  border: var(--wf-border);
+  padding: 16px 20px;
+  border-radius: var(--wf-radius);
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.wf-page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--wf-black);
+}
+
+.wf-subtitle {
+  font-size: 0.875rem;
+  color: var(--wf-gray-dark);
+  margin-top: 4px;
+}
+
+/* Cards & Layout Panels */
+.wf-card {
+  background-color: var(--wf-white);
+  border: var(--wf-border);
+  border-radius: var(--wf-radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.wf-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--wf-gray-light);
+  padding-bottom: 12px;
+  margin-bottom: 16px;
+}
+
+.wf-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--wf-black);
+}
+
+.wf-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.wf-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.wf-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+@media (max-width: 900px) {
+  .wf-grid-2, .wf-grid-3, .wf-grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Buttons */
+.wf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--wf-font);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: var(--wf-radius);
+  cursor: pointer;
+  text-decoration: none;
+  border: 1px solid var(--wf-black);
+  transition: all 0.1s ease;
+  white-space: nowrap;
+}
+
+.wf-btn-primary {
+  background-color: var(--wf-black);
+  color: var(--wf-white);
+  border-color: var(--wf-black);
+}
+
+.wf-btn-primary:hover {
+  background-color: var(--wf-dark);
+}
+
+.wf-btn-secondary {
+  background-color: var(--wf-gray-lighter);
+  color: var(--wf-black);
+  border-color: var(--wf-gray-mid);
+}
+
+.wf-btn-secondary:hover {
+  background-color: var(--wf-gray-light);
+}
+
+.wf-btn-outline {
+  background-color: var(--wf-white);
+  color: var(--wf-black);
+  border-color: var(--wf-black);
+}
+
+.wf-btn-outline:hover {
+  background-color: var(--wf-gray-lighter);
+}
+
+.wf-btn-danger {
+  background-color: var(--wf-white);
+  color: var(--wf-black);
+  border: 1px solid var(--wf-black);
+  text-decoration: underline;
+}
+
+.wf-btn-danger:hover {
+  background-color: var(--wf-gray-light);
+}
+
+.wf-btn-sm {
+  padding: 4px 10px;
+  font-size: 0.775rem;
+}
+
+.wf-btn-lg {
+  padding: 12px 24px;
+  font-size: 1rem;
+}
+
+.wf-btn:disabled, .wf-btn.disabled {
+  background-color: var(--wf-gray-lighter) !important;
+  color: var(--wf-gray-mid) !important;
+  border-color: var(--wf-gray-light) !important;
+  cursor: not-allowed;
+  text-decoration: none !important;
+}
+
+.wf-btn-group {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* Forms */
+.wf-form-group {
+  margin-bottom: 16px;
+}
+
+.wf-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--wf-dark);
+}
+
+.wf-label .required {
+  font-weight: bold;
+}
+
+.wf-input, .wf-select, .wf-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  border: 1px solid var(--wf-gray-mid);
+  border-radius: var(--wf-radius);
+  background-color: var(--wf-white);
+  color: var(--wf-black);
+  font-family: var(--wf-font);
+}
+
+.wf-input:focus, .wf-select:focus, .wf-textarea:focus {
+  outline: 2px solid var(--wf-black);
+  border-color: var(--wf-black);
+}
+
+.wf-input[readonly], .wf-input:disabled {
+  background-color: var(--wf-gray-lighter);
+  color: var(--wf-gray-dark);
+  cursor: not-allowed;
+}
+
+.wf-checkbox-group {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 6px 0;
+}
+
+.wf-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  background-color: var(--wf-gray-lighter);
+  padding: 6px 10px;
+  border: 1px solid var(--wf-gray-light);
+  border-radius: var(--wf-radius);
+}
+
+.wf-help-text {
+  font-size: 0.75rem;
+  color: var(--wf-gray-dark);
+  margin-top: 4px;
+}
+
+/* Tables */
+.wf-table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.wf-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.wf-table th {
+  background-color: var(--wf-gray-lighter);
+  color: var(--wf-black);
+  font-weight: 700;
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--wf-dark);
+  border-top: 1px solid var(--wf-gray-light);
+}
+
+.wf-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--wf-gray-light);
+  vertical-align: middle;
+}
+
+.wf-table tr:hover {
+  background-color: #fafafa;
+}
+
+/* Wireframe Annotations & Badges */
+.wf-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--wf-dark);
+}
+
+.wf-tag-active {
+  background-color: var(--wf-black);
+  color: var(--wf-white);
+}
+
+.wf-tag-inactive {
+  background-color: var(--wf-gray-lighter);
+  color: var(--wf-dark);
+  border-style: dashed;
+}
+
+.wf-annotation {
+  background-color: var(--wf-gray-lighter);
+  border-left: 4px solid var(--wf-black);
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  margin-bottom: 16px;
+}
+
+.wf-alert {
+  border: 1px solid var(--wf-black);
+  padding: 12px 16px;
+  border-radius: var(--wf-radius);
+  margin-bottom: 16px;
+  background-color: var(--wf-white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.wf-alert-icon {
+  font-weight: bold;
+  border: 1px solid var(--wf-black);
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+
+/* Passenger Flight Results Specific */
+.wf-flight-card {
+  border: 2px solid var(--wf-dark);
+  border-radius: var(--wf-radius);
+  background-color: var(--wf-white);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.wf-flight-main {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+
+@media (max-width: 800px) {
+  .wf-flight-main {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wf-flight-route {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.wf-flight-time {
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+
+.wf-flight-airport {
+  font-size: 0.85rem;
+  color: var(--wf-gray-dark);
+}
+
+.wf-flight-arrow {
+  text-align: center;
+  flex: 1;
+  border-bottom: 2px dashed var(--wf-gray-mid);
+  position: relative;
+  margin: 0 10px;
+}
+
+.wf-flight-duration {
+  font-size: 0.75rem;
+  color: var(--wf-gray-dark);
+  margin-bottom: 4px;
+}
+
+.wf-class-box {
+  border: 1px solid var(--wf-gray-mid);
+  padding: 12px;
+  border-radius: var(--wf-radius);
+  text-align: center;
+  background-color: var(--wf-white);
+}
+
+.wf-class-box.soldout {
+  background-color: var(--wf-gray-lighter);
+  border-style: dashed;
+}
+
+.wf-class-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.wf-class-price {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 6px 0;
+}
+
+.wf-class-seats {
+  font-size: 0.75rem;
+  color: var(--wf-gray-dark);
+  margin-bottom: 8px;
+}
+
+/* Modal Simulation */
+.wf-modal-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 24px;
+  border: var(--wf-border-dashed);
+  border-radius: var(--wf-radius);
+  margin-top: 24px;
+}
+
+.wf-modal-box {
+  background-color: var(--wf-white);
+  border: 2px solid var(--wf-black);
+  border-radius: var(--wf-radius);
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Pagination */
+.wf-pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16px;
+  font-size: 0.85rem;
+}

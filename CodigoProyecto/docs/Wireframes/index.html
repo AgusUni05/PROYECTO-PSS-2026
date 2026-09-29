@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Índice de Wireframes - Sistema de Gestión de Vuelos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Wireframes de Distribución</div>
+      <div class="wf-user-session">
+        <span>Sprint 0: <strong>Wireframes de Estructura y Botones</strong></span>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link active">Inicio / Índice</a>
+      <a href="aeropuertos.html" class="wf-nav-link">Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link">Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link">Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Generación de Vuelos <span class="wf-badge-us">US-04/07/09/11</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero (Búsqueda) <span class="wf-badge-us">US-13/14</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Title -->
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Índice de Wireframes Web (Sprint 0)</h1>
+        <p class="wf-subtitle">Distribución espacial y jerarquía de botones de las User Stories: US-01, US-02, US-03, US-04, US-07, US-09, US-11, US-13 y US-14 en estricta escala de grises.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-tag wf-tag-active">9 User Stories Cubiertas</span>
+      </div>
+    </div>
+
+    <!-- Guía y Mapa de Páginas -->
+    <div class="wf-grid-2">
+
+      <!-- US-01 -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">1. Gestión de Aeropuertos</h2>
+          <span class="wf-badge-us">US-01</span>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 12px;">
+          <strong>Alcance:</strong> ABML de Aeropuertos (código IATA/ICAO, nombre y ciudad). Búsqueda con filtros y validación de bloqueo de baja si existen vuelos futuros.
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones principales:</strong><br>
+          • <code>[+ Nuevo Aeropuerto]</code> (Primario en cabecera)<br>
+          • <code>[Guardar Aeropuerto]</code>, <code>[Limpiar Campos]</code>, <code>[Cancelar]</code> (Formulario)<br>
+          • <code>[Aplicar Filtros]</code>, <code>[Restablecer]</code> (Buscador)<br>
+          • <code>[Editar]</code>, <code>[Dar de Baja]</code> (Por fila en grilla)
+        </div>
+        <div class="wf-btn-group" style="margin-top: 16px;">
+          <a href="aeropuertos.html" class="wf-btn wf-btn-primary">Ver Wireframe Aeropuertos &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-02 -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">2. Gestión de Aviones (Flota)</h2>
+          <span class="wf-badge-us">US-02</span>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 12px;">
+          <strong>Alcance:</strong> ABML de Aviones (identificador único, modelo, asientos Economy y Primera Clase, capacidad total).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones principales:</strong><br>
+          • <code>[+ Nuevo Avión]</code> (Primario superior)<br>
+          • <code>[Guardar Avión]</code>, <code>[Limpiar]</code>, <code>[Cancelar]</code> (Formulario)<br>
+          • <code>[Buscar Aviones]</code>, <code>[Restablecer]</code> (Filtros)<br>
+          • <code>[Editar Capacidad]</code>, <code>[Dar de Baja]</code> (Por fila en grilla)
+        </div>
+        <div class="wf-btn-group" style="margin-top: 16px;">
+          <a href="aviones.html" class="wf-btn wf-btn-primary">Ver Wireframe Aviones &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-03 -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">3. Gestión de Trayectos</h2>
+          <span class="wf-badge-us">US-03</span>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 12px;">
+          <strong>Alcance:</strong> ABML de Trayectos indicando aeropuertos de origen y destino distintos, días de la semana de operación y horarios de salida/llegada (+1 día si aplica).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones principales:</strong><br>
+          • <code>[+ Nuevo Trayecto]</code> (Primario)<br>
+          • <code>[Guardar Trayecto]</code>, <code>[Limpiar Campos]</code>, <code>[Cancelar]</code><br>
+          • <code>[Filtrar Trayectos]</code>, <code>[Limpiar Filtros]</code><br>
+          • <code>[Generar Vuelos]</code>, <code>[Editar]</code>, <code>[Dar de Baja]</code>
+        </div>
+        <div class="wf-btn-group" style="margin-top: 16px;">
+          <a href="trayectos.html" class="wf-btn wf-btn-primary">Ver Wireframe Trayectos &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-04, US-07, US-09, US-11 -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">4. Generación y Tarifas de Vuelos</h2>
+          <div>
+            <span class="wf-badge-us">US-04</span>
+            <span class="wf-badge-us">US-07</span>
+            <span class="wf-badge-us">US-09</span>
+            <span class="wf-badge-us">US-11</span>
+          </div>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 12px;">
+          <strong>Alcance:</strong> Generación masiva de vuelos reales desde trayecto, rango de fechas de venta (US-07), avión asignado, capacidad por clase (US-09), tarifas por clase (US-11), y grilla de vuelos generados (US-04).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones principales:</strong><br>
+          • <code>[Generar y Publicar Vuelos Reales]</code>, <code>[Previsualizar]</code><br>
+          • <code>[Buscar Vuelos Reales]</code>, <code>[Exportar Grilla]</code><br>
+          • <code>[Editar Vuelo]</code>, <code>[Cancelar Vuelo]</code> (Por fila)<br>
+          • <code>[Guardar Cambios de Vuelo]</code>, <code>[Cerrar / Descartar]</code> (Modal)
+        </div>
+        <div class="wf-btn-group" style="margin-top: 16px;">
+          <a href="vuelos_admin.html" class="wf-btn wf-btn-primary">Ver Wireframe Vuelos Admin &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-13 y US-14 -->
+      <section class="wf-card" style="grid-column: 1 / -1;">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">5. Portal del Pasajero: Búsqueda y Detalle de Opciones de Vuelo</h2>
+          <div>
+            <span class="wf-badge-us">US-13</span>
+            <span class="wf-badge-us">US-14</span>
+          </div>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 12px;">
+          <strong>Alcance:</strong> Buscador de vuelos por origen, destino y fecha (US-13), ordenamiento cronológico de opciones, tarjetas de vuelo con horarios, tarifas diferenciadas Economy/Primera, cupos disponibles y estado sin cupo "Agotado" (US-14).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones principales:</strong><br>
+          • <code>[Buscar Vuelos Disponibles &rarr;]</code> (Botón de acción primario)<br>
+          • <code>[&harr; Invertir Origen / Destino]</code>, <code>[Limpiar Búsqueda]</code> (Acciones rápidas)<br>
+          • <code>[Seleccionar Economy]</code>, <code>[Seleccionar Primera]</code> (En tarjetas de vuelo)<br>
+          • <code>[No Disponible / Agotado]</code> (Botón deshabilitado cuando no hay cupo)<br>
+          • <code>[Buscar en Fechas Cercanas]</code>, <code>[Cambiar Origen / Destino]</code> (Sin resultados)
+        </div>
+        <div class="wf-btn-group" style="margin-top: 16px;">
+          <a href="busqueda_pasajero.html" class="wf-btn wf-btn-primary">Ver Wireframe Portal Pasajero &rarr;</a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Panel Informativo de Estilo Wireframe -->
+    <div class="wf-alert" style="margin-top: 20px;">
+      <div>
+        <strong>Convención de Diseño:</strong> Wireframe de baja fidelidad en escala de grises (monocromático: blanco, negro, escala de grises), diseñado para validar layout, flujo de navegación, inputs de formularios y distribución ergonómica de botones.
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

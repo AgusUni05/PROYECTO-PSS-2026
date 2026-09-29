@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-02: ABML de Aviones</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Panel Administración</div>
+      <div class="wf-user-session">
+        <span>Usuario: <strong>admin@vuelos.com</strong> (Administrador)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Cerrar Sesión</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="aeropuertos.html" class="wf-nav-link">Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link active">Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link">Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Generación de Vuelos <span class="wf-badge-us">US-04/07/09/11</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero (Búsqueda) <span class="wf-badge-us">US-13/14</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Administración > Catálogo Maestro > <strong>Gestión de Aviones y Flota</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Gestión de Aviones</h1>
+        <p class="wf-subtitle">Alta, modificación, baja y configuración de capacidad por clase (Economy y Primera Clase) de la flota.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-02 | RF-01, RF-03</span>
+        <button class="wf-btn wf-btn-primary" type="button" onclick="document.getElementById('form-avion').scrollIntoView();">+ Nuevo Avión</button>
+      </div>
+    </div>
+
+    <!-- Alert / Negocio US-02 -->
+    <div class="wf-alert">
+      <div>
+        <strong>Regla de Negocio US-02:</strong> El identificador de avión es único. No se puede dar de baja un avión con vuelos futuros asignados. Al modificar capacidad, el sistema valida que no sea inferior a pasajes vendidos.
+      </div>
+      <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Entendido</button>
+    </div>
+
+    <div class="wf-grid-2">
+      <!-- Formulario de Alta / Modificación -->
+      <section class="wf-card" id="form-avion">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Formulario] Registro / Edición de Avión</h2>
+          <span class="wf-tag wf-tag-active">Modo: Alta de Aeronave</span>
+        </div>
+
+        <form action="#" method="POST" onsubmit="return false;">
+          <div class="wf-form-group">
+            <label class="wf-label" for="identificador">Identificador / Matrícula <span class="required">(*)</span></label>
+            <input type="text" id="identificador" class="wf-input" placeholder="Ej: LV-ARG01, BOEING-737-A">
+            <span class="wf-help-text">Identificador alfanumérico único para el avión en la flota.</span>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="modelo">Modelo de Aeronave <span class="required">(*)</span></label>
+            <input type="text" id="modelo" class="wf-input" placeholder="Ej: Boeing 737-800, Airbus A320, Embraer 190">
+          </div>
+
+          <div class="wf-grid-2">
+            <div class="wf-form-group">
+              <label class="wf-label" for="asientos-economy">Asientos Economy <span class="required">(*)</span></label>
+              <input type="number" id="asientos-economy" class="wf-input" min="0" placeholder="150" value="150">
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="asientos-primera">Asientos Primera Clase <span class="required">(*)</span></label>
+              <input type="number" id="asientos-primera" class="wf-input" min="0" placeholder="12" value="12">
+            </div>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="capacidad-total">Capacidad Total Estimada</label>
+            <input type="text" id="capacidad-total" class="wf-input" value="162 asientos totales" readonly disabled>
+            <span class="wf-help-text">Cálculo automático: Asientos Economy + Primera Clase.</span>
+          </div>
+
+          <div class="wf-btn-group" style="margin-top: 20px;">
+            <button class="wf-btn wf-btn-primary" type="submit">Guardar Avión</button>
+            <button class="wf-btn wf-btn-secondary" type="reset">Limpiar</button>
+            <button class="wf-btn wf-btn-outline" type="button">Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Panel de Filtros y Resumen de Flota -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Buscador y Resumen] Filtros</h2>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Restablecer</button>
+        </div>
+
+        <form action="#" method="GET" onsubmit="return false;">
+          <div class="wf-form-group">
+            <label class="wf-label" for="filtro-avion">Buscar por Identificador o Modelo</label>
+            <input type="text" id="filtro-avion" class="wf-input" placeholder="Ej: Boeing, LV-ARG...">
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="filtro-clase">Configuración de Clases</label>
+            <select id="filtro-clase" class="wf-select">
+              <option value="todos">Todas las configuraciones</option>
+              <option value="mixto">Con Economy y Primera Clase</option>
+              <option value="economy">Solo Economy</option>
+            </select>
+          </div>
+
+          <div class="wf-btn-group" style="margin-top: 24px;">
+            <button class="wf-btn wf-btn-primary" type="submit">Buscar Aviones</button>
+            <button class="wf-btn wf-btn-secondary" type="button">Ver Métricas de Flota</button>
+          </div>
+        </form>
+
+        <div class="wf-annotation" style="margin-top: 24px;">
+          <strong>Resumen Rápido:</strong><br>
+          • 4 Aeronaves registradas activas<br>
+          • Capacidad promedio: 160 asientos por aeronave
+        </div>
+      </section>
+    </div>
+
+    <!-- Tabla de Listado de Aviones -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Listado] Flota de Aviones Disponibles</h2>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm" type="button">Actualizar Grilla</button>
+        </div>
+      </div>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>Identificador</th>
+              <th>Modelo</th>
+              <th>Asientos Economy</th>
+              <th>Asientos Primera</th>
+              <th>Capacidad Total</th>
+              <th>Vuelos Asignados</th>
+              <th style="text-align: right;">Botones de Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>LV-ARG01</strong></td>
+              <td>Boeing 737-800</td>
+              <td>150</td>
+              <td>16</td>
+              <td><strong>166</strong></td>
+              <td>12 vuelos futuros</td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar Capacidad</button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled title="Bloqueado: Posee 12 vuelos futuros asignados">Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>LV-ARG02</strong></td>
+              <td>Airbus A320</td>
+              <td>160</td>
+              <td>12</td>
+              <td><strong>172</strong></td>
+              <td>8 vuelos futuros</td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar Capacidad</button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled title="Bloqueado: Posee vuelos futuros">Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>LV-ARG03</strong></td>
+              <td>Embraer 190</td>
+              <td>88</td>
+              <td>8</td>
+              <td><strong>96</strong></td>
+              <td>4 vuelos futuros</td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar Capacidad</button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td><strong>LV-MNT99</strong></td>
+              <td>Boeing 737-700</td>
+              <td>120</td>
+              <td>0</td>
+              <td><strong>120</strong></td>
+              <td>0 vuelos (En reserva)</td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar Capacidad</button>
+                  <button class="wf-btn wf-btn-danger wf-btn-sm" type="button">Dar de Baja</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="wf-pagination">
+        <span>Mostrando 4 aviones</span>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>&laquo; Anterior</button>
+          <button class="wf-btn wf-btn-primary wf-btn-sm">1</button>
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>Siguiente &raquo;</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>
