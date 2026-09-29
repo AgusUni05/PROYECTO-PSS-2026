@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { newId } from "@/lib/id";
 import type { ActionResult } from "@/lib/action-result";
-import type { GenerateFlightsFormValues } from "./schema";
+import type { EditFlightFormValues, GenerateFlightsFormValues } from "./schema";
 import { buildFlightWindow, matchingDates, windowsOverlap, type FlightWindow } from "./generation";
 
 function formatDate(date: Date): string {
@@ -31,6 +31,9 @@ export async function generateFlights(
   if (!airplane || !airplane.isActive) {
     return { ok: false, error: "El avión seleccionado no existe o está inactivo." };
   }
+
+  const seatErrors = capacityAboveSeatsErrors(data, airplane);
+  if (seatErrors) return { ok: false, fieldErrors: seatErrors };
 
   const dates = matchingDates(data.startDate, data.endDate, route.operatingDays);
   if (dates.length === 0) {
@@ -142,4 +145,85 @@ function findFirstOverlap(
   }
 
   return null;
+}
+
+type FieldErrors = Record<string, string[]>;
+
+/** US-09: la capacidad de cada clase no puede superar los asientos del avión (capacidad real). */
+function capacityAboveSeatsErrors(
+  data: { economyCapacity: number; firstClassCapacity: number },
+  airplane: { identifier: string; economySeats: number; firstClassSeats: number },
+): FieldErrors | null {
+  const errors: FieldErrors = {};
+  if (data.economyCapacity > airplane.economySeats) {
+    errors.economyCapacity = [
+      `No puede superar los ${airplane.economySeats} asientos Economy del avión ${airplane.identifier}`,
+    ];
+  }
+  if (data.firstClassCapacity > airplane.firstClassSeats) {
+    errors.firstClassCapacity = [
+      `No puede superar los ${airplane.firstClassSeats} asientos de Primera del avión ${airplane.identifier}`,
+    ];
+  }
+  return Object.keys(errors).length > 0 ? errors : null;
+}
+
+/**
+ * US-09: modifica la capacidad por clase de un vuelo puntual. Solo vuelos
+ * programados que todavía no partieron. La capacidad de cada clase no puede
+ * quedar por debajo de los asientos ya ocupados ni superar los del avión.
+ */
+export async function updateFlight(
+  id: string,
+  data: EditFlightFormValues,
+  updatedById: string,
+): Promise<ActionResult<{ id: string }>> {
+  const flight = await prisma.flight.findUnique({
+    where: { id },
+    include: { airplane: { select: { identifier: true, economySeats: true, firstClassSeats: true } } },
+  });
+  if (!flight) return { ok: false, error: "El vuelo no existe." };
+  if (flight.status === "CANCELLED") {
+    return { ok: false, error: "No se puede modificar un vuelo cancelado." };
+  }
+  if (flight.departureAt <= new Date()) {
+    return { ok: false, error: "No se puede modificar un vuelo que ya partió." };
+  }
+
+  const fieldErrors: FieldErrors = { ...capacityAboveSeatsErrors(data, flight.airplane) };
+  if (data.economyCapacity < flight.economyOccupied) {
+    fieldErrors.economyCapacity = [
+      `No puede ser menor a los ${flight.economyOccupied} pasajes Economy ya vendidos`,
+    ];
+  }
+  if (data.firstClassCapacity < flight.firstClassOccupied) {
+    fieldErrors.firstClassCapacity = [
+      `No puede ser menor a los ${flight.firstClassOccupied} pasajes de Primera ya vendidos`,
+    ];
+  }
+  if (Object.keys(fieldErrors).length > 0) return { ok: false, fieldErrors };
+
+  // Escritura condicionada (atómica): si entre la lectura y la escritura se
+  // vendieron asientos y la nueva capacidad ya no alcanza, no se actualiza nada.
+  const { count } = await prisma.flight.updateMany({
+    where: {
+      id,
+      status: "SCHEDULED",
+      economyOccupied: { lte: data.economyCapacity },
+      firstClassOccupied: { lte: data.firstClassCapacity },
+    },
+    data: {
+      economyCapacity: data.economyCapacity,
+      firstClassCapacity: data.firstClassCapacity,
+      updatedById,
+    },
+  });
+  if (count === 0) {
+    return {
+      ok: false,
+      error: "El vuelo cambió mientras lo editabas (nuevas ventas o cancelación). Volvé a intentarlo.",
+    };
+  }
+
+  return { ok: true, data: { id } };
 }

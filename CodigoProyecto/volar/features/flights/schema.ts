@@ -8,6 +8,21 @@ function todayDateString(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+// US-09: capacidad por clase, entero no negativo (mismas reglas al generar y al editar un vuelo).
+const capacityField = z
+  .number({ error: "Ingresá un número" })
+  .int("Debe ser un número entero")
+  .min(0, "No puede ser negativo");
+
+function hasSomeCapacity(data: { economyCapacity: number; firstClassCapacity: number }) {
+  return data.economyCapacity > 0 || data.firstClassCapacity > 0;
+}
+
+const SOME_CAPACITY_ERROR = {
+  message: "Al menos una clase debe tener capacidad",
+  path: ["economyCapacity"],
+};
+
 // US-04/US-07: generación de vuelos reales a partir de un trayecto y un período.
 export const generateFlightsFormSchema = z
   .object({
@@ -15,14 +30,8 @@ export const generateFlightsFormSchema = z
     startDate: z.string().regex(DATE_REGEX, "Fecha inválida"),
     endDate: z.string().regex(DATE_REGEX, "Fecha inválida"),
     airplaneId: idSchema("Airplane"),
-    economyCapacity: z
-      .number({ error: "Ingresá un número" })
-      .int("Debe ser un número entero")
-      .min(0, "No puede ser negativo"),
-    firstClassCapacity: z
-      .number({ error: "Ingresá un número" })
-      .int("Debe ser un número entero")
-      .min(0, "No puede ser negativo"),
+    economyCapacity: capacityField,
+    firstClassCapacity: capacityField,
     economyFare: z
       .number({ error: "Ingresá un número" })
       .positive("Debe ser mayor a 0"),
@@ -38,12 +47,21 @@ export const generateFlightsFormSchema = z
     message: "La fecha fin debe ser igual o posterior al inicio",
     path: ["endDate"],
   })
-  .refine((data) => data.economyCapacity > 0 || data.firstClassCapacity > 0, {
-    message: "Al menos una clase debe tener capacidad",
-    path: ["economyCapacity"],
-  });
+  .refine(hasSomeCapacity, SOME_CAPACITY_ERROR);
 
 export type GenerateFlightsFormValues = z.infer<typeof generateFlightsFormSchema>;
+
+// US-09: edición puntual de un vuelo generado. Las reglas que dependen del
+// vuelo (no bajar de lo vendido, no superar los asientos del avión) las valida
+// el servicio contra la base.
+export const editFlightFormSchema = z
+  .object({
+    economyCapacity: capacityField,
+    firstClassCapacity: capacityField,
+  })
+  .refine(hasSomeCapacity, SOME_CAPACITY_ERROR);
+
+export type EditFlightFormValues = z.infer<typeof editFlightFormSchema>;
 
 export const FLIGHT_STATUS_FILTERS = ["SCHEDULED", "CANCELLED", "todos"] as const;
 

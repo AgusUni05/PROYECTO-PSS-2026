@@ -53,7 +53,9 @@ export default async function VuelosPage({
           Se genera un vuelo por cada fecha del período que coincida con los días de operación del
           trayecto. Si alguna fecha ya tiene un vuelo generado para ese trayecto, o si el avión
           elegido queda con horarios superpuestos, no se genera nada: hay que ajustar el rango o
-          elegir otro avión. La capacidad y la tarifa se aplican a todos los vuelos generados.
+          elegir otro avión. La capacidad y la tarifa se aplican a todos los vuelos generados; la
+          capacidad por clase no puede superar los asientos del avión. Después, cada vuelo se puede
+          ajustar con &quot;Editar Vuelo&quot; sin bajar de los pasajes ya vendidos.
         </AlertDescription>
       </Alert>
 

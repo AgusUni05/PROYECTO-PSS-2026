@@ -11,6 +11,9 @@ import {
 import { PaginationLinks } from "@/components/pagination-links";
 import type { FlightListItem } from "../queries";
 import type { FlightFilters } from "../schema";
+import { availableSeats } from "../availability";
+import { formatCurrency, formatDate, formatTime } from "../format";
+import { EditFlightDialog } from "./edit-flight-dialog";
 
 type Props = {
   flights: FlightListItem[];
@@ -20,23 +23,11 @@ type Props = {
   filters: FlightFilters;
 };
 
-const currencyFormatter = new Intl.NumberFormat("es-AR", {
-  style: "currency",
-  currency: "ARS",
-  maximumFractionDigits: 0,
-});
-
-function formatDate(date: Date): string {
-  const [y, m, d] = date.toISOString().slice(0, 10).split("-");
-  return `${d}/${m}/${y}`;
-}
-
-function formatTime(date: Date): string {
-  return date.toISOString().slice(11, 16);
-}
-
-// US-04: listado de vuelos reales generados, de solo lectura (edición/cancelación puntual: US-05/US-06, fuera de alcance).
+// US-04: listado de vuelos reales generados. US-09: edición puntual de capacidad
+// (solo vuelos programados que no partieron; cancelación puntual es US-06).
 export function FlightTable({ flights, total, page, pageCount, filters }: Props) {
+  const now = new Date();
+
   function buildHref(targetPage: number) {
     const params = new URLSearchParams();
     if (filters.fecha) params.set("fecha", filters.fecha);
@@ -67,12 +58,13 @@ export function FlightTable({ flights, total, page, pageCount, filters }: Props)
                 <TableHead>Cupos Primera</TableHead>
                 <TableHead>Tarifas</TableHead>
                 <TableHead>Estado</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {flights.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={9} className="text-center text-muted-foreground">
+                  <TableCell colSpan={10} className="text-center text-muted-foreground">
                     Sin resultados para los filtros aplicados.
                   </TableCell>
                 </TableRow>
@@ -89,26 +81,22 @@ export function FlightTable({ flights, total, page, pageCount, filters }: Props)
                   </TableCell>
                   <TableCell>{f.airplaneIdentifier}</TableCell>
                   <TableCell>
-                    <div>
-                      Disp: <strong>{f.economyCapacity - f.economyOccupied}</strong> / {f.economyCapacity}
-                    </div>
-                    <small className="text-muted-foreground">({f.economyOccupied} vendidos)</small>
+                    <SeatsCell capacity={f.economyCapacity} occupied={f.economyOccupied} />
                   </TableCell>
                   <TableCell>
-                    <div>
-                      Disp: <strong>{f.firstClassCapacity - f.firstClassOccupied}</strong> /{" "}
-                      {f.firstClassCapacity}
-                    </div>
-                    <small className="text-muted-foreground">({f.firstClassOccupied} vendidos)</small>
+                    <SeatsCell capacity={f.firstClassCapacity} occupied={f.firstClassOccupied} />
                   </TableCell>
                   <TableCell>
-                    <div>Eco: {currencyFormatter.format(Number(f.economyFare))}</div>
-                    <div>1ra: {currencyFormatter.format(Number(f.firstClassFare))}</div>
+                    <div>Eco: {formatCurrency(f.economyFare)}</div>
+                    <div>1ra: {formatCurrency(f.firstClassFare)}</div>
                   </TableCell>
                   <TableCell>
                     <Badge variant={f.status === "SCHEDULED" ? "default" : "secondary"}>
                       {f.status === "SCHEDULED" ? "Programado" : "Cancelado"}
                     </Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {f.status === "SCHEDULED" && f.departureAt > now && <EditFlightDialog flight={f} />}
                   </TableCell>
                 </TableRow>
               ))}
@@ -118,5 +106,21 @@ export function FlightTable({ flights, total, page, pageCount, filters }: Props)
         <PaginationLinks page={page} pageCount={pageCount} buildHref={buildHref} />
       </CardContent>
     </Card>
+  );
+}
+
+// US-09: cupo disponible = capacidad − vendidos, con tag "Agotado" en 0 (wireframe).
+function SeatsCell({ capacity, occupied }: { capacity: number; occupied: number }) {
+  const available = availableSeats(capacity, occupied);
+  return (
+    <>
+      <div className="flex items-center gap-1.5">
+        <span>
+          Disp: <strong>{available}</strong> / {capacity}
+        </span>
+        {capacity > 0 && available === 0 && <Badge variant="destructive">Agotado</Badge>}
+      </div>
+      <small className="text-muted-foreground">({occupied} vendidos)</small>
+    </>
   );
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { newId } from "@/lib/id";
-import { flightFiltersSchema, generateFlightsFormSchema } from "./schema";
+import { editFlightFormSchema, flightFiltersSchema, generateFlightsFormSchema } from "./schema";
 
 function isoDaysFromToday(days: number): string {
   const date = new Date();
@@ -105,5 +105,44 @@ describe("flightFiltersSchema", () => {
 
   it("cae a los valores por defecto ante un estado inválido", () => {
     expect(flightFiltersSchema.parse({ estado: "otra-cosa" }).estado).toBe("SCHEDULED");
+  });
+});
+
+describe("editFlightFormSchema (US-09)", () => {
+  const capacity = { economyCapacity: 150, firstClassCapacity: 16 };
+
+  it("acepta capacidades enteras no negativas", () => {
+    expect(editFlightFormSchema.safeParse(capacity).success).toBe(true);
+    expect(editFlightFormSchema.safeParse({ ...capacity, firstClassCapacity: 0 }).success).toBe(
+      true,
+    );
+  });
+
+  it("rechaza capacidades negativas", () => {
+    const result = editFlightFormSchema.safeParse({ ...capacity, firstClassCapacity: -1 });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.firstClassCapacity).toBeDefined();
+    }
+  });
+
+  it("rechaza capacidades no enteras", () => {
+    expect(editFlightFormSchema.safeParse({ ...capacity, economyCapacity: 10.5 }).success).toBe(
+      false,
+    );
+  });
+
+  it("rechaza un campo vacío (NaN desde el input numérico)", () => {
+    expect(editFlightFormSchema.safeParse({ ...capacity, economyCapacity: NaN }).success).toBe(
+      false,
+    );
+  });
+
+  it("rechaza cuando ambas capacidades son 0", () => {
+    const result = editFlightFormSchema.safeParse({ economyCapacity: 0, firstClassCapacity: 0 });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.economyCapacity).toBeDefined();
+    }
   });
 });

@@ -249,6 +249,11 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
                 {form.formState.errors.economyCapacity.message}
               </p>
             )}
+            {form.formState.errors.firstClassCapacity && (
+              <p className="text-xs text-destructive">
+                {form.formState.errors.firstClassCapacity.message}
+              </p>
+            )}
           </fieldset>
 
           <fieldset className="space-y-4 rounded-md border p-4">

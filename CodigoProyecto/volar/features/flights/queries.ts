@@ -12,6 +12,8 @@ export type FlightListItem = {
   originCode: string;
   destinationCode: string;
   airplaneIdentifier: string;
+  airplaneEconomySeats: number;
+  airplaneFirstClassSeats: number;
   economyCapacity: number;
   economyOccupied: number;
   firstClassCapacity: number;
@@ -21,7 +23,7 @@ export type FlightListItem = {
   status: "SCHEDULED" | "CANCELLED";
 };
 
-/** US-04: listado de vuelos generados, filtrado y paginado (sin acciones: solo lectura). */
+/** US-04: listado de vuelos generados, filtrado y paginado. */
 export async function listFlights(rawFilters: Record<string, string | undefined>) {
   const filters: FlightFilters = flightFiltersSchema.parse(rawFilters);
 
@@ -45,7 +47,7 @@ export async function listFlights(rawFilters: Record<string, string | undefined>
       take: FLIGHTS_PAGE_SIZE,
       include: {
         route: { include: { origin: { select: { code: true } }, destination: { select: { code: true } } } },
-        airplane: { select: { identifier: true } },
+        airplane: { select: { identifier: true, economySeats: true, firstClassSeats: true } },
       },
     }),
   ]);
@@ -59,6 +61,8 @@ export async function listFlights(rawFilters: Record<string, string | undefined>
     originCode: f.route.origin.code,
     destinationCode: f.route.destination.code,
     airplaneIdentifier: f.airplane.identifier,
+    airplaneEconomySeats: f.airplane.economySeats,
+    airplaneFirstClassSeats: f.airplane.firstClassSeats,
     economyCapacity: f.economyCapacity,
     economyOccupied: f.economyOccupied,
     firstClassCapacity: f.firstClassCapacity,
