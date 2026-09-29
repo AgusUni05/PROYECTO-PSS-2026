@@ -26,7 +26,11 @@ export function RouteFilters({ filters, airports }: Props) {
         </Link>
       </CardHeader>
       <CardContent>
-        <form className="grid gap-4 sm:grid-cols-3" method="GET">
+        <form
+          className="grid gap-4 sm:grid-cols-3"
+          method="GET"
+          key={`${filters.origen}-${filters.destino}-${filters.estado}`}
+        >
           <div className="space-y-1.5">
             <Label htmlFor="origen">Filtrar por Origen</Label>
             <NativeSelect id="origen" name="origen" defaultValue={filters.origen}>

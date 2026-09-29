@@ -59,7 +59,7 @@ export default async function AeropuertosPage({
       </Alert>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <AirportForm editing={editing} />
+        <AirportForm key={editing?.id ?? "new"} editing={editing} />
         <AirportFilters filters={filters} />
       </div>
 

@@ -20,7 +20,7 @@ export function AirportFilters({ filters }: { filters: AirportFiltersValues }) {
         </Link>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4" method="GET">
+        <form className="space-y-4" method="GET" key={`${filters.q}-${filters.estado}`}>
           <div className="space-y-1.5">
             <Label htmlFor="q">Buscar por Código, Nombre o Ciudad</Label>
             <Input

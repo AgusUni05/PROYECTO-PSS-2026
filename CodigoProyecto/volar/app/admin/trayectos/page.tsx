@@ -57,7 +57,7 @@ export default async function TrayectosPage({
         </AlertDescription>
       </Alert>
 
-      <RouteForm airports={airports} editing={editing} />
+      <RouteForm key={editing?.id ?? "new"} airports={airports} editing={editing} />
 
       <RouteFilters filters={filters} airports={airports} />
 

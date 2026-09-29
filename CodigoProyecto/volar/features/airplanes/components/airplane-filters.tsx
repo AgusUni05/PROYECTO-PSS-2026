@@ -25,7 +25,11 @@ export function AirplaneFilters({ filters, summary }: Props) {
         </Link>
       </CardHeader>
       <CardContent className="space-y-6">
-        <form className="space-y-4" method="GET">
+        <form
+          className="space-y-4"
+          method="GET"
+          key={`${filters.q}-${filters.estado}-${filters.config}`}
+        >
           <div className="space-y-1.5">
             <Label htmlFor="q">Buscar por Identificador o Modelo</Label>
             <Input id="q" name="q" defaultValue={filters.q} placeholder="Ej: Boeing, LV-ARG..." />

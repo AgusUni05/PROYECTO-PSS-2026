@@ -42,6 +42,13 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
   const router = useRouter();
   const isEditing = !!editing;
 
+  // Base UI's Select.Value solo resuelve la etiqueta a mostrar si el Select
+  // recibe la lista de items (value/label); si no, muestra el value crudo.
+  const airportItems = airports.map((a) => ({
+    value: a.id,
+    label: `${a.code} - ${a.city} (${a.name})`,
+  }));
+
   const form = useForm<RouteFormValues>({
     resolver: zodResolver(routeFormSchema),
     defaultValues: editing?.values ?? EMPTY_VALUES,
@@ -103,7 +110,7 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
                 control={form.control}
                 name="originId"
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select items={airportItems} value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger id="originId" className="w-full">
                       <SelectValue placeholder="-- Seleccionar aeropuerto de salida --" />
                     </SelectTrigger>
@@ -131,7 +138,7 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
                 control={form.control}
                 name="destinationId"
                 render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select items={airportItems} value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger id="destinationId" className="w-full">
                       <SelectValue placeholder="-- Seleccionar aeropuerto de llegada --" />
                     </SelectTrigger>

@@ -61,7 +61,7 @@ export default async function AvionesPage({
       </Alert>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <AirplaneForm editing={editing} />
+        <AirplaneForm key={editing?.id ?? "new"} editing={editing} />
         <AirplaneFilters filters={filters} summary={summary} />
       </div>
 
