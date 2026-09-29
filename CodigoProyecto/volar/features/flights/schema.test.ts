@@ -2,11 +2,22 @@ import { describe, expect, it } from "vitest";
 import { newId } from "@/lib/id";
 import { flightFiltersSchema, generateFlightsFormSchema } from "./schema";
 
+function isoDaysFromToday(days: number): string {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+const today = isoDaysFromToday(0);
+const yesterday = isoDaysFromToday(-1);
+const tomorrow = isoDaysFromToday(1);
+const in30Days = isoDaysFromToday(30);
+
 const base = {
   routeId: newId("Route"),
   airplaneId: newId("Airplane"),
-  startDate: "2026-10-01",
-  endDate: "2026-10-31",
+  startDate: tomorrow,
+  endDate: in30Days,
   economyCapacity: 150,
   firstClassCapacity: 16,
   economyFare: 45000,
@@ -18,11 +29,29 @@ describe("generateFlightsFormSchema", () => {
     expect(generateFlightsFormSchema.safeParse(base).success).toBe(true);
   });
 
+  it("acepta cuando la fecha de inicio es hoy", () => {
+    expect(
+      generateFlightsFormSchema.safeParse({ ...base, startDate: today, endDate: today }).success,
+    ).toBe(true);
+  });
+
+  it("rechaza cuando la fecha de inicio es anterior a hoy", () => {
+    const result = generateFlightsFormSchema.safeParse({
+      ...base,
+      startDate: yesterday,
+      endDate: in30Days,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.startDate).toBeDefined();
+    }
+  });
+
   it("rechaza cuando la fecha fin es anterior al inicio", () => {
     const result = generateFlightsFormSchema.safeParse({
       ...base,
-      startDate: "2026-10-31",
-      endDate: "2026-10-01",
+      startDate: in30Days,
+      endDate: tomorrow,
     });
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -32,7 +61,7 @@ describe("generateFlightsFormSchema", () => {
 
   it("acepta cuando la fecha fin es igual al inicio", () => {
     expect(
-      generateFlightsFormSchema.safeParse({ ...base, startDate: "2026-10-01", endDate: "2026-10-01" })
+      generateFlightsFormSchema.safeParse({ ...base, startDate: tomorrow, endDate: tomorrow })
         .success,
     ).toBe(true);
   });

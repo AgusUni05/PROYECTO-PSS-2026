@@ -3,6 +3,11 @@ import { idSchema } from "@/lib/id";
 
 const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
 
+/** Fecha de hoy en UTC, formato "YYYY-MM-DD" (mismo criterio de fechas que generation.ts). */
+function todayDateString(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
 // US-04/US-07: generación de vuelos reales a partir de un trayecto y un período.
 export const generateFlightsFormSchema = z
   .object({
@@ -24,6 +29,10 @@ export const generateFlightsFormSchema = z
     firstClassFare: z
       .number({ error: "Ingresá un número" })
       .positive("Debe ser mayor a 0"),
+  })
+  .refine((data) => data.startDate >= todayDateString(), {
+    message: "La fecha de inicio no puede ser anterior a hoy",
+    path: ["startDate"],
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: "La fecha fin debe ser igual o posterior al inicio",

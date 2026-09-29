@@ -45,6 +45,9 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
     defaultValues: EMPTY_VALUES,
   });
 
+  // Recalculado en cada render: acota los date pickers nativos a hoy en adelante.
+  const todayIso = new Date().toISOString().slice(0, 10);
+
   const routeItems = routes.map((r) => ({
     value: r.id,
     label: `${r.code}: ${r.originCode} → ${r.destinationCode} [${formatDays(r.operatingDays)} - ${r.departureTime}]`,
@@ -141,6 +144,7 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
                 <Input
                   id="startDate"
                   type="date"
+                  min={todayIso}
                   aria-invalid={!!form.formState.errors.startDate}
                   {...form.register("startDate")}
                 />
@@ -157,6 +161,7 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
                 <Input
                   id="endDate"
                   type="date"
+                  min={startDate || todayIso}
                   aria-invalid={!!form.formState.errors.endDate}
                   {...form.register("endDate")}
                 />
