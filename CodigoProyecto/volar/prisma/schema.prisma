@@ -1,15 +1,21 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
+//
+// Prisma 7: la URL de conexión se define en prisma.config.ts (CLI) y en el
+// driver adapter de lib/prisma.ts (runtime).
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated/prisma"
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
+
+// ─────────────────────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────────────────────
 
 enum DayOfWeek {
   MONDAY
@@ -21,12 +27,138 @@ enum DayOfWeek {
   SUNDAY
 }
 
+// US-30: roles del sistema
+enum Role {
+  ADMIN
+  COUNTER_AGENT // Empleado de mostrador
+  PASSENGER
+}
+
+// US-04 / US-06: un vuelo cancelado no se elimina físicamente
+enum FlightStatus {
+  SCHEDULED // Programado
+  CANCELLED // Cancelado
+}
+
+// US-15: clase única para toda la compra
+enum SeatClass {
+  ECONOMY
+  FIRST
+}
+
+// US-33: canal por el que se registró la venta
+enum SalesChannel {
+  WEB
+  COUNTER
+}
+
+// US-17 / US-21: ciclo de vida de una compra
+enum BookingStatus {
+  PENDING_PAYMENT // Cupo retenido, esperando pago (máx. 10 min)
+  CONFIRMED // Pago aprobado, pasajes emitidos
+  EXPIRED // Venció la retención sin pago; cupo liberado
+  REJECTED // Pago rechazado; cupo liberado
+  CANCELLED // Todos sus pasajes cancelados/reembolsados
+}
+
+enum TicketStatus {
+  PENDING // Datos cargados, compra aún no pagada
+  ISSUED // E-ticket emitido
+  CANCELLED // Compra no concretada
+  REFUNDED // US-26: reembolsado por contingencia
+}
+
+// US-18: tipo de documento del pasajero
+enum DocumentType {
+  DNI
+  PASSPORT
+}
+
+// US-21 / US-22: resultado de cada intento de pago
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ERROR // Falla de comunicación con la pasarela
+}
+
+enum RefundStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+// US-05 / US-06 / US-25: eventos que disparan la notificación de contingencia
+enum FlightChangeType {
+  SCHEDULE_CHANGE
+  CANCELLATION
+}
+
+// US-26: curso de acción elegido por el pasajero afectado
+enum ContingencyResolution {
+  PENDING
+  REFUND
+  REBOOK
+}
+
+enum EmailType {
+  PURCHASE_CONFIRMATION // US-24: pasajes + factura
+  FLIGHT_SCHEDULE_CHANGE // US-25
+  FLIGHT_CANCELLATION // US-25
+  REFUND_CONFIRMATION // US-26
+  REBOOKING_CONFIRMATION // US-26
+}
+
+enum EmailStatus {
+  PENDING
+  SENT
+  FAILED
+}
+
+// ─────────────────────────────────────────────────────────────
+// Usuarios y autenticación (RF-12)
+// ─────────────────────────────────────────────────────────────
+
+// US-28 / US-29 / US-30 / US-31
+model User {
+  id             String        @id @default(uuid())
+  clerkId        String        @unique // Id del usuario en Clerk (la autenticación y las credenciales las gestiona Clerk)
+  email          String        @unique // Copia del email de Clerk, para comprobantes y búsquedas
+  firstName      String
+  lastName       String
+  documentType   DocumentType?
+  documentNumber String? // US-34: permite buscar reservas por DNI del titular de la cuenta
+  phone          String?
+  role           Role          @default(PASSENGER)
+  isActive       Boolean       @default(true) // US-31: deshabilitar sin borrar (trazabilidad)
+  createdById    String? // US-31: administrador que creó la cuenta de personal
+  createdBy      User?         @relation("UserCreatedBy", fields: [createdById], references: [id])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  createdUsers   User[]         @relation("UserCreatedBy")
+  purchases      Booking[]      @relation("BookingBuyer")
+  counterSales   Booking[]      @relation("BookingSeller")
+  createdFlights Flight[]       @relation("FlightCreatedBy")
+  updatedFlights Flight[]       @relation("FlightUpdatedBy")
+  salesPeriods   SalesPeriod[]
+  flightChanges  FlightChange[]
+
+  @@index([role])
+  @@index([documentNumber])
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Catálogo maestro (RF-01, RFO-04)
+// ─────────────────────────────────────────────────────────────
+
 // US-01: ABML de Aeropuertos
 model Airport {
   id        String   @id @default(uuid())
-  code      String   @unique // Ej: EZE, AEP, JFK (IATA code)
-  name      String   // Ej: Aeropuerto Internacional Ministro Pistarini
-  city      String   // Ej: Buenos Aires
+  code      String   @unique @db.VarChar(4) // Código IATA (3) / ICAO (4). Ej: EZE, SAEZ
+  name      String // Ej: Aeropuerto Internacional Ministro Pistarini
+  city      String // Ej: Buenos Aires
   isActive  Boolean  @default(true) // Para baja lógica (ABML)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -35,36 +167,340 @@ model Airport {
   departingRoutes Route[] @relation("DepartureAirport")
   arrivingRoutes  Route[] @relation("ArrivalAirport")
 
+  @@index([city])
   @@map("airports")
 }
 
 // US-02: ABML de Aviones
 model Airplane {
-  id                   String   @id @default(uuid())
-  identifier           String   @unique // Ej: Matrícula / LV-ABC
-  model                String   // Ej: Boeing 737-800, Airbus A320
-  economySeats         Int      // Cantidad de asientos Economy
-  firstClassSeats      Int      // Cantidad de asientos Primera Clase
-  isActive             Boolean  @default(true) // Para baja lógica (ABML)
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  id              String   @id @default(uuid())
+  identifier      String   @unique // Ej: Matrícula / LV-ABC
+  model           String // Ej: Boeing 737-800, Airbus A320
+  economySeats    Int // Cantidad de asientos Economy (>= 0)
+  firstClassSeats Int // Cantidad de asientos Primera Clase (>= 0)
+  isActive        Boolean  @default(true) // Para baja lógica (ABML)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  flights      Flight[]
+  salesPeriods SalesPeriod[]
 
   @@map("airplanes")
 }
 
-// US-03: ABML de Trayectos
-model Route {
-  id                 String      @id @default(uuid())
-  originId           String
-  origin             Airport     @relation("DepartureAirport", fields: [originId], references: [id])
-  destinationId      String
-  destination        Airport     @relation("ArrivalAirport", fields: [destinationId], references: [id])
-  operatingDays      DayOfWeek[] // Días de la semana en que opera el trayecto
-  departureTime      String      // Horario de partida (ej. "08:30" formato HH:mm o Time)
-  arrivalTime        String      // Horario de llegada (ej. "11:45" formato HH:mm o Time)
-  isActive           Boolean     @default(true) // Para baja lógica (ABML)
-  createdAt          DateTime    @default(now())
-  updatedAt          DateTime    @updatedAt
+// ─────────────────────────────────────────────────────────────
+// Programación de vuelos (RF-01 a RF-04)
+// ─────────────────────────────────────────────────────────────
 
+// US-03: ABML de Trayectos (programación semanal)
+model Route {
+  id            String      @id @default(uuid())
+  code          String      @unique // Ej: TR-001
+  originId      String
+  origin        Airport     @relation("DepartureAirport", fields: [originId], references: [id])
+  destinationId String
+  destination   Airport     @relation("ArrivalAirport", fields: [destinationId], references: [id])
+  operatingDays DayOfWeek[] // Días de la semana en que opera el trayecto (al menos uno)
+  departureTime String      @db.VarChar(5) // Horario de partida "HH:mm"
+  arrivalTime   String      @db.VarChar(5) // Horario de llegada "HH:mm" (si es < partida, llega al día siguiente)
+  isActive      Boolean     @default(true) // Para baja lógica (ABML)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  salesPeriods SalesPeriod[]
+  flights      Flight[]
+
+  @@index([originId, destinationId])
   @@map("routes")
+}
+
+// US-07: período de disponibilidad de venta de un trayecto.
+// Es también el rango sobre el que se generan los vuelos (US-04) y guarda
+// los valores por defecto de avión, capacidad (US-09) y tarifas (US-11).
+model SalesPeriod {
+  id                 String   @id @default(uuid())
+  routeId            String
+  route              Route    @relation(fields: [routeId], references: [id])
+  startDate          DateTime @db.Date // Inicio de venta / primer vuelo
+  endDate            DateTime @db.Date // Fin de venta / último vuelo (>= startDate)
+  airplaneId         String
+  airplane           Airplane @relation(fields: [airplaneId], references: [id])
+  economyCapacity    Int // Por defecto, los asientos del avión
+  firstClassCapacity Int
+  economyFare        Decimal  @db.Decimal(12, 2) // > 0
+  firstClassFare     Decimal  @db.Decimal(12, 2) // > 0
+  createdById        String
+  createdBy          User     @relation(fields: [createdById], references: [id])
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  flights Flight[]
+
+  @@index([routeId])
+  @@index([startDate, endDate])
+  @@map("sales_periods")
+}
+
+// US-04: vuelo con fecha real. US-05 / US-06 / US-09 / US-11 / US-12 operan sobre esta entidad.
+model Flight {
+  id            String      @id @default(uuid())
+  code          String      @unique // Ej: VU-20261002-01
+  routeId       String
+  route         Route       @relation(fields: [routeId], references: [id])
+  salesPeriodId String
+  salesPeriod   SalesPeriod @relation(fields: [salesPeriodId], references: [id])
+  date          DateTime    @db.Date // Fecha real del vuelo
+  departureAt   DateTime // Partida real (fecha + hora). US-05 la puede modificar puntualmente
+  arrivalAt     DateTime // Llegada real (puede ser al día siguiente)
+  airplaneId    String
+  airplane      Airplane    @relation(fields: [airplaneId], references: [id])
+
+  // US-09: capacidad por clase (por defecto la del avión)
+  economyCapacity    Int
+  firstClassCapacity Int
+  // US-10 / US-17: asientos ocupados (vendidos + retenidos en compras pendientes).
+  // Se actualizan de forma atómica: cupo disponible = capacidad - ocupados.
+  economyOccupied    Int @default(0)
+  firstClassOccupied Int @default(0)
+
+  // US-11 / US-12: tarifa vigente. Las ventas previas conservan el precio pagado (Ticket.unitPrice).
+  economyFare    Decimal @db.Decimal(12, 2)
+  firstClassFare Decimal @db.Decimal(12, 2)
+
+  status             FlightStatus @default(SCHEDULED)
+  cancelledAt        DateTime?
+  cancellationReason String?
+
+  createdById String
+  createdBy   User     @relation("FlightCreatedBy", fields: [createdById], references: [id])
+  updatedById String?
+  updatedBy   User?    @relation("FlightUpdatedBy", fields: [updatedById], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  bookings        Booking[]
+  tickets         Ticket[]            @relation("TicketFlight")
+  changes         FlightChange[]
+  rebookedTickets TicketContingency[] @relation("ContingencyNewFlight")
+
+  @@unique([routeId, date]) // Un vuelo por trayecto y fecha
+  @@index([date, status])
+  @@index([airplaneId, departureAt]) // Validar superposición de aviones (US-04)
+  @@map("flights")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Compra de pasajes (RF-06, RF-07, RF-13, RF-14)
+// ─────────────────────────────────────────────────────────────
+
+// US-15 / US-16 / US-17 / US-33 / US-35: una compra (1 a 9 pasajes, una sola clase)
+model Booking {
+  id            String        @id @default(uuid())
+  code          String        @unique @db.VarChar(8) // Código de reserva (US-34)
+  flightId      String
+  flight        Flight        @relation(fields: [flightId], references: [id])
+  seatClass     SeatClass
+  quantity      Int // 1..9
+  unitPrice     Decimal       @db.Decimal(12, 2) // Tarifa vigente al momento de la compra
+  totalAmount   Decimal       @db.Decimal(12, 2) // unitPrice * quantity
+  status        BookingStatus @default(PENDING_PAYMENT)
+  holdExpiresAt DateTime // US-17: retención de cupo por 10 minutos
+  channel       SalesChannel  @default(WEB)
+
+  // Comprador: cuenta registrada (web) o datos de contacto (venta en mostrador)
+  buyerId      String?
+  buyer        User?   @relation("BookingBuyer", fields: [buyerId], references: [id])
+  contactEmail String // Destino de los comprobantes (US-24) y notificaciones (US-25)
+  contactName  String
+  // US-33: empleado de mostrador que registró la venta
+  sellerId     String?
+  seller       User?   @relation("BookingSeller", fields: [sellerId], references: [id])
+
+  confirmedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  tickets  Ticket[]
+  payments Payment[]
+  invoice  Invoice?
+  emails   EmailNotification[]
+
+  @@index([buyerId])
+  @@index([flightId, status])
+  @@index([status, holdExpiresAt]) // Liberar retenciones vencidas
+  @@map("bookings")
+}
+
+// US-18 / US-23 / US-36: pasaje electrónico, uno por pasajero
+model Ticket {
+  id        String    @id @default(uuid())
+  number    String?   @unique // Número de e-ticket, asignado al emitirse
+  bookingId String
+  booking   Booking   @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  // Vuelo actual del pasaje: coincide con el de la compra salvo reprogramación (US-26)
+  flightId  String
+  flight    Flight    @relation("TicketFlight", fields: [flightId], references: [id])
+  seatClass SeatClass
+  unitPrice Decimal   @db.Decimal(12, 2) // Precio pagado (US-12)
+
+  // US-18: datos identificatorios del pasajero
+  firstName      String
+  lastName       String
+  documentType   DocumentType
+  documentNumber String
+
+  status    TicketStatus @default(PENDING)
+  issuedAt  DateTime?
+  pdfPath   String? // US-36: archivo generado para descarga
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  contingencies TicketContingency[]
+  refunds       Refund[]
+
+  @@index([bookingId])
+  @@index([flightId, status])
+  @@index([documentNumber]) // US-34: búsqueda por DNI
+  @@index([lastName]) // US-34: búsqueda por apellido
+  @@map("tickets")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Pagos y facturación (RF-08, RF-09)
+// ─────────────────────────────────────────────────────────────
+
+// US-20 / US-21 / US-22: cada intento de pago. RNF-08: no se persisten datos sensibles de tarjeta.
+model Payment {
+  id              String        @id @default(uuid())
+  bookingId       String
+  booking         Booking       @relation(fields: [bookingId], references: [id])
+  amount          Decimal       @db.Decimal(12, 2)
+  status          PaymentStatus @default(PENDING)
+  gateway         String // Nombre de la pasarela
+  transactionId   String?       @unique // Id de transacción devuelto por la pasarela
+  cardBrand       String? // Ej: VISA (dato no sensible)
+  cardLast4       String?       @db.VarChar(4)
+  rejectionReason String? // US-21: motivo informado al pasajero
+  createdAt       DateTime      @default(now())
+  processedAt     DateTime?
+
+  @@index([bookingId])
+  @@index([status, createdAt])
+  @@map("payments")
+}
+
+// US-23 / US-36: factura de la compra confirmada
+model Invoice {
+  id            String   @id @default(uuid())
+  number        Int      @unique @default(autoincrement())
+  bookingId     String   @unique
+  booking       Booking  @relation(fields: [bookingId], references: [id])
+  customerName  String
+  customerEmail String
+  customerTaxId String? // DNI / CUIT del comprador
+  totalAmount   Decimal  @db.Decimal(12, 2)
+  issuedAt      DateTime @default(now())
+  pdfPath       String?
+
+  items InvoiceItem[]
+
+  @@map("invoices")
+}
+
+// US-23: desglose de la factura
+model InvoiceItem {
+  id          String  @id @default(uuid())
+  invoiceId   String
+  invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description String // Ej: "Pasaje Economy VU-20261002-01 - PÉREZ, JUAN"
+  quantity    Int
+  unitPrice   Decimal @db.Decimal(12, 2)
+  amount      Decimal @db.Decimal(12, 2)
+
+  @@index([invoiceId])
+  @@map("invoice_items")
+}
+
+// ─────────────────────────────────────────────────────────────
+// Contingencias y notificaciones (RF-10)
+// ─────────────────────────────────────────────────────────────
+
+// US-05 / US-06 / US-25: cambio de horario o cancelación de un vuelo con su detalle
+model FlightChange {
+  id                  String           @id @default(uuid())
+  flightId            String
+  flight              Flight           @relation(fields: [flightId], references: [id])
+  type                FlightChangeType
+  previousDepartureAt DateTime
+  previousArrivalAt   DateTime
+  newDepartureAt      DateTime? // null en cancelaciones
+  newArrivalAt        DateTime?
+  reason              String?
+  createdById         String
+  createdBy           User             @relation(fields: [createdById], references: [id])
+  createdAt           DateTime         @default(now())
+
+  affectedTickets TicketContingency[]
+  emails          EmailNotification[]
+
+  @@index([flightId])
+  @@map("flight_changes")
+}
+
+// US-26: pasaje afectado por un cambio y la opción elegida (reembolso o reprogramación)
+model TicketContingency {
+  id             String                @id @default(uuid())
+  flightChangeId String
+  flightChange   FlightChange          @relation(fields: [flightChangeId], references: [id])
+  ticketId       String
+  ticket         Ticket                @relation(fields: [ticketId], references: [id])
+  accessToken    String                @unique // Enlace del email para elegir el curso de acción
+  resolution     ContingencyResolution @default(PENDING)
+  newFlightId    String? // Vuelo de la misma ruta si elige reprogramar
+  newFlight      Flight?               @relation("ContingencyNewFlight", fields: [newFlightId], references: [id])
+  resolvedAt     DateTime?
+  createdAt      DateTime              @default(now())
+
+  refund Refund?
+
+  @@unique([flightChangeId, ticketId])
+  @@map("ticket_contingencies")
+}
+
+// US-26: restitución del importe de un pasaje
+model Refund {
+  id              String             @id @default(uuid())
+  ticketId        String
+  ticket          Ticket             @relation(fields: [ticketId], references: [id])
+  contingencyId   String?            @unique
+  contingency     TicketContingency? @relation(fields: [contingencyId], references: [id])
+  amount          Decimal            @db.Decimal(12, 2)
+  status          RefundStatus       @default(PENDING)
+  gatewayRefundId String?
+  createdAt       DateTime           @default(now())
+  processedAt     DateTime?
+
+  @@index([ticketId])
+  @@map("refunds")
+}
+
+// US-24 / US-25: registro de emails enviados (RNF-02: envío dentro de los 2 minutos)
+model EmailNotification {
+  id             String        @id @default(uuid())
+  type           EmailType
+  recipientEmail String
+  subject        String
+  bookingId      String?
+  booking        Booking?      @relation(fields: [bookingId], references: [id])
+  flightChangeId String?
+  flightChange   FlightChange? @relation(fields: [flightChangeId], references: [id])
+  status         EmailStatus   @default(PENDING)
+  attempts       Int           @default(0)
+  lastError      String?
+  sentAt         DateTime?
+  createdAt      DateTime      @default(now())
+
+  @@index([status, createdAt])
+  @@index([bookingId])
+  @@map("email_notifications")
 }
