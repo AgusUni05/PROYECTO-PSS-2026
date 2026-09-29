@@ -6,16 +6,14 @@ import { newId } from "@/lib/id";
 import type { User } from "@/generated/prisma/client";
 
 /**
- * Usuario local (tabla `users`) de la sesión actual, vinculado por clerkId.
- * Si es la primera vez que este usuario de Clerk entra al sistema, se crea
- * la fila local con rol PASSENGER por defecto (US-28).
- * `null` si no hay sesión iniciada. Memoizado por request (React cache).
+ * Usuario local (tabla `users`) vinculado a un clerkId. Si es la primera vez
+ * que este usuario de Clerk entra al sistema, crea la fila local con rol
+ * PASSENGER por defecto (US-28). `null` si Clerk no tiene datos del usuario
+ * (no debería pasar con un clerkId válido, pero se guarda contra eso).
+ * Función plana (sin cache()) para poder testearla de forma aislada.
  */
-export const getCurrentUser = cache(async (): Promise<User | null> => {
-  const { userId } = await auth();
-  if (!userId) return null;
-
-  const existing = await prisma.user.findUnique({ where: { clerkId: userId } });
+export async function syncClerkUser(clerkId: string): Promise<User | null> {
+  const existing = await prisma.user.findUnique({ where: { clerkId } });
   if (existing) return existing;
 
   const clerkUser = await currentUser();
@@ -29,12 +27,23 @@ export const getCurrentUser = cache(async (): Promise<User | null> => {
   return prisma.user.create({
     data: {
       id: newId("User"),
-      clerkId: userId,
+      clerkId,
       email,
       firstName: clerkUser.firstName ?? "",
       lastName: clerkUser.lastName ?? "",
     },
   });
+}
+
+/**
+ * Usuario local de la sesión actual (ver syncClerkUser). `null` si no hay
+ * sesión iniciada. Memoizado por request (React cache) para no repetir la
+ * sincronización en cada llamada durante el mismo render.
+ */
+export const getCurrentUser = cache(async (): Promise<User | null> => {
+  const { userId } = await auth();
+  if (!userId) return null;
+  return syncClerkUser(userId);
 });
 
 /** Regla US-30: solo un usuario con rol ADMIN activo entra al panel. */
