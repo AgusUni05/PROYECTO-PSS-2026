@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VolAR Admin — Aviones</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16133D;--lav:#C9C3F2;--lav-2:#A996FF;--side-muted:#8F89C4;--violet:#5530E0;--violet-d:#4320C7;--violet-50:#F1EDFF;--bg:#F5F5F9;--line:#E7E6EF;--text:#16133D;--muted:#5F5C78;--green:#0D7048;--green-50:#E7F5EE;--red:#B42318;--red-50:#FDEEEC;--font:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+a{color:var(--violet);text-decoration:none}a:hover{color:var(--violet-d)}
+button,select,input{font-family:inherit}
+.app{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100vh}
+.side{background:var(--ink);color:#fff;padding:22px 16px;display:flex;flex-direction:column;gap:30px}
+.logo{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:19px;letter-spacing:-.02em;color:#fff;padding:0 8px}
+.logo:hover{color:#fff}
+.logo small{display:block;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--side-muted);margin-top:2px}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:var(--violet);display:grid;place-items:center;color:#fff;transition:transform .5s var(--ease)}
+.logo:hover .logo-mark{transform:rotate(-14deg)}
+.side-k{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--side-muted);padding:0 12px;margin:0 0 8px;font-weight:700}
+.side nav{display:flex;flex-direction:column;gap:4px}
+.side nav a{position:relative;display:flex;align-items:center;gap:12px;height:46px;padding:0 12px;border-radius:12px;color:var(--lav);font-size:14px;font-weight:600;transition:background .25s,color .25s}
+.side nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+.side nav a.on{background:rgba(255,255,255,.1);color:#fff}
+.side nav a.on::before{content:"";position:absolute;left:-16px;top:12px;bottom:12px;width:3px;border-radius:0 3px 3px 0;background:var(--lav-2)}
+.side nav a.on svg{color:var(--lav-2)}
+.us{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--side-muted)}
+.me{margin-top:auto;display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:rgba(255,255,255,.05);font-size:14px;font-weight:600}
+.me small{display:block;font-size:12px;font-weight:500;color:var(--side-muted)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--lav-2);color:var(--ink);display:grid;place-items:center;font-weight:800;font-size:13px;flex:none}
+.content{padding:28px 40px 56px;display:flex;flex-direction:column;gap:22px;min-width:0}
+.crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.crumb b{color:var(--text);font-weight:600}
+.ph h1{font-size:30px;font-weight:800;letter-spacing:-.035em;margin:0}
+.ph p{margin:6px 0 0;color:var(--muted);font-size:14.5px}
+.rule{display:flex;gap:14px;align-items:flex-start;background:var(--violet-50);border-radius:16px;padding:16px 18px;color:#2E1A8F}
+.rule-ic{flex:none;width:34px;height:34px;border-radius:10px;background:#fff;color:var(--violet);display:grid;place-items:center}
+.rule b{display:block;font-size:13.5px;margin-bottom:2px}
+.rule p{margin:0;font-size:13.5px;line-height:1.55;color:#3D3470}
+.grid2{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:20px;align-items:start}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;transition:box-shadow .35s var(--ease)}
+.card:hover{box-shadow:0 18px 40px -28px rgba(22,19,61,.4)}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:22px 24px 0}
+.card-h h2{font-size:16px;font-weight:800;margin:0;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+.card-b{padding:18px 24px 24px}
+.fields{display:grid;gap:16px}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:12.5px;font-weight:700}
+.req{color:var(--violet)}
+.input{height:46px;border:1px solid var(--line);border-radius:12px;padding:0 14px;font-size:14px;background:#fff;color:var(--text);width:100%;outline:none;appearance:none;-webkit-appearance:none;transition:border-color .2s,box-shadow .25s}
+.input::placeholder{color:#8E8BA6}
+.input:hover{border-color:#CFCBE3}
+.input:focus{border-color:var(--violet);box-shadow:0 0 0 4px var(--violet-50)}
+.sel{position:relative}
+.sel .input{padding-right:40px;cursor:pointer}
+.sel svg{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.with-ic{position:relative}
+.with-ic .input{padding-left:40px}
+.with-ic svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.total-cap{display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:14px;padding:14px 16px}
+.total-cap span{font-size:12.5px;font-weight:700;color:var(--muted)}
+.total-cap strong{font-size:22px;font-weight:800;letter-spacing:-.02em}
+.total-cap small{font-size:13px;font-weight:600;color:var(--muted);margin-left:4px}
+.actions{display:flex;gap:8px;justify-content:flex-end;margin-top:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:42px;padding:0 18px;border-radius:12px;border:1px solid transparent;font-size:13.5px;font-weight:700;cursor:pointer;white-space:nowrap;transition:transform .2s var(--ease),box-shadow .3s var(--ease),background .2s,color .2s,border-color .2s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--violet);color:#fff}
+.btn-primary:hover{background:var(--violet-d);color:#fff;transform:translateY(-1px);box-shadow:0 12px 24px -12px rgba(85,48,224,.75)}
+.btn-soft{background:var(--violet-50);color:var(--violet-d)}
+.btn-soft:hover{background:#E4DCFF;color:var(--violet-d)}
+.btn-text{background:transparent;color:var(--muted)}
+.btn-text:hover{color:var(--text);background:var(--bg)}
+.btn-sm{height:34px;padding:0 12px;font-size:12.5px;border-radius:10px}
+.btn-line{background:#fff;border-color:var(--line);color:var(--text)}
+.btn-line:hover{border-color:var(--violet);color:var(--violet-d)}
+.btn-danger:hover{border-color:var(--red);color:var(--red);background:var(--red-50)}
+.btn[disabled]{background:#F2F2F6;color:#8E8BA6;border-color:transparent;cursor:not-allowed;transform:none;box-shadow:none}
+.pill{display:inline-flex;align-items:center;gap:6px;height:26px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap}
+.pill.dot::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.p-ok{background:var(--green-50);color:var(--green)}
+.p-off{background:#EFEFF4;color:var(--muted)}
+.p-mode{background:var(--violet-50);color:var(--violet-d)}
+.count{font-family:var(--mono);font-size:12px;font-weight:500;background:var(--bg);padding:3px 9px;border-radius:999px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);padding:0 14px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:16px 14px;border-bottom:1px solid #F0EFF5;vertical-align:middle}
+tbody tr{transition:background .2s}
+tbody tr:hover{background:#FAF9FD}
+tbody tr:last-child td{border-bottom:0}
+.code{font-family:var(--mono);font-weight:500;font-size:12.5px;background:var(--bg);padding:4px 8px;border-radius:8px;white-space:nowrap}
+.sub{font-size:12.5px;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+.row-actions{display:flex;gap:6px;justify-content:flex-end}
+.locked{display:flex;align-items:center;gap:6px;justify-content:flex-end;font-size:12px;color:var(--muted);margin-top:8px}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rise{animation:rise .65s var(--ease) both}.d1{animation-delay:.06s}.d2{animation-delay:.12s}.d3{animation-delay:.18s}.d4{animation-delay:.24s}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="side">
+    <a href="AdminAeropuertos.html" class="logo">
+      <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg></span>
+      <span>VolAR<small>Administración</small></span>
+    </a>
+    <div>
+      <p class="side-k">Catálogo maestro</p>
+      <nav aria-label="Secciones">
+        <a href="AdminAeropuertos.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>Aeropuertos<span class="us">US-01</span></a>
+        <a href="AdminAviones.html" class="on" aria-current="page"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg>Aviones<span class="us">US-02</span></a>
+        <a href="AdminTrayectos.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"></circle><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"></path><circle cx="18" cy="5" r="3"></circle></svg>Trayectos<span class="us">US-03</span></a>
+      </nav>
+    </div>
+    <div>
+      <p class="side-k">Operaciones</p>
+      <nav aria-label="Operaciones">
+        <a href="AdminVuelos.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>Vuelos<span class="us">US-04/07/09/11</span></a>
+      </nav>
+    </div>
+    <div class="me"><span class="avatar">CB</span><span>Carlos Bianchi<small>Administrador</small></span></div>
+  </aside>
+
+  <main class="content">
+    <nav class="crumb" aria-label="Migas de pan">Administración<span aria-hidden="true">/</span>Catálogo maestro<span aria-hidden="true">/</span><b>Gestión de flota</b></nav>
+    <div class="ph rise">
+      <h1>Gestión de Flota de Aviones</h1>
+      <p>Alta, edición y baja de aeronaves y su configuración de asientos por clase.</p>
+    </div>
+
+    <div class="rule rise d1">
+      <span class="rule-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg></span>
+      <div><b>Regla integrada · US-02</b><p>El identificador de matrícula es único. Un avión con vuelos futuros asignados no puede darse de baja.</p></div>
+    </div>
+
+    <div class="grid2">
+      <section class="card rise d2">
+        <div class="card-h"><h2>Datos de la aeronave</h2><span class="pill p-mode">Alta de aeronave</span></div>
+        <div class="card-b">
+          <div class="fields">
+            <div class="fields c2">
+              <div class="field"><label for="av-id">Identificador / matrícula <span class="req">*</span></label><input id="av-id" class="input" style="text-transform: uppercase; font-family: 'JetBrains Mono', monospace" placeholder="LV-ARG01"></div>
+              <div class="field"><label for="av-mod">Modelo de aeronave <span class="req">*</span></label><input id="av-mod" class="input" placeholder="Boeing 737-800"></div>
+            </div>
+            <div class="fields c2">
+              <div class="field"><label for="av-eco">Asientos Economy <span class="req">*</span></label><input id="av-eco" class="input" type="number" value="156" min="0" max="999"></div>
+              <div class="field"><label for="av-pri">Asientos Primera <span class="req">*</span></label><input id="av-pri" class="input" type="number" value="12" min="0" max="999"></div>
+            </div>
+            <div class="total-cap"><span>Capacidad total estimada</span><span><strong>168</strong><small>asientos</small></span></div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-text">Cancelar</button>
+            <button class="btn btn-soft">Limpiar</button>
+            <button class="btn btn-primary">Guardar avión</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card rise d3">
+        <div class="card-h"><h2>Filtrar listado</h2></div>
+        <div class="card-b">
+          <div class="fields">
+            <div class="field"><label for="av-q">Buscar</label><div class="with-ic"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg><input id="av-q" class="input" placeholder="Identificador o modelo"></div></div>
+            <div class="field"><label for="av-est">Estado operativo</label><div class="sel"><select id="av-est" class="input"><option>Todos</option><option>Activos</option><option>Inactivos</option></select><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"></path></svg></div></div>
+          </div>
+          <div class="actions">
+            <a href="#" class="btn btn-text">Restablecer</a>
+            <button class="btn btn-soft">Aplicar filtros</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card rise d4">
+      <div class="card-h"><h2>Flota de aviones <span class="count">4</span></h2></div>
+      <div class="card-b">
+        <table>
+          <thead><tr><th>Identificador</th><th>Modelo</th><th>Eco</th><th>1ra</th><th>Capacidad</th><th>Vuelos asignados</th><th></th></tr></thead>
+          <tbody>
+            <tr>
+              <td><span class="code">LV-ARG01</span></td><td><strong>Boeing 737-800</strong></td><td class="num">156</td><td class="num">12</td><td class="num"><strong>168</strong></td><td class="sub">14 vuelos futuros</td>
+              <td>
+                <div class="row-actions"><button class="btn btn-line btn-sm">Editar capacidad</button><button class="btn btn-sm" disabled>Dar de baja</button></div>
+                <span class="locked"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Posee 14 vuelo(s) futuro(s) asignado(s)</span>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="code">LV-ARG02</span></td><td><strong>Embraer E190</strong></td><td class="num">96</td><td class="num">0</td><td class="num"><strong>96</strong></td><td class="sub">7 vuelos futuros</td>
+              <td>
+                <div class="row-actions"><button class="btn btn-line btn-sm">Editar capacidad</button><button class="btn btn-sm" disabled>Dar de baja</button></div>
+                <span class="locked"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Posee 7 vuelo(s) futuro(s) asignado(s)</span>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="code">LV-ARG05</span></td><td><strong>Airbus A320</strong></td><td class="num">168</td><td class="num">8</td><td class="num"><strong>176</strong></td><td class="sub">0 vuelos futuros</td>
+              <td><div class="row-actions"><button class="btn btn-line btn-sm">Editar capacidad</button><button class="btn btn-line btn-danger btn-sm">Dar de baja</button></div></td>
+            </tr>
+            <tr>
+              <td><span class="code">LV-ARG09</span></td><td><strong>Boeing 737 MAX 8</strong></td><td class="num">172</td><td class="num">16</td><td class="num"><strong>188</strong></td><td class="sub">0 vuelos futuros</td>
+              <td><div class="row-actions"><button class="btn btn-line btn-sm">Editar</button><button class="btn btn-sm" disabled>Dado de baja</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>

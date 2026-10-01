@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Lock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -62,39 +63,51 @@ export function AirportTable({ airports, total, page, pageCount, filters }: Prop
               )}
               {airports.map((a) => (
                 <TableRow key={a.id}>
-                  <TableCell className="font-mono font-medium">{a.code}</TableCell>
+                  <TableCell className="font-medium">
+                    <span className="rounded-lg bg-muted px-2 py-1 font-mono text-[12.5px] font-medium">
+                      {a.code}
+                    </span>
+                  </TableCell>
                   <TableCell>{a.name}</TableCell>
                   <TableCell>{a.city}</TableCell>
                   <TableCell className="text-muted-foreground">
                     {a.activeRoutesCount} trayecto(s) activo(s)
                   </TableCell>
                   <TableCell>
-                    <Badge variant={a.isActive ? "default" : "secondary"}>
+                    <Badge variant={a.isActive ? "success" : "secondary"} dot>
                       {a.isActive ? "Activo" : "Inactivo"}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div className="flex justify-end gap-2">
-                      <Link
-                        href={`/admin/aeropuertos?editar=${a.id}`}
-                        className={buttonVariants({ variant: "outline", size: "sm" })}
-                      >
-                        Editar
-                      </Link>
-                      {a.isActive ? (
-                        <DeactivateAirportButton
-                          id={a.id}
-                          label={`${a.code} — ${a.name}`}
-                          blockedReason={
-                            a.hasFutureFlights
-                              ? "Bloqueado: posee vuelos futuros programados"
-                              : undefined
-                          }
-                        />
-                      ) : (
-                        <Button variant="secondary" size="sm" disabled>
-                          Dado de baja
-                        </Button>
+                    <div className="flex flex-col items-end">
+                      <div className="flex justify-end gap-2">
+                        <Link
+                          href={`/admin/aeropuertos?editar=${a.id}`}
+                          className={buttonVariants({ variant: "outline", size: "sm" })}
+                        >
+                          Editar
+                        </Link>
+                        {a.isActive ? (
+                          <DeactivateAirportButton
+                            id={a.id}
+                            label={`${a.code} — ${a.name}`}
+                            blockedReason={
+                              a.hasFutureFlights
+                                ? "Bloqueado: posee vuelos futuros programados"
+                                : undefined
+                            }
+                          />
+                        ) : (
+                          <Button variant="outline" size="sm" disabled>
+                            Dado de baja
+                          </Button>
+                        )}
+                      </div>
+                      {a.isActive && a.hasFutureFlights && (
+                        <span className="mt-2 flex items-center justify-end gap-1.5 text-xs text-muted-foreground">
+                          <Lock className="size-3.5" aria-hidden />
+                          Bloqueado: posee vuelos futuros programados
+                        </span>
                       )}
                     </div>
                   </TableCell>

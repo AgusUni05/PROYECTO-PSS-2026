@@ -1,6 +1,6 @@
 import Link from "next/link";
+import { Info } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AirplaneForm } from "@/features/airplanes/components/airplane-form";
 import { AirplaneFilters } from "@/features/airplanes/components/airplane-filters";
 import { AirplaneTable } from "@/features/airplanes/components/airplane-table";
@@ -51,14 +51,19 @@ export default async function AvionesPage({
         </Link>
       </div>
 
-      <Alert>
-        <AlertTitle>Regla de negocio (US-02)</AlertTitle>
-        <AlertDescription>
-          El identificador de avión es único. No se puede dar de baja un avión con vuelos futuros
-          asignados. Al modificar la capacidad, el sistema valida que no quede por debajo de los
-          pasajes ya vendidos.
-        </AlertDescription>
-      </Alert>
+      <div className="flex items-start gap-3.5 rounded-2xl bg-secondary p-4 text-[#2E1A8F]">
+        <span className="grid size-[34px] flex-none place-items-center rounded-[10px] bg-card text-primary">
+          <Info className="size-[18px]" />
+        </span>
+        <div>
+          <b className="block text-[13.5px]">Regla integrada · US-02</b>
+          <p className="m-0 text-[13.5px] leading-[1.55] text-[#3D3470]">
+            El identificador de avión es único. No se puede dar de baja un avión con vuelos futuros
+            asignados. Al modificar la capacidad, el sistema valida que no quede por debajo de los
+            pasajes ya vendidos.
+          </p>
+        </div>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <AirplaneForm key={editing?.id ?? "new"} editing={editing} />

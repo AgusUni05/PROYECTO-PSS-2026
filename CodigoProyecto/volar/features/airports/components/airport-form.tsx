@@ -62,10 +62,12 @@ export function AirportForm({ editing }: AirportFormProps) {
     <Card id="form-aeropuerto">
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle>{isEditing ? "Modificar Aeropuerto" : "Alta de Aeropuerto"}</CardTitle>
-        <Badge variant="secondary">{isEditing ? "Modo: Edición" : "Modo: Nuevo Registro"}</Badge>
+        <Badge variant={isEditing ? "default" : "secondary"}>
+          {isEditing ? "Edición" : "Nuevo registro"}
+        </Badge>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
+        <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
           <div className="space-y-1.5">
             <Label htmlFor="code">
               Código Aeropuerto (IATA / ICAO) <span className="text-destructive">*</span>
@@ -121,10 +123,10 @@ export function AirportForm({ editing }: AirportFormProps) {
             <Button type="submit" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? "Guardando…" : "Guardar Aeropuerto"}
             </Button>
-            <Button type="button" variant="secondary" onClick={() => form.reset()}>
+            <Button type="button" variant="soft" onClick={() => form.reset()}>
               Limpiar Campos
             </Button>
-            <Button type="button" variant="outline" onClick={handleCancel}>
+            <Button type="button" variant="ghost" onClick={handleCancel}>
               Cancelar
             </Button>
           </div>

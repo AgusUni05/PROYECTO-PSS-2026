@@ -28,46 +28,50 @@ export function FlightFilters({ filters, airports }: Props) {
       </CardHeader>
       <CardContent>
         <form
-          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+          className="space-y-4"
           method="GET"
           key={`${filters.fecha}-${filters.origen}-${filters.destino}-${filters.estado}`}
         >
-          <div className="space-y-1.5">
-            <Label htmlFor="fecha">Fecha de Vuelo</Label>
-            <Input id="fecha" name="fecha" type="date" defaultValue={filters.fecha} />
+          <div className="grid grid-cols-4 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="fecha">Fecha de Vuelo</Label>
+              <Input id="fecha" name="fecha" type="date" defaultValue={filters.fecha} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="origen">Origen</Label>
+              <NativeSelect id="origen" name="origen" defaultValue={filters.origen}>
+                <option value="">Todos</option>
+                {airports.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.code} - {a.name}
+                  </option>
+                ))}
+              </NativeSelect>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="destino">Destino</Label>
+              <NativeSelect id="destino" name="destino" defaultValue={filters.destino}>
+                <option value="">Todos</option>
+                {airports.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.code} - {a.name}
+                  </option>
+                ))}
+              </NativeSelect>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="estado">Estado del Vuelo</Label>
+              <NativeSelect id="estado" name="estado" defaultValue={filters.estado}>
+                <option value="SCHEDULED">Programado</option>
+                <option value="CANCELLED">Cancelado</option>
+                <option value="todos">Todos los estados</option>
+              </NativeSelect>
+            </div>
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="origen">Origen</Label>
-            <NativeSelect id="origen" name="origen" defaultValue={filters.origen}>
-              <option value="">Todos</option>
-              {airports.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.code} - {a.name}
-                </option>
-              ))}
-            </NativeSelect>
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="destino">Destino</Label>
-            <NativeSelect id="destino" name="destino" defaultValue={filters.destino}>
-              <option value="">Todos</option>
-              {airports.map((a) => (
-                <option key={a.id} value={a.id}>
-                  {a.code} - {a.name}
-                </option>
-              ))}
-            </NativeSelect>
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="estado">Estado del Vuelo</Label>
-            <NativeSelect id="estado" name="estado" defaultValue={filters.estado}>
-              <option value="SCHEDULED">Programado</option>
-              <option value="CANCELLED">Cancelado</option>
-              <option value="todos">Todos los estados</option>
-            </NativeSelect>
-          </div>
-          <div className="sm:col-span-2 lg:col-span-4">
-            <Button type="submit">Buscar Vuelos Reales</Button>
+          <div>
+            <Button variant="soft" type="submit">
+              Buscar Vuelos Reales
+            </Button>
           </div>
         </form>
       </CardContent>

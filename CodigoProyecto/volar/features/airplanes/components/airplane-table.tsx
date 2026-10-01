@@ -63,7 +63,11 @@ export function AirplaneTable({ airplanes, total, page, pageCount, filters }: Pr
               )}
               {airplanes.map((a) => (
                 <TableRow key={a.id}>
-                  <TableCell className="font-mono font-medium">{a.identifier}</TableCell>
+                  <TableCell>
+                    <span className="rounded-lg bg-muted px-2 py-1 font-mono text-[12.5px] font-medium">
+                      {a.identifier}
+                    </span>
+                  </TableCell>
                   <TableCell>{a.model}</TableCell>
                   <TableCell>{a.economySeats}</TableCell>
                   <TableCell>{a.firstClassSeats}</TableCell>

@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckCircle2 } from "lucide-react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -103,10 +104,15 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
       </CardHeader>
       <CardContent>
         <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)} noValidate>
-          <fieldset className="space-y-4 rounded-md border p-4">
-            <legend className="px-1 text-sm font-semibold">
-              1. Trayecto y Período de Disponibilidad (US-07)
-            </legend>
+          <div className="grid grid-cols-[40px_minmax(0,1fr)] gap-[18px] border-t border-border py-[22px] first:border-t-0 first:pt-1">
+            <span className="grid size-9 place-items-center rounded-full bg-secondary text-sm font-extrabold text-[#4320C7]">
+              1
+            </span>
+            <div className="space-y-4">
+            <div className="mb-4 flex items-baseline gap-2.5">
+              <h3 className="text-[15px] font-extrabold">Trayecto y período de disponibilidad</h3>
+              <span className="font-mono text-[11px] text-muted-foreground">US-07</span>
+            </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="routeId">
@@ -171,19 +177,29 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
               </div>
             </div>
 
-            {preview !== null && (
-              <p className="text-xs text-muted-foreground">
-                {preview > 0
-                  ? `Se van a generar ${preview} vuelo(s) reales para este período.`
-                  : "Ninguna fecha del período coincide con los días de operación del trayecto."}
-              </p>
-            )}
-          </fieldset>
+            {preview !== null &&
+              (preview > 0 ? (
+                <span className="mt-3 flex items-center gap-2 rounded-xl bg-success-muted px-3.5 py-2.5 text-[12.5px] font-semibold text-success">
+                  <CheckCircle2 className="size-4" />
+                  {`Se van a generar ${preview} vuelo(s) reales para este período.`}
+                </span>
+              ) : (
+                <span className="mt-3 text-[11.5px] text-muted-foreground">
+                  Ninguna fecha del período coincide con los días de operación del trayecto.
+                </span>
+              ))}
+            </div>
+          </div>
 
-          <fieldset className="space-y-4 rounded-md border p-4">
-            <legend className="px-1 text-sm font-semibold">
-              2. Aeronave y Capacidad por Clase (US-09)
-            </legend>
+          <div className="grid grid-cols-[40px_minmax(0,1fr)] gap-[18px] border-t border-border py-[22px] first:border-t-0 first:pt-1">
+            <span className="grid size-9 place-items-center rounded-full bg-secondary text-sm font-extrabold text-[#4320C7]">
+              2
+            </span>
+            <div className="space-y-4">
+            <div className="mb-4 flex items-baseline gap-2.5">
+              <h3 className="text-[15px] font-extrabold">Aeronave y capacidad por clase</h3>
+              <span className="font-mono text-[11px] text-muted-foreground">US-09</span>
+            </div>
 
             <div className="space-y-1.5">
               <Label htmlFor="airplaneId">
@@ -254,10 +270,18 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
                 {form.formState.errors.firstClassCapacity.message}
               </p>
             )}
-          </fieldset>
+            </div>
+          </div>
 
-          <fieldset className="space-y-4 rounded-md border p-4">
-            <legend className="px-1 text-sm font-semibold">3. Tarifas por Clase (US-11)</legend>
+          <div className="grid grid-cols-[40px_minmax(0,1fr)] gap-[18px] border-t border-border py-[22px] first:border-t-0 first:pt-1">
+            <span className="grid size-9 place-items-center rounded-full bg-secondary text-sm font-extrabold text-[#4320C7]">
+              3
+            </span>
+            <div className="space-y-4">
+            <div className="mb-4 flex items-baseline gap-2.5">
+              <h3 className="text-[15px] font-extrabold">Tarifas por clase</h3>
+              <span className="font-mono text-[11px] text-muted-foreground">US-11</span>
+            </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
@@ -299,14 +323,15 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
                 )}
               </div>
             </div>
-          </fieldset>
+            </div>
+          </div>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex justify-end gap-2 border-t border-border pt-5">
+            <Button type="button" variant="ghost" onClick={() => form.reset(EMPTY_VALUES)}>
+              Restablecer Formulario
+            </Button>
             <Button type="submit" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? "Generando…" : "Generar y Publicar Vuelos Reales"}
-            </Button>
-            <Button type="button" variant="outline" onClick={() => form.reset(EMPTY_VALUES)}>
-              Restablecer Formulario
             </Button>
           </div>
         </form>

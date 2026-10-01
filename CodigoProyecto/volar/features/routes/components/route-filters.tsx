@@ -54,7 +54,7 @@ export function RouteFilters({ filters, airports }: Props) {
             </NativeSelect>
           </div>
           <div className="flex items-end">
-            <Button type="submit" className="w-full">
+            <Button type="submit" variant="soft" className="w-full">
               Filtrar Trayectos
             </Button>
           </div>

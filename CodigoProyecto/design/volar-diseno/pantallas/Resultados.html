@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VolAR — Resultados de búsqueda</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16133D;--lav:#C9C3F2;--lav-2:#A996FF;--violet:#5530E0;--violet-d:#4320C7;--violet-50:#F1EDFF;--bg:#F5F5F9;--line:#E7E6EF;--text:#16133D;--muted:#5F5C78;--coral:#B93C0C;--coral-50:#FFF0E8;--red:#B42318;--red-50:#FDEEEC;--font:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+a{color:var(--violet);text-decoration:none}a:hover{color:var(--violet-d)}
+button,select,input{font-family:inherit}
+.shell{min-height:100vh;display:flex;flex-direction:column}
+.wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 32px}
+.top{background:var(--ink);color:#fff;padding-bottom:28px}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.02em;color:#fff}
+.logo:hover{color:#fff}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:var(--violet);display:grid;place-items:center;color:#fff;transition:transform .5s var(--ease)}
+.logo:hover .logo-mark{transform:rotate(-14deg) scale(1.05)}
+.pill-link{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:999px;font-size:14px;font-weight:600;color:#fff;border:1px solid rgba(255,255,255,.28);transition:background .25s,border-color .25s}
+.pill-link:hover{color:#fff;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5)}
+.crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--lav);margin:4px 0 14px}
+.crumb a{color:var(--lav)}.crumb a:hover{color:#fff}
+.crumb b{color:#fff;font-weight:600}
+.search{background:#fff;border-radius:18px;padding:6px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 200px auto;color:var(--text)}
+.sf{position:relative;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:8px 18px;border-radius:14px;transition:background .25s}
+.sf:hover{background:var(--bg)}
+.sf:focus-within{background:var(--violet-50)}
+.sf + .sf::before{content:"";position:absolute;left:0;top:12px;bottom:12px;width:1px;background:var(--line)}
+.sf.dest{padding-left:32px}
+.sf label{font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.sf select,.sf input{border:0;background:transparent;padding:0;font-size:14.5px;font-weight:700;color:var(--text);outline:none;width:100%;appearance:none;-webkit-appearance:none;cursor:pointer;height:24px}
+.swap{position:absolute;left:-17px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center;color:var(--violet);cursor:pointer;z-index:3;transition:transform .5s var(--ease),border-color .25s}
+.swap:hover{transform:translateY(-50%) rotate(180deg);border-color:var(--violet)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:12px;border:1px solid transparent;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:transform .2s var(--ease),box-shadow .3s var(--ease),background .2s,color .2s,border-color .2s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--violet);color:#fff}
+.btn-primary:hover{background:var(--violet-d);color:#fff;transform:translateY(-1px);box-shadow:0 14px 28px -12px rgba(85,48,224,.75)}
+.btn-ghost{background:#fff;color:var(--violet-d);border-color:#D9D2FF}
+.btn-ghost:hover{background:var(--violet-50);border-color:var(--violet);color:var(--violet-d)}
+.btn[disabled]{background:#EDEDF2;color:#75728D;border-color:transparent;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-search{height:auto;min-height:56px;padding:0 26px;border-radius:14px;margin-left:4px}
+.btn-block{width:100%}
+.main{padding:32px 0 64px;display:flex;flex-direction:column;gap:18px}
+.rh{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:6px}
+.rh h1{font-size:26px;font-weight:800;letter-spacing:-.03em;margin:0}
+.rh p{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.rh p strong{color:var(--text)}
+.sort{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+.sort span.on{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--text);font-weight:700}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px}
+.flight{display:grid;grid-template-columns:minmax(0,1fr) 248px 248px;background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;transition:box-shadow .35s var(--ease),transform .35s var(--ease),border-color .35s}
+.flight:hover{box-shadow:0 22px 44px -26px rgba(22,19,61,.4);transform:translateY(-2px);border-color:#D9D6EA}
+.f-info{padding:24px 28px;display:flex;flex-direction:column;gap:20px;justify-content:center}
+.f-meta{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+.chip{font-family:var(--mono);font-size:12px;font-weight:500;background:var(--bg);color:var(--text);padding:5px 10px;border-radius:999px}
+.route{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:22px}
+.t{font-size:32px;font-weight:800;letter-spacing:-.035em;line-height:1}
+.ap{font-size:13px;color:var(--muted);margin-top:6px}
+.track{position:relative;height:22px;display:flex;align-items:center}
+.track::before{content:"";position:absolute;left:4px;right:4px;top:50%;border-top:2px dotted #CFCBE3}
+.dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--violet);background:#fff;position:relative;z-index:1}
+.dot.end{margin-left:auto;background:var(--violet)}
+.plane{position:absolute;left:12%;top:50%;transform:translate(-50%,-50%) rotate(45deg);color:var(--violet);background:#fff;padding:0 3px;display:grid;transition:left 1.2s var(--ease)}
+.flight:hover .plane{left:86%}
+.dur{text-align:center;font-size:12px;font-weight:600;color:var(--muted);margin-top:6px}
+.fare{border-left:1px solid var(--line);padding:22px 22px;display:flex;flex-direction:column;gap:2px;transition:background .3s}
+.fare:hover{background:#FBFAFE}
+.fare-k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;justify-content:space-between}
+.price{font-size:28px;font-weight:800;letter-spacing:-.03em;margin-top:6px}
+.price small{font-size:15px;font-weight:700;margin-right:3px}
+.per{font-size:12px;color:var(--muted)}
+.seats{font-size:12.5px;color:var(--muted);margin:10px 0 14px;display:flex;align-items:center;gap:6px;min-height:24px}
+.seats strong{color:var(--text)}
+.tag-hot{display:inline-flex;align-items:center;gap:6px;background:var(--coral-50);color:var(--coral);font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px}
+.tag-hot::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.4s ease-in-out infinite}
+.tag-out{display:inline-flex;align-items:center;background:var(--red-50);color:var(--red);font-weight:700;font-size:12px;padding:4px 10px;border-radius:999px}
+.fare.out{background:#FAFAFC}
+.fare.out .price{color:#75728D;text-decoration:line-through;text-decoration-thickness:2px}
+.fare .btn{margin-top:auto}
+@keyframes blink{50%{opacity:.3}}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.rise{animation:rise .7s var(--ease) both}.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <section class="top">
+    <div class="wrap">
+      <header class="nav">
+        <a href="Main.html" class="logo">
+          <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg></span>
+          VolAR
+        </a>
+        <a href="#" class="pill-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Iniciar sesión
+        </a>
+      </header>
+      <nav class="crumb" aria-label="Migas de pan"><a href="Main.html">Inicio</a><span aria-hidden="true">/</span><b>Búsqueda y selección de vuelos</b></nav>
+      <form class="search" aria-label="Modificar búsqueda">
+        <div class="sf">
+          <label for="r-origen">Origen *</label>
+          <select id="r-origen"><option selected>Buenos Aires - Aeroparque J. Newbery (AEP)</option></select>
+        </div>
+        <div class="sf dest">
+          <button type="button" class="swap" aria-label="Invertir origen y destino"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></button>
+          <label for="r-destino">Destino *</label>
+          <select id="r-destino"><option selected>Bariloche - Tte. Luis Candelaria (BRC)</option></select>
+        </div>
+        <div class="sf">
+          <label for="r-fecha">Salida *</label>
+          <input id="r-fecha" type="date" value="2026-10-15">
+        </div>
+        <a href="Resultados.html" class="btn btn-primary btn-search">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          Buscar
+        </a>
+      </form>
+    </div>
+  </section>
+
+  <main class="wrap main">
+    <div class="rh rise">
+      <div>
+        <h1>Buenos Aires (AEP) → Bariloche (BRC)</h1>
+        <p><strong>Jueves 15 de octubre de 2026</strong> · <strong>3 vuelos encontrados</strong></p>
+      </div>
+      <div class="sort">Ordenados por <span class="on"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>Hora de salida</span></div>
+    </div>
+
+    <ul class="list">
+      <li class="flight rise d1">
+        <div class="f-info">
+          <div class="f-meta"><span class="chip">VU-20261015-002</span>Boeing 737-800</div>
+          <div class="route">
+            <div><div class="t">07:40</div><div class="ap">AEP · Buenos Aires</div></div>
+            <div>
+              <div class="track"><span class="dot"></span><span class="plane"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg></span><span class="dot end"></span></div>
+              <div class="dur">1h 55m · Directo</div>
+            </div>
+            <div style="text-align: right"><div class="t">09:35</div><div class="ap">BRC · Bariloche</div></div>
+          </div>
+        </div>
+        <div class="fare">
+          <span class="fare-k">Economy</span>
+          <span class="price"><small>$</small>68.000</span>
+          <span class="per">por pasajero</span>
+          <span class="seats"><strong>24</strong> cupos disponibles</span>
+          <a href="Compra.html" class="btn btn-primary btn-block">Seleccionar</a>
+        </div>
+        <div class="fare">
+          <span class="fare-k">Primera</span>
+          <span class="price"><small>$</small>142.000</span>
+          <span class="per">por pasajero</span>
+          <span class="seats"><strong>6</strong> cupos disponibles</span>
+          <a href="Compra.html" class="btn btn-ghost btn-block">Seleccionar</a>
+        </div>
+      </li>
+
+      <li class="flight rise d2">
+        <div class="f-info">
+          <div class="f-meta"><span class="chip">VU-20261015-005</span>Embraer E190</div>
+          <div class="route">
+            <div><div class="t">13:10</div><div class="ap">AEP · Buenos Aires</div></div>
+            <div>
+              <div class="track"><span class="dot"></span><span class="plane"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg></span><span class="dot end"></span></div>
+              <div class="dur">2h 05m · Directo</div>
+            </div>
+            <div style="text-align: right"><div class="t">15:15</div><div class="ap">BRC · Bariloche</div></div>
+          </div>
+        </div>
+        <div class="fare">
+          <span class="fare-k">Economy</span>
+          <span class="price"><small>$</small>71.500</span>
+          <span class="per">por pasajero</span>
+          <span class="seats"><span class="tag-hot">Últimos 2 cupos</span></span>
+          <a href="Compra.html" class="btn btn-primary btn-block">Seleccionar</a>
+        </div>
+        <div class="fare out">
+          <span class="fare-k">Primera</span>
+          <span class="price"><small>$</small>148.000</span>
+          <span class="per">por pasajero</span>
+          <span class="seats"><span class="tag-out">Agotado</span></span>
+          <button class="btn btn-block" disabled>No disponible</button>
+        </div>
+      </li>
+
+      <li class="flight rise d3">
+        <div class="f-info">
+          <div class="f-meta"><span class="chip">VU-20261015-009</span>Boeing 737-800</div>
+          <div class="route">
+            <div><div class="t">19:50</div><div class="ap">AEP · Buenos Aires</div></div>
+            <div>
+              <div class="track"><span class="dot"></span><span class="plane"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg></span><span class="dot end"></span></div>
+              <div class="dur">1h 58m · Directo</div>
+            </div>
+            <div style="text-align: right"><div class="t">21:48</div><div class="ap">BRC · Bariloche</div></div>
+          </div>
+        </div>
+        <div class="fare">
+          <span class="fare-k">Economy</span>
+          <span class="price"><small>$</small>64.000</span>
+          <span class="per">por pasajero</span>
+          <span class="seats"><strong>31</strong> cupos disponibles</span>
+          <a href="Compra.html" class="btn btn-primary btn-block">Seleccionar</a>
+        </div>
+        <div class="fare">
+          <span class="fare-k">Primera</span>
+          <span class="price"><small>$</small>139.000</span>
+          <span class="per">por pasajero</span>
+          <span class="seats"><strong>12</strong> cupos disponibles</span>
+          <a href="Compra.html" class="btn btn-ghost btn-block">Seleccionar</a>
+        </div>
+      </li>
+    </ul>
+  </main>
+</div>
+</body>
+</html>

@@ -1,9 +1,7 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Plane } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { formatDuration } from "@/features/routes/time";
 import { formatCurrency, formatTime } from "@/features/flights/format";
 import { buildClassOptions, type ClassOption } from "../class-options";
@@ -18,44 +16,47 @@ export function FlightResultCard({ flight }: { flight: FlightSearchResult }) {
     flight.arrivalAt.toISOString().slice(0, 10) !== flight.departureAt.toISOString().slice(0, 10);
 
   return (
-    <Card>
-      <CardContent className="grid gap-4 md:grid-cols-[1fr_13rem_13rem] md:items-center">
-        <div className="space-y-3">
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge variant="secondary" className="font-mono">
-              Vuelo {flight.code}
-            </Badge>
-            <span className="text-xs text-muted-foreground">Aeronave: {flight.airplaneModel}</span>
+    <div className="grid grid-cols-[minmax(0,1fr)_248px_248px] overflow-hidden rounded-2xl border border-border bg-card transition-[box-shadow,transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-[#D9D6EA] hover:shadow-[0_22px_44px_-26px_rgba(22,19,61,0.4)]">
+      <div className="flex flex-col justify-center gap-5 px-7 py-6">
+        <div className="flex items-center gap-2.5 text-[13px] text-muted-foreground">
+          <span className="rounded-full bg-muted px-2.5 py-1 font-mono text-xs">{flight.code}</span>
+          {flight.airplaneModel}
+        </div>
+        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[22px]">
+          <div>
+            <div className="text-[32px] leading-none font-extrabold tracking-[-0.035em]">{departure}</div>
+            <div className="mt-1.5 text-[13px] text-muted-foreground">
+              {flight.origin.code} · {flight.origin.city}
+            </div>
           </div>
-
-          <div className="flex items-center gap-4">
-            <div>
-              <div className="font-mono text-2xl font-semibold">{departure}</div>
-              <div className="text-xs text-muted-foreground">
-                {flight.origin.code} ({flight.origin.city})
-              </div>
+          <div className="group/track relative h-[22px]">
+            <span className="absolute inset-x-1 top-1/2 border-t-2 border-dotted border-[#CFCBE3]" />
+            <span className="relative z-[1] size-2.5 rounded-full border-2 border-primary bg-card" />
+            <Plane
+              className="absolute top-1/2 left-[12%] -translate-x-1/2 -translate-y-1/2 rotate-45 bg-card text-primary transition-[left] duration-[1200ms] ease-out group-hover/track:left-[86%]"
+              size={16}
+            />
+            <span className="absolute right-0 top-1/2 size-2.5 -translate-y-1/2 rounded-full bg-primary" />
+            <div className="absolute inset-x-0 top-full mt-1.5 text-center text-xs font-semibold text-muted-foreground">
+              {formatDuration(departure, arrival)} · Directo
             </div>
-            <div className="flex flex-1 flex-col items-center text-xs text-muted-foreground">
-              <span>{formatDuration(departure, arrival)} directo</span>
-              <span aria-hidden className="w-full border-t border-dashed" />
+          </div>
+          <div className="text-right">
+            <div className="text-[32px] leading-none font-extrabold tracking-[-0.035em]">
+              {arrival}
+              {nextDay && <sup className="ml-0.5 text-xs text-muted-foreground">+1 día</sup>}
             </div>
-            <div className="text-right">
-              <div className="font-mono text-2xl font-semibold">
-                {arrival}
-                {nextDay && <sup className="ml-0.5 text-xs text-muted-foreground">+1 día</sup>}
-              </div>
-              <div className="text-xs text-muted-foreground">
-                {flight.destination.code} ({flight.destination.city})
-              </div>
+            <div className="mt-1.5 text-[13px] text-muted-foreground">
+              {flight.destination.code} · {flight.destination.city}
             </div>
           </div>
         </div>
+      </div>
 
-        {buildClassOptions(flight).map((option) => (
-          <ClassBox key={option.seatClass} flightId={flight.id} option={option} />
-        ))}
-      </CardContent>
-    </Card>
+      {buildClassOptions(flight).map((option) => (
+        <ClassBox key={option.seatClass} flightId={flight.id} option={option} />
+      ))}
+    </div>
   );
 }
 
@@ -65,41 +66,51 @@ function ClassBox({ flightId, option }: { flightId: string; option: ClassOption 
   return (
     <div
       className={cn(
-        "space-y-1.5 rounded-lg border p-3 text-center",
-        soldOut && "bg-muted/50 text-muted-foreground",
+        "flex flex-col gap-0.5 border-l border-border px-[22px] py-[22px] transition-colors",
+        soldOut ? "bg-[#FAFAFC]" : "hover:bg-[#FBFAFE]",
       )}
     >
-      <div className="text-xs font-medium tracking-wide uppercase">{option.label}</div>
-      <div className={cn("font-heading text-xl font-semibold", soldOut && "line-through")}>
+      <span className="text-[11px] font-bold tracking-[0.1em] text-muted-foreground uppercase">
+        {option.label}
+      </span>
+      <span className={cn("mt-1.5 text-[28px] font-extrabold tracking-[-0.03em]", soldOut && "text-[#75728D] line-through decoration-2")}>
         {formatCurrency(option.fare)}
-      </div>
-      <div className="text-xs">
-        {soldOut && <Badge variant="destructive">Agotado / No disponible</Badge>}
+      </span>
+      <span className="text-xs text-muted-foreground">por pasajero</span>
+
+      <span className="my-3.5 flex min-h-6 items-center gap-1.5 text-[12.5px] text-muted-foreground">
+        {soldOut && (
+          <span className="inline-flex items-center rounded-full bg-destructive-muted px-2.5 py-1 text-xs font-bold text-destructive">
+            Agotado
+          </span>
+        )}
         {option.status === "last-seats" && (
-          <span className="font-medium text-destructive">
-            Últimos <strong>{option.available}</strong> cupos
+          <span className="relative inline-flex items-center gap-1.5 rounded-full bg-warning-muted px-2.5 py-1 text-xs font-bold text-warning">
+            <span aria-hidden className="size-1.5 animate-pulse rounded-full bg-current" />
+            Últimos {option.available} cupos
           </span>
         )}
         {option.status === "available" && (
-          <span>
-            Cupos disponibles: <strong>{option.available}</strong>
-          </span>
+          <>
+            <strong className="text-foreground">{option.available}</strong> cupos disponibles
+          </>
         )}
-      </div>
+      </span>
+
       {soldOut ? (
-        <Button variant="secondary" className="w-full" disabled>
-          No Disponible
+        <Button variant="secondary" className="mt-auto w-full" disabled>
+          No disponible
         </Button>
       ) : (
         <Link
           href={`/compra?${new URLSearchParams({ vuelo: flightId, clase: option.seatClass })}`}
           className={cn(
             buttonVariants({ variant: option.seatClass === "ECONOMY" ? "default" : "outline" }),
-            "w-full",
+            "mt-auto w-full",
           )}
         >
-          Seleccionar {option.seatClass === "ECONOMY" ? "Economy" : "Primera"}
-          <ArrowRight />
+          Seleccionar
+          <ArrowRight className="size-4" />
         </Link>
       )}
     </div>

@@ -70,7 +70,9 @@ export function AirplaneForm({ editing }: AirplaneFormProps) {
     <Card id="form-avion">
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle>{isEditing ? "Editar Capacidad de Avión" : "Registro de Avión"}</CardTitle>
-        <Badge variant="secondary">{isEditing ? "Modo: Edición" : "Modo: Alta de Aeronave"}</Badge>
+        <Badge variant={isEditing ? "default" : "secondary"}>
+          {isEditing ? "Edición" : "Alta de aeronave"}
+        </Badge>
       </CardHeader>
       <CardContent>
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
@@ -151,6 +153,7 @@ export function AirplaneForm({ editing }: AirplaneFormProps) {
               value={`${economySeats + firstClassSeats} asientos totales`}
               readOnly
               disabled
+              className="bg-muted text-muted-foreground"
             />
             <p className="text-xs text-muted-foreground">
               Cálculo automático: Asientos Economy + Primera Clase.
@@ -161,10 +164,10 @@ export function AirplaneForm({ editing }: AirplaneFormProps) {
             <Button type="submit" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? "Guardando…" : "Guardar Avión"}
             </Button>
-            <Button type="button" variant="secondary" onClick={() => form.reset()}>
+            <Button type="button" variant="soft" onClick={() => form.reset()}>
               Limpiar
             </Button>
-            <Button type="button" variant="outline" onClick={handleCancel}>
+            <Button type="button" variant="ghost" onClick={handleCancel}>
               Cancelar
             </Button>
           </div>

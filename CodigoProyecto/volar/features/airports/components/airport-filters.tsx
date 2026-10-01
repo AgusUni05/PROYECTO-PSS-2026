@@ -14,7 +14,7 @@ export function AirportFilters({ filters }: { filters: AirportFiltersValues }) {
         <CardTitle>Filtros de Búsqueda</CardTitle>
         <Link
           href="/admin/aeropuertos"
-          className="text-xs font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground"
+          className="text-sm text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
         >
           Restablecer
         </Link>
@@ -38,7 +38,7 @@ export function AirportFilters({ filters }: { filters: AirportFiltersValues }) {
               <option value="todos">Todos los estados</option>
             </NativeSelect>
           </div>
-          <Button type="submit" className="w-full">
+          <Button type="submit" variant="soft" className="w-full">
             Aplicar Filtros
           </Button>
         </form>

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VolAR — Inicio</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16133D;--lav:#C9C3F2;--lav-2:#A996FF;--violet:#5530E0;--violet-d:#4320C7;--violet-50:#F1EDFF;--bg:#F5F5F9;--line:#E7E6EF;--text:#16133D;--muted:#5F5C78;--font:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+a{color:var(--violet);text-decoration:none}a:hover{color:var(--violet-d)}
+button,select,input{font-family:inherit}
+.shell{min-height:100vh;display:flex;flex-direction:column}
+.wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 32px}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:20px;letter-spacing:-.02em;color:#fff}
+.logo:hover{color:#fff}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:var(--violet);display:grid;place-items:center;color:#fff;transition:transform .5s var(--ease)}
+.logo:hover .logo-mark{transform:rotate(-14deg) scale(1.05)}
+.pill-link{display:inline-flex;align-items:center;gap:8px;height:42px;padding:0 18px;border-radius:999px;font-size:14px;font-weight:600;color:#fff;border:1px solid rgba(255,255,255,.28);transition:background .25s,border-color .25s}
+.pill-link:hover{color:#fff;background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.5)}
+.hero{background:var(--ink);color:#fff;position:relative;overflow:hidden;padding-bottom:132px}
+.hero-body{position:relative;padding-top:56px;display:flex;flex-direction:column;gap:16px;max-width:620px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--lav-2)}
+.hero h1{font-size:60px;line-height:1.02;letter-spacing:-.04em;font-weight:800;margin:0}
+.hero p{margin:0;font-size:17px;color:var(--lav)}
+.arc{position:absolute;right:-20px;top:60px;width:560px;height:320px;pointer-events:none}
+.arc-path{animation:dash 2.6s linear infinite}
+.ping{transform-box:fill-box;transform-origin:center;animation:ping 2.2s var(--ease) infinite}
+.arc-plane{position:absolute;right:92px;top:132px;color:#fff;transform:rotate(18deg);animation:float 4s ease-in-out infinite}
+@keyframes dash{to{stroke-dashoffset:-56}}
+@keyframes ping{0%{transform:scale(1);opacity:.9}100%{transform:scale(4.5);opacity:0}}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.rise{animation:rise .7s var(--ease) both}.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.26s}
+.search-wrap{position:relative;margin-top:-84px;z-index:2}
+.search{background:#fff;border-radius:22px;padding:10px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 210px auto;box-shadow:0 30px 70px -30px rgba(22,19,61,.45),0 2px 6px rgba(22,19,61,.06)}
+.sf{position:relative;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:12px 20px;border-radius:16px;transition:background .25s}
+.sf:hover{background:var(--bg)}
+.sf:focus-within{background:var(--violet-50)}
+.sf + .sf::before{content:"";position:absolute;left:0;top:16px;bottom:16px;width:1px;background:var(--line)}
+.sf.dest{padding-left:34px}
+.sf label{font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
+.sf label svg{color:var(--violet)}
+.sf select,.sf input{border:0;background:transparent;padding:0;font-size:16px;font-weight:700;color:var(--text);outline:none;width:100%;appearance:none;-webkit-appearance:none;cursor:pointer;height:26px;text-overflow:ellipsis}
+.swap{position:absolute;left:-19px;top:50%;transform:translateY(-50%);width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center;color:var(--violet);cursor:pointer;z-index:3;transition:transform .5s var(--ease),box-shadow .25s,border-color .25s}
+.swap:hover{transform:translateY(-50%) rotate(180deg);border-color:var(--violet);box-shadow:0 8px 20px -8px rgba(85,48,224,.6)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:44px;padding:0 20px;border-radius:12px;border:1px solid transparent;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:transform .2s var(--ease),box-shadow .3s var(--ease),background .2s,color .2s,border-color .2s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--violet);color:#fff}
+.btn-primary:hover{background:var(--violet-d);color:#fff;transform:translateY(-1px);box-shadow:0 14px 28px -12px rgba(85,48,224,.75)}
+.btn-primary:hover .arr{transform:translateX(3px)}
+.arr{transition:transform .3s var(--ease)}
+.btn-search{height:auto;min-height:64px;padding:0 30px;border-radius:16px;font-size:16px;margin-left:6px}
+.under{display:flex;align-items:center;justify-content:space-between;padding:18px 8px 0;font-size:13px;color:var(--muted)}
+.link-btn{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:8px 4px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;transition:color .2s}
+.link-btn:hover{color:var(--violet)}
+.req{color:var(--violet)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <section class="hero">
+    <div class="wrap">
+      <header class="nav">
+        <a href="Main.html" class="logo">
+          <span class="logo-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg></span>
+          VolAR
+        </a>
+        <a href="#" class="pill-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          Iniciar sesión
+        </a>
+      </header>
+      <div style="position: relative">
+        <svg class="arc" viewBox="0 0 560 320" aria-hidden="true">
+          <path class="arc-path" d="M30 290 C 170 40, 400 30, 520 170" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2" stroke-dasharray="4 10" stroke-linecap="round"></path>
+          <circle cx="30" cy="290" r="6" fill="#A996FF"></circle>
+          <circle class="ping" cx="520" cy="170" r="6" fill="none" stroke="#A996FF" stroke-width="2"></circle>
+          <circle cx="520" cy="170" r="6" fill="#fff"></circle>
+          <text x="46" y="296" fill="#C9C3F2" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">AEP</text>
+          <text x="470" y="200" fill="#C9C3F2" font-family="JetBrains Mono, monospace" font-size="12" letter-spacing="2">BRC</text>
+        </svg>
+        <span class="arc-plane"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"></path></svg></span>
+        <div class="hero-body">
+          <span class="eyebrow rise">Sistema de gestión de vuelos</span>
+          <h1 class="rise d1">¿A dónde querés viajar?</h1>
+          <p class="rise d2">Volá por Argentina con VolAR.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap search-wrap rise d3">
+    <form class="search" aria-label="Buscar vuelos">
+      <div class="sf">
+        <label for="origen"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>Origen <span class="req">*</span></label>
+        <select id="origen">
+          <option>Seleccionar origen</option>
+          <option selected>Buenos Aires - Aeroparque J. Newbery (AEP)</option>
+          <option>Córdoba - Ing. Taravella (COR)</option>
+          <option>Mendoza - El Plumerillo (MDZ)</option>
+        </select>
+      </div>
+      <div class="sf dest">
+        <button type="button" class="swap" aria-label="Invertir origen y destino"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg></button>
+        <label for="destino"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>Destino <span class="req">*</span></label>
+        <select id="destino">
+          <option>Seleccionar destino</option>
+          <option selected>Bariloche - Tte. Luis Candelaria (BRC)</option>
+          <option>Salta - Martín Miguel de Güemes (SLA)</option>
+        </select>
+      </div>
+      <div class="sf">
+        <label for="fecha"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>Salida <span class="req">*</span></label>
+        <input id="fecha" type="date" value="2026-10-15">
+      </div>
+      <a href="Resultados.html" class="btn btn-primary btn-search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        Buscar vuelos
+      </a>
+    </form>
+    <div class="under">
+      <span><span class="req">*</span> Campos obligatorios</span>
+      <button type="button" class="link-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>Limpiar búsqueda</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

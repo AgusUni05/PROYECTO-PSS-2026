@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VolAR Admin — Editar vuelo</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#16133D;--lav:#C9C3F2;--lav-2:#A996FF;--side-muted:#8F89C4;--violet:#5530E0;--violet-d:#4320C7;--violet-50:#F1EDFF;--bg:#F5F5F9;--line:#E7E6EF;--text:#16133D;--muted:#5F5C78;--font:'Plus Jakarta Sans',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;--ease:cubic-bezier(.2,.7,.2,1)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased}
+a{color:var(--violet);text-decoration:none}a:hover{color:var(--violet-d)}
+button,select,input{font-family:inherit}
+.stage{position:relative;min-height:100vh;overflow:hidden}
+.app{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100vh}
+.side{background:var(--ink);padding:22px 16px;display:flex;flex-direction:column;gap:14px}
+.ghost-bar{height:12px;border-radius:6px;background:rgba(255,255,255,.12)}
+.content{padding:36px 40px;display:flex;flex-direction:column;gap:18px}
+.g-title{height:28px;width:320px;border-radius:8px;background:#E3E1EE}
+.g-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:18px 24px}
+.g-row{display:grid;grid-template-columns:170px 110px 130px 110px 140px 1fr;gap:16px;padding:16px 0;border-bottom:1px solid #F0EFF5;font-size:13px;color:var(--muted)}
+.g-row:last-child{border-bottom:0}
+.scrim{position:absolute;inset:0;background:rgba(22,19,61,.42);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:grid;place-items:center;padding:24px;animation:fade .4s ease both}
+.dialog{width:100%;max-width:580px;background:#fff;border-radius:24px;box-shadow:0 40px 90px -30px rgba(22,19,61,.6);overflow:hidden;animation:pop .55s var(--ease) .1s both}
+.dh{padding:24px 26px 0;display:flex;gap:14px;align-items:flex-start}
+.dh-ic{flex:none;width:42px;height:42px;border-radius:12px;background:var(--violet-50);color:var(--violet);display:grid;place-items:center}
+.dh h2{font-size:19px;font-weight:800;letter-spacing:-.02em;margin:0}
+.dh p{margin:4px 0 0;font-size:13.5px;color:var(--muted);line-height:1.5}
+.close{margin-left:auto;width:36px;height:36px;border-radius:10px;border:0;background:transparent;color:var(--muted);display:grid;place-items:center;cursor:pointer;transition:background .2s,color .2s}
+.close:hover{background:var(--bg);color:var(--text)}
+.db{padding:22px 26px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 16px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field label{font-size:12.5px;font-weight:700}
+.input{height:46px;border:1px solid var(--line);border-radius:12px;padding:0 14px;font-size:14px;background:#fff;color:var(--text);width:100%;outline:none;transition:border-color .2s,box-shadow .25s}
+.input:hover{border-color:#CFCBE3}
+.input:focus{border-color:var(--violet);box-shadow:0 0 0 4px var(--violet-50)}
+.pre{position:relative}
+.pre .input{padding-left:30px}
+.pre span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);font-weight:700;font-size:14px}
+.hint{font-size:12px;color:var(--muted)}
+.note{grid-column:1 / -1;display:flex;gap:10px;align-items:flex-start;background:var(--bg);border-radius:14px;padding:12px 14px;font-size:13px;line-height:1.55;color:var(--muted)}
+.note svg{flex:none;color:var(--violet);margin-top:2px}
+.df{display:flex;justify-content:flex-end;gap:8px;padding:16px 26px 22px;border-top:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border-radius:12px;border:1px solid transparent;font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap;transition:transform .2s var(--ease),box-shadow .3s var(--ease),background .2s,color .2s,border-color .2s}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--violet);color:#fff}
+.btn-primary:hover{background:var(--violet-d);color:#fff;transform:translateY(-1px);box-shadow:0 12px 24px -12px rgba(85,48,224,.75)}
+.btn-line{background:#fff;border-color:var(--line);color:var(--text)}
+.btn-line:hover{border-color:var(--violet);color:var(--violet-d)}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:translateY(18px) scale(.96)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="app" aria-hidden="true">
+    <div class="side">
+      <span class="ghost-bar" style="width: 60%; height: 30px; border-radius: 10px; margin-bottom: 20px"></span>
+      <span class="ghost-bar" style="width: 80%"></span>
+      <span class="ghost-bar" style="width: 70%"></span>
+      <span class="ghost-bar" style="width: 75%"></span>
+      <span class="ghost-bar" style="width: 65%"></span>
+    </div>
+    <div class="content">
+      <span class="g-title"></span>
+      <div class="g-card">
+        <div class="g-row"><span>VU-20261102-001</span><span>02/11/2026</span><span>07:40 → 08:55</span><span>AEP → COR</span><span>Boeing 737-800</span><span>142 / 156</span></div>
+        <div class="g-row"><span>VU-20261103-002</span><span>03/11/2026</span><span>07:40 → 08:55</span><span>AEP → COR</span><span>Boeing 737-800</span><span>Agotado 0 / 156</span></div>
+        <div class="g-row"><span>VU-20261104-003</span><span>04/11/2026</span><span>07:40 → 08:55</span><span>AEP → COR</span><span>Boeing 737-800</span><span>156 / 156</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scrim">
+    <section class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-t">
+      <div class="dh">
+        <span class="dh-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"></path></svg></span>
+        <div>
+          <h2 id="dlg-t">Editar vuelo VU-20261102-001</h2>
+          <p>02/11/2026 · AEP → COR · el cambio afecta únicamente a esta fecha, no al trayecto base.</p>
+        </div>
+        <a href="AdminVuelos.html" class="close" aria-label="Cerrar"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"></path></svg></a>
+      </div>
+      <div class="db">
+        <div class="field"><label for="e-ce">Capacidad Economy</label><input id="e-ce" class="input" type="number" value="156"><span class="hint">Mín: 14 (vendidos) · Máx: 156 (avión)</span></div>
+        <div class="field"><label for="e-te">Tarifa Economy</label><div class="pre"><span>$</span><input id="e-te" class="input" type="number" value="45000"></div></div>
+        <div class="field"><label for="e-cp">Capacidad Primera</label><input id="e-cp" class="input" type="number" value="12"><span class="hint">Mín: 3 (vendidos) · Máx: 12 (avión)</span></div>
+        <div class="field"><label for="e-tp">Tarifa Primera</label><div class="pre"><span>$</span><input id="e-tp" class="input" type="number" value="95000"></div></div>
+        <p class="note"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg>Una tarifa nueva aplica a compras futuras; las ventas ya confirmadas conservan el precio pagado.</p>
+      </div>
+      <div class="df">
+        <a href="AdminVuelos.html" class="btn btn-line">Descartar</a>
+        <a href="AdminVuelos.html" class="btn btn-primary">Guardar cambios</a>
+      </div>
+    </section>
+  </div>
+</div>
+</body>
+</html>

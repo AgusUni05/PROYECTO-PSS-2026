@@ -1,4 +1,4 @@
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Info } from "lucide-react";
 import { RouteForm } from "@/features/routes/components/route-form";
 import { RouteFilters } from "@/features/routes/components/route-filters";
 import { RouteTable } from "@/features/routes/components/route-table";
@@ -47,15 +47,20 @@ export default async function TrayectosPage({
         </p>
       </div>
 
-      <Alert>
-        <AlertTitle>Regla de negocio (US-03)</AlertTitle>
-        <AlertDescription>
-          Origen y destino deben ser aeropuertos distintos. Se debe marcar al menos un día de la
-          semana. Si el horario de llegada es anterior al de partida, se muestra como llegada del
-          día siguiente (+1 día). Un trayecto con pasajes vendidos no se puede modificar ni dar
-          de baja: hay que cancelarlo primero.
-        </AlertDescription>
-      </Alert>
+      <div className="flex items-start gap-3.5 rounded-2xl bg-secondary p-4 text-[#2E1A8F]">
+        <span className="grid size-[34px] flex-none place-items-center rounded-[10px] bg-card text-primary">
+          <Info className="size-[18px]" />
+        </span>
+        <div>
+          <b className="block text-[13.5px]">Regla integrada · US-03</b>
+          <p className="m-0 text-[13.5px] leading-[1.55] text-[#3D3470]">
+            Origen y destino deben ser aeropuertos distintos. Se debe marcar al menos un día de la
+            semana. Si el horario de llegada es anterior al de partida, se muestra como llegada del
+            día siguiente (+1 día). Un trayecto con pasajes vendidos no se puede modificar ni dar
+            de baja: hay que cancelarlo primero.
+          </p>
+        </div>
+      </div>
 
       <RouteForm key={editing?.id ?? "new"} airports={airports} editing={editing} />
 

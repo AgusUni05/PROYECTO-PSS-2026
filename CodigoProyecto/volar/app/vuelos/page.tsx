@@ -3,7 +3,6 @@ import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FlightSearchForm } from "@/features/flight-search/components/flight-search-form";
 import { FlightResultCard } from "@/features/flight-search/components/flight-result-card";
 import { flightSearchSchema, type FlightSearchValues } from "@/features/flight-search/schema";
@@ -42,35 +41,20 @@ export default async function VuelosPage({
     <div className="flex flex-1 flex-col">
       <SiteHeader />
 
-      <main className="mx-auto w-full max-w-6xl flex-1 space-y-6 px-6 py-8">
-        <p className="text-sm text-muted-foreground">
-          <Link href="/" className="hover:text-foreground">
-            Inicio
-          </Link>{" "}
-          &gt; <span className="font-medium text-foreground">Búsqueda y Selección de Vuelos</span>
-        </p>
+      <main className="mx-auto w-full max-w-6xl flex-1 space-y-7 px-8 py-8">
+        <nav className="flex items-center gap-2 text-[13px] text-muted-foreground">
+          <Link href="/" className="hover:text-foreground">Inicio</Link>
+          <span aria-hidden>/</span>
+          <b className="font-semibold text-foreground">Búsqueda y selección de vuelos</b>
+        </nav>
 
-        <div>
-          <h1 className="font-heading text-2xl font-semibold tracking-tight">
-            Buscador y Selección de Vuelos
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Consultá la disponibilidad por origen, destino y fecha, con tarifas y cupos por clase.
-          </p>
+        <div id="buscador" className="scroll-mt-6">
+          <FlightSearchForm
+            key={`${formDefaults.origen}-${formDefaults.destino}-${formDefaults.fecha}`}
+            airports={airports}
+            defaultValues={formDefaults}
+          />
         </div>
-
-        <Card id="buscador" className="scroll-mt-6">
-          <CardHeader>
-            <CardTitle>¿A dónde querés viajar?</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <FlightSearchForm
-              key={`${formDefaults.origen}-${formDefaults.destino}-${formDefaults.fecha}`}
-              airports={airports}
-              defaultValues={formDefaults}
-            />
-          </CardContent>
-        </Card>
 
         {parsed && !parsed.success && (
           <Alert variant="destructive">
@@ -104,37 +88,34 @@ function SearchResults({
   const label = (a?: { code: string; city: string }) => (a ? `${a.city} (${a.code})` : "—");
 
   return (
-    <section className="space-y-4" aria-live="polite">
-      <div>
-        <h2 className="font-heading text-lg font-semibold">
-          Resultados para: {label(origin)} → {label(destination)}
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Fecha: <strong>{formatLongDate(parseDateString(search.fecha))}</strong> •{" "}
-          <strong>
-            {flights.length} {flights.length === 1 ? "vuelo encontrado" : "vuelos encontrados"}
-          </strong>{" "}
-          (ordenados por hora de salida)
-        </p>
+    <section className="space-y-5" aria-live="polite">
+      <div className="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <h1 className="text-[26px] font-extrabold tracking-[-0.03em]">
+            {label(origin)} → {label(destination)}
+          </h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            <strong className="text-foreground">{formatLongDate(parseDateString(search.fecha))}</strong> ·{" "}
+            <strong className="text-foreground">
+              {flights.length} {flights.length === 1 ? "vuelo encontrado" : "vuelos encontrados"}
+            </strong>
+          </p>
+        </div>
       </div>
 
       {flights.length === 0 ? (
-        <Card className="border border-dashed ring-0">
-          <CardContent className="space-y-3 py-6 text-center">
-            <p className="font-heading text-lg font-semibold">
-              No encontramos vuelos disponibles para la fecha seleccionada
-            </p>
-            <p className="text-sm text-muted-foreground">
-              No hay vuelos a la venta para este trayecto en esa fecha, o ya no quedan asientos
-              disponibles. Probá con otra fecha u otro origen / destino.
-            </p>
-            <Link href="#buscador" className={buttonVariants({ variant: "outline" })}>
-              Cambiar búsqueda
-            </Link>
-          </CardContent>
-        </Card>
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-10 text-center">
+          <p className="text-lg font-bold">No encontramos vuelos disponibles para la fecha seleccionada</p>
+          <p className="max-w-md text-sm text-muted-foreground">
+            No hay vuelos a la venta para este trayecto en esa fecha, o ya no quedan asientos
+            disponibles. Probá con otra fecha u otro origen / destino.
+          </p>
+          <Link href="#buscador" className={buttonVariants({ variant: "outline" })}>
+            Cambiar búsqueda
+          </Link>
+        </div>
       ) : (
-        <ul className="space-y-3">
+        <ul className="flex flex-col gap-3.5">
           {flights.map((f) => (
             <li key={f.id}>
               <FlightResultCard flight={f} />

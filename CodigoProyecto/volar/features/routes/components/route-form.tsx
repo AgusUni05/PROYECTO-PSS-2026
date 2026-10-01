@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
+import { cn } from "cn";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -97,7 +98,9 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
     <Card id="form-trayecto">
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle>{isEditing ? "Modificar Trayecto" : "Nuevo Trayecto"}</CardTitle>
-        <Badge variant="secondary">{isEditing ? "Modo: Edición" : "Modo: Nuevo Trayecto"}</Badge>
+        <Badge variant={isEditing ? "default" : "secondary"}>
+          {isEditing ? "Edición" : "Nuevo trayecto"}
+        </Badge>
       </CardHeader>
       <CardContent>
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
@@ -169,22 +172,32 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
               control={form.control}
               name="operatingDays"
               render={({ field }) => (
-                <div className="flex flex-wrap gap-x-4 gap-y-2 rounded-md border p-3">
-                  {DAY_ORDER.map((day) => (
-                    <label key={day} className="flex items-center gap-2 text-sm">
-                      <Checkbox
-                        checked={field.value.includes(day)}
-                        onCheckedChange={(checked) => {
-                          field.onChange(
-                            checked
-                              ? [...field.value, day]
-                              : field.value.filter((d) => d !== day),
-                          );
-                        }}
-                      />
-                      {DAY_LABELS[day]}
-                    </label>
-                  ))}
+                <div className="flex flex-wrap gap-1.5 rounded-2xl border border-border p-2.5">
+                  {DAY_ORDER.map((day) => {
+                    const isChecked = field.value.includes(day);
+                    return (
+                      <label
+                        key={day}
+                        className={cn(
+                          "inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-border px-2.5 py-1.5 text-[12.5px] font-medium transition-colors",
+                          isChecked && "border-primary bg-primary font-semibold text-primary-foreground",
+                        )}
+                      >
+                        <Checkbox
+                          className="sr-only"
+                          checked={isChecked}
+                          onCheckedChange={(checked) => {
+                            field.onChange(
+                              checked
+                                ? [...field.value, day]
+                                : field.value.filter((d) => d !== day),
+                            );
+                          }}
+                        />
+                        {DAY_LABELS[day]}
+                      </label>
+                    );
+                  })}
                 </div>
               )}
             />
@@ -227,7 +240,9 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
                   {form.formState.errors.arrivalTime.message}
                 </p>
               ) : (
-                durationHelp && <p className="text-xs text-muted-foreground">{durationHelp}</p>
+                durationHelp && (
+                  <span className="text-[11.5px] text-muted-foreground">{durationHelp}</span>
+                )
               )}
             </div>
           </div>
@@ -236,10 +251,10 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
             <Button type="submit" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? "Guardando…" : "Guardar Trayecto"}
             </Button>
-            <Button type="button" variant="secondary" onClick={() => form.reset()}>
+            <Button type="button" variant="soft" onClick={() => form.reset()}>
               Limpiar Campos
             </Button>
-            <Button type="button" variant="outline" onClick={handleCancel}>
+            <Button type="button" variant="ghost" onClick={handleCancel}>
               Cancelar
             </Button>
           </div>

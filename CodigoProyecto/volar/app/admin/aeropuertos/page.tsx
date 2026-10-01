@@ -1,6 +1,6 @@
 import Link from "next/link";
+import { Info } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AirportForm } from "@/features/airports/components/airport-form";
 import { AirportFilters } from "@/features/airports/components/airport-filters";
 import { AirportTable } from "@/features/airports/components/airport-table";
@@ -50,13 +50,18 @@ export default async function AeropuertosPage({
         </Link>
       </div>
 
-      <Alert>
-        <AlertTitle>Regla de negocio (US-01)</AlertTitle>
-        <AlertDescription>
-          El código IATA/ICAO es único y obligatorio. No se puede dar de baja un aeropuerto con
-          vuelos futuros programados.
-        </AlertDescription>
-      </Alert>
+      <div className="flex items-start gap-3.5 rounded-2xl bg-secondary p-4 text-[#2E1A8F]">
+        <span className="grid size-[34px] flex-none place-items-center rounded-[10px] bg-card text-primary">
+          <Info className="size-[18px]" />
+        </span>
+        <div>
+          <b className="block text-[13.5px]">Regla integrada · US-01</b>
+          <p className="m-0 text-[13.5px] leading-[1.55] text-[#3D3470]">
+            El código IATA/ICAO es único y obligatorio. No se puede dar de baja un aeropuerto con
+            vuelos futuros programados.
+          </p>
+        </div>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <AirportForm key={editing?.id ?? "new"} editing={editing} />

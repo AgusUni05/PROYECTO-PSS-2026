@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Lock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -65,9 +66,15 @@ export function RouteTable({ routes, total, page, pageCount, filters }: Props) {
               )}
               {routes.map((r) => (
                 <TableRow key={r.id}>
-                  <TableCell className="font-mono font-medium">{r.code}</TableCell>
-                  <TableCell className="font-mono">
-                    {r.originCode} &rarr; {r.destinationCode}
+                  <TableCell>
+                    <span className="rounded-lg bg-muted px-2 py-1 font-mono text-[12.5px] font-medium">
+                      {r.code}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span className="rounded-lg bg-muted px-2 py-1 font-mono text-[12.5px] font-medium">
+                      {r.originCode} &rarr; {r.destinationCode}
+                    </span>
                   </TableCell>
                   <TableCell>
                     <Badge variant="secondary">{formatDays(r.operatingDays)}</Badge>
@@ -75,41 +82,59 @@ export function RouteTable({ routes, total, page, pageCount, filters }: Props) {
                   <TableCell>{r.departureTime} hs</TableCell>
                   <TableCell>
                     {r.arrivalTime} hs{" "}
-                    {r.nextDayArrival && <Badge variant="secondary">+1 día</Badge>}
+                    {r.nextDayArrival && (
+                      <Badge variant="secondary" className="ml-1.5">
+                        +1 día
+                      </Badge>
+                    )}
                   </TableCell>
                   <TableCell>
-                    <Badge variant={r.isActive ? "default" : "secondary"}>
+                    <Badge variant={r.isActive ? "success" : "secondary"} dot>
                       {r.isActive ? "Activo" : "Inactivo"}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div className="flex justify-end gap-2">
-                      {r.hasSoldTickets ? (
-                        <Button variant="outline" size="sm" disabled title="Bloqueado: tiene pasajes vendidos">
-                          Editar
-                        </Button>
-                      ) : (
-                        <Link
-                          href={`/admin/trayectos?editar=${r.id}`}
-                          className={buttonVariants({ variant: "outline", size: "sm" })}
-                        >
-                          Editar
-                        </Link>
+                    <div className="flex flex-col items-end gap-1">
+                      <div className="flex justify-end gap-2">
+                        {r.hasSoldTickets ? (
+                          <Button variant="outline" size="sm" disabled title="Bloqueado: tiene pasajes vendidos">
+                            Editar
+                          </Button>
+                        ) : (
+                          <Link
+                            href={`/admin/trayectos?editar=${r.id}`}
+                            className={buttonVariants({ variant: "outline", size: "sm" })}
+                          >
+                            Editar
+                          </Link>
+                        )}
+                        {r.isActive ? (
+                          <DeactivateRouteButton
+                            id={r.id}
+                            label={r.code}
+                            blockedReason={
+                              r.hasSoldTickets
+                                ? "Bloqueado: existen pasajes vendidos en vuelos de este trayecto"
+                                : undefined
+                            }
+                          />
+                        ) : (
+                          <Button variant="secondary" size="sm" disabled>
+                            Dado de baja
+                          </Button>
+                        )}
+                      </div>
+                      {r.hasSoldTickets && (
+                        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Lock className="size-3.5" aria-hidden />
+                          Bloqueado: tiene pasajes vendidos
+                        </span>
                       )}
-                      {r.isActive ? (
-                        <DeactivateRouteButton
-                          id={r.id}
-                          label={r.code}
-                          blockedReason={
-                            r.hasSoldTickets
-                              ? "Bloqueado: existen pasajes vendidos en vuelos de este trayecto"
-                              : undefined
-                          }
-                        />
-                      ) : (
-                        <Button variant="secondary" size="sm" disabled>
-                          Dado de baja
-                        </Button>
+                      {r.isActive && r.hasSoldTickets && (
+                        <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <Lock className="size-3.5" aria-hidden />
+                          Bloqueado: existen pasajes vendidos en vuelos de este trayecto
+                        </span>
                       )}
                     </div>
                   </TableCell>

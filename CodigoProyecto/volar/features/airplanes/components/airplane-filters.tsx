@@ -42,7 +42,7 @@ export function AirplaneFilters({ filters, summary }: Props) {
               <option value="economy">Solo Economy</option>
             </NativeSelect>
           </div>
-          <Button type="submit" className="w-full">
+          <Button type="submit" variant="soft" className="w-full">
             Buscar Aviones
           </Button>
         </form>

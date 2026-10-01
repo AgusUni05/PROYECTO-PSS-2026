@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -91,9 +92,15 @@ export function FlightTable({ flights, total, page, pageCount, filters }: Props)
                     <div>1ra: {formatCurrency(f.firstClassFare)}</div>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={f.status === "SCHEDULED" ? "default" : "secondary"}>
-                      {f.status === "SCHEDULED" ? "Programado" : "Cancelado"}
-                    </Badge>
+                    {f.status === "SCHEDULED" ? (
+                      <Badge variant="success" dot>
+                        Programado
+                      </Badge>
+                    ) : (
+                      <Badge variant="secondary" dot>
+                        Cancelado
+                      </Badge>
+                    )}
                   </TableCell>
                   <TableCell className="text-right">
                     {f.status === "SCHEDULED" && f.departureAt > now && <EditFlightDialog flight={f} />}
@@ -113,14 +120,23 @@ export function FlightTable({ flights, total, page, pageCount, filters }: Props)
 function SeatsCell({ capacity, occupied }: { capacity: number; occupied: number }) {
   const available = availableSeats(capacity, occupied);
   return (
-    <>
+    <div className="flex min-w-[110px] flex-col gap-1.5">
       <div className="flex items-center gap-1.5">
-        <span>
+        <span className="text-[13px]">
           Disp: <strong>{available}</strong> / {capacity}
+          <small className="ml-1 text-muted-foreground">({occupied} vendidos)</small>
         </span>
         {capacity > 0 && available === 0 && <Badge variant="destructive">Agotado</Badge>}
       </div>
-      <small className="text-muted-foreground">({occupied} vendidos)</small>
-    </>
+      <span className="h-[5px] overflow-hidden rounded-full bg-[#EEEDF4]">
+        <span
+          className={cn(
+            "block h-full origin-left rounded-full bg-primary motion-safe:animate-[grow_1.1s_cubic-bezier(.2,.7,.2,1)_.3s_both]",
+            available === 0 && capacity > 0 && "bg-destructive",
+          )}
+          style={{ width: `${capacity > 0 ? ((capacity - available) / capacity) * 100 : 0}%` }}
+        />
+      </span>
+    </div>
   );
 }

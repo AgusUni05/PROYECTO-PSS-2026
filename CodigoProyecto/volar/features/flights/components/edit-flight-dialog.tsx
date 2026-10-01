@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Info, Pencil } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -48,12 +49,17 @@ export function EditFlightDialog({ flight }: { flight: EditableFlight }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger render={<Button variant="outline" size="sm" />}>Editar Vuelo</DialogTrigger>
       <DialogContent className="sm:max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Editar Vuelo {flight.code}</DialogTitle>
-          <DialogDescription>
-            Parámetros operativos para el {formatDate(flight.date)} ({flight.originCode} →{" "}
-            {flight.destinationCode}). El cambio afecta solo a esta fecha.
-          </DialogDescription>
+        <DialogHeader className="flex-row items-start gap-3.5 space-y-0">
+          <span className="grid size-[42px] flex-none place-items-center rounded-xl bg-secondary text-primary">
+            <Pencil className="size-5" />
+          </span>
+          <div>
+            <DialogTitle>Editar Vuelo {flight.code}</DialogTitle>
+            <DialogDescription>
+              Parámetros operativos para el {formatDate(flight.date)} ({flight.originCode} →{" "}
+              {flight.destinationCode}). El cambio afecta solo a esta fecha.
+            </DialogDescription>
+          </div>
         </DialogHeader>
         {/* El form vive dentro del popup: se monta al abrir, con los valores vigentes. */}
         <EditFlightForm flight={flight} onSaved={() => setOpen(false)} />
@@ -95,7 +101,7 @@ function EditFlightForm({ flight, onSaved }: { flight: EditableFlight; onSaved: 
 
   return (
     <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <Label htmlFor="edit-economyCapacity">Capacidad Economy (US-09)</Label>
           <Input
@@ -159,12 +165,13 @@ function EditFlightForm({ flight, onSaved }: { flight: EditableFlight; onSaved: 
             <p className="text-xs text-destructive">{errors.firstClassFare.message}</p>
           )}
         </div>
-      </div>
 
-      <p className="text-xs text-muted-foreground">
-        Una tarifa nueva aplica a las compras futuras; las ventas ya confirmadas conservan el precio
-        pagado.
-      </p>
+        <p className="col-span-2 flex items-start gap-2.5 rounded-xl bg-muted p-3.5 text-[13px] leading-[1.55] text-muted-foreground">
+          <Info className="mt-0.5 size-4 flex-none text-primary" />
+          Una tarifa nueva aplica a las compras futuras; las ventas ya confirmadas conservan el precio
+          pagado.
+        </p>
+      </div>
 
       <DialogFooter>
         <DialogClose render={<Button type="button" variant="outline" />}>
