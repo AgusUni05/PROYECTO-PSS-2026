@@ -40,7 +40,7 @@ export function AirplaneTable({ airplanes, total, page, pageCount, filters }: Pr
         <CardTitle>Flota de Aviones (Total: {total})</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto rounded-md border">
+        <div className="rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -78,7 +78,7 @@ export function AirplaneTable({ airplanes, total, page, pageCount, filters }: Pr
                     {a.futureFlightsCount} vuelo(s) futuro(s)
                   </TableCell>
                   <TableCell>
-                    <div className="flex justify-end gap-2">
+                    <div className="flex flex-wrap justify-end gap-2">
                       <Link
                         href={`/admin/aviones?editar=${a.id}`}
                         className={buttonVariants({ variant: "outline", size: "sm" })}

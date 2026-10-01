@@ -41,7 +41,7 @@ export function AirportTable({ airports, total, page, pageCount, filters }: Prop
         <CardTitle>Aeropuertos Registrados (Total: {total})</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto rounded-md border">
+        <div className="rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -80,7 +80,7 @@ export function AirportTable({ airports, total, page, pageCount, filters }: Prop
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col items-end">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex flex-wrap justify-end gap-2">
                         <Link
                           href={`/admin/aeropuertos?editar=${a.id}`}
                           className={buttonVariants({ variant: "outline", size: "sm" })}

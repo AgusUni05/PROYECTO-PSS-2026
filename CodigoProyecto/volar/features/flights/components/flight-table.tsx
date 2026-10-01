@@ -46,7 +46,7 @@ export function FlightTable({ flights, total, page, pageCount, filters }: Props)
         <CardTitle>Cronograma y Ocupación (Total: {total})</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto rounded-md border">
+        <div className="rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>

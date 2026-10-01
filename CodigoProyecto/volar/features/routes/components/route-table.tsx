@@ -43,7 +43,7 @@ export function RouteTable({ routes, total, page, pageCount, filters }: Props) {
         <CardTitle>Trayectos Operativos (Total: {total})</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="overflow-x-auto rounded-md border">
+        <div className="rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
@@ -95,7 +95,7 @@ export function RouteTable({ routes, total, page, pageCount, filters }: Props) {
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col items-end gap-1">
-                      <div className="flex justify-end gap-2">
+                      <div className="flex flex-wrap justify-end gap-2">
                         {r.hasSoldTickets ? (
                           <Button variant="outline" size="sm" disabled title="Bloqueado: tiene pasajes vendidos">
                             Editar

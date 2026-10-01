@@ -52,7 +52,11 @@ function PageLink({
     );
   }
   return (
-    <Link href={href} className={buttonVariants({ variant: "secondary", size: "sm" })}>
+    <Link
+      href={href}
+      scroll={false}
+      className={buttonVariants({ variant: "secondary", size: "sm" })}
+    >
       {children}
     </Link>
   );

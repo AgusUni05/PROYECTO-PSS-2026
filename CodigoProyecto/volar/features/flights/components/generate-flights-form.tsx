@@ -35,8 +35,10 @@ const EMPTY_VALUES: GenerateFlightsFormValues = {
   endDate: "",
   economyCapacity: 0,
   firstClassCapacity: 0,
-  economyFare: 0,
-  firstClassFare: 0,
+  // Sin valor por defecto: el campo arranca vacío y muestra el placeholder,
+  // así nunca parece "ya completado" con una tarifa inválida (0).
+  economyFare: undefined as unknown as number,
+  firstClassFare: undefined as unknown as number,
 };
 
 // US-04/US-07: generador masivo de vuelos reales (formulario del wireframe vuelos_admin.html).
@@ -144,7 +146,7 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1.5">
                 <Label htmlFor="startDate">
-                  Fecha Inicio de Venta / Vuelos <span className="text-destructive">*</span>
+                  Fecha de Inicio del Trayecto <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="startDate"
@@ -161,7 +163,7 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="endDate">
-                  Fecha Fin de Venta / Vuelos <span className="text-destructive">*</span>
+                  Fecha de Fin del Trayecto <span className="text-destructive">*</span>
                 </Label>
                 <Input
                   id="endDate"
@@ -175,6 +177,10 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
                 )}
               </div>
             </div>
+            <span className="block text-[11.5px] text-muted-foreground">
+              Este rango solo define qué vuelos se generan. La compra de pasajes de cada vuelo se
+              habilita automáticamente desde que se crea hasta el momento en que sale.
+            </span>
 
             {preview !== null &&
               (preview > 0 ? (
@@ -291,6 +297,7 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
                   min={0.01}
                   step={0.01}
                   placeholder="Ej: 45000"
+                  className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   aria-invalid={!!form.formState.errors.economyFare}
                   {...form.register("economyFare", { valueAsNumber: true })}
                 />
@@ -310,6 +317,7 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
                   min={0.01}
                   step={0.01}
                   placeholder="Ej: 95000"
+                  className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                   aria-invalid={!!form.formState.errors.firstClassFare}
                   {...form.register("firstClassFare", { valueAsNumber: true })}
                 />
