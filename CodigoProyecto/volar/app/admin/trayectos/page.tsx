@@ -52,7 +52,7 @@ export default async function TrayectosPage({
           <Info className="size-[18px]" />
         </span>
         <div>
-          <b className="block text-[13.5px]">Regla integrada · US-03</b>
+          <b className="block text-[13.5px]">Regla integrada</b>
           <p className="m-0 text-[13.5px] leading-[1.55] text-[#3D3470]">
             Origen y destino deben ser aeropuertos distintos. Se debe marcar al menos un día de la
             semana. Si el horario de llegada es anterior al de partida, se muestra como llegada del

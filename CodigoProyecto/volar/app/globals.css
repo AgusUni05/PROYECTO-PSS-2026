@@ -49,6 +49,7 @@
   --color-tower-foreground: var(--tower-foreground);
   --color-tower-muted: var(--tower-muted);
   --color-tower-accent: var(--tower-accent);
+  --color-tower-border: var(--tower-border);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -154,6 +155,12 @@
 @keyframes dash { to { stroke-dashoffset: -56; } }
 @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes fly-arc {
+  0% { offset-distance: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { offset-distance: 100%; opacity: 0; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .animate-rise, .animate-rise-d1, .animate-rise-d2, .animate-rise-d3, .animate-rise-d4 {

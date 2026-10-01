@@ -111,7 +111,6 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
             <div className="space-y-4">
             <div className="mb-4 flex items-baseline gap-2.5">
               <h3 className="text-[15px] font-extrabold">Trayecto y período de disponibilidad</h3>
-              <span className="font-mono text-[11px] text-muted-foreground">US-07</span>
             </div>
 
             <div className="space-y-1.5">
@@ -198,7 +197,6 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
             <div className="space-y-4">
             <div className="mb-4 flex items-baseline gap-2.5">
               <h3 className="text-[15px] font-extrabold">Aeronave y capacidad por clase</h3>
-              <span className="font-mono text-[11px] text-muted-foreground">US-09</span>
             </div>
 
             <div className="space-y-1.5">
@@ -280,7 +278,6 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
             <div className="space-y-4">
             <div className="mb-4 flex items-baseline gap-2.5">
               <h3 className="text-[15px] font-extrabold">Tarifas por clase</h3>
-              <span className="font-mono text-[11px] text-muted-foreground">US-11</span>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -326,7 +323,7 @@ export function GenerateFlightsForm({ routes, airplanes }: Props) {
             </div>
           </div>
 
-          <div className="flex justify-end gap-2 border-t border-border pt-5">
+          <div className="flex flex-col-reverse gap-2 border-t border-border pt-5 sm:flex-row sm:justify-end">
             <Button type="button" variant="ghost" onClick={() => form.reset(EMPTY_VALUES)}>
               Restablecer Formulario
             </Button>

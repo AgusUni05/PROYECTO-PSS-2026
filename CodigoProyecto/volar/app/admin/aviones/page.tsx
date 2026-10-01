@@ -56,7 +56,7 @@ export default async function AvionesPage({
           <Info className="size-[18px]" />
         </span>
         <div>
-          <b className="block text-[13.5px]">Regla integrada · US-02</b>
+          <b className="block text-[13.5px]">Regla integrada</b>
           <p className="m-0 text-[13.5px] leading-[1.55] text-[#3D3470]">
             El identificador de avión es único. No se puede dar de baja un avión con vuelos futuros
             asignados. Al modificar la capacidad, el sistema valida que no quede por debajo de los

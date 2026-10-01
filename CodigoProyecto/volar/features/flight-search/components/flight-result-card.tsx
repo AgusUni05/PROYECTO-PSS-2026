@@ -16,15 +16,15 @@ export function FlightResultCard({ flight }: { flight: FlightSearchResult }) {
     flight.arrivalAt.toISOString().slice(0, 10) !== flight.departureAt.toISOString().slice(0, 10);
 
   return (
-    <div className="grid grid-cols-[minmax(0,1fr)_248px_248px] overflow-hidden rounded-2xl border border-border bg-card transition-[box-shadow,transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-[#D9D6EA] hover:shadow-[0_22px_44px_-26px_rgba(22,19,61,0.4)]">
-      <div className="flex flex-col justify-center gap-5 px-7 py-6">
+    <div className="grid grid-cols-1 overflow-hidden rounded-2xl border border-border bg-card transition-[box-shadow,transform,border-color] duration-300 hover:-translate-y-0.5 hover:border-[#D9D6EA] hover:shadow-[0_22px_44px_-26px_rgba(22,19,61,0.4)] md:grid-cols-[minmax(0,1fr)_248px_248px]">
+      <div className="flex flex-col justify-center gap-5 px-5 py-6 sm:px-7">
         <div className="flex items-center gap-2.5 text-[13px] text-muted-foreground">
           <span className="rounded-full bg-muted px-2.5 py-1 font-mono text-xs">{flight.code}</span>
           {flight.airplaneModel}
         </div>
-        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-[22px]">
+        <div className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 sm:gap-[22px]">
           <div>
-            <div className="text-[32px] leading-none font-extrabold tracking-[-0.035em]">{departure}</div>
+            <div className="text-[24px] leading-none font-extrabold tracking-[-0.035em] sm:text-[32px]">{departure}</div>
             <div className="mt-1.5 text-[13px] text-muted-foreground">
               {flight.origin.code} · {flight.origin.city}
             </div>
@@ -42,7 +42,7 @@ export function FlightResultCard({ flight }: { flight: FlightSearchResult }) {
             </div>
           </div>
           <div className="text-right">
-            <div className="text-[32px] leading-none font-extrabold tracking-[-0.035em]">
+            <div className="text-[24px] leading-none font-extrabold tracking-[-0.035em] sm:text-[32px]">
               {arrival}
               {nextDay && <sup className="ml-0.5 text-xs text-muted-foreground">+1 día</sup>}
             </div>
@@ -66,7 +66,7 @@ function ClassBox({ flightId, option }: { flightId: string; option: ClassOption 
   return (
     <div
       className={cn(
-        "flex flex-col gap-0.5 border-l border-border px-[22px] py-[22px] transition-colors",
+        "flex flex-col gap-0.5 border-t border-border px-5 py-[22px] transition-colors sm:px-[22px] md:border-t-0 md:border-l",
         soldOut ? "bg-[#FAFAFC]" : "hover:bg-[#FBFAFE]",
       )}
     >

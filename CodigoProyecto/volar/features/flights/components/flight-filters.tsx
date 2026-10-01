@@ -32,7 +32,7 @@ export function FlightFilters({ filters, airports }: Props) {
           method="GET"
           key={`${filters.fecha}-${filters.origen}-${filters.destino}-${filters.estado}`}
         >
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="space-y-1.5">
               <Label htmlFor="fecha">Fecha de Vuelo</Label>
               <Input id="fecha" name="fecha" type="date" defaultValue={filters.fecha} />

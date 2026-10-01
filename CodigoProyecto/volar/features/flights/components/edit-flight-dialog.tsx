@@ -101,9 +101,9 @@ function EditFlightForm({ flight, onSaved }: { flight: EditableFlight; onSaved: 
 
   return (
     <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="edit-economyCapacity">Capacidad Economy (US-09)</Label>
+          <Label htmlFor="edit-economyCapacity">Capacidad Economy</Label>
           <Input
             id="edit-economyCapacity"
             type="number"
@@ -120,7 +120,7 @@ function EditFlightForm({ flight, onSaved }: { flight: EditableFlight; onSaved: 
           )}
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="edit-economyFare">Tarifa Economy $ (US-11)</Label>
+          <Label htmlFor="edit-economyFare">Tarifa Economy $</Label>
           <Input
             id="edit-economyFare"
             type="number"
@@ -134,7 +134,7 @@ function EditFlightForm({ flight, onSaved }: { flight: EditableFlight; onSaved: 
           )}
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="edit-firstClassCapacity">Capacidad Primera (US-09)</Label>
+          <Label htmlFor="edit-firstClassCapacity">Capacidad Primera</Label>
           <Input
             id="edit-firstClassCapacity"
             type="number"
@@ -152,7 +152,7 @@ function EditFlightForm({ flight, onSaved }: { flight: EditableFlight; onSaved: 
           )}
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="edit-firstClassFare">Tarifa Primera $ (US-11)</Label>
+          <Label htmlFor="edit-firstClassFare">Tarifa Primera $</Label>
           <Input
             id="edit-firstClassFare"
             type="number"
@@ -166,7 +166,7 @@ function EditFlightForm({ flight, onSaved }: { flight: EditableFlight; onSaved: 
           )}
         </div>
 
-        <p className="col-span-2 flex items-start gap-2.5 rounded-xl bg-muted p-3.5 text-[13px] leading-[1.55] text-muted-foreground">
+        <p className="sm:col-span-2 flex items-start gap-2.5 rounded-xl bg-muted p-3.5 text-[13px] leading-[1.55] text-muted-foreground">
           <Info className="mt-0.5 size-4 flex-none text-primary" />
           Una tarifa nueva aplica a las compras futuras; las ventas ya confirmadas conservan el precio
           pagado.

@@ -41,7 +41,7 @@ export default async function VuelosPage({
     <div className="flex flex-1 flex-col">
       <SiteHeader />
 
-      <main className="mx-auto w-full max-w-6xl flex-1 space-y-7 px-8 py-8">
+      <main className="mx-auto w-full max-w-6xl flex-1 space-y-7 px-4 py-8 sm:px-6 lg:px-8">
         <nav className="flex items-center gap-2 text-[13px] text-muted-foreground">
           <Link href="/" className="hover:text-foreground">Inicio</Link>
           <span aria-hidden>/</span>
@@ -91,7 +91,7 @@ function SearchResults({
     <section className="space-y-5" aria-live="polite">
       <div className="flex flex-wrap items-end justify-between gap-6">
         <div>
-          <h1 className="text-[26px] font-extrabold tracking-[-0.03em]">
+          <h1 className="text-[22px] font-extrabold tracking-[-0.03em] sm:text-[26px]">
             {label(origin)} → {label(destination)}
           </h1>
           <p className="mt-1.5 text-sm text-muted-foreground">

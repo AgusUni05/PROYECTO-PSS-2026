@@ -55,7 +55,7 @@ export default async function AeropuertosPage({
           <Info className="size-[18px]" />
         </span>
         <div>
-          <b className="block text-[13.5px]">Regla integrada · US-01</b>
+          <b className="block text-[13.5px]">Regla integrada</b>
           <p className="m-0 text-[13.5px] leading-[1.55] text-[#3D3470]">
             El código IATA/ICAO es único y obligatorio. No se puede dar de baja un aeropuerto con
             vuelos futuros programados.

@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 export const ADMIN_NAV_ITEMS = [
-  { href: "/admin/aeropuertos", label: "Aeropuertos", us: "US-01" },
-  { href: "/admin/aviones", label: "Aviones", us: "US-02" },
-  { href: "/admin/trayectos", label: "Trayectos", us: "US-03" },
-  { href: "/admin/vuelos", label: "Vuelos", us: "US-04/07/09/11" },
+  { href: "/admin/aeropuertos", label: "Aeropuertos" },
+  { href: "/admin/aviones", label: "Aviones" },
+  { href: "/admin/trayectos", label: "Trayectos" },
+  { href: "/admin/vuelos", label: "Vuelos" },
 ] as const;
 
 const GROUPS = [
@@ -16,7 +16,7 @@ const GROUPS = [
   { label: "Operaciones", items: ADMIN_NAV_ITEMS.slice(3) },
 ] as const;
 
-export function AdminNav() {
+export function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
@@ -33,6 +33,7 @@ export function AdminNav() {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={onNavigate}
                   aria-current={active ? "page" : undefined}
                   className={cn(
                     "relative flex h-[46px] items-center gap-3 rounded-xl px-3 text-sm font-semibold transition-colors",
@@ -42,7 +43,6 @@ export function AdminNav() {
                   )}
                 >
                   {item.label}
-                  <span className="ml-auto font-mono text-[10px] text-tower-muted">{item.us}</span>
                 </Link>
               );
             })}
