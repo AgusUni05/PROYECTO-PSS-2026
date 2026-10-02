@@ -1,7 +1,7 @@
 # Sistema médico — Wireframes
 
 ## 0. Research Log
-- Referencia existente: `wireframes/wf_busqueda_turnos.html` → se conserva su esquema de baja fidelidad para mantener continuidad entre sprints.
+- Referencia existente (retirada): `wireframes/wf_busqueda_turnos.html` cubría US-12 por separado. US-12 se redefinió dentro de US-10, así que su esquema de filtros y resultados se fusionó en `wf_agenda_paciente.html` y el archivo suelto se borró.
 - Lanes no ejecutadas: no se realizó investigación de marcas ni prototipado visual porque el pedido es un esquema conceptual interno, no una interfaz final.
 
 ## 0.1 Versión 5 — alcance y asignación
@@ -17,16 +17,20 @@ El equipo implementador adoptó la regla de que **cada User Story la ejecuta un 
 | `wf_carga_disponibilidad_mensual.html` | US-06 | 1 | I5 | Validación de «exactamente 2 jornadas» a «entre 2 y 7» (RN-02), con contador por semana y los dos estados de error. Sin selector de duración: son 30 minutos fijos (RN-09). |
 | `wf_agenda_generada.html` | US-08 | 1 | I3 | Acotada a US-08. La prevención de solapamientos (antigua US-09 / RF-AGE-07) fue retirada por el cliente. |
 | `wf_agenda_profesional.html` | US-11 | 1 | I4 | Sin el estado «bloqueado», que corresponde a US-30, fuera del alcance. Las tres vistas (diaria, semanal, mensual) que pide RF-AGE-05. |
-| `wf_agenda_paciente.html` | US-10 | 2 | I3 | **Nueva.** Apertura automática de la agenda vista por el paciente. Solo lectura: reservar llega con US-13. |
-| `wireframes/wf_busqueda_turnos.html` | US-12 | 2 | I4 | Sin el paso previo de elección de tipo de turno: el módulo de vacunas quedó fuera y US-12 bajó de 3 a 2 puntos. |
+| `wf_agenda_paciente.html` | US-10 | 2 | I3, I4, I2 | **Redefinida.** Absorbe la búsqueda por especialidad, profesional y rango de fechas que antes era US-12 (2 → 4 puntos, dueño único → trío). Ya no es solo lectura: el botón «Reservar» abre US-13. |
+| `wf_reserva_turno.html` | US-13 | 2 | I2, I5, I4 | **Nueva, redefinida.** Absorbe el control de concurrencia que antes era US-20 (3 → 5 puntos, pareja → trío). Incluye el estado de error cuando otro paciente reserva primero. |
+| `wf_reserva_terceros.html` | US-64 | 2 | I2 | **Nueva.** Paso adicional del flujo de reserva para cargar los datos y la obra social de la persona atendida. |
+| `wf_cancelacion_turno.html` | US-16 | 2 | I4 | **Nueva.** Listado de turnos, confirmación previa, estado tras cancelar y el caso fuera del plazo mínimo. |
+| `wf_estado_turno.html` | US-18 | 2 | I1 | **Nueva.** Vista de mostrador/consultorio para marcar cumplido o ausente, con su registro de auditoría. |
+| `wf_catalogo_vacunas.html` | US-24 | 2 | I1 | **Nueva.** Alta, edición y desactivación de vacunas (denominación, laboratorio, esquema de dosis). |
 | `wf_costo_consulta.html` | US-33 | 3 | I5 | **Nueva.** Costo de la consulta definido por cada médico, con historial de vigencias. |
 | `wf_acceso_denegado.html` | — | 1 a 3 | — | Estado transversal de RNF-03, verificado dentro de cada historia según la condición 6 de la definición de terminado. |
 
-US-21 (servicio de envío de email) no tiene pantalla propia: es infraestructura.
+US-21 (servicio de envío de email), US-14 (confirmación por email) y US-15 (recordatorio por email) no tienen pantalla propia: son infraestructura de notificaciones.
 
 ### Pendientes de los refinements
 
-Las historias del ciclo de reserva (US-13, US-14, US-15, US-16, US-18, US-20, US-64) y las de pagos, historial clínico y reportes (US-32, US-34, US-35, US-36, US-39, US-40, US-41, US-44, US-45, US-47) necesitan su wireframe antes de entrar al refinement de su sprint. Están comprometidas en el plan pero todavía sin esquema.
+Las historias de pagos, historial clínico y reportes (US-32, US-34, US-35, US-36, US-39, US-40, US-41, US-44, US-45, US-47) necesitan su wireframe antes de entrar al refinement del Sprint 3. Están comprometidas en el plan pero todavía sin esquema. El ciclo de reserva del Sprint 2 (US-10, US-13, US-16, US-18, US-24, US-64) ya tiene wireframe; US-12 y US-20 se retiraron como historias propias porque el catálogo las redefinió dentro de US-10 y US-13 respectivamente.
 
 ### Fuera del alcance, sin wireframe
 

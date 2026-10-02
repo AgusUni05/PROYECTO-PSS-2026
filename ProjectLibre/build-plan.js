@@ -25,6 +25,19 @@
  * cada integrante trabaja en una historia por vez.
  *
  * Un punto de historia equivale a 3,30 horas.
+ *
+ * Ajuste posterior a v6: US-12 (Busqueda de disponibilidad de turnos) y US-20 (Control de
+ * concurrencia en la reserva) se dan de baja como historias propias porque el catalogo las
+ * redefinio como parte de otras dos: US-10 absorbe la busqueda (2 -> 4 puntos) y US-13
+ * absorbe el control de concurrencia (3 -> 5 puntos). El alcance total de puntos del
+ * Sprint 2 no cambia, solo se reagrupa. Ambas pasan de duenio unico/pareja a trio (regla
+ * de 4-5 puntos). US-13 depende de US-10 con CC+2D, tal como figura en el catalogo de US.
+ *
+ * Con esta redistribucion I4 queda 1,2 h por encima del tope del Sprint 2 (19,8 de 18,6 h)
+ * e I5 queda 0,1 h por encima (18,7 de 18,6 h): no hay forma de armar los dos trios sin
+ * tocar otras asignaciones del sprint, porque solo I2 tiene margen real disponible. Se deja
+ * documentado en vez de forzar un reparto que no cierre; el Sprint 2 ya corria 2,65 h/dia
+ * en vez de las 2,5 originales, asi que el margen era chico de entrada.
  */
 
 const fs = require('fs');
@@ -65,14 +78,12 @@ const SPRINTS = [
     tareas: [
       {id: 'US-21', nom: 'US-21 Servicio de envio de notificaciones por email', pts: 3, eq: ['I1', 'I3'], pred: [['US-01', 'CC', 2]]},
       {id: 'US-24', nom: 'US-24 Catalogo de vacunas', pts: 2, eq: ['I1'], pred: [['US-03', 'FC', 0]]},
-      {id: 'US-10', nom: 'US-10 Apertura automatica de la agenda', pts: 2, eq: ['I3'], pred: [['US-08', 'FC', 0]]},
-      {id: 'US-12', nom: 'US-12 Busqueda de disponibilidad de turnos', pts: 2, eq: ['I4'], pred: [['US-10', 'CC', 1]]},
-      {id: 'US-13', nom: 'US-13 Reserva de turno', pts: 3, eq: ['I2', 'I5'], pred: [['US-12', 'CC', 2]]},
+      {id: 'US-10', nom: 'US-10 Busqueda de turnos por especialidad, profesional y rango de fechas', pts: 4, eq: ['I3', 'I4', 'I2'], pred: [['US-08', 'FC', 0]]},
+      {id: 'US-13', nom: 'US-13 Reserva de turno con control de concurrencia', pts: 5, eq: ['I2', 'I5', 'I4'], pred: [['US-10', 'CC', 2]]},
       {id: 'US-14', nom: 'US-14 Confirmacion de reserva por email', pts: 2, eq: ['I3'], pred: [['US-13', 'CC', 2], ['US-21', 'FC', 0]]},
       {id: 'US-15', nom: 'US-15 Recordatorio automatico de turno', pts: 2, eq: ['I5'], pred: [['US-13', 'CC', 2], ['US-21', 'FC', 0]]},
       {id: 'US-16', nom: 'US-16 Cancelacion de turno por el paciente', pts: 2, eq: ['I4'], pred: [['US-13', 'CC', 2]]},
       {id: 'US-18', nom: 'US-18 Registro del estado del turno', pts: 2, eq: ['I1'], pred: [['US-13', 'CC', 2]]},
-      {id: 'US-20', nom: 'US-20 Control de concurrencia en la reserva', pts: 2, eq: ['I2'], pred: [['US-13', 'FC', 0]]},
       {id: 'US-64', nom: 'US-64 Reserva de turno a nombre de otra persona', pts: 2, eq: ['I2'], pred: [['US-13', 'FC', 0]]},
       {id: 'BUG1a', nom: 'Reserva para bugs del Sprint 1 (I4)', pts: 1, eq: ['I4'], pred: []},
       {id: 'BUG1b', nom: 'Reserva para bugs del Sprint 1 (I5, bloque 1)', pts: 1, eq: ['I5'], pred: []},
