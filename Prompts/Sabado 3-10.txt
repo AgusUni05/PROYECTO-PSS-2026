@@ -1,0 +1,11 @@
+Una pregunta, revisa el wireframe de la US-10, se despliega un calendario abajo al buscar el turno, esto es necesario
+  explicame como funcionaria, y sino si se puede borrar
+
+Bien, en la vista del paciente cuando esta sacando los turnos, si le doy a reservar, que me lleve a una pantalla nuev
+  de reservar, con los mismos datos que estaban, pero que no se muestren los turnos que ya tenia reservados, el problem
+  es que al darle click en el html en "mis turnos" me lleva a la pantalla de reservar turno, en vez de a la pantalla de
+  la US 16 que es cancelar turno, quiero entonces que solo al darle al boton reservar te lleve a la pantalla de reserva
+  y que arriba no aparezca seleccionado "mis turnos"
+
+
+En el wireframe de la US 8, cuando le doy a generar y abrir agenda me manda
