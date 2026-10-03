@@ -9,3 +9,6 @@ Bien, en la vista del paciente cuando esta sacando los turnos, si le doy a reser
 
 
 En el wireframe de la US 8, cuando le doy a generar y abrir agenda me manda
+
+Armame en base a las US del sprint 1, un plan de demo en base al archivo template de la catedra @[Template Plan de
+  Demo.pdf], un happy path y posibles validaciones

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Demo - Sprint 1</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            line-height: 1.6; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 40px 20px; 
+            color: #333; 
+        }
+        h1 { 
+            text-align: center; 
+            font-size: 1.5em; 
+            margin-bottom: 30px; 
+        }
+        hr { 
+            border: none; 
+            border-top: 1px solid #ccc; 
+            margin: 20px 0; 
+        }
+        h2 { 
+            font-size: 1.2em; 
+            border-bottom: 1px solid #eee; 
+            padding-bottom: 5px; 
+            margin-top: 30px; 
+        }
+        h3 { 
+            font-size: 1.1em; 
+            color: #444; 
+            margin-bottom: 10px; 
+        }
+        p { margin: 10px 0; }
+        .scenario { 
+            margin-bottom: 20px; 
+            padding-left: 15px; 
+            border-left: 3px solid #eee; 
+        }
+        .step { 
+            margin: 5px 0; 
+            padding-left: 10px; 
+        }
+        .result { 
+            font-weight: bold; 
+            margin-top: 10px; 
+            color: #2c5282; 
+        }
+        ul { margin: 15px 0 15px 20px; }
+        @media print {
+            body { padding: 0; }
+            .page-break { page-break-before: always; }
+        }
+    </style>
+</head>
+<body>
+    <h1>Plan de Demo Sistema Médico - Sprint 1</h1>
+
+    <p><strong>Fecha y Hora:</strong> ____________________</p>
+    <p><strong>Participantes de la reunión de Demo:</strong> ____________________</p>
+
+    <hr>
+
+    <p><strong>Lista de USs que formaron parte del corriente sprint:</strong></p>
+    <ul>
+        <li>US-01 - Registro de paciente con obra social y Mi cuenta</li>
+        <li>US-02 - Inicio de sesión según rol</li>
+        <li>US-03 - Alta y baja de usuarios internos</li>
+        <li>US-06 - Carga de disponibilidad mensual (2 a 7 jornadas)</li>
+        <li>US-08 - Generación automática de agenda</li>
+        <li>US-11 - Agenda profesional</li>
+    </ul>
+
+    <!-- US-01 -->
+    <h2>001 – US-01 - Registro de paciente con obra social y Mi cuenta</h2>
+    <div class="scenario">
+        <h3>Escenario 1 - Camino Exitoso:</h3>
+        <div class="step">1 – Ingresar a la página de registro del sistema.</div>
+        <div class="step">2 – Completar todos los datos personales obligatorios.</div>
+        <div class="step">3 – En el bloque de cobertura, elegir "Obra social o prepaga", seleccionar una Entidad (ej. OSDE) y completar el Plan y Número de afiliado.</div>
+        <div class="step">4 – Presionar el botón Guardar/Registrar.</div>
+        <p class="result">Resultado esperado: El nuevo paciente es dado de alta con el rol "Usuario". El sistema redirige automáticamente a la pantalla "Mi cuenta", donde se visualizan los datos cargados y se comprueba que el DNI quedó bloqueado (solo lectura).</p>
+    </div>
+    <div class="scenario">
+        <h3>Escenario 2 - DNI de paciente ya existente:</h3>
+        <div class="step">1 – Ingresar a la página de registro del sistema.</div>
+        <div class="step">2 – Completar todos los campos utilizando un DNI de un paciente que ya se registró previamente en el sistema.</div>
+        <div class="step">3 – Presionar el botón Guardar/Registrar.</div>
+        <p class="result">Resultado esperado: Un pop up o mensaje de error en pantalla indica que el DNI ya se encuentra registrado y no se genera un paciente duplicado.</p>
+    </div>
+
+    <!-- US-02 -->
+    <h2>002 – US-02 - Inicio de sesión según rol</h2>
+    <div class="scenario">
+        <h3>Escenario 1 - Camino Exitoso (Ingreso Administrador):</h3>
+        <div class="step">1 – Acceder a la pantalla de Inicio de Sesión.</div>
+        <div class="step">2 – Ingresar el correo y contraseña de un usuario con rol "Administrativo" válido.</div>
+        <div class="step">3 – Presionar el botón Ingresar.</div>
+        <p class="result">Resultado esperado: El sistema autentica al usuario y carga el menú principal habilitando las opciones correspondientes a su rol (ej. visualización del ítem "Usuarios" en la barra superior).</p>
+    </div>
+    <div class="scenario">
+        <h3>Escenario 2 - Credenciales incorrectas:</h3>
+        <div class="step">1 – Acceder a la pantalla de Inicio de Sesión.</div>
+        <div class="step">2 – Ingresar un correo válido pero con una contraseña equivocada.</div>
+        <div class="step">3 – Presionar el botón Ingresar.</div>
+        <p class="result">Resultado esperado: El sistema no permite el ingreso y muestra un mensaje informando que las credenciales son incorrectas.</p>
+    </div>
+
+    <!-- US-03 -->
+    <h2>003 – US-03 - Alta y baja de usuarios internos</h2>
+    <div class="scenario">
+        <h3>Escenario 1 - Camino Exitoso (Alta de Médico):</h3>
+        <div class="step">1 – Loguearse en la página con un usuario administrativo.</div>
+        <div class="step">2 – Seleccionar la opción de gestión de "Usuarios" y luego Nuevo Usuario.</div>
+        <div class="step">3 – Completar los datos personales y en el campo de "Rol" seleccionar "Médico".</div>
+        <div class="step">4 – Completar la "Especialidad" requerida para este rol.</div>
+        <div class="step">5 – Presionar el botón Guardar.</div>
+        <p class="result">Resultado esperado: El nuevo médico es dado de alta correctamente. Se debe buscar en el listado de usuarios activos y verificar que aparezca con el rol Médico y el estado "Activo".</p>
+    </div>
+    <div class="scenario">
+        <h3>Escenario 2 - Baja cancelada o abortada:</h3>
+        <div class="step">1 – Loguearse en la página con un usuario administrativo y acceder a "Usuarios".</div>
+        <div class="step">2 – Hacer clic en el botón "Dar de baja" sobre un usuario Activo.</div>
+        <div class="step">3 – El sistema arroja un modal solicitando confirmación para preservar la trazabilidad. Elegir "Cancelar" o cerrar el aviso.</div>
+        <p class="result">Resultado esperado: El usuario no es eliminado y permanece en el listado con el estado "Activo".</p>
+    </div>
+
+    <div class="page-break"></div> <!-- Salto de página para que quede prolijo en PDF -->
+
+    <!-- US-06 -->
+    <h2>004 – US-06 - Carga de disponibilidad mensual</h2>
+    <div class="scenario">
+        <h3>Escenario 1 - Camino Exitoso:</h3>
+        <div class="step">1 – Loguearse en el sistema con un usuario con rol "Médico".</div>
+        <div class="step">2 – Ingresar a la opción "Disponibilidad".</div>
+        <div class="step">3 – Seleccionar 4 jornadas dentro de la misma semana del mes (cumpliendo la regla RN-02 de que debe ser entre 2 y 7 jornadas).</div>
+        <div class="step">4 – Presionar Guardar.</div>
+        <p class="result">Resultado esperado: La disponibilidad se guarda de forma exitosa y el indicador de control de validaciones se muestra correcto.</p>
+    </div>
+    <div class="scenario">
+        <h3>Escenario 2 - Intento de carga con menos jornadas de las permitidas:</h3>
+        <div class="step">1 – Loguearse con el rol "Médico" e ingresar a "Disponibilidad".</div>
+        <div class="step">2 – Seleccionar únicamente 1 jornada en una semana entera.</div>
+        <div class="step">3 – Presionar Guardar.</div>
+        <p class="result">Resultado esperado: El sistema bloquea el guardado de los datos y se muestra un estado de error al usuario, indicando que el mínimo de jornadas por semana es de 2.</p>
+    </div>
+
+    <!-- US-08 -->
+    <h2>005 – US-08 - Generación automática de agenda</h2>
+    <div class="scenario">
+        <h3>Escenario 1 - Camino Exitoso:</h3>
+        <div class="step">1 – Utilizar la disponibilidad mensual que se cargó y guardó exitosamente en el escenario anterior (US-06).</div>
+        <div class="step">2 – Dirigirse a la vista de "Generación" o forzar al sistema a procesar la disponibilidad.</div>
+        <div class="step">3 – Visualizar el resultado de la creación de la agenda para dicho médico.</div>
+        <p class="result">Resultado esperado: El sistema generó los bloques de turnos automáticamente particionándolos en duraciones estrictas de 30 minutos (RN-09).</p>
+    </div>
+
+    <!-- US-11 -->
+    <h2>006 – US-11 - Agenda profesional</h2>
+    <div class="scenario">
+        <h3>Escenario 1 - Camino Exitoso (Navegación de vistas):</h3>
+        <div class="step">1 – Loguearse en el sistema con un usuario con rol "Médico".</div>
+        <div class="step">2 – Ingresar a la opción "Mi agenda".</div>
+        <div class="step">3 – Cambiar el selector de vista de "Diaria" a "Semanal" y luego a "Mensual".</div>
+        <div class="step">4 – Utilizar el filtro de estado ("Todos los turnos", "Solo libres", "Solo reservados").</div>
+        <p class="result">Resultado esperado: En cada selección de vista, el calendario del profesional se actualiza correspondientemente mostrando los bloques de 30 minutos correctos y reaccionando de forma dinámica a los filtros de estado de reserva.</p>
+    </div>
+
+</body>
+</html>
