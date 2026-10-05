@@ -1,3 +1,5 @@
+import { ListNavigationProvider, ListResults } from "@/components/list-navigation";
+import { TableSkeleton } from "@/components/table-skeleton";
 import { Info } from "lucide-react";
 import { GenerateFlightsForm } from "@/features/flights/components/generate-flights-form";
 import { FlightFilters } from "@/features/flights/components/flight-filters";
@@ -67,9 +69,13 @@ export default async function VuelosPage({
 
       <GenerateFlightsForm routes={routes} airplanes={airplanes} />
 
-      <FlightFilters filters={filters} airports={airports} />
+      <ListNavigationProvider>
+        <FlightFilters filters={filters} airports={airports} />
 
-      <FlightTable flights={flights} total={total} page={page} pageCount={pageCount} filters={filters} />
+        <ListResults skeleton={<TableSkeleton columns={10} />}>
+          <FlightTable flights={flights} total={total} page={page} pageCount={pageCount} filters={filters} />
+        </ListResults>
+      </ListNavigationProvider>
     </div>
   );
 }

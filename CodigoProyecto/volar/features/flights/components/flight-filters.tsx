@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import { ListNavLink, useFilterSubmit, useListNavigation } from "@/components/list-navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -15,21 +17,25 @@ type Props = {
 
 // US-04: filtros de consulta de vuelos reales generados (GET nativo, según vuelos_admin.html).
 export function FlightFilters({ filters, airports }: Props) {
+  const onSubmit = useFilterSubmit("/admin/vuelos");
+  const { isPending } = useListNavigation();
+
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle>Filtros de Consulta</CardTitle>
-        <Link
+        <ListNavLink
           href="/admin/vuelos"
           className="text-xs font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground"
         >
           Limpiar Filtros
-        </Link>
+        </ListNavLink>
       </CardHeader>
       <CardContent>
         <form
           className="space-y-4"
           method="GET"
+          onSubmit={onSubmit}
           key={`${filters.fecha}-${filters.origen}-${filters.destino}-${filters.estado}`}
         >
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -71,7 +77,7 @@ export function FlightFilters({ filters, airports }: Props) {
           </div>
           <div>
             <Button variant="soft" type="submit">
-              Buscar Vuelos Reales
+              {isPending ? "Buscando…" : "Buscar Vuelos Reales"}
             </Button>
           </div>
         </form>

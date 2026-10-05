@@ -1,9 +1,10 @@
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
+import { ListNavLink } from "@/components/list-navigation";
 
 // Paginación reutilizable entre los listados admin (US-01/02/03): construye
-// el href de cada página a partir de los filtros vigentes.
+// el href de cada página a partir de los filtros vigentes. Navega sin recargar
+// la página (solo se actualiza la tabla).
 export function PaginationLinks({
   page,
   pageCount,
@@ -52,12 +53,8 @@ function PageLink({
     );
   }
   return (
-    <Link
-      href={href}
-      scroll={false}
-      className={buttonVariants({ variant: "secondary", size: "sm" })}
-    >
+    <ListNavLink href={href} className={buttonVariants({ variant: "secondary", size: "sm" })}>
       {children}
-    </Link>
+    </ListNavLink>
   );
 }

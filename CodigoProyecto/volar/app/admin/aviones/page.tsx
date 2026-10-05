@@ -1,3 +1,5 @@
+import { ListNavigationProvider, ListResults } from "@/components/list-navigation";
+import { TableSkeleton } from "@/components/table-skeleton";
 import Link from "next/link";
 import { Info } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
@@ -65,18 +67,22 @@ export default async function AvionesPage({
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <AirplaneForm key={editing?.id ?? "new"} editing={editing} />
-        <AirplaneFilters filters={filters} summary={summary} />
-      </div>
+      <ListNavigationProvider>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <AirplaneForm key={editing?.id ?? "new"} editing={editing} />
+          <AirplaneFilters filters={filters} summary={summary} />
+        </div>
 
-      <AirplaneTable
-        airplanes={airplanes}
-        total={total}
-        page={page}
-        pageCount={pageCount}
-        filters={filters}
-      />
+        <ListResults skeleton={<TableSkeleton columns={7} />}>
+          <AirplaneTable
+            airplanes={airplanes}
+            total={total}
+            page={page}
+            pageCount={pageCount}
+            filters={filters}
+          />
+        </ListResults>
+      </ListNavigationProvider>
     </div>
   );
 }

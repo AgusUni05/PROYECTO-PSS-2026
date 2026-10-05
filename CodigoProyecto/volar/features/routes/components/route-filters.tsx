@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import { ListNavLink, useFilterSubmit, useListNavigation } from "@/components/list-navigation";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -14,21 +16,25 @@ type Props = {
 
 // US-03: filtros de búsqueda por origen/destino (GET nativo, según trayectos.html).
 export function RouteFilters({ filters, airports }: Props) {
+  const onSubmit = useFilterSubmit("/admin/trayectos");
+  const { isPending } = useListNavigation();
+
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle>Filtrar Trayectos</CardTitle>
-        <Link
+        <ListNavLink
           href="/admin/trayectos"
           className="text-xs font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground"
         >
           Limpiar Filtros
-        </Link>
+        </ListNavLink>
       </CardHeader>
       <CardContent>
         <form
           className="grid gap-4 sm:grid-cols-3"
           method="GET"
+          onSubmit={onSubmit}
           key={`${filters.origen}-${filters.destino}-${filters.estado}`}
         >
           <div className="space-y-1.5">
@@ -54,8 +60,8 @@ export function RouteFilters({ filters, airports }: Props) {
             </NativeSelect>
           </div>
           <div className="flex items-end">
-            <Button type="submit" variant="soft" className="w-full">
-              Filtrar Trayectos
+            <Button type="submit" variant="soft" className="w-full" disabled={isPending}>
+              {isPending ? "Filtrando…" : "Filtrar Trayectos"}
             </Button>
           </div>
         </form>

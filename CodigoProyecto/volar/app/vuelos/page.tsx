@@ -5,6 +5,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { FlightSearchForm } from "@/features/flight-search/components/flight-search-form";
 import { FlightResultCard } from "@/features/flight-search/components/flight-result-card";
+import { FlightResultsSkeleton } from "@/features/flight-search/components/flight-search-skeleton";
+import { ListNavigationProvider, ListResults } from "@/components/list-navigation";
 import { flightSearchSchema, type FlightSearchValues } from "@/features/flight-search/schema";
 import { searchFlights, type FlightSearchResult } from "@/features/flight-search/queries";
 import { listActiveAirports } from "@/features/airports/queries";
@@ -48,27 +50,31 @@ export default async function VuelosPage({
           <b className="font-semibold text-foreground">Búsqueda y selección de vuelos</b>
         </nav>
 
-        <div id="buscador" className="scroll-mt-6">
-          <FlightSearchForm
-            key={`${formDefaults.origen}-${formDefaults.destino}-${formDefaults.fecha}`}
-            airports={airports}
-            defaultValues={formDefaults}
-          />
-        </div>
+        <ListNavigationProvider>
+          <div id="buscador" className="scroll-mt-6">
+            <FlightSearchForm
+              key={`${formDefaults.origen}-${formDefaults.destino}-${formDefaults.fecha}`}
+              airports={airports}
+              defaultValues={formDefaults}
+            />
+          </div>
 
-        {parsed && !parsed.success && (
-          <Alert variant="destructive">
-            <AlertTitle>No pudimos buscar con esos datos</AlertTitle>
-            <AlertDescription>
-              {parsed.error.issues.map((issue) => issue.message).join(". ")}. Corregí la búsqueda y
-              volvé a intentar.
-            </AlertDescription>
-          </Alert>
-        )}
+          {parsed && !parsed.success && (
+            <Alert variant="destructive">
+              <AlertTitle>No pudimos buscar con esos datos</AlertTitle>
+              <AlertDescription>
+                {parsed.error.issues.map((issue) => issue.message).join(". ")}. Corregí la búsqueda y
+                volvé a intentar.
+              </AlertDescription>
+            </Alert>
+          )}
 
-        {parsed?.success && flights && (
-          <SearchResults search={parsed.data} flights={flights} airports={airports} />
-        )}
+          <ListResults skeleton={<FlightResultsSkeleton />}>
+            {parsed?.success && flights && (
+              <SearchResults search={parsed.data} flights={flights} airports={airports} />
+            )}
+          </ListResults>
+        </ListNavigationProvider>
       </main>
     </div>
   );

@@ -1,3 +1,5 @@
+import { ListNavigationProvider, ListResults } from "@/components/list-navigation";
+import { TableSkeleton } from "@/components/table-skeleton";
 import { Info } from "lucide-react";
 import { RouteForm } from "@/features/routes/components/route-form";
 import { RouteFilters } from "@/features/routes/components/route-filters";
@@ -64,9 +66,13 @@ export default async function TrayectosPage({
 
       <RouteForm key={editing?.id ?? "new"} airports={airports} editing={editing} />
 
-      <RouteFilters filters={filters} airports={airports} />
+      <ListNavigationProvider>
+        <RouteFilters filters={filters} airports={airports} />
 
-      <RouteTable routes={routes} total={total} page={page} pageCount={pageCount} filters={filters} />
+        <ListResults skeleton={<TableSkeleton columns={7} />}>
+          <RouteTable routes={routes} total={total} page={page} pageCount={pageCount} filters={filters} />
+        </ListResults>
+      </ListNavigationProvider>
     </div>
   );
 }

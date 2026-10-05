@@ -1,7 +1,7 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useListNavigation } from "@/components/list-navigation";
 import { useForm } from "react-hook-form";
 import { ArrowLeftRight, CalendarDays, MapPin, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ const EMPTY_VALUES: FlightSearchValues = { origen: "", destino: "", fecha: "" };
 // US-13: buscador de vuelos por origen, destino y fecha (busqueda_pasajero.html).
 // Valida con el mismo schema que la página de resultados y navega a /vuelos.
 export function FlightSearchForm({ airports, defaultValues }: Props) {
-  const router = useRouter();
+  const { navigate } = useListNavigation();
   const form = useForm<FlightSearchValues>({
     resolver: zodResolver(flightSearchSchema),
     defaultValues: { ...EMPTY_VALUES, ...defaultValues },
@@ -33,7 +33,7 @@ export function FlightSearchForm({ airports, defaultValues }: Props) {
   const todayIso = new Date().toISOString().slice(0, 10);
 
   function onSubmit(values: FlightSearchValues) {
-    router.push(`/vuelos?${new URLSearchParams(values).toString()}`);
+    navigate(`/vuelos?${new URLSearchParams(values).toString()}`);
   }
 
   function swapAirports() {

@@ -1,4 +1,6 @@
-import Link from "next/link";
+"use client";
+
+import { ListNavLink, useFilterSubmit, useListNavigation } from "@/components/list-navigation";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -13,21 +15,25 @@ type Props = {
 
 // US-02: filtros de búsqueda y resumen de flota (GET nativo, según aviones.html).
 export function AirplaneFilters({ filters, summary }: Props) {
+  const onSubmit = useFilterSubmit("/admin/aviones");
+  const { isPending } = useListNavigation();
+
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle>Filtros</CardTitle>
-        <Link
+        <ListNavLink
           href="/admin/aviones"
           className="text-xs font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground"
         >
           Restablecer
-        </Link>
+        </ListNavLink>
       </CardHeader>
       <CardContent className="space-y-6">
         <form
           className="space-y-4"
           method="GET"
+          onSubmit={onSubmit}
           key={`${filters.q}-${filters.estado}-${filters.config}`}
         >
           <div className="space-y-1.5">
@@ -42,8 +48,8 @@ export function AirplaneFilters({ filters, summary }: Props) {
               <option value="economy">Solo Economy</option>
             </NativeSelect>
           </div>
-          <Button type="submit" variant="soft" className="w-full">
-            Buscar Aviones
+          <Button type="submit" variant="soft" className="w-full" disabled={isPending}>
+            {isPending ? "Buscando…" : "Buscar Aviones"}
           </Button>
         </form>
         <div className="rounded-md border bg-muted/40 p-3 text-sm">
