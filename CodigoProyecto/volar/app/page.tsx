@@ -1,32 +1,19 @@
+import { Suspense } from "react";
 import { SiteHeader } from "@/components/site-header";
 import { FlightSearchForm } from "@/features/flight-search/components/flight-search-form";
+import { FlightSearchFormSkeleton } from "@/features/flight-search/components/flight-search-skeleton";
 import { listActiveAirports } from "@/features/airports/queries";
 import { PlaneIcon } from "@/components/plane-icon";
 
 // Sitio público (US-28/US-29): no exige sesión para nada. La acción principal
 // es buscar vuelos (US-13); la cuenta se pide recién al iniciar una compra.
-export default async function Home() {
-  const airports = await listActiveAirports();
-
+export default function Home() {
   return (
     <div className="flex flex-1 flex-col bg-background">
       <section className="relative overflow-hidden bg-tower pb-24 text-white sm:pb-28 lg:pb-[132px]">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <SiteHeader />
           <div className="relative mt-8 max-w-[620px]">
-            <HeroArc />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute -right-5 top-[60px] hidden h-[320px] w-[560px] sm:block"
-            >
-              <PlaneIcon
-                className="absolute top-0 left-0 size-[22px] text-white motion-safe:animate-[fly-arc_3.4s_ease-in-out_infinite]"
-                style={{
-                  offsetPath: "path('M30 290 C 170 40, 400 30, 520 170')",
-                  offsetRotate: "auto 45deg",
-                }}
-              />
-            </div>
             <div className="relative flex flex-col gap-4">
               <span className="animate-rise font-mono text-xs tracking-[0.22em] text-tower-accent uppercase">
                 Sistema de gestión de vuelos
@@ -38,26 +25,46 @@ export default async function Home() {
                 Volá por Argentina con VolAR.
               </p>
             </div>
+            {/* Trayectoria AEP → BRC. En celular se muestra a escala (560×320 → 336×192)
+                entre el título y el buscador; desde `sm` queda absoluta a la derecha. */}
+            <div
+              aria-hidden="true"
+              className="pointer-events-none relative mt-6 h-[192px] w-[336px] sm:absolute sm:-right-5 sm:top-[60px] sm:mt-0 sm:h-[320px] sm:w-[560px]"
+            >
+              <div className="absolute top-0 left-0 h-[320px] w-[560px] origin-top-left scale-[0.6] sm:scale-100">
+                <HeroArc />
+                <PlaneIcon
+                  className="absolute top-0 left-0 size-[22px] text-white motion-safe:animate-[fly-arc_3.4s_ease-in-out_infinite]"
+                  style={{
+                    offsetPath: "path('M30 290 C 170 40, 400 30, 520 170')",
+                    offsetRotate: "auto 45deg",
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <main className="mx-auto -mt-14 w-full max-w-5xl flex-1 px-4 sm:-mt-16 sm:px-6 lg:-mt-[84px] lg:px-8">
         <div className="animate-rise animate-rise-d3">
-          <FlightSearchForm airports={airports} />
+          <Suspense fallback={<FlightSearchFormSkeleton />}>
+            <SearchForm />
+          </Suspense>
         </div>
       </main>
     </div>
   );
 }
 
+async function SearchForm() {
+  const airports = await listActiveAirports();
+  return <FlightSearchForm airports={airports} />;
+}
+
 function HeroArc() {
   return (
-    <svg
-      className="pointer-events-none absolute -right-5 top-[60px] hidden h-[320px] w-[560px] sm:block"
-      viewBox="0 0 560 320"
-      aria-hidden="true"
-    >
+    <svg className="absolute inset-0 size-full" viewBox="0 0 560 320" aria-hidden="true">
       <path
         d="M30 290 C 170 40, 400 30, 520 170"
         fill="none"

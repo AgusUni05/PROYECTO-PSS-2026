@@ -17,7 +17,7 @@ export const AIRPORT_STATUS_FILTERS = ["activos", "inactivos", "todos"] as const
 
 export const airportFiltersSchema = z.object({
   q: z.string().trim().max(120).catch(""),
-  estado: z.enum(AIRPORT_STATUS_FILTERS).catch("activos"),
+  estado: z.enum(AIRPORT_STATUS_FILTERS).catch("todos"),
   page: z.coerce.number().int().min(1).catch(1),
 });
 

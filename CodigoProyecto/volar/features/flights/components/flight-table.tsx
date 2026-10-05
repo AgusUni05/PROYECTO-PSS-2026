@@ -92,11 +92,17 @@ export function FlightTable({ flights, total, page, pageCount, filters }: Props)
                     <div>1ra: {formatCurrency(f.firstClassFare)}</div>
                   </TableCell>
                   <TableCell>
-                    {f.status === "SCHEDULED" ? (
+                    {f.status === "SCHEDULED" && (
                       <Badge variant="success" dot>
                         Programado
                       </Badge>
-                    ) : (
+                    )}
+                    {f.status === "COMPLETED" && (
+                      <Badge variant="outline" dot>
+                        Completado
+                      </Badge>
+                    )}
+                    {f.status === "CANCELLED" && (
                       <Badge variant="secondary" dot>
                         Cancelado
                       </Badge>

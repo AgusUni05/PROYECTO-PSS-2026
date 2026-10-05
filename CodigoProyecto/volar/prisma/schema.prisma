@@ -36,7 +36,8 @@ enum Role {
 
 // US-04 / US-06: un vuelo cancelado no se elimina físicamente
 enum FlightStatus {
-  SCHEDULED // Programado
+  SCHEDULED // Programado (aún no partió)
+  COMPLETED // Completado (ya partió; se marca al listar vuelos)
   CANCELLED // Cancelado
 }
 

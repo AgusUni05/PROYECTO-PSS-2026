@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { flightFiltersSchema, type FlightFilters } from "./schema";
+import { completePastFlights } from "./status";
 
 export const FLIGHTS_PAGE_SIZE = 10;
 
@@ -20,12 +21,13 @@ export type FlightListItem = {
   firstClassOccupied: number;
   economyFare: string;
   firstClassFare: string;
-  status: "SCHEDULED" | "CANCELLED";
+  status: "SCHEDULED" | "COMPLETED" | "CANCELLED";
 };
 
 /** US-04: listado de vuelos generados, filtrado y paginado. */
 export async function listFlights(rawFilters: Record<string, string | undefined>) {
   const filters: FlightFilters = flightFiltersSchema.parse(rawFilters);
+  await completePastFlights();
 
   const routeFilter = {
     ...(filters.origen && { originId: filters.origen }),

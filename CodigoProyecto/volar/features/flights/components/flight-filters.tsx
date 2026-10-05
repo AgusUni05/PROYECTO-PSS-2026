@@ -63,6 +63,7 @@ export function FlightFilters({ filters, airports }: Props) {
               <Label htmlFor="estado">Estado del Vuelo</Label>
               <NativeSelect id="estado" name="estado" defaultValue={filters.estado}>
                 <option value="SCHEDULED">Programado</option>
+                <option value="COMPLETED">Completado</option>
                 <option value="CANCELLED">Cancelado</option>
                 <option value="todos">Todos los estados</option>
               </NativeSelect>

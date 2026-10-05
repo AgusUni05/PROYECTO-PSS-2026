@@ -11,7 +11,7 @@ export async function SiteHeader() {
 
   return (
     <header className="bg-tower text-tower-foreground">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-8 py-5">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-5 sm:px-8">
         <Link href="/" className="group/logo flex items-center gap-2.5 text-xl font-extrabold tracking-tight">
           <span className="grid size-[34px] place-items-center rounded-[10px] bg-primary transition-transform duration-500 group-hover/logo:-rotate-[14deg]">
             <PlaneIcon className="size-[18px]" />
@@ -37,7 +37,8 @@ export async function SiteHeader() {
             </Link>
             {isAdmin(user) && (
               <Link href="/admin" className="font-semibold text-white underline-offset-2 hover:text-tower-accent hover:underline">
-                Panel de administración
+                <span className="sm:hidden">Admin</span>
+                <span className="hidden sm:inline">Panel de administración</span>
               </Link>
             )}
             <UserButton />

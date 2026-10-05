@@ -106,6 +106,7 @@
   --sidebar-accent-foreground: #FFFFFF;
   --sidebar-border: rgba(255,255,255,.08);
   --sidebar-ring: #5530E0;
+  --skeleton-highlight: rgba(255,255,255,.75);
 }
 
 .dark {
@@ -140,6 +141,7 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+  --skeleton-highlight: rgba(255,255,255,.07);
 }
 
 @keyframes rise {
@@ -152,6 +154,19 @@
 .animate-rise-d3 { animation-delay: .24s; }
 .animate-rise-d4 { animation-delay: .32s; }
 
+/* Skeleton con brillo que recorre el bloque (shimmer). */
+@keyframes skeleton-shimmer {
+  from { background-position: 150% 0; }
+  to { background-position: -50% 0; }
+}
+.skeleton-shimmer {
+  background-color: var(--muted);
+  background-image: linear-gradient(90deg, transparent 0%, var(--skeleton-highlight) 50%, transparent 100%);
+  background-size: 200% 100%;
+  background-repeat: no-repeat;
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
 @keyframes dash { to { stroke-dashoffset: -56; } }
 @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
@@ -163,7 +178,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .animate-rise, .animate-rise-d1, .animate-rise-d2, .animate-rise-d3, .animate-rise-d4 {
+  .animate-rise, .animate-rise-d1, .animate-rise-d2, .animate-rise-d3, .animate-rise-d4,
+  .skeleton-shimmer {
     animation: none;
   }
 }

@@ -55,3 +55,15 @@ export async function deactivateAirportAction(id: string): Promise<ActionResult<
   if (result.ok) revalidatePath(ADMIN_PATH);
   return result;
 }
+
+export async function reactivateAirportAction(id: string): Promise<ActionResult<{ id: string }>> {
+  await requireAdmin();
+
+  if (!idSchema("Airport").safeParse(id).success) {
+    return { ok: false, error: "Aeropuerto inválido" };
+  }
+
+  const result = await airportService.reactivateAirport(id);
+  if (result.ok) revalidatePath(ADMIN_PATH);
+  return result;
+}

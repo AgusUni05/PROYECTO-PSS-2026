@@ -19,7 +19,7 @@ export function hasAvailableSeats(flight: SeatCounts): boolean {
 }
 
 export type SaleCheckFlight = SeatCounts & {
-  status: "SCHEDULED" | "CANCELLED";
+  status: "SCHEDULED" | "COMPLETED" | "CANCELLED";
   date: Date;
   departureAt: Date;
   // Decimal de Prisma o number: se compara por su valor numérico.

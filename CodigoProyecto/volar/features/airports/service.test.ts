@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { Prisma } from "@/generated/prisma/client";
 import { prismaMock } from "@/tests/prisma-mock";
-import { createAirport, deactivateAirport, updateAirport } from "./service";
+import { createAirport, deactivateAirport, reactivateAirport, updateAirport } from "./service";
 
 const validData = { code: "EZE", name: "Ezeiza", city: "Buenos Aires" };
 
@@ -94,6 +94,21 @@ describe("deactivateAirport", () => {
     expect(prismaMock.airport.update).toHaveBeenCalledWith({
       where: { id: "AER_1" },
       data: { isActive: false },
+    });
+  });
+});
+
+describe("reactivateAirport", () => {
+  it("vuelve a activar el aeropuerto (isActive: true) sin validar vuelos", async () => {
+    prismaMock.airport.update.mockResolvedValue({ ...anAirport, isActive: true });
+
+    const result = await reactivateAirport("AER_1");
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.flight.count).not.toHaveBeenCalled();
+    expect(prismaMock.airport.update).toHaveBeenCalledWith({
+      where: { id: "AER_1" },
+      data: { isActive: true },
     });
   });
 });

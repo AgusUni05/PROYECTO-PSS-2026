@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Lock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -15,6 +15,7 @@ import { PaginationLinks } from "@/components/pagination-links";
 import type { AirportListItem } from "../queries";
 import type { AirportFilters } from "../schema";
 import { DeactivateAirportButton } from "./deactivate-airport-button";
+import { ReactivateAirportButton } from "./reactivate-airport-button";
 
 type Props = {
   airports: AirportListItem[];
@@ -29,7 +30,7 @@ export function AirportTable({ airports, total, page, pageCount, filters }: Prop
   function buildHref(targetPage: number) {
     const params = new URLSearchParams();
     if (filters.q) params.set("q", filters.q);
-    if (filters.estado !== "activos") params.set("estado", filters.estado);
+    if (filters.estado !== "todos") params.set("estado", filters.estado);
     if (targetPage > 1) params.set("page", String(targetPage));
     const qs = params.toString();
     return `/admin/aeropuertos${qs ? `?${qs}` : ""}`;
@@ -98,9 +99,7 @@ export function AirportTable({ airports, total, page, pageCount, filters }: Prop
                             }
                           />
                         ) : (
-                          <Button variant="outline" size="sm" disabled>
-                            Dado de baja
-                          </Button>
+                          <ReactivateAirportButton id={a.id} />
                         )}
                       </div>
                       {a.isActive && a.hasFutureFlights && (

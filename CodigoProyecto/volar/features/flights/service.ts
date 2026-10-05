@@ -68,7 +68,7 @@ export async function generateFlights(
   const airplaneFlights = await prisma.flight.findMany({
     where: {
       airplaneId: airplane.id,
-      status: "SCHEDULED",
+      status: { not: "CANCELLED" },
       departureAt: { lte: maxArrival },
       arrivalAt: { gte: minDeparture },
     },

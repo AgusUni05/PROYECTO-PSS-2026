@@ -41,12 +41,12 @@ describe("airportFormSchema", () => {
 describe("airportFiltersSchema", () => {
   it("usa valores por defecto cuando no se pasa nada", () => {
     const result = airportFiltersSchema.parse({});
-    expect(result).toEqual({ q: "", estado: "activos", page: 1 });
+    expect(result).toEqual({ q: "", estado: "todos", page: 1 });
   });
 
   it("cae a los valores por defecto ante entradas inválidas", () => {
     const result = airportFiltersSchema.parse({ estado: "cualquier-cosa", page: "no-es-numero" });
-    expect(result.estado).toBe("activos");
+    expect(result.estado).toBe("todos");
     expect(result.page).toBe(1);
   });
 });

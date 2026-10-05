@@ -63,7 +63,7 @@ export const editFlightFormSchema = z
 
 export type EditFlightFormValues = z.infer<typeof editFlightFormSchema>;
 
-export const FLIGHT_STATUS_FILTERS = ["SCHEDULED", "CANCELLED", "todos"] as const;
+export const FLIGHT_STATUS_FILTERS = ["SCHEDULED", "COMPLETED", "CANCELLED", "todos"] as const;
 
 export const flightFiltersSchema = z.object({
   fecha: z.string().regex(DATE_REGEX).catch(""),

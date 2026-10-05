@@ -65,3 +65,9 @@ export async function deactivateAirport(id: string): Promise<ActionResult<{ id: 
   await prisma.airport.update({ where: { id }, data: { isActive: false } });
   return { ok: true, data: { id } };
 }
+
+/** Reactivación: vuelve a marcar el aeropuerto como activo (sin restricciones). */
+export async function reactivateAirport(id: string): Promise<ActionResult<{ id: string }>> {
+  await prisma.airport.update({ where: { id }, data: { isActive: true } });
+  return { ok: true, data: { id } };
+}

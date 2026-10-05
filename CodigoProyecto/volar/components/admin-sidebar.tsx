@@ -14,7 +14,8 @@ type Props = {
 };
 
 // Sidebar de administración: fija a la izquierda desde `lg`, y un drawer que
-// se abre con el botón hamburguesa de la topbar en pantallas chicas.
+// se abre desde la derecha con el botón hamburguesa (también a la derecha) de
+// la topbar en pantallas chicas.
 export function AdminSidebar({ firstName, lastName }: Props) {
   const [open, setOpen] = useState(false);
 
@@ -47,7 +48,7 @@ export function AdminSidebar({ firstName, lastName }: Props) {
 
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex h-screen w-[260px] max-w-[85vw] flex-none -translate-x-full flex-col gap-6 overflow-y-auto bg-tower p-5 text-tower-foreground transition-transform duration-300 lg:sticky lg:top-0 lg:z-auto lg:w-[252px] lg:max-w-none lg:translate-x-0 lg:gap-7",
+          "fixed inset-y-0 right-0 z-50 flex h-screen w-[260px] max-w-[85vw] flex-none translate-x-full flex-col gap-6 overflow-y-auto bg-tower p-5 text-tower-foreground transition-transform duration-300 lg:sticky lg:top-0 lg:left-auto lg:right-auto lg:z-auto lg:w-[252px] lg:max-w-none lg:translate-x-0 lg:gap-7",
           open && "translate-x-0",
         )}
       >
