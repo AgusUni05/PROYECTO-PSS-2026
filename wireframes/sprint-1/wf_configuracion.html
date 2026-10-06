@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración — Configuración</title>
+    <link rel="stylesheet" href="sprint-1.css">
+</head>
+<body>
+    <main class="page">
+        <span class="ref">US-06 · Disponibilidad mensual y validación de 2 a 7 jornadas · Sprint 1</span>
+        <h1 class="doc-title">Administración — Configuración</h1>
+        <p class="doc-sub">Wireframe de baja fidelidad</p>
+        <hr class="collapse-rule">
+        <header class="topbar">
+            <div class="logo"></div>
+            <nav class="topnav">
+                <a class="nav-item" href="wf_gestion_usuarios_internos.html">Usuarios</a>
+                <a class="nav-item nav-item--active" href="wf_configuracion.html">Configuración</a>
+                <a class="nav-item" href="wf_mis_datos.html">Mi cuenta</a>
+            </nav>
+            <div class="top-user">
+                <span>Admin. Ana López</span>
+                <div class="avatar"></div>
+            </div>
+        </header>
+        <section class="wf-block">
+            <h3 style="margin: 0 0 10px; font-size: 15px;">Jornadas por semana</h3>
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">Cantidad de jornadas que cada médico tiene que cargar por semana al declarar su disponibilidad mensual.</p>
+            
+            <div class="field-grid">
+                <div class="field">
+                    <label for="minimo">Mínimo</label>
+                    <select id="minimo" class="input">
+                        <option value="1">1</option>
+                        <option value="2" selected>2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="maximo">Máximo</label>
+                    <select id="maximo" class="input">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7" selected>7</option>
+                    </select>
+                </div>
+            </div>
+            
+            <p class="hint" style="margin-top: 20px;">El cambio rige para las próximas cargas de disponibilidad. Las ya confirmadas no se modifican.</p>
+            
+            <div class="actions">
+                <a class="btn btn--primary" style="background: #185c6c; border-color: #185c6c;" href="#">Guardar</a>
+            </div>
+        </section>
+        <p class="foot">Pantalla de Configuración. Implementador: I2.</p>
+    </main>
+</body>
+</html>
