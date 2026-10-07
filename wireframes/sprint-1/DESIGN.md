@@ -23,10 +23,11 @@ El equipo implementador adoptó la regla de que **cada User Story la ejecuta un 
 | `wf_cancelacion_turno.html` | US-16 | 2 | I4 | **Nueva.** Listado de turnos, confirmación previa, estado tras cancelar y el caso fuera del plazo mínimo. |
 | `wf_estado_turno.html` | US-18 | 2 | I1 | **Nueva.** Vista de mostrador/consultorio para marcar cumplido o ausente, con su registro de auditoría. |
 | `wf_catalogo_vacunas.html` | US-24 | 2 | I1 | **Nueva.** Alta, edición y desactivación de vacunas (denominación, laboratorio, esquema de dosis). |
+| `wf_servicio_email.html` | US-21 | 2 | I1 | **Nueva.** Dejó de ser infraestructura sin pantalla: el administrador edita solo el mensaje de cada plantilla (asunto y destinatarios no editables) y define la cantidad máxima de envíos fallidos que se le admite a un mismo usuario. |
 | `wf_costo_consulta.html` | US-33 | 3 | I5 | **Nueva.** Costo de la consulta definido por cada médico, con historial de vigencias. |
 | `wf_acceso_denegado.html` | — | 1 a 3 | — | Estado transversal de RNF-03, verificado dentro de cada historia según la condición 6 de la definición de terminado. |
 
-US-21 (servicio de envío de email), US-14 (confirmación por email) y US-15 (recordatorio por email) no tienen pantalla propia: son infraestructura de notificaciones.
+US-21 (servicio de envío de email) ahora tiene pantalla propia (`wf_servicio_email.html`): edición del mensaje de las plantillas y configuración del límite de envíos fallidos por usuario. US-14 (confirmación por email) y US-15 (recordatorio por email) siguen sin pantalla propia: usan las plantillas que administra US-21, pero su disparo es infraestructura.
 
 ### Pendientes de los refinements
 

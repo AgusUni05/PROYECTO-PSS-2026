@@ -20,12 +20,20 @@ export async function SiteHeader() {
         </Link>
 
         {!user && (
-          <Link
-            href="/sign-in"
-            className="inline-flex h-[42px] items-center gap-2 rounded-full border border-white/28 px-[18px] text-sm font-semibold text-white transition-colors hover:border-white/50 hover:bg-white/10"
-          >
-            Iniciar sesión
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/sign-up"
+              className="inline-flex h-[42px] items-center gap-2 rounded-full bg-primary px-[18px] text-sm font-semibold text-white transition-colors hover:bg-primary/90"
+            >
+              Registrarse
+            </Link>
+            <Link
+              href="/sign-in"
+              className="inline-flex h-[42px] items-center gap-2 rounded-full border border-white/28 px-[18px] text-sm font-semibold text-white transition-colors hover:border-white/50 hover:bg-white/10"
+            >
+              Iniciar sesión
+            </Link>
+          </div>
         )}
         {user && (
           <div className="flex items-center gap-4 text-sm">
