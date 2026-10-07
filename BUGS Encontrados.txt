@@ -1,0 +1,7 @@
+No podes dar de alta después de dar de baja
+
+Te deja crear turnos el dia de hoy a fechas pasadas
+
+Funciona mal el guardar disponibilidad, se guardan los turnos por mas que los modifique (que los elimine) anda mal el editar.
+
+La pantalla de ver generación de turnos debería ir oculta, solo puedo llegar desde "guardar disponibilidad"
