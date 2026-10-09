@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-25 y US-26: Centro de Contingencias (Notificaciones y Reprogramación/Reembolso)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[AERO-LÍNEAS] - Portal de Pasajeros</div>
+      <div class="wf-user-session">
+        <span>Sesión: <strong>juan.perez@email.com</strong> (Pasajero)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Mi Cuenta / Salir</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Buscador <span class="wf-badge-us">US-08..14</span></a>
+      <a href="reserva_pasajes.html" class="wf-nav-link">Reserva y Pasajeros <span class="wf-badge-us">US-15..19</span></a>
+      <a href="pago_comprobantes.html" class="wf-nav-link">Pagos y Comprobantes <span class="wf-badge-us">US-20..24</span></a>
+      <a href="contingencia_pasajero.html" class="wf-nav-link active">Contingencias <span class="wf-badge-us">US-25/26</span></a>
+      <a href="reportes_admin.html" class="wf-nav-link">Admin: Reportes <span class="wf-badge-us">US-22/27</span></a>
+      <a href="autenticacion_usuarios.html" class="wf-nav-link">Seguridad y Roles <span class="wf-badge-us">US-28..30</span></a>
+      <a href="gestion_personal.html" class="wf-nav-link">Admin: Personal <span class="wf-badge-us">US-31</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Portal Web > Mis Viajes > Notificaciones > <strong>Centro de Contingencia y Resolución</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Gestión de Contingencias Operativas de Vuelo</h1>
+        <p class="wf-subtitle">Aviso por correo de cambios de itinerario o cancelación de vuelos y elección voluntaria entre reprogramación y reembolso.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-25: Notificación</span>
+        <span class="wf-badge-us">US-26: Reprogramación / Reembolso</span>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 1: VISTA DE LA NOTIFICACIÓN DE CONTINGENCIA (US-25 / RF-10) -->
+    <section class="wf-card" style="border: 2px solid var(--wf-black);">
+      <div class="wf-card-header" style="background-color: var(--wf-gray-lighter); padding: 12px 16px; margin: -20px -20px 20px -20px;">
+        <div>
+          <h2 class="wf-card-title" style="font-size: 1.25rem;">[Aviso al Pasajero - US-25] Vuelo Afectado por Cambio Operativo</h2>
+          <span style="font-size: 0.85rem; font-weight: 700;">Notificación enviada a: <strong>juan.perez@email.com</strong></span>
+        </div>
+        <span class="wf-tag wf-tag-active">Acción Requerida</span>
+      </div>
+
+      <!-- Banner de Correo de Notificación (US-25) -->
+      <div class="wf-alert" style="border: 2px solid var(--wf-black); background-color: var(--wf-white); margin-bottom: 20px;">
+        <div>
+          <strong>⚠️ Comunicación Oficial de Contingencia (RF-10 / US-25):</strong><br>
+          Estimado/a Juan Carlos Pérez, le informamos que el vuelo <strong>VU-20261002-01</strong> (AEP &rarr; COR) programado para el <strong>02/10/2026 a las 08:30 hs</strong> ha sido <strong>CANCELADO</strong> por motivos operativos/mantenimiento de aeronave.<br><br>
+          De acuerdo a la normativa comercial, ponemos a su disposición las siguientes alternativas para que elija la que mejor se adapte a sus planes sin costo alguno.
+        </div>
+      </div>
+
+      <!-- Resumen del Pasaje Comprado Original -->
+      <div style="background-color: var(--wf-gray-lighter); border: 1px solid var(--wf-gray-mid); padding: 14px; border-radius: var(--wf-radius); margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <strong>Reserva Afectada: RES-202610-ARG77</strong> (Total: 3 pasajes en Economy)
+            <div style="font-size: 0.85rem; color: var(--wf-gray-dark);">Pasajeros: Juan Carlos Pérez, María Elena González, Lucas Pérez</div>
+          </div>
+          <div style="font-size: 1rem; font-weight: 800;">
+            Valor Pagado: $ 135.000 ARS
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: ELECCIÓN ENTRE REPROGRAMACIÓN Y REEMBOLSO (US-26 / RF-10) -->
+      <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 14px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+        Seleccione su Curso de Acción (US-26)
+      </h3>
+
+      <div class="wf-grid-2" style="align-items: stretch;">
+
+        <!-- ALTERNATIVA A: REPROGRAMACIÓN DE VUELO (US-26) -->
+        <article class="wf-card" style="border: 2px solid var(--wf-black); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div class="wf-card-header">
+              <h4 class="wf-card-title">Opción A: Reprogramar Vuelo</h4>
+              <span class="wf-tag wf-tag-active">Sin Costo Adicional</span>
+            </div>
+
+            <p style="font-size: 0.85rem; margin-bottom: 14px;">
+              Reasigne sus 3 pasajes a un nuevo vuelo disponible en la <strong>misma ruta (AEP &rarr; COR)</strong> conservando su categoría Economy.
+            </p>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="vuelo-reprogramado">Elegir Vuelo Alternativo Disponible <span class="required">(*)</span></label>
+              <select id="vuelo-reprogramado" class="wf-select">
+                <option value="v1">VU-20261002-02 - Mismo día (02/10) a las 17:45 hs (5 cupos libres)</option>
+                <option value="v2">VU-20261004-01 - Domingo (04/10) a las 08:30 hs (150 cupos libres)</option>
+                <option value="v3">VU-20261005-01 - Lunes (05/10) a las 08:30 hs (142 cupos libres)</option>
+              </select>
+            </div>
+
+            <div class="wf-annotation">
+              <strong>Criterio US-26:</strong> El pasaje se reasigna a un nuevo vuelo y se emiten automáticamente los nuevos e-tickets sin penalidades.
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button class="wf-btn wf-btn-primary" style="width: 100%;" type="button" onclick="document.getElementById('modal-confirm-reprog').scrollIntoView();">
+              Confirmar Reprogramación Gratuita &rarr;
+            </button>
+          </div>
+        </article>
+
+        <!-- ALTERNATIVA B: SOLICITUD DE REEMBOLSO TOTAL (US-26) -->
+        <article class="wf-card" style="border: 2px solid var(--wf-black); display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <div class="wf-card-header">
+              <h4 class="wf-card-title">Opción B: Solicitar Reembolso Total</h4>
+              <span class="wf-tag wf-tag-inactive">Restitución 100%</span>
+            </div>
+
+            <p style="font-size: 0.85rem; margin-bottom: 14px;">
+              Cancele la compra y reciba el reintegro total del importe abonado en su cuenta bancaria.
+            </p>
+
+            <div class="wf-summary-card" style="padding: 12px; margin-bottom: 14px;">
+              <div class="wf-summary-row">
+                <span>Monto a Restituir:</span>
+                <strong>$ 135.000 ARS</strong>
+              </div>
+              <div class="wf-summary-row">
+                <span>Destino de Reintegro:</span>
+                <span>Tarjeta Crédito (•••• 4242)</span>
+              </div>
+              <div class="wf-summary-row">
+                <span>Plazo Estimado:</span>
+                <span>48 a 72 hs hábiles</span>
+              </div>
+            </div>
+
+            <div class="wf-annotation">
+              <strong>Criterio US-26:</strong> Se cancela formalmente el pasaje, se libera el cupo en el vuelo y se restituye íntegramente el importe pagado.
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button class="wf-btn wf-btn-danger" style="width: 100%; background-color: var(--wf-black); color: var(--wf-white); text-decoration: none;" type="button" onclick="document.getElementById('modal-confirm-reemb').scrollIntoView();">
+              Solicitar Reembolso del 100% ($ 135.000) &rarr;
+            </button>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- MODAL SIMULADO 1: CONFIRMAR REPROGRAMACIÓN (US-26) -->
+    <div class="wf-modal-overlay" id="modal-confirm-reprog">
+      <div class="wf-modal-box">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">[Confirmación US-26] Confirmar Reprogramación</h3>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">&times;</button>
+        </div>
+        <p style="margin-bottom: 12px;">
+          ¿Desea reasignar su reserva <strong>RES-202610-ARG77</strong> (3 pasajes) al vuelo <strong>VU-20261002-02 (02/10 17:45 hs)</strong>?
+        </p>
+        <div class="wf-alert" style="background-color: var(--wf-gray-lighter); border: 1px solid var(--wf-black);">
+          <div>Se generarán 3 nuevos e-tickets y se enviarán de forma inmediata a su correo electrónico.</div>
+        </div>
+        <div class="wf-btn-group" style="justify-content: flex-end;">
+          <button class="wf-btn wf-btn-outline" type="button">Cancelar</button>
+          <button class="wf-btn wf-btn-primary" type="button">Aceptar y Emitir Nuevos Pasajes</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL SIMULADO 2: CONFIRMAR REEMBOLSO (US-26) -->
+    <div class="wf-modal-overlay" id="modal-confirm-reemb">
+      <div class="wf-modal-box">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">[Confirmación US-26] Confirmar Reembolso Bancario</h3>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">&times;</button>
+        </div>
+        <p style="margin-bottom: 12px;">
+          ¿Confirma la cancelación definitiva de sus pasajes y la devolución de <strong>$ 135.000 ARS</strong> a su tarjeta terminada en <strong>4242</strong>?
+        </p>
+        <div class="wf-alert" style="background-color: var(--wf-gray-lighter); border: 1px solid var(--wf-black);">
+          <div>Los pasajes quedarán anulados y se liberarán los cupos en la aerolínea.</div>
+        </div>
+        <div class="wf-btn-group" style="justify-content: flex-end;">
+          <button class="wf-btn wf-btn-outline" type="button">Cancelar</button>
+          <button class="wf-btn wf-btn-danger" style="background-color: var(--wf-black); color: var(--wf-white); text-decoration: none;" type="button">
+            Confirmar Reembolso
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Índice de Wireframes - Sistema de Gestión de Vuelos</title>
+  <title>Índice Completo de Wireframes - Sistema de Gestión de Vuelos</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
     <div class="wf-header-top">
       <div class="wf-logo">[SISTEMA AÉREO] - Wireframes de Distribución</div>
       <div class="wf-user-session">
-        <span>Sprint 0: <strong>Wireframes de Estructura y Botones</strong></span>
+        <span>Sprint 0: <strong>Wireframes de Estructura y Botones (Escala de Grises)</strong></span>
       </div>
     </div>
     <nav class="wf-nav-bar">
@@ -21,146 +21,272 @@
       <a href="aeropuertos.html" class="wf-nav-link">Aeropuertos <span class="wf-badge-us">US-01</span></a>
       <a href="aviones.html" class="wf-nav-link">Aviones <span class="wf-badge-us">US-02</span></a>
       <a href="trayectos.html" class="wf-nav-link">Trayectos <span class="wf-badge-us">US-03</span></a>
-      <a href="vuelos_admin.html" class="wf-nav-link">Generación de Vuelos <span class="wf-badge-us">US-04/07/09/11</span></a>
-      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero (Búsqueda) <span class="wf-badge-us">US-13/14</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Gestión Vuelos <span class="wf-badge-us">US-04..12</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero <span class="wf-badge-us">US-08..14</span></a>
+      <a href="reserva_pasajes.html" class="wf-nav-link">Reserva <span class="wf-badge-us">US-15..19</span></a>
+      <a href="pago_comprobantes.html" class="wf-nav-link">Pagos y Facturas <span class="wf-badge-us">US-20..24</span></a>
+      <a href="contingencia_pasajero.html" class="wf-nav-link">Contingencias <span class="wf-badge-us">US-25/26</span></a>
+      <a href="reportes_admin.html" class="wf-nav-link">Admin: Reportes <span class="wf-badge-us">US-22/27</span></a>
+      <a href="autenticacion_usuarios.html" class="wf-nav-link">Seguridad y Roles <span class="wf-badge-us">US-28..30</span></a>
+      <a href="gestion_personal.html" class="wf-nav-link">Admin: Personal <span class="wf-badge-us">US-31</span></a>
     </nav>
   </header>
 
   <main class="wf-container">
-    <!-- Title -->
+    <!-- Title Box -->
     <div class="wf-page-title-box">
       <div>
-        <h1 class="wf-page-title">Índice de Wireframes Web (Sprint 0)</h1>
-        <p class="wf-subtitle">Distribución espacial y jerarquía de botones de las User Stories: US-01, US-02, US-03, US-04, US-07, US-09, US-11, US-13 y US-14 en estricta escala de grises.</p>
+        <h1 class="wf-page-title">Índice General de Wireframes Web (Sprint 0)</h1>
+        <p class="wf-subtitle">
+          Distribución de pantallas, flujos y botones para las User Stories:
+          <strong>US 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 y 31</strong>.
+        </p>
       </div>
       <div class="wf-btn-group">
-        <span class="wf-tag wf-tag-active">9 User Stories Cubiertas</span>
+        <span class="wf-tag wf-tag-active">31 User Stories Cubiertas</span>
       </div>
     </div>
 
-    <!-- Guía y Mapa de Páginas -->
-    <div class="wf-grid-2">
-
+    <!-- MÓDULO 1: CATÁLOGOS MAESTROS Y BASE OPERATIVA -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 24px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      1. Catálogos Maestros y Planificación Operativa
+    </h2>
+    <div class="wf-grid-3">
       <!-- US-01 -->
       <section class="wf-card">
         <div class="wf-card-header">
-          <h2 class="wf-card-title">1. Gestión de Aeropuertos</h2>
+          <h3 class="wf-card-title">Aeropuertos</h3>
           <span class="wf-badge-us">US-01</span>
         </div>
-        <p class="wf-subtitle" style="margin-bottom: 12px;">
-          <strong>Alcance:</strong> ABML de Aeropuertos (código IATA/ICAO, nombre y ciudad). Búsqueda con filtros y validación de bloqueo de baja si existen vuelos futuros.
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          ABML de aeropuertos con bloqueo de baja si posee vuelos futuros programados.
         </p>
         <div class="wf-annotation">
-          <strong>Botones principales:</strong><br>
-          • <code>[+ Nuevo Aeropuerto]</code> (Primario en cabecera)<br>
-          • <code>[Guardar Aeropuerto]</code>, <code>[Limpiar Campos]</code>, <code>[Cancelar]</code> (Formulario)<br>
-          • <code>[Aplicar Filtros]</code>, <code>[Restablecer]</code> (Buscador)<br>
-          • <code>[Editar]</code>, <code>[Dar de Baja]</code> (Por fila en grilla)
+          <strong>Botones:</strong> `[+ Nuevo Aeropuerto]`, `[Guardar Aeropuerto]`, `[Limpiar]`, `[Aplicar Filtros]`, `[Editar]`, `[Dar de Baja]`.
         </div>
-        <div class="wf-btn-group" style="margin-top: 16px;">
-          <a href="aeropuertos.html" class="wf-btn wf-btn-primary">Ver Wireframe Aeropuertos &rarr;</a>
+        <div style="margin-top: 14px;">
+          <a href="aeropuertos.html" class="wf-btn wf-btn-primary" style="width: 100%;">Abrir Wireframe US-01 &rarr;</a>
         </div>
       </section>
 
       <!-- US-02 -->
       <section class="wf-card">
         <div class="wf-card-header">
-          <h2 class="wf-card-title">2. Gestión de Aviones (Flota)</h2>
+          <h3 class="wf-card-title">Aviones (Flota)</h3>
           <span class="wf-badge-us">US-02</span>
         </div>
-        <p class="wf-subtitle" style="margin-bottom: 12px;">
-          <strong>Alcance:</strong> ABML de Aviones (identificador único, modelo, asientos Economy y Primera Clase, capacidad total).
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          ABML de flota, discriminación de capacidad Economy y Primera, validación de asientos vs ventas.
         </p>
         <div class="wf-annotation">
-          <strong>Botones principales:</strong><br>
-          • <code>[+ Nuevo Avión]</code> (Primario superior)<br>
-          • <code>[Guardar Avión]</code>, <code>[Limpiar]</code>, <code>[Cancelar]</code> (Formulario)<br>
-          • <code>[Buscar Aviones]</code>, <code>[Restablecer]</code> (Filtros)<br>
-          • <code>[Editar Capacidad]</code>, <code>[Dar de Baja]</code> (Por fila en grilla)
+          <strong>Botones:</strong> `[+ Nuevo Avión]`, `[Guardar Avión]`, `[Buscar Aviones]`, `[Editar Capacidad]`, `[Dar de Baja]`.
         </div>
-        <div class="wf-btn-group" style="margin-top: 16px;">
-          <a href="aviones.html" class="wf-btn wf-btn-primary">Ver Wireframe Aviones &rarr;</a>
+        <div style="margin-top: 14px;">
+          <a href="aviones.html" class="wf-btn wf-btn-primary" style="width: 100%;">Abrir Wireframe US-02 &rarr;</a>
         </div>
       </section>
 
       <!-- US-03 -->
       <section class="wf-card">
         <div class="wf-card-header">
-          <h2 class="wf-card-title">3. Gestión de Trayectos</h2>
+          <h3 class="wf-card-title">Trayectos</h3>
           <span class="wf-badge-us">US-03</span>
         </div>
-        <p class="wf-subtitle" style="margin-bottom: 12px;">
-          <strong>Alcance:</strong> ABML de Trayectos indicando aeropuertos de origen y destino distintos, días de la semana de operación y horarios de salida/llegada (+1 día si aplica).
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          ABML de rutas periódicas, selección de días semanales, orígenes/destinos distintos y horarios (+1 día).
         </p>
         <div class="wf-annotation">
-          <strong>Botones principales:</strong><br>
-          • <code>[+ Nuevo Trayecto]</code> (Primario)<br>
-          • <code>[Guardar Trayecto]</code>, <code>[Limpiar Campos]</code>, <code>[Cancelar]</code><br>
-          • <code>[Filtrar Trayectos]</code>, <code>[Limpiar Filtros]</code><br>
-          • <code>[Generar Vuelos]</code>, <code>[Editar]</code>, <code>[Dar de Baja]</code>
+          <strong>Botones:</strong> `[+ Nuevo Trayecto]`, `[Guardar Trayecto]`, `[Filtrar Trayectos]`, `[Generar Vuelos]`, `[Editar]`, `[Dar de Baja]`.
         </div>
-        <div class="wf-btn-group" style="margin-top: 16px;">
-          <a href="trayectos.html" class="wf-btn wf-btn-primary">Ver Wireframe Trayectos &rarr;</a>
+        <div style="margin-top: 14px;">
+          <a href="trayectos.html" class="wf-btn wf-btn-primary" style="width: 100%;">Abrir Wireframe US-03 &rarr;</a>
         </div>
       </section>
+    </div>
 
-      <!-- US-04, US-07, US-09, US-11 -->
+    <!-- MÓDULO 2: GESTIÓN DE VUELOS Y CANCELACIONES -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 30px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      2. Administración, Programación y Operaciones de Vuelos
+    </h2>
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h3 class="wf-card-title">Gestión Integral de Vuelos Reales en Calendario</h3>
+        <div class="wf-btn-group">
+          <span class="wf-badge-us">US-04</span>
+          <span class="wf-badge-us">US-05</span>
+          <span class="wf-badge-us">US-06</span>
+          <span class="wf-badge-us">US-07</span>
+          <span class="wf-badge-us">US-09</span>
+          <span class="wf-badge-us">US-11</span>
+          <span class="wf-badge-us">US-12</span>
+        </div>
+      </div>
+      <div class="wf-grid-3" style="gap: 12px; font-size: 0.85rem; margin-bottom: 12px;">
+        <div style="border: 1px solid var(--wf-gray-mid); padding: 12px; border-radius: var(--wf-radius);">
+          <strong>Generación & Períodos (US-04, 07):</strong><br>
+          Generación en calendario según frecuencia del trayecto y ventana de disponibilidad comercial.
+        </div>
+        <div style="border: 1px solid var(--wf-gray-mid); padding: 12px; border-radius: var(--wf-radius);">
+          <strong>Modificación Puntual & Tarifas (US-05, 09, 11, 12):</strong><br>
+          Ajuste puntual de horario/avión (capacidad &ge; vendidos) con aviso de contingencia (RF-10) y actualización de tarifas para futuras ventas.
+        </div>
+        <div style="border: 1px solid var(--wf-gray-mid); padding: 12px; border-radius: var(--wf-radius);">
+          <strong>Cancelación de Vuelos (US-06):</strong><br>
+          Cancelación de vuelo puntual o trayecto con confirmación explícita y disparo de email a compradores.
+        </div>
+      </div>
+      <div class="wf-annotation">
+        <strong>Botones:</strong> `[+ Programar Nuevos Vuelos]`, `[Cancelar Todos los Vuelos de un Trayecto]`, `[Modificar Vuelo (US-05/12)]`, `[Cancelar Vuelo (US-06)]`, `[Guardar Modificación]`.
+      </div>
+      <div style="margin-top: 14px;">
+        <a href="vuelos_admin.html" class="wf-btn wf-btn-primary">Abrir Wireframe Gestión de Vuelos (US-04..12) &rarr;</a>
+      </div>
+    </section>
+
+    <!-- MÓDULO 3: BÚSQUEDA, RESERVA Y COMPRA ONLINE -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 30px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      3. Portal de Pasajeros: Búsqueda, Cupos, Reserva y Pagos
+    </h2>
+    <div class="wf-grid-3">
+      <!-- US-08, 10, 13, 14 -->
       <section class="wf-card">
         <div class="wf-card-header">
-          <h2 class="wf-card-title">4. Generación y Tarifas de Vuelos</h2>
+          <h3 class="wf-card-title">Búsqueda y Cupos</h3>
           <div>
-            <span class="wf-badge-us">US-04</span>
-            <span class="wf-badge-us">US-07</span>
-            <span class="wf-badge-us">US-09</span>
-            <span class="wf-badge-us">US-11</span>
-          </div>
-        </div>
-        <p class="wf-subtitle" style="margin-bottom: 12px;">
-          <strong>Alcance:</strong> Generación masiva de vuelos reales desde trayecto, rango de fechas de venta (US-07), avión asignado, capacidad por clase (US-09), tarifas por clase (US-11), y grilla de vuelos generados (US-04).
-        </p>
-        <div class="wf-annotation">
-          <strong>Botones principales:</strong><br>
-          • <code>[Generar y Publicar Vuelos Reales]</code>, <code>[Previsualizar]</code><br>
-          • <code>[Buscar Vuelos Reales]</code>, <code>[Exportar Grilla]</code><br>
-          • <code>[Editar Vuelo]</code>, <code>[Cancelar Vuelo]</code> (Por fila)<br>
-          • <code>[Guardar Cambios de Vuelo]</code>, <code>[Cerrar / Descartar]</code> (Modal)
-        </div>
-        <div class="wf-btn-group" style="margin-top: 16px;">
-          <a href="vuelos_admin.html" class="wf-btn wf-btn-primary">Ver Wireframe Vuelos Admin &rarr;</a>
-        </div>
-      </section>
-
-      <!-- US-13 y US-14 -->
-      <section class="wf-card" style="grid-column: 1 / -1;">
-        <div class="wf-card-header">
-          <h2 class="wf-card-title">5. Portal del Pasajero: Búsqueda y Detalle de Opciones de Vuelo</h2>
-          <div>
+            <span class="wf-badge-us">US-08</span>
+            <span class="wf-badge-us">US-10</span>
             <span class="wf-badge-us">US-13</span>
             <span class="wf-badge-us">US-14</span>
           </div>
         </div>
-        <p class="wf-subtitle" style="margin-bottom: 12px;">
-          <strong>Alcance:</strong> Buscador de vuelos por origen, destino y fecha (US-13), ordenamiento cronológico de opciones, tarjetas de vuelo con horarios, tarifas diferenciadas Economy/Primera, cupos disponibles y estado sin cupo "Agotado" (US-14).
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Búsqueda por origen/destino/fecha. Ocultamiento de fechas fuera de período (**US-08**), bloqueo de clase agotada y aviso de cupo remanente (**US-10**).
         </p>
         <div class="wf-annotation">
-          <strong>Botones principales:</strong><br>
-          • <code>[Buscar Vuelos Disponibles &rarr;]</code> (Botón de acción primario)<br>
-          • <code>[&harr; Invertir Origen / Destino]</code>, <code>[Limpiar Búsqueda]</code> (Acciones rápidas)<br>
-          • <code>[Seleccionar Economy]</code>, <code>[Seleccionar Primera]</code> (En tarjetas de vuelo)<br>
-          • <code>[No Disponible / Agotado]</code> (Botón deshabilitado cuando no hay cupo)<br>
-          • <code>[Buscar en Fechas Cercanas]</code>, <code>[Cambiar Origen / Destino]</code> (Sin resultados)
+          <strong>Botones:</strong> `[Buscar Vuelos Disponibles →]`, `[⇄ Invertir]`, `[Seleccionar y Reservar →]`, `[Agotado (Deshabilitado)]`.
         </div>
-        <div class="wf-btn-group" style="margin-top: 16px;">
-          <a href="busqueda_pasajero.html" class="wf-btn wf-btn-primary">Ver Wireframe Portal Pasajero &rarr;</a>
+        <div style="margin-top: 14px;">
+          <a href="busqueda_pasajero.html" class="wf-btn wf-btn-primary" style="width: 100%;">Buscador (US-08..14) &rarr;</a>
         </div>
       </section>
 
+      <!-- US-15, 16, 17, 18, 19 -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Reserva y Pasajeros</h3>
+          <div>
+            <span class="wf-badge-us">US-15</span>
+            <span class="wf-badge-us">US-16</span>
+            <span class="wf-badge-us">US-17</span>
+            <span class="wf-badge-us">US-18</span>
+            <span class="wf-badge-us">US-19</span>
+          </div>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Grupo de 1 a 9 pasajes (**US-15**), total dinámico (**US-16**), temporizador de 10 min y validación atómica (**US-17**), carga individual (**US-18**) y resaltado de errores (**US-19**).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> Stepper `[-] [ 3 ] [+]`, `[Validar Formato]`, `[Confirmar Reserva y Proceder al Pago (US-17) →]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="reserva_pasajes.html" class="wf-btn wf-btn-primary" style="width: 100%;">Reserva (US-15..19) &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-20, 21, 23, 24 -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Pagos y Facturación</h3>
+          <div>
+            <span class="wf-badge-us">US-20</span>
+            <span class="wf-badge-us">US-21</span>
+            <span class="wf-badge-us">US-23</span>
+            <span class="wf-badge-us">US-24</span>
+          </div>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Ingreso de tarjeta sin persistir datos sensibles (**US-20 / RNF-08**), procesamiento pasarela (**US-21**), e-tickets y factura (**US-23**) y envío automático por email en &lt;2 min (**US-24 / RNF-02**).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Pagar y Confirmar Compra ($135.000)]`, `[Descargar E-Tickets (PDF)]`, `[Descargar Factura]`, `[Reenviar Email]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="pago_comprobantes.html" class="wf-btn wf-btn-primary" style="width: 100%;">Pagos (US-20..24) &rarr;</a>
+        </div>
+      </section>
     </div>
 
-    <!-- Panel Informativo de Estilo Wireframe -->
-    <div class="wf-alert" style="margin-top: 20px;">
+    <!-- MÓDULO 4: CONTINGENCIAS, REPORTES, SEGURIDAD Y PERSONAL -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 30px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      4. Contingencias, Reportes y Seguridad / Perfiles
+    </h2>
+    <div class="wf-grid-3">
+      <!-- US-25, 26 -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Contingencias Pasajero</h3>
+          <div>
+            <span class="wf-badge-us">US-25</span>
+            <span class="wf-badge-us">US-26</span>
+          </div>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Notificación por correo de reprogramación o cancelación (**US-25**) y panel de autogestión para elegir entre reprogramación de vuelo gratuita o reembolso del 100% (**US-26**).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Confirmar Reprogramación Gratuita]`, `[Solicitar Reembolso del 100%]`, `[Emitir Nuevos Pasajes]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="contingencia_pasajero.html" class="wf-btn wf-btn-primary" style="width: 100%;">Contingencias (US-25/26) &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-22, 27 -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Reportes y Auditoría Pagos</h3>
+          <div>
+            <span class="wf-badge-us">US-22</span>
+            <span class="wf-badge-us">US-27</span>
+          </div>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Registro transaccional de pagos aprobados y rechazados (**US-22**) y reporte gerencial de ocupación por vuelo, clase y fechas con métricas de ingresos (**US-27**).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Generar Métricas y Reporte]`, `[Exportar a Excel / CSV]`, `[Exportar Libro de Transacciones]`, `[Ver Log Pasarela]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="reportes_admin.html" class="wf-btn wf-btn-primary" style="width: 100%;">Reportes Admin (US-22/27) &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-28, 29, 30, 31 -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Seguridad, Roles y Personal</h3>
+          <div>
+            <span class="wf-badge-us">US-28..30</span>
+            <span class="wf-badge-us">US-31</span>
+          </div>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Registro con hashing (**US-28**), login/cierre seguro (**US-29**), control por rol y bloqueo HTTP 403 (**US-30**), y ABM de cuentas de personal conservando trazabilidad (**US-31**).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Iniciar Sesión]`, `[Crear Cuenta Pasajero]`, `[+ Nueva Cuenta Personal]`, `[Deshabilitar Cuenta (US-31)]`.
+        </div>
+        <div class="wf-btn-group" style="margin-top: 14px; gap: 8px;">
+          <a href="autenticacion_usuarios.html" class="wf-btn wf-btn-primary wf-btn-sm" style="flex: 1; text-align: center;">Roles (US-28..30)</a>
+          <a href="gestion_personal.html" class="wf-btn wf-btn-outline wf-btn-sm" style="flex: 1; text-align: center;">Personal (US-31)</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Regla de Estilo Global -->
+    <div class="wf-alert" style="margin-top: 24px;">
       <div>
-        <strong>Convención de Diseño:</strong> Wireframe de baja fidelidad en escala de grises (monocromático: blanco, negro, escala de grises), diseñado para validar layout, flujo de navegación, inputs de formularios y distribución ergonómica de botones.
+        <strong>Norma de Diseño Wireframe (Sprint 0):</strong> Interfaz de baja fidelidad en escala de grises rigurosa (sin colores cromáticos), validando la distribución ergonómica de botones, flujos transaccionales y consistencia visual de todo el sistema.
       </div>
     </div>
   </main>

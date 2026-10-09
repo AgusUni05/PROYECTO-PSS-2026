@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-15, 16, 17, 18, 19: Reserva y Carga de Pasajeros</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation Pasajero -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[AERO-LÍNEAS] - Portal de Pasajeros</div>
+      <div class="wf-user-session">
+        <span>Hola, <strong>Pasajero Invitado</strong></span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Mi Cuenta / Salir</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="aeropuertos.html" class="wf-nav-link">Admin: Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link">Admin: Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link">Admin: Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Admin: Gestión Vuelos <span class="wf-badge-us">US-04..12</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero (Búsqueda) <span class="wf-badge-us">US-08..14</span></a>
+      <a href="reserva_pasajes.html" class="wf-nav-link active">Reserva y Pasajeros <span class="wf-badge-us">US-15..19</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Portal Web > Vuelos > Vuelo VU-20261002-01 > <strong>Configuración de Reserva y Pasajeros</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Reserva de Pasajes y Datos de Viajeros</h1>
+        <p class="wf-subtitle">Selección de grupo (1 a 9 pasajes), cálculo en tiempo real, retención atómica de cupos y registro individual de pasajeros.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-15: Cantidad y Clase</span>
+        <span class="wf-badge-us">US-16: Cálculo Total</span>
+        <span class="wf-badge-us">US-17: Validación Atómica</span>
+        <span class="wf-badge-us">US-18: Datos Pasajeros</span>
+        <span class="wf-badge-us">US-19: Validación Formulario</span>
+      </div>
+    </div>
+
+    <!-- BANNER TEMPORIZADOR DE RETENCIÓN DE CUPO (US-17) -->
+    <div class="wf-timer-banner">
+      <div>
+        <strong>⏳ Retención Temporal de Asientos (Criterio US-17):</strong>
+        <div style="font-size: 0.85rem; color: var(--wf-gray-dark);">
+          Sus cupos están asegurados provisionalmente por un lapso máximo de 10 minutos mientras completa los datos de pago.
+        </div>
+      </div>
+      <div style="text-align: right;">
+        <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; display: block;">Tiempo restante:</span>
+        <span class="wf-timer-digits">09:42</span>
+      </div>
+    </div>
+
+    <!-- Layout Grid: Formulario Principal y Resumen Lateral -->
+    <div class="wf-grid-2" style="grid-template-columns: 1.6fr 1.1fr; align-items: start;">
+
+      <!-- COLUMNA IZQUIERDA: CONFIGURACIÓN DE GRUPO Y FORMULARIO DE PASAJEROS -->
+      <div>
+
+        <!-- PASO 1: SELECCIÓN DE CANTIDAD Y CLASE (US-15, US-10) -->
+        <section class="wf-card">
+          <div class="wf-card-header">
+            <h2 class="wf-card-title">1. Cantidad de Pasajes y Clase del Grupo (US-15)</h2>
+            <span class="wf-tag wf-tag-active">Paso 1 de 2</span>
+          </div>
+
+          <form action="#" method="POST" onsubmit="return false;">
+            <!-- Selector de Cantidad de 1 a 9 pasajes (US-15) -->
+            <div class="wf-form-group">
+              <label class="wf-label">Cantidad de Pasajes <span class="required">(*) (Mínimo: 1, Máximo: 9 pasajes por compra)</span></label>
+              <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+                <div class="wf-stepper">
+                  <button type="button" class="wf-stepper-btn" title="Restar">-</button>
+                  <div class="wf-stepper-value">3</div>
+                  <button type="button" class="wf-stepper-btn" title="Sumar">+</button>
+                </div>
+                <div class="wf-btn-group">
+                  <button type="button" class="wf-btn wf-btn-outline wf-btn-sm">1</button>
+                  <button type="button" class="wf-btn wf-btn-outline wf-btn-sm">2</button>
+                  <button type="button" class="wf-btn wf-btn-primary wf-btn-sm">3</button>
+                  <button type="button" class="wf-btn wf-btn-outline wf-btn-sm">4</button>
+                  <button type="button" class="wf-btn wf-btn-outline wf-btn-sm">5</button>
+                  <button type="button" class="wf-btn wf-btn-outline wf-btn-sm">6</button>
+                  <button type="button" class="wf-btn wf-btn-outline wf-btn-sm">7</button>
+                  <button type="button" class="wf-btn wf-btn-outline wf-btn-sm">8</button>
+                  <button type="button" class="wf-btn wf-btn-outline wf-btn-sm">9</button>
+                </div>
+              </div>
+              <span class="wf-help-text">La selección de cantidad actualizará dinámicamente los formularios de pasajeros y el total a abonar.</span>
+            </div>
+
+            <!-- Selector de Clase de Cabina Única para todo el grupo (US-15) -->
+            <div class="wf-form-group">
+              <label class="wf-label">Clase de Vuelo para todo el Grupo <span class="required">(*) (Una sola clase para la compra)</span></label>
+              <div class="wf-grid-2">
+                <!-- Opción Economy Seleccionada -->
+                <label class="wf-class-box" style="display: block; cursor: pointer; border: 2px solid var(--wf-black); text-align: left;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="font-weight: 800;"><input type="radio" name="clase_grupo" value="eco" checked> CLASE ECONOMY</span>
+                    <span class="wf-tag wf-tag-active">Seleccionada</span>
+                  </div>
+                  <div style="font-size: 1.2rem; font-weight: 800;">$ 45.000 <small style="font-size: 0.75rem; font-weight: normal;">/ pasaje</small></div>
+                  <div style="font-size: 0.75rem; color: var(--wf-gray-dark); margin-top: 4px;">Cupos libres: 142 asientos</div>
+                </label>
+
+                <!-- Opción Primera Clase -->
+                <label class="wf-class-box" style="display: block; cursor: pointer; text-align: left;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="font-weight: 800;"><input type="radio" name="clase_grupo" value="first"> PRIMERA CLASE</span>
+                    <span class="wf-tag wf-tag-inactive">Disponible</span>
+                  </div>
+                  <div style="font-size: 1.2rem; font-weight: 800;">$ 95.000 <small style="font-size: 0.75rem; font-weight: normal;">/ pasaje</small></div>
+                  <div style="font-size: 0.75rem; color: var(--wf-gray-dark); margin-top: 4px;">Cupos libres: 12 asientos</div>
+                </label>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- PASO 2: CARGA DE DATOS DE CADA PASAJERO (US-18) Y VALIDACIÓN DE ERRORES (US-19) -->
+        <section class="wf-card">
+          <div class="wf-card-header">
+            <h2 class="wf-card-title">2. Carga Individual de Datos de Pasajeros (US-18)</h2>
+            <span class="wf-tag wf-tag-active">3 Pasajeros a Registrar</span>
+          </div>
+
+          <!-- Alerta explicativa de Criterios US-18 y US-19 -->
+          <div class="wf-annotation">
+            <strong>Criterios US-18 y US-19:</strong> Se despliega un formulario obligatorio por cada pasajero del grupo. Si algún campo contiene formato inválido o se omite, el sistema bloquea el avance al pago y <strong>resalta el campo exacto y el pasajero específico</strong> a corregir.
+          </div>
+
+          <form action="#" method="POST" onsubmit="return false;">
+            
+            <!-- PASAJERO 1: Titular de la compra (Válido) -->
+            <div class="wf-passenger-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="wf-passenger-badge">Pasajero 1 (Titular / Comprador)</span>
+                <span style="font-size: 0.75rem; font-weight: 700;">✓ Datos Completos</span>
+              </div>
+
+              <div class="wf-grid-2">
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p1-nombre">Nombre <span class="required">(*)</span></label>
+                  <input type="text" id="p1-nombre" class="wf-input" value="Juan Carlos">
+                </div>
+
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p1-apellido">Apellido <span class="required">(*)</span></label>
+                  <input type="text" id="p1-apellido" class="wf-input" value="Pérez">
+                </div>
+              </div>
+
+              <div class="wf-grid-2">
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p1-tipo-doc">Tipo Documento <span class="required">(*)</span></label>
+                  <select id="p1-tipo-doc" class="wf-select">
+                    <option value="DNI" selected>DNI (Documento Nacional de Identidad)</option>
+                    <option value="PAS">Pasaporte</option>
+                  </select>
+                </div>
+
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p1-nro-doc">Número de Documento <span class="required">(*)</span></label>
+                  <input type="text" id="p1-nro-doc" class="wf-input" value="32456789">
+                </div>
+              </div>
+            </div>
+
+            <!-- PASAJERO 2: Acompañante (Válido) -->
+            <div class="wf-passenger-card">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="wf-passenger-badge">Pasajero 2 (Acompañante)</span>
+                <span style="font-size: 0.75rem; font-weight: 700;">✓ Datos Completos</span>
+              </div>
+
+              <div class="wf-grid-2">
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p2-nombre">Nombre <span class="required">(*)</span></label>
+                  <input type="text" id="p2-nombre" class="wf-input" value="María Elena">
+                </div>
+
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p2-apellido">Apellido <span class="required">(*)</span></label>
+                  <input type="text" id="p2-apellido" class="wf-input" value="González">
+                </div>
+              </div>
+
+              <div class="wf-grid-2">
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p2-tipo-doc">Tipo Documento <span class="required">(*)</span></label>
+                  <select id="p2-tipo-doc" class="wf-select">
+                    <option value="DNI" selected>DNI</option>
+                    <option value="PAS">Pasaporte</option>
+                  </select>
+                </div>
+
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p2-nro-doc">Número de Documento <span class="required">(*)</span></label>
+                  <input type="text" id="p2-nro-doc" class="wf-input" value="34123987">
+                </div>
+              </div>
+            </div>
+
+            <!-- PASAJERO 3: SIMULACIÓN DE ERROR VISUAL DE VALIDACIÓN (CRITERIO US-19) -->
+            <div class="wf-passenger-card error-state">
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span class="wf-passenger-badge" style="background-color: var(--wf-black); color: var(--wf-white);">
+                  Pasajero 3 (Acompañante) - REQUIERE CORRECCIÓN (US-19)
+                </span>
+                <span style="font-size: 0.75rem; font-weight: 800; text-decoration: underline;">
+                  ✕ 1 Error Detectado
+                </span>
+              </div>
+
+              <div class="wf-grid-2">
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p3-nombre">Nombre <span class="required">(*)</span></label>
+                  <input type="text" id="p3-nombre" class="wf-input" value="Lucas">
+                </div>
+
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p3-apellido">Apellido <span class="required">(*)</span></label>
+                  <input type="text" id="p3-apellido" class="wf-input" value="Pérez">
+                </div>
+              </div>
+
+              <div class="wf-grid-2">
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p3-tipo-doc">Tipo Documento <span class="required">(*)</span></label>
+                  <select id="p3-tipo-doc" class="wf-select">
+                    <option value="DNI" selected>DNI</option>
+                    <option value="PAS">Pasaporte</option>
+                  </select>
+                </div>
+
+                <!-- Campo con Error Resaltado Específico (US-19) -->
+                <div class="wf-form-group">
+                  <label class="wf-label" for="p3-nro-doc">
+                    Número de Documento <span class="required">(*)</span>
+                  </label>
+                  <input type="text" id="p3-nro-doc" class="wf-input wf-input-error" value="38.99A.11" placeholder="Solo números">
+                  <span class="wf-error-message">
+                    ▲ Error en Pasajero 3: Formato inválido. Ingrese solo dígitos numéricos sin puntos ni letras.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Botones de Acción del Formulario -->
+            <div class="wf-btn-group" style="margin-top: 10px;">
+              <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Validar Formato de Pasajeros</button>
+              <button class="wf-btn wf-btn-secondary wf-btn-sm" type="reset">Limpiar Datos</button>
+            </div>
+          </form>
+        </section>
+
+      </div>
+
+      <!-- COLUMNA DERECHA: RESUMEN COMERCIAL (US-16) Y CONFIRMACIÓN ATÓMICA (US-17) -->
+      <div>
+
+        <!-- TARJETA DE RESUMEN Y CÁLCULO TOTAL (US-16) -->
+        <section class="wf-summary-card">
+          <div class="wf-card-header" style="border-bottom: 2px solid var(--wf-black);">
+            <h2 class="wf-card-title">Resumen de Compra (US-16)</h2>
+            <span class="wf-tag wf-tag-active">Recálculo Dinámico</span>
+          </div>
+
+          <!-- Datos del Vuelo Seleccionado -->
+          <div style="margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px dashed var(--wf-gray-mid);">
+            <div style="font-weight: 800; font-size: 1rem;">VU-20261002-01: AEP &rarr; COR</div>
+            <div style="font-size: 0.85rem; color: var(--wf-gray-dark);">Fecha: Viernes 02/10/2026 &bull; 08:30 hs</div>
+            <div style="font-size: 0.85rem; color: var(--wf-gray-dark);">Aeronave: Boeing 737-800</div>
+          </div>
+
+          <!-- Desglose Matemático (US-16) -->
+          <div class="wf-summary-row">
+            <span>Clase Seleccionada:</span>
+            <strong>Economy (US-15)</strong>
+          </div>
+
+          <div class="wf-summary-row">
+            <span>Tarifa Vigente por Pasaje:</span>
+            <span>$ 45.000</span>
+          </div>
+
+          <div class="wf-summary-row">
+            <span>Cantidad de Pasajeros:</span>
+            <span>× 3 pasajes</span>
+          </div>
+
+          <div class="wf-summary-row">
+            <span>Subtotal Pasajes:</span>
+            <span>$ 135.000</span>
+          </div>
+
+          <div class="wf-summary-row">
+            <span>Tasas e Impuestos:</span>
+            <span>$ 0 (Incluidos)</span>
+          </div>
+
+          <!-- TOTAL DINÁMICO (Criterio US-16: Tarifa Vigente x Cantidad) -->
+          <div class="wf-summary-total">
+            <span>IMPORTE TOTAL (US-16):</span>
+            <span>$ 135.000 ARS</span>
+          </div>
+
+          <!-- VALIDACIÓN ATÓMICA DE CUPO AL CONFIRMAR (CRITERIO US-17) -->
+          <div class="wf-alert" style="margin-top: 18px; margin-bottom: 18px; border: 2px solid var(--wf-black); background-color: var(--wf-white);">
+            <div>
+              <strong>Validación Atómica (US-17):</strong><br>
+              Al hacer clic en confirmar, el sistema verifica de forma indivisible el cupo en la base de datos antes de transferir a la pasarela de pagos. Si el cupo fuera insuficiente, la compra se detiene y se notifica el remanente.
+            </div>
+          </div>
+
+          <!-- BOTONES DE CONFIRMACIÓN Y AVANCE -->
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button class="wf-btn wf-btn-primary wf-btn-lg" style="width: 100%; text-align: center;" type="button">
+              Confirmar Reserva y Proceder al Pago (US-17) &rarr;
+            </button>
+            <a href="busqueda_pasajero.html" class="wf-btn wf-btn-outline" style="width: 100%; text-align: center;">
+              &larr; Volver al Buscador de Vuelos
+            </a>
+            <button class="wf-btn wf-btn-danger wf-btn-sm" style="width: 100%;" type="button">
+              Liberar Asientos y Cancelar Proceso
+            </button>
+          </div>
+        </section>
+
+        <!-- PANEL DE VERIFICACIÓN DE CUPOS EN TIEMPO REAL -->
+        <section class="wf-card">
+          <div class="wf-card-header">
+            <h3 class="wf-card-title">Monitor de Asientos del Vuelo</h3>
+            <span class="wf-tag wf-tag-inactive">VU-20261002-01</span>
+          </div>
+
+          <div style="font-size: 0.85rem; line-height: 1.6;">
+            <div>• Asientos Totales Economy: 150</div>
+            <div>• Pasajes ya Vendidos: 8</div>
+            <div>• En Proceso de Compra (Retenidos): 3 (Su reserva)</div>
+            <div>• Cupos Libres Remanentes: <strong>139</strong></div>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+
+  </main>
+
+</body>
+</html>

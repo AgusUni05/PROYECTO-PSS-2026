@@ -536,3 +536,280 @@ body {
   margin-top: 16px;
   font-size: 0.85rem;
 }
+
+/* --- Added Wireframe Components for US-05, 06, 08, 10, 12, 15, 16, 17, 18, 19 --- */
+
+/* Countdown Timer Box (US-17) */
+.wf-timer-banner {
+  background-color: var(--wf-white);
+  border: 2px solid var(--wf-black);
+  padding: 12px 18px;
+  border-radius: var(--wf-radius);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-family: var(--wf-font);
+}
+
+.wf-timer-digits {
+  font-family: var(--wf-font-mono);
+  font-size: 1.25rem;
+  font-weight: 800;
+  background-color: var(--wf-black);
+  color: var(--wf-white);
+  padding: 4px 10px;
+  border-radius: var(--wf-radius);
+  letter-spacing: 2px;
+}
+
+/* Stepper Quantity Selector (US-15) */
+.wf-stepper {
+  display: inline-flex;
+  align-items: center;
+  border: 2px solid var(--wf-black);
+  border-radius: var(--wf-radius);
+  overflow: hidden;
+  background-color: var(--wf-white);
+}
+
+.wf-stepper-btn {
+  background-color: var(--wf-gray-lighter);
+  border: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+  width: 40px;
+  height: 38px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wf-stepper-btn:hover {
+  background-color: var(--wf-gray-light);
+}
+
+.wf-stepper-value {
+  width: 50px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.1rem;
+  border-left: 1px solid var(--wf-gray-mid);
+  border-right: 1px solid var(--wf-gray-mid);
+  line-height: 38px;
+}
+
+/* Passenger Card (US-18, US-19) */
+.wf-passenger-card {
+  border: 1px solid var(--wf-dark);
+  border-radius: var(--wf-radius);
+  background-color: var(--wf-white);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.wf-passenger-card.error-state {
+  border: 2px solid var(--wf-black);
+  background-color: #fafafa;
+}
+
+.wf-passenger-badge {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border: 1px solid var(--wf-black);
+  background-color: var(--wf-gray-lighter);
+  margin-bottom: 10px;
+}
+
+/* Error Field Highlight (US-19) */
+.wf-input-error {
+  border: 2px solid var(--wf-black) !important;
+  background-color: var(--wf-gray-lighter) !important;
+  outline: 2px dashed var(--wf-dark);
+}
+
+.wf-error-message {
+  display: block;
+  font-size: 0.775rem;
+  font-weight: 700;
+  color: var(--wf-black);
+  margin-top: 4px;
+  text-decoration: underline;
+}
+
+/* Summary Box / Pricing (US-16) */
+.wf-summary-card {
+  background-color: var(--wf-gray-lighter);
+  border: 2px solid var(--wf-black);
+  border-radius: var(--wf-radius);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.wf-summary-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+}
+
+.wf-summary-total {
+  display: flex;
+  justify-content: space-between;
+  border-top: 2px solid var(--wf-black);
+  padding-top: 10px;
+  margin-top: 12px;
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+/* Steps / Progress Indicator */
+.wf-steps-bar {
+  display: flex;
+  border-bottom: 2px solid var(--wf-black);
+  background-color: var(--wf-white);
+  margin-bottom: 24px;
+}
+
+.wf-step-item {
+  flex: 1;
+  text-align: center;
+  padding: 12px 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-right: 1px solid var(--wf-gray-light);
+  color: var(--wf-gray-dark);
+}
+
+.wf-step-item:last-child {
+  border-right: none;
+}
+
+.wf-step-item.active {
+  background-color: var(--wf-black);
+  color: var(--wf-white);
+}
+
+.wf-step-item.completed {
+  background-color: var(--wf-gray-lighter);
+  color: var(--wf-black);
+}
+
+/* Ticket / E-Ticket Card (US-23) */
+.wf-ticket-card {
+  border: 2px solid var(--wf-black);
+  border-radius: var(--wf-radius);
+  background-color: var(--wf-white);
+  padding: 16px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.wf-ticket-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px dashed var(--wf-black);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.wf-barcode {
+  height: 35px;
+  background: repeating-linear-gradient(
+    90deg,
+    #111,
+    #111 2px,
+    #fff 2px,
+    #fff 5px,
+    #111 5px,
+    #111 8px,
+    #fff 8px,
+    #fff 10px
+  );
+  margin-top: 12px;
+  border: 1px solid var(--wf-black);
+}
+
+/* Metric / Stat Boxes (US-27) */
+.wf-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 900px) {
+  .wf-stat-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.wf-stat-box {
+  background-color: var(--wf-white);
+  border: 2px solid var(--wf-black);
+  border-radius: var(--wf-radius);
+  padding: 16px;
+  text-align: center;
+}
+
+.wf-stat-number {
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 6px 0;
+  font-family: var(--wf-font-mono);
+}
+
+.wf-stat-label {
+  font-size: 0.775rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--wf-gray-dark);
+}
+
+.wf-stat-progress {
+  width: 100%;
+  height: 12px;
+  background-color: var(--wf-gray-lighter);
+  border: 1px solid var(--wf-black);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.wf-stat-progress-bar {
+  height: 100%;
+  background-color: var(--wf-black);
+}
+
+/* Access Control Role Badges (US-30) */
+.wf-role-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  border: 1px solid var(--wf-black);
+  border-radius: 2px;
+}
+
+.wf-role-admin {
+  background-color: var(--wf-black);
+  color: var(--wf-white);
+}
+
+.wf-role-mostrador {
+  background-color: var(--wf-gray-lighter);
+  color: var(--wf-black);
+}
+
+.wf-role-pasajero {
+  background-color: var(--wf-white);
+  color: var(--wf-black);
+  border-style: dashed;
+}
+
+

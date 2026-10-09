@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wireframe - US-13 y US-14: Portal Pasajero (Búsqueda y Detalle de Vuelos)</title>
+  <title>Wireframe - US-08, 10, 13, 14: Portal Pasajero (Búsqueda, Cupos y Disponibilidad)</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -22,23 +22,35 @@
       <a href="aeropuertos.html" class="wf-nav-link">Admin: Aeropuertos <span class="wf-badge-us">US-01</span></a>
       <a href="aviones.html" class="wf-nav-link">Admin: Aviones <span class="wf-badge-us">US-02</span></a>
       <a href="trayectos.html" class="wf-nav-link">Admin: Trayectos <span class="wf-badge-us">US-03</span></a>
-      <a href="vuelos_admin.html" class="wf-nav-link">Admin: Generación de Vuelos <span class="wf-badge-us">US-04/07/09/11</span></a>
-      <a href="busqueda_pasajero.html" class="wf-nav-link active">Portal Pasajero (Búsqueda) <span class="wf-badge-us">US-13/14</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Admin: Gestión Vuelos <span class="wf-badge-us">US-04..12</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link active">Portal Pasajero (Búsqueda) <span class="wf-badge-us">US-08/10/13/14</span></a>
+      <a href="reserva_pasajes.html" class="wf-nav-link">Reserva y Pasajeros <span class="wf-badge-us">US-15/16/17/18/19</span></a>
     </nav>
   </header>
 
   <main class="wf-container">
     <!-- Breadcrumb & Title -->
-    <div class="wf-breadcrumb">Portal Web > <strong>Búsqueda y Selección de Vuelos</strong></div>
+    <div class="wf-breadcrumb">Portal Web > <strong>Búsqueda de Vuelos y Disponibilidad de Cupos</strong></div>
     
     <div class="wf-page-title-box">
       <div>
-        <h1 class="wf-page-title">Buscador y Selección de Vuelos</h1>
-        <p class="wf-subtitle">Consulta de disponibilidad por origen, destino y fecha con visualización detallada de tarifas y cupos por clase.</p>
+        <h1 class="wf-page-title">Buscador de Vuelos y Consulta de Cupos</h1>
+        <p class="wf-subtitle">Consulta de itinerarios en período de venta habilitado, bloqueo automático por cupo agotado y desglose de tarifas.</p>
       </div>
       <div class="wf-btn-group">
+        <span class="wf-badge-us">US-08: En Período</span>
+        <span class="wf-badge-us">US-10: Bloqueo Cupo</span>
         <span class="wf-badge-us">US-13: Búsqueda</span>
-        <span class="wf-badge-us">US-14: Detalle y Tarifas</span>
+        <span class="wf-badge-us">US-14: Detalle Opciones</span>
+      </div>
+    </div>
+
+    <!-- Reglas de Negocio Destacadas -->
+    <div class="wf-alert">
+      <div>
+        <strong>Reglas de Consulta y Disponibilidad:</strong><br>
+        • <strong>US-08 (Ocultamiento Fuera de Período):</strong> Las búsquedas solo muestran vuelos dentro de su período comercial vigente. Cualquier intento de compra fuera de rango es rechazado con mensaje de validación.<br>
+        • <strong>US-10 (Bloqueo por Cupo Agotado):</strong> Si una clase no tiene asientos, se deshabilita su botón pero se permite la compra en la otra clase con cupo. Si la cantidad solicitada supera los asientos libres, el sistema notifica el remanente disponible.
       </div>
     </div>
 
@@ -79,24 +91,34 @@
           <div class="wf-form-group">
             <label class="wf-label" for="busq-fecha">Fecha de Salida <span class="required">(*)</span></label>
             <input type="date" id="busq-fecha" class="wf-input" value="2026-10-02">
+            <span class="wf-help-text">Período de venta habilitado: 01/10/2026 al 31/10/2026.</span>
           </div>
         </div>
 
         <div class="wf-btn-group" style="justify-content: space-between; margin-top: 10px; flex-wrap: wrap;">
           <div class="wf-btn-group">
             <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">&harr; Invertir Origen / Destino</button>
-            <button class="wf-btn wf-btn-secondary wf-btn-sm" type="reset">Limpiar Búsqueda</button>
+            <button class="wf-btn wf-btn-secondary wf-btn-sm" type="reset">Limpiar Campos</button>
           </div>
-          <button class="wf-btn wf-btn-primary wf-btn-lg" type="submit">Buscar Vuelos Disponibles &rarr;</button>
+          <button class="wf-btn wf-btn-primary wf-btn-lg" type="submit">Buscar Vuelos Disponibles (US-13) &rarr;</button>
         </div>
       </form>
     </section>
 
-    <!-- Resumen de Resultados y Filtros de Orden (US-14) -->
+    <!-- NOTIFICACIÓN DE VALIDACIÓN DE CUPO REMANENTE (CRITERIO US-10) -->
+    <div class="wf-alert" style="border: 2px solid var(--wf-black); background-color: var(--wf-gray-lighter);">
+      <div>
+        <strong>⚠️ Información de Cupo Remanente (US-10):</strong><br>
+        En el Vuelo <strong>VU-20261002-02</strong> se intentó seleccionar 6 pasajes en Clase Economy, pero solo quedan <strong>5 asientos libres</strong> disponibles. Ajuste la cantidad o elija Primera Clase.
+      </div>
+      <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ajustar Cantidad</button>
+    </div>
+
+    <!-- RESUMEN DE RESULTADOS Y ORDENAMIENTO (US-14) -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
       <div>
-        <h2 style="font-size: 1.25rem; font-weight: 700;">Resultados para: Buenos Aires (AEP) &rarr; Córdoba (COR)</h2>
-        <p class="wf-subtitle">Fecha: <strong>Viernes 02 de Octubre de 2026</strong> &bull; <strong>2 vuelos encontrados</strong> (ordenados cronológicamente por hora de salida)</p>
+        <h2 style="font-size: 1.25rem; font-weight: 700;">Vuelos Disponibles: Buenos Aires (AEP) &rarr; Córdoba (COR)</h2>
+        <p class="wf-subtitle">Fecha: <strong>Viernes 02 de Octubre de 2026</strong> &bull; <strong>2 opciones con cupo</strong> (ordenadas cronológicamente)</p>
       </div>
       <div class="wf-btn-group">
         <label class="wf-label" style="margin: 0;" for="ordenar">Ordenar por:</label>
@@ -108,13 +130,12 @@
       </div>
     </div>
 
-    <!-- TARJETA 1 DE VUELO CON AMBAS CLASES DISPONIBLES (US-14) -->
+    <!-- TARJETA 1 DE VUELO: AMBAS CLASES CON CUPO DISPONIBLE (US-14) -->
     <article class="wf-flight-card">
       <div class="wf-flight-main">
-        <!-- Detalle de Itinerario y Ruta -->
         <div>
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <span class="wf-tag wf-tag-active">Vuelo VU-20261002-01</span>
+            <span class="wf-tag wf-tag-active">VU-20261002-01</span>
             <span style="font-size: 0.8rem; color: var(--wf-gray-dark);">Aeronave: Boeing 737-800</span>
           </div>
 
@@ -136,31 +157,34 @@
           </div>
         </div>
 
-        <!-- Opción Tarifa Economy (US-14) -->
+        <!-- Opción Economy Disponible -->
         <div class="wf-class-box">
           <div class="wf-class-title">Clase Economy</div>
           <div class="wf-class-price">$ 45.000</div>
-          <div class="wf-class-seats">Cupos disponibles: <strong>142</strong></div>
-          <button class="wf-btn wf-btn-primary" style="width: 100%;" type="button">Seleccionar Economy</button>
+          <div class="wf-class-seats">Cupos libres: <strong>142</strong></div>
+          <a href="reserva_pasajes.html" class="wf-btn wf-btn-primary" style="width: 100%;">
+            Seleccionar y Reservar &rarr;
+          </a>
         </div>
 
-        <!-- Opción Tarifa Primera Clase (US-14) -->
+        <!-- Opción Primera Clase Disponible -->
         <div class="wf-class-box">
           <div class="wf-class-title">Primera Clase</div>
           <div class="wf-class-price">$ 95.000</div>
-          <div class="wf-class-seats">Cupos disponibles: <strong>12</strong></div>
-          <button class="wf-btn wf-btn-outline" style="width: 100%;" type="button">Seleccionar Primera</button>
+          <div class="wf-class-seats">Cupos libres: <strong>12</strong></div>
+          <a href="reserva_pasajes.html" class="wf-btn wf-btn-outline" style="width: 100%;">
+            Seleccionar y Reservar &rarr;
+          </a>
         </div>
       </div>
     </article>
 
-    <!-- TARJETA 2 DE VUELO CON PRIMERA CLASE AGOTADA (US-14) -->
+    <!-- TARJETA 2 DE VUELO: PRIMERA CLASE AGOTADA (BLOQUEO US-10) -->
     <article class="wf-flight-card">
       <div class="wf-flight-main">
-        <!-- Detalle de Itinerario y Ruta -->
         <div>
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <span class="wf-tag wf-tag-active">Vuelo VU-20261002-02</span>
+            <span class="wf-tag wf-tag-active">VU-20261002-02</span>
             <span style="font-size: 0.8rem; color: var(--wf-gray-dark);">Aeronave: Airbus A320</span>
           </div>
 
@@ -182,38 +206,63 @@
           </div>
         </div>
 
-        <!-- Opción Tarifa Economy (US-14) -->
+        <!-- Opción Economy Disponible con pocos cupos -->
         <div class="wf-class-box">
           <div class="wf-class-title">Clase Economy</div>
           <div class="wf-class-price">$ 48.000</div>
-          <div class="wf-class-seats">Últimos <strong>5</strong> cupos</div>
-          <button class="wf-btn wf-btn-primary" style="width: 100%;" type="button">Seleccionar Economy</button>
+          <div class="wf-class-seats">¡Últimos <strong>5</strong> asientos disponibles!</div>
+          <a href="reserva_pasajes.html" class="wf-btn wf-btn-primary" style="width: 100%;">
+            Seleccionar Economy &rarr;
+          </a>
         </div>
 
-        <!-- Opción Tarifa Primera Clase AGOTADA (US-14 Criterio de Aceptación) -->
+        <!-- Opción Primera Clase: BLOQUEADA POR CUPO AGOTADO (US-10) -->
         <div class="wf-class-box soldout">
           <div class="wf-class-title">Primera Clase</div>
           <div class="wf-class-price" style="text-decoration: line-through; color: var(--wf-gray-mid);">$ 98.000</div>
-          <div class="wf-class-seats"><span class="wf-tag wf-tag-inactive">Agotado / Sin Cupo</span></div>
-          <button class="wf-btn wf-btn-secondary disabled" style="width: 100%;" disabled>No Disponible</button>
+          <div class="wf-class-seats">
+            <span class="wf-tag wf-tag-inactive" style="font-weight: 800;">AGOTADO (US-10)</span>
+          </div>
+          <button class="wf-btn wf-btn-secondary disabled" style="width: 100%;" disabled title="Criterio US-10: Compra deshabilitada por cupo agotado en esta clase">
+            Sin Cupo Disponible
+          </button>
         </div>
       </div>
     </article>
 
-    <!-- ESTADO ALTERNATIVO: MENSAJE SIN RESULTADOS / VUELO FUERA DE PERÍODO (US-13 Criterio) -->
-    <section class="wf-card" style="border-style: dashed; margin-top: 30px;">
+    <!-- ESTADO ALTERNATIVO 1: RECHAZO POR VUELO FUERA DE PERÍODO (US-08) -->
+    <section class="wf-card" style="border: 2px dashed var(--wf-black); margin-top: 30px;">
       <div class="wf-card-header">
-        <h3 class="wf-card-title">[Vista de Validación] Estado cuando no hay vuelos en la fecha seleccionada</h3>
-        <span class="wf-tag wf-tag-inactive">Simulación US-13</span>
+        <h3 class="wf-card-title">[Simulación US-08] Intento de Búsqueda de Vuelo Fuera de Período</h3>
+        <span class="wf-tag wf-tag-inactive">Validación Bloqueante US-08</span>
       </div>
-      <div style="text-align: center; padding: 20px 0;">
-        <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 8px;">No encontramos vuelos programados para la fecha seleccionada</div>
-        <p class="wf-subtitle" style="margin-bottom: 16px;">
-          No hay vuelos disponibles para el trayecto seleccionado o la fecha se encuentra fuera del período de disponibilidad comercial.
+      <div style="padding: 10px 0;">
+        <div class="wf-alert" style="border: 2px solid var(--wf-black);">
+          <div>
+            <strong>Mensaje de Validación (Criterio de Aceptación US-08):</strong><br>
+            La fecha consultada (<strong>15/12/2026</strong>) se encuentra <strong>fuera del período de venta comercial habilitado</strong> para este trayecto (Temporada vigente: 01/10/2026 al 31/10/2026). El sistema no habilita ventas fuera de temporada y oculta los vuelos no publicados.
+          </div>
+        </div>
+        <div class="wf-btn-group" style="justify-content: flex-end;">
+          <button class="wf-btn wf-btn-primary" type="button">Volver a Fechas Habilitadas</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ESTADO ALTERNATIVO 2: SIN VUELOS PROGRAMADOS EN LA FECHA (US-13) -->
+    <section class="wf-card" style="border-style: dashed; margin-top: 20px;">
+      <div class="wf-card-header">
+        <h3 class="wf-card-title">[Simulación US-13] Sin Vuelos Programados para la Fecha</h3>
+        <span class="wf-tag wf-tag-inactive">Notificación Clara</span>
+      </div>
+      <div style="text-align: center; padding: 16px 0;">
+        <div style="font-size: 1.25rem; font-weight: 700; margin-bottom: 6px;">No hay vuelos programados para la fecha seleccionada</div>
+        <p class="wf-subtitle" style="margin-bottom: 14px;">
+          No operan frecuencias en este día de la semana o los cupos de ambas clases se encuentran agotados.
         </p>
         <div class="wf-btn-group" style="justify-content: center;">
-          <button class="wf-btn wf-btn-primary" type="button">Buscar en Fechas Cercanas (&plusmn;3 días)</button>
-          <button class="wf-btn wf-btn-outline" type="button">Cambiar Origen / Destino</button>
+          <button class="wf-btn wf-btn-primary" type="button">Buscar en Días Próximos (&plusmn;2 días)</button>
+          <button class="wf-btn wf-btn-outline" type="button">Modificar Trayecto</button>
         </div>
       </div>
     </section>

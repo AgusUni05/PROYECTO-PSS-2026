@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-31: Gestión de Cuentas de Personal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Panel Administración</div>
+      <div class="wf-user-session">
+        <span>Usuario: <strong>admin@vuelos.com</strong> (Administrador)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Cerrar Sesión</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="aeropuertos.html" class="wf-nav-link">Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link">Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link">Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Gestión Vuelos <span class="wf-badge-us">US-04..12</span></a>
+      <a href="reportes_admin.html" class="wf-nav-link">Admin: Reportes <span class="wf-badge-us">US-22/27</span></a>
+      <a href="autenticacion_usuarios.html" class="wf-nav-link">Seguridad y Roles <span class="wf-badge-us">US-28..30</span></a>
+      <a href="gestion_personal.html" class="wf-nav-link active">Admin: Personal <span class="wf-badge-us">US-31</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero <span class="wf-badge-us">US-08..26</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Administración > Seguridad y Personal > <strong>Gestión de Cuentas de Personal</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Administración de Cuentas de Personal</h1>
+        <p class="wf-subtitle">Alta, modificación y deshabilitación de cuentas de Administradores y Empleados de Mostrador.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-31 | RF-12</span>
+        <button class="wf-btn wf-btn-primary" type="button" onclick="document.getElementById('form-personal').scrollIntoView();">+ Nueva Cuenta de Personal</button>
+      </div>
+    </div>
+
+    <!-- Regla de Negocio US-31 -->
+    <div class="wf-alert">
+      <div>
+        <strong>Regla de Negocio US-31:</strong> Exclusivo para administradores. Permite habilitar o deshabilitar cuentas con roles <em>Empleado de Mostrador</em> o <em>Administrador</em>. Al deshabilitar una cuenta, se <strong>conserva de manera estricta la trazabilidad histórica</strong> de todas las operaciones realizadas por el usuario.
+      </div>
+      <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Entendido</button>
+    </div>
+
+    <div class="wf-grid-2" style="align-items: start;">
+      
+      <!-- FORMULARIO DE ALTA / EDICIÓN DE PERSONAL (US-31) -->
+      <section class="wf-card" id="form-personal">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Formulario] Alta de Usuario del Personal</h2>
+          <span class="wf-tag wf-tag-active">Modo: Nuevo Operador</span>
+        </div>
+
+        <form action="#" method="POST" onsubmit="return false;">
+          <div class="wf-grid-2">
+            <div class="wf-form-group">
+              <label class="wf-label" for="pers-nombre">Nombre <span class="required">(*)</span></label>
+              <input type="text" id="pers-nombre" class="wf-input" placeholder="Ej: Carlos">
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="pers-apellido">Apellido <span class="required">(*)</span></label>
+              <input type="text" id="pers-apellido" class="wf-input" placeholder="Ej: Gómez">
+            </div>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="pers-email">Email Corporativo Institucional <span class="required">(*)</span></label>
+            <input type="email" id="pers-email" class="wf-input" placeholder="cgomez@aerolineas.com">
+            <span class="wf-help-text">Email de acceso al panel interno con dominio autorizado.</span>
+          </div>
+
+          <div class="wf-grid-2">
+            <!-- Selección de Rol (Criterio US-31) -->
+            <div class="wf-form-group">
+              <label class="wf-label" for="pers-rol">Rol en el Sistema <span class="required">(*)</span></label>
+              <select id="pers-rol" class="wf-select">
+                <option value="mostrador" selected>Empleado de Mostrador (Terminales)</option>
+                <option value="admin">Administrador General (Acceso Total)</option>
+              </select>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="pers-sucursal">Sucursal / Terminal Asignada</label>
+              <select id="pers-sucursal" class="wf-select">
+                <option value="AEP">Aeroparque Jorge Newbery (AEP)</option>
+                <option value="EZE">Ministro Pistarini (EZE)</option>
+                <option value="COR">Taravella Córdoba (COR)</option>
+                <option value="HQ">Casa Central / Operaciones</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="pers-pass">Contraseña Temporal Provisoria <span class="required">(*)</span></label>
+            <input type="password" id="pers-pass" class="wf-input" value="TempPass2026!">
+            <span class="wf-help-text">Se solicitará cambio de clave obligatorio en el primer inicio de sesión.</span>
+          </div>
+
+          <div class="wf-btn-group" style="margin-top: 20px;">
+            <button class="wf-btn wf-btn-primary" type="submit">Crear Cuenta de Personal (US-31)</button>
+            <button class="wf-btn wf-btn-secondary" type="reset">Limpiar</button>
+            <button class="wf-btn wf-btn-outline" type="button">Cancelar</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- FILTROS Y RESUMEN DE CUENTAS -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Buscador] Filtrar Cuentas de Personal</h2>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Restablecer</button>
+        </div>
+
+        <form action="#" method="GET" onsubmit="return false;">
+          <div class="wf-form-group">
+            <label class="wf-label" for="f-pers-buscar">Buscar por Nombre o Email</label>
+            <input type="text" id="f-pers-buscar" class="wf-input" placeholder="Ej: gomez, admin...">
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="f-pers-rol">Filtrar por Rol</label>
+            <select id="f-pers-rol" class="wf-select">
+              <option value="todos">Todos los roles</option>
+              <option value="admin">Administradores</option>
+              <option value="mostrador">Empleados de Mostrador</option>
+            </select>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="f-pers-estado">Estado de la Cuenta</label>
+            <select id="f-pers-estado" class="wf-select">
+              <option value="todos">Todos (Activos y Deshabilitados)</option>
+              <option value="activos" selected>Solo Cuentas Activas</option>
+              <option value="deshab">Solo Cuentas Deshabilitadas</option>
+            </select>
+          </div>
+
+          <div class="wf-btn-group" style="margin-top: 24px;">
+            <button class="wf-btn wf-btn-primary" type="submit">Aplicar Filtros</button>
+            <button class="wf-btn wf-btn-secondary" type="button">Exportar Nómina</button>
+          </div>
+        </form>
+
+        <div class="wf-annotation" style="margin-top: 20px; margin-bottom: 0;">
+          <strong>Resumen del Personal:</strong><br>
+          • 2 Administradores activos<br>
+          • 5 Empleados de mostrador activos<br>
+          • 1 Cuenta deshabilitada (histórica)
+        </div>
+      </section>
+
+    </div>
+
+    <!-- TABLA DE CUENTAS DE PERSONAL (CRITERIO US-31) -->
+    <section class="wf-card" style="margin-top: 20px;">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Listado de Personal] Operadores Registrados (Total: 4)</h2>
+        <span class="wf-tag wf-tag-active">Trazabilidad Activa</span>
+      </div>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>Nombre y Apellido</th>
+              <th>Email Institucional</th>
+              <th>Rol Asignado</th>
+              <th>Sucursal / Terminal</th>
+              <th>Último Acceso</th>
+              <th>Estado</th>
+              <th style="text-align: right;">Botones de Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Usuario 1: Administrador -->
+            <tr>
+              <td><strong>Verónica Rossi</strong></td>
+              <td>vrossi@aerolineas.com</td>
+              <td><span class="wf-role-badge wf-role-admin">ADMINISTRADOR</span></td>
+              <td>Casa Central (HQ)</td>
+              <td>Hoy 14:32 hs</td>
+              <td><span class="wf-tag wf-tag-active">Activo</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar Rol</button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled title="No puede deshabilitar su propia sesión activa">Deshabilitar</button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Usuario 2: Empleado de Mostrador Activo -->
+            <tr>
+              <td><strong>Carlos Gómez</strong></td>
+              <td>cgomez@aerolineas.com</td>
+              <td><span class="wf-role-badge wf-role-mostrador">EMPLEADO MOSTRADOR</span></td>
+              <td>Aeroparque (AEP) - Mostrador 4</td>
+              <td>Ayer 18:20 hs</td>
+              <td><span class="wf-tag wf-tag-active">Activo</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar Rol</button>
+                  <button class="wf-btn wf-btn-danger wf-btn-sm" type="button" onclick="document.getElementById('modal-deshabilitar').scrollIntoView();">
+                    Deshabilitar (US-31)
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Usuario 3: Empleado de Mostrador Activo -->
+            <tr>
+              <td><strong>Mariana López</strong></td>
+              <td>mlopez@aerolineas.com</td>
+              <td><span class="wf-role-badge wf-role-mostrador">EMPLEADO MOSTRADOR</span></td>
+              <td>Córdoba (COR) - Mostrador 2</td>
+              <td>05/10/2026</td>
+              <td><span class="wf-tag wf-tag-active">Activo</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Editar Rol</button>
+                  <button class="wf-btn wf-btn-danger wf-btn-sm" type="button">Deshabilitar</button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Usuario 4: Cuenta DESHABILITADA (Conservando trazabilidad US-31) -->
+            <tr style="background-color: #f2f2f2;">
+              <td><strike>Roberto Díaz</strike></td>
+              <td>rdiaz@aerolineas.com</td>
+              <td><span class="wf-role-badge wf-role-mostrador">EMPLEADO MOSTRADOR</span></td>
+              <td>Ezeiza (EZE)</td>
+              <td>12/08/2026</td>
+              <td>
+                <span class="wf-tag wf-tag-inactive" style="border: 2px solid var(--wf-black);">DESHABILITADO</span>
+              </td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ver Auditoría Histórica</button>
+                  <button class="wf-btn wf-btn-primary wf-btn-sm" type="button">Reactivar Cuenta</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="wf-pagination">
+        <span>Mostrando 4 operadores de personal</span>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>&laquo; Anterior</button>
+          <button class="wf-btn wf-btn-primary wf-btn-sm">1</button>
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>Siguiente &raquo;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODAL SIMULADO: DESHABILITAR CUENTA DE PERSONAL CONSERVAR TRAZABILIDAD (US-31) -->
+    <div class="wf-modal-overlay" id="modal-deshabilitar">
+      <div class="wf-modal-box" style="border: 3px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">[Confirmar Acción US-31] Deshabilitar Cuenta de Personal</h3>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">&times;</button>
+        </div>
+
+        <p style="margin-bottom: 12px;">
+          ¿Está seguro de que desea deshabilitar la cuenta del empleado <strong>Carlos Gómez (cgomez@aerolineas.com)</strong>?
+        </p>
+
+        <div class="wf-alert" style="background-color: var(--wf-gray-lighter); border: 2px solid var(--wf-black);">
+          <div>
+            <strong>Garantía de Trazabilidad Histórica (Criterio US-31):</strong><br>
+            • La cuenta quedará inhabilitada para iniciar sesión de inmediato.<br>
+            • <strong>No se borra físicamente</strong>: todas las ventas en mostrador, emisiones de pasajes y auditorías previas realizadas por este usuario se mantendrán intactas en los reportes (RF-11 / RF-13).
+          </div>
+        </div>
+
+        <div class="wf-btn-group" style="justify-content: flex-end; gap: 10px; margin-top: 16px;">
+          <button class="wf-btn wf-btn-outline" type="button">Cancelar</button>
+          <button class="wf-btn wf-btn-danger" style="background-color: var(--wf-black); color: var(--wf-white); text-decoration: none;" type="button">
+            Confirmar Deshabilitación de Cuenta (US-31)
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-28, 29, 30: Autenticación, Registro y Control de Acceso por Roles</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos específicos para el simulador de perfiles interactivo */
+    .sim-active-card {
+      outline: 3px solid var(--wf-black);
+      background-color: var(--wf-white);
+    }
+    .sim-menu-chip {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1px solid var(--wf-black);
+      margin: 4px;
+      border-radius: var(--wf-radius);
+    }
+    .sim-menu-chip.allowed {
+      background-color: var(--wf-black);
+      color: var(--wf-white);
+    }
+    .sim-menu-chip.blocked {
+      background-color: var(--wf-gray-lighter);
+      color: var(--wf-gray-dark);
+      border-style: dashed;
+      text-decoration: line-through;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Seguridad y Perfiles</div>
+      <div class="wf-user-session">
+        <span id="header-user-status">Sesión actual: <strong>admin@vuelos.com</strong> (Rol: Administrador)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="cerrarSesionSimulada()">Cerrar Sesión (US-29)</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar" id="global-navbar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="aeropuertos.html" class="wf-nav-link nav-admin">Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link nav-admin">Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link nav-admin">Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link nav-admin">Gestión Vuelos <span class="wf-badge-us">US-04..12</span></a>
+      <a href="reportes_admin.html" class="wf-nav-link nav-admin">Admin: Reportes <span class="wf-badge-us">US-22/27</span></a>
+      <a href="autenticacion_usuarios.html" class="wf-nav-link active">Seguridad y Roles <span class="wf-badge-us">US-28..30</span></a>
+      <a href="gestion_personal.html" class="wf-nav-link nav-admin">Admin: Personal <span class="wf-badge-us">US-31</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link nav-public">Portal Pasajero <span class="wf-badge-us">US-08..26</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Seguridad y Usuarios > <strong>Autenticación y Control de Roles</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Módulo de Autenticación, Registro y Control de Acceso</h1>
+        <p class="wf-subtitle">Registro de pasajeros (US-28), inicio/cierre de sesión seguro (US-29) y vistas diferenciadas con bloqueo HTTP 403 por rol (US-30).</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-28: Registro</span>
+        <span class="wf-badge-us">US-29: Autenticación</span>
+        <span class="wf-badge-us">US-30: Control por Rol</span>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 1: LOGIN Y REGISTRO (US-28 y US-29) -->
+    <div class="wf-grid-2" style="align-items: start; margin-bottom: 30px;">
+
+      <!-- FORMULARIO DE INICIO DE SESIÓN (US-29) -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Inicio de Sesión] Acceso al Sistema (US-29)</h2>
+          <span class="wf-tag wf-tag-active">Autenticación Segura</span>
+        </div>
+
+        <form action="#" method="POST" onsubmit="event.preventDefault(); simularLogin();">
+          <div class="wf-form-group">
+            <label class="wf-label" for="login-email">Correo Electrónico <span class="required">(*)</span></label>
+            <input type="email" id="login-email" class="wf-input" placeholder="usuario@email.com" value="admin@vuelos.com">
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="login-pass">Contraseña <span class="required">(*)</span></label>
+            <input type="password" id="login-pass" class="wf-input" value="••••••••••••">
+          </div>
+
+          <div class="wf-form-group" style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="wf-checkbox-label" style="background: none; border: none; padding: 0;">
+              <input type="checkbox" name="recordar" checked> Mantener sesión activa
+            </label>
+            <a href="#" style="font-size: 0.8rem; color: var(--wf-black);">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <!-- Mensaje Estándar de Error de Autenticación (Criterio US-29) -->
+          <div id="login-feedback" class="wf-alert" style="background-color: var(--wf-gray-lighter); border: 1px dashed var(--wf-black); margin-bottom: 16px;">
+            <div id="login-feedback-text">
+              <strong>Validación US-29:</strong> Credenciales verificadas exitosamente con expiración segura de tokens (RNF-07).
+            </div>
+          </div>
+
+          <div class="wf-btn-group" style="flex-direction: column; gap: 8px;">
+            <button class="wf-btn wf-btn-primary wf-btn-lg" style="width: 100%; text-align: center;" type="submit">
+              Iniciar Sesión (US-29) &rarr;
+            </button>
+            <button class="wf-btn wf-btn-outline" style="width: 100%;" type="button" onclick="probarErrorLogin()">
+              Probar Error de Credenciales Inválidas (US-29)
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- FORMULARIO DE REGISTRO DE PASAJERO (US-28) -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Alta de Pasajero] Crear Cuenta Nueva (US-28)</h2>
+          <span class="wf-tag wf-tag-inactive">Registro Libre</span>
+        </div>
+
+        <div class="wf-annotation">
+          <strong>Políticas de Seguridad (RNF-08):</strong> El email debe ser único en el sistema. Las contraseñas se almacenan mediante hashing seguro e irreversible.
+        </div>
+
+        <form action="#" method="POST" onsubmit="event.preventDefault(); simularRegistroPasajero();">
+          <div class="wf-form-group">
+            <label class="wf-label" for="reg-email">Correo Electrónico (Email Único) <span class="required">(*)</span></label>
+            <input type="email" id="reg-email" class="wf-input" placeholder="nuevo.pasajero@email.com" value="nuevo.pasajero@email.com">
+            <span class="wf-help-text">Será su identificador único para compras e historial.</span>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="reg-pass">Contraseña Segura <span class="required">(*)</span></label>
+            <input type="password" id="reg-pass" class="wf-input" placeholder="Mínimo 8 caracteres, números y letras" value="Pasajero2026!">
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="reg-pass2">Confirmar Contraseña <span class="required">(*)</span></label>
+            <input type="password" id="reg-pass2" class="wf-input" placeholder="Repita la contraseña" value="Pasajero2026!">
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-checkbox-label">
+              <input type="checkbox" name="terminos" checked> Acepto las políticas y términos del servicio
+            </label>
+          </div>
+
+          <div class="wf-btn-group" style="margin-top: 18px;">
+            <button class="wf-btn wf-btn-primary" style="width: 100%; text-align: center;" type="submit">
+              Crear Cuenta de Pasajero (US-28) &rarr;
+            </button>
+          </div>
+        </form>
+      </section>
+
+    </div>
+
+    <!-- SECCIÓN 2: CONTROL DE ACCESO DIFERENCIADO POR ROL (US-30 / RF-12 / RNF-07) -->
+    <section class="wf-card" style="border: 2px solid var(--wf-black);" id="seccion-simulador">
+      <div class="wf-card-header">
+        <div>
+          <h2 class="wf-card-title">Simulador Interactivo: Vistas y Menús Adaptados por Rol (US-30)</h2>
+          <p class="wf-subtitle">Haga clic en cualquiera de los botones de rol para cambiar la sesión y verificar la adaptación del menú o el bloqueo HTTP 403.</p>
+        </div>
+        <div class="wf-btn-group">
+          <span class="wf-tag wf-tag-active" id="badge-rol-actual">Rol Activo: ADMINISTRADOR</span>
+        </div>
+      </div>
+
+      <!-- Cuadrícula de Comparación y Selección de Roles -->
+      <div class="wf-grid-3" style="gap: 16px; margin-bottom: 24px;">
+
+        <!-- ROL 1: ADMINISTRADOR -->
+        <div class="wf-card sim-active-card" id="card-admin" style="border: 2px solid var(--wf-black); padding: 16px; margin-bottom: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="wf-role-badge wf-role-admin">ADMINISTRADOR</span>
+            <span style="font-size: 0.75rem; font-weight: 700;">Acceso Total</span>
+          </div>
+          <p style="font-size: 0.85rem; margin-bottom: 10px;">Acceso a todas las operaciones técnicas, operativas y contables.</p>
+          <div style="font-size: 0.8rem; line-height: 1.6; background-color: var(--wf-gray-lighter); padding: 10px; border-radius: var(--wf-radius);">
+            <div>✓ Catálogo Aeropuertos y Flota</div>
+            <div>✓ Trayectos y Generación de Vuelos</div>
+            <div>✓ Modificación y Cancelación de Vuelos</div>
+            <div>✓ Reportes de Ocupación y Pagos</div>
+            <div>✓ Gestión de Cuentas de Personal</div>
+          </div>
+          <div style="margin-top: 14px;">
+            <button class="wf-btn wf-btn-primary wf-btn-sm" id="btn-sel-admin" style="width: 100%;" type="button" onclick="setSimulatedRole('admin')">
+              ● Simular Vista Administrador (Activo)
+            </button>
+          </div>
+        </div>
+
+        <!-- ROL 2: EMPLEADO DE MOSTRADOR -->
+        <div class="wf-card" id="card-mostrador" style="border: 2px solid var(--wf-black); padding: 16px; margin-bottom: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="wf-role-badge wf-role-mostrador">EMPLEADO MOSTRADOR</span>
+            <span style="font-size: 0.75rem; font-weight: 700;">Operativo Presencial</span>
+          </div>
+          <p style="font-size: 0.85rem; margin-bottom: 10px;">Atención en terminales de aeropuerto y asistencia presencial.</p>
+          <div style="font-size: 0.8rem; line-height: 1.6; background-color: var(--wf-gray-lighter); padding: 10px; border-radius: var(--wf-radius);">
+            <div>✓ Búsqueda de Vuelos Mostrador</div>
+            <div>✓ Venta Presencial de Pasajes</div>
+            <div>✓ Consulta de Reservas por DNI</div>
+            <div>✕ Bloqueado: Configuración de Vuelos</div>
+            <div>✕ Bloqueado: Cuentas de Personal</div>
+          </div>
+          <div style="margin-top: 14px;">
+            <button class="wf-btn wf-btn-outline wf-btn-sm" id="btn-sel-mostrador" style="width: 100%;" type="button" onclick="setSimulatedRole('mostrador')">
+              Simular Vista Mostrador
+            </button>
+          </div>
+        </div>
+
+        <!-- ROL 3: PASAJERO -->
+        <div class="wf-card" id="card-pasajero" style="border: 2px solid var(--wf-black); padding: 16px; margin-bottom: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span class="wf-role-badge wf-role-pasajero">PASAJERO CLIENTE</span>
+            <span style="font-size: 0.75rem; font-weight: 700;">Portal Público</span>
+          </div>
+          <p style="font-size: 0.85rem; margin-bottom: 10px;">Consulta, autogestión de compras y tickets personales.</p>
+          <div style="font-size: 0.8rem; line-height: 1.6; background-color: var(--wf-gray-lighter); padding: 10px; border-radius: var(--wf-radius);">
+            <div>✓ Búsqueda Pública de Vuelos</div>
+            <div>✓ Compra Online y Checkout</div>
+            <div>✓ Descarga de E-Tickets y Facturas</div>
+            <div>✓ Centro de Contingencias Personal</div>
+            <div>✕ Bloqueado: Todo el panel interno</div>
+          </div>
+          <div style="margin-top: 14px;">
+            <button class="wf-btn wf-btn-outline wf-btn-sm" id="btn-sel-pasajero" style="width: 100%;" type="button" onclick="setSimulatedRole('pasajero')">
+              Simular Vista Pasajero
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PANEL DINÁMICO: MENÚ Y RUTAS AUTORIZADAS DEL ROL SELECCIONADO (US-30) -->
+      <div style="border: 1px solid var(--wf-black); padding: 16px; border-radius: var(--wf-radius); background-color: var(--wf-white); margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--wf-gray-light); padding-bottom: 8px; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+          <div>
+            <h3 style="font-size: 1rem; font-weight: 800;">Menú Adaptado Dinámico para: <span id="lbl-rol-nombre">ADMINISTRADOR</span></h3>
+            <span style="font-size: 0.8rem; color: var(--wf-gray-dark);" id="lbl-rol-usuario">Usuario simulado: admin@vuelos.com</span>
+          </div>
+          <div class="wf-btn-group">
+            <button class="wf-btn wf-btn-danger wf-btn-sm" type="button" id="btn-probar-403" onclick="probarAccesoNoAutorizado()">
+              ⚡ Probar Intento de Acceso No Autorizado por URL (Simular HTTP 403)
+            </button>
+          </div>
+        </div>
+
+        <div style="font-size: 0.85rem; margin-bottom: 10px;">
+          <strong>Opciones del menú de navegación visibles para este rol:</strong>
+        </div>
+        <div id="container-chips-menu">
+          <!-- Se inyecta dinámicamente con JavaScript -->
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: PANTALLA DE BLOQUEO HTTP 403 FORBIDDEN (CRITERIO US-30) -->
+      <div id="seccion-403" style="border: 2px dashed var(--wf-black); padding: 20px; border-radius: var(--wf-radius); background-color: #fafafa; display: none;">
+        <div class="wf-card-header" style="border-bottom: 1px solid var(--wf-gray-mid);">
+          <h3 class="wf-card-title">[Validación de Seguridad US-30] Intento de Acceso No Autorizado por URL</h3>
+          <span class="wf-tag wf-tag-inactive" style="border: 2px solid var(--wf-black); font-weight: 800;">HTTP 403 FORBIDDEN</span>
+        </div>
+
+        <div style="text-align: center; padding: 20px 0;">
+          <div style="font-size: 2.2rem; font-weight: 800; font-family: var(--wf-font-mono); margin-bottom: 8px;">
+            403 - ACCESO DENEGADO
+          </div>
+          <div style="font-size: 1.1rem; font-weight: 700; margin-bottom: 6px;" id="txt-403-titulo">
+            No posee permisos para ingresar a este módulo administrativo
+          </div>
+          <p class="wf-subtitle" style="max-width: 650px; margin: 0 auto 20px auto;" id="txt-403-descripcion">
+            El usuario autenticado intentó acceder a una ruta protegida sin los privilegios requeridos. El sistema bloquea de manera inmediata la solicitud y registra el incidente en el log de auditoría de seguridad.
+          </p>
+          <div class="wf-btn-group" style="justify-content: center; gap: 10px;">
+            <button class="wf-btn wf-btn-primary" type="button" onclick="ocultarBloqueo403()">
+              &larr; Volver a mi Interfaz Autorizada
+            </button>
+            <button class="wf-btn wf-btn-outline" type="button" onclick="setSimulatedRole('admin')">
+              Cambiar a Rol Administrador
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT DEL SIMULADOR DE PERFILES (US-30, US-29, US-28) -->
+  <script>
+    // Estado del rol simulado actual: 'admin' | 'mostrador' | 'pasajero'
+    let currentRole = 'admin';
+
+    const roleDefinitions = {
+      admin: {
+        nombre: 'ADMINISTRADOR GENERAL',
+        usuario: 'admin@vuelos.com',
+        badgeClass: 'wf-role-admin',
+        menuAllowed: [
+          'Catálogo de Aeropuertos (US-01)',
+          'Catálogo de Aviones y Flota (US-02)',
+          'Programación de Trayectos (US-03)',
+          'Generación y Gestión de Vuelos (US-04..12)',
+          'Reportes de Ocupación y Pagos (US-22/27)',
+          'Gestión de Cuentas de Personal (US-31)',
+          'Seguridad y Roles (US-28..30)'
+        ],
+        menuBlocked: [],
+        rutaPrueba403: null // Admin tiene acceso a todo
+      },
+      mostrador: {
+        nombre: 'EMPLEADO DE MOSTRADOR',
+        usuario: 'cgomez@aerolineas.com (Terminal AEP Mostrador 4)',
+        badgeClass: 'wf-role-mostrador',
+        menuAllowed: [
+          'Búsqueda de Vuelos Mostrador (US-32)',
+          'Venta Presencial en Mostrador (US-33)',
+          'Consulta de Reservas por DNI (US-34)',
+          'Seguridad y Roles (US-28..30)'
+        ],
+        menuBlocked: [
+          '/admin/gestion-personal (US-31)',
+          '/admin/vuelos-tarifas (US-11/12)',
+          '/admin/flota-aviones (US-02)'
+        ],
+        rutaPrueba403: '/admin/gestion-personal'
+      },
+      pasajero: {
+        nombre: 'PASAJERO CLIENTE',
+        usuario: 'juan.perez@email.com (Cliente Particular)',
+        badgeClass: 'wf-role-pasajero',
+        menuAllowed: [
+          'Búsqueda de Vuelos Online (US-13/14)',
+          'Reserva y Selección de Pasajes (US-15..19)',
+          'Pago y Emisión de E-Tickets (US-20..24)',
+          'Centro de Contingencias (US-25/26)',
+          'Mis Viajes y Facturas (US-35/36)'
+        ],
+        menuBlocked: [
+          '/admin/reportes-ocupacion (US-27)',
+          '/admin/gestion-personal (US-31)',
+          '/admin/programacion-vuelos (US-04)',
+          '/mostrador/venta-presencial (US-33)'
+        ],
+        rutaPrueba403: '/admin/reportes-ocupacion'
+      }
+    };
+
+    function setSimulatedRole(roleKey) {
+      currentRole = roleKey;
+      const role = roleDefinitions[roleKey];
+
+      // 1. Actualizar indicador en cabecera principal
+      document.getElementById('header-user-status').innerHTML = 
+        `Sesión activa: <strong>${role.usuario}</strong> (Rol: <strong>${role.nombre}</strong>)`;
+
+      // 2. Actualizar tarjetas visuales de selección
+      ['admin', 'mostrador', 'pasajero'].forEach(r => {
+        const card = document.getElementById('card-' + r);
+        const btn = document.getElementById('btn-sel-' + r);
+        if (r === roleKey) {
+          card.classList.add('sim-active-card');
+          btn.className = 'wf-btn wf-btn-primary wf-btn-sm';
+          btn.textContent = `● Simular Vista ${r.charAt(0).toUpperCase() + r.slice(1)} (Activo)`;
+        } else {
+          card.classList.remove('sim-active-card');
+          btn.className = 'wf-btn wf-btn-outline wf-btn-sm';
+          btn.textContent = `Simular Vista ${r.charAt(0).toUpperCase() + r.slice(1)}`;
+        }
+      });
+
+      // 3. Actualizar panel dinámico de menús
+      document.getElementById('badge-rol-actual').textContent = `Rol Activo: ${role.nombre}`;
+      document.getElementById('lbl-rol-nombre').textContent = role.nombre;
+      document.getElementById('lbl-rol-usuario').textContent = `Usuario autenticado: ${role.usuario}`;
+
+      // Inyectar opciones de menú permitidas y bloqueadas
+      const chipContainer = document.getElementById('container-chips-menu');
+      chipContainer.innerHTML = '';
+
+      role.menuAllowed.forEach(item => {
+        const chip = document.createElement('span');
+        chip.className = 'sim-menu-chip allowed';
+        chip.textContent = '✓ ' + item;
+        chipContainer.appendChild(chip);
+      });
+
+      role.menuBlocked.forEach(item => {
+        const chip = document.createElement('span');
+        chip.className = 'sim-menu-chip blocked';
+        chip.title = 'Acceso Restringido para este rol (dispara HTTP 403)';
+        chip.textContent = '✕ ' + item + ' [BLOQUEADO]';
+        chipContainer.appendChild(chip);
+      });
+
+      // 4. Adaptar barra de navegación superior (simulando US-30)
+      const navLinksAdmin = document.querySelectorAll('#global-navbar .nav-admin');
+      navLinksAdmin.forEach(link => {
+        if (roleKey === 'admin') {
+          link.style.display = 'inline-block';
+          link.style.opacity = '1';
+        } else {
+          // Ocultar o atenuar según rol para reflejar menú adaptado
+          link.style.display = 'inline-block';
+          link.style.opacity = '0.35';
+          link.title = 'Ruta no autorizada para el rol actual';
+        }
+      });
+
+      // 5. Configurar botón de prueba de bloqueo 403
+      const btn403 = document.getElementById('btn-probar-403');
+      if (roleKey === 'admin') {
+        btn403.style.display = 'none'; // Admin no tiene bloqueo
+      } else {
+        btn403.style.display = 'inline-flex';
+        btn403.textContent = `⚡ Probar Acceso No Autorizado a "${role.rutaPrueba403}" (Simular HTTP 403)`;
+      }
+
+      // Ocultar sección 403 si estaba abierta
+      ocultarBloqueo403();
+    }
+
+    function probarAccesoNoAutorizado() {
+      const role = roleDefinitions[currentRole];
+      const sec403 = document.getElementById('seccion-403');
+      
+      document.getElementById('txt-403-titulo').textContent = 
+        `Acceso Denegado a "${role.rutaPrueba403}"`;
+      document.getElementById('txt-403-descripcion').innerHTML = 
+        `El usuario actual <strong>${role.usuario}</strong> con rol <strong>${role.nombre}</strong> no posee los privilegios requeridos para la ruta <code>${role.rutaPrueba403}</code>.<br><strong>Criterio de Aceptación US-30:</strong> El servidor y la interfaz bloquean la petición devolviendo un estado <strong>HTTP 403 Forbidden</strong>.`;
+      
+      sec403.style.display = 'block';
+      sec403.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function ocultarBloqueo403() {
+      document.getElementById('seccion-403').style.display = 'none';
+    }
+
+    function simularLogin() {
+      const email = document.getElementById('login-email').value;
+      const feedback = document.getElementById('login-feedback');
+      const text = document.getElementById('login-feedback-text');
+      
+      if (email.includes('admin')) {
+        setSimulatedRole('admin');
+        text.innerHTML = `<strong>✓ Inicio de Sesión Exitoso:</strong> Autenticado como Administrador (${email}). Token de sesión emitido (RNF-07).`;
+      } else if (email.includes('aerolineas.com') || email.includes('mostrador')) {
+        setSimulatedRole('mostrador');
+        text.innerHTML = `<strong>✓ Inicio de Sesión Exitoso:</strong> Autenticado como Empleado de Mostrador (${email}).`;
+      } else {
+        setSimulatedRole('pasajero');
+        text.innerHTML = `<strong>✓ Inicio de Sesión Exitoso:</strong> Autenticado como Pasajero (${email}).`;
+      }
+      feedback.style.backgroundColor = 'var(--wf-white)';
+      feedback.style.border = '2px solid var(--wf-black)';
+    }
+
+    function probarErrorLogin() {
+      const feedback = document.getElementById('login-feedback');
+      const text = document.getElementById('login-feedback-text');
+      text.innerHTML = `<strong>✕ Error de Autenticación (Criterio US-29):</strong> <em>"Credenciales inválidas. Verifique su correo electrónico y contraseña."</em>`;
+      feedback.style.backgroundColor = 'var(--wf-gray-lighter)';
+      feedback.style.border = '2px dashed var(--wf-black)';
+    }
+
+    function cerrarSesionSimulada() {
+      alert("Sesión cerrada correctamente. Token de autenticación revocado y expirado de forma segura (RNF-07).");
+      setSimulatedRole('pasajero');
+    }
+
+    function simularRegistroPasajero() {
+      const email = document.getElementById('reg-email').value;
+      alert(`¡Cuenta de Pasajero creada exitosamente para ${email}!\nContraseña procesada y almacenada con hash seguro (RNF-08). Ahora puede iniciar sesión.`);
+      document.getElementById('login-email').value = email;
+      setSimulatedRole('pasajero');
+    }
+
+    // Inicializar con el rol de Administrador
+    window.addEventListener('DOMContentLoaded', () => {
+      setSimulatedRole('admin');
+    });
+  </script>
+
+</body>
+</html>

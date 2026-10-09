@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-20, 21, 23, 24: Pasarela de Pago, E-Tickets y Facturación</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[AERO-LÍNEAS] - Portal de Pasajeros</div>
+      <div class="wf-user-session">
+        <span>Sesión: <strong>juan.perez@email.com</strong> (Pasajero)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Mi Perfil / Salir</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Buscador <span class="wf-badge-us">US-08..14</span></a>
+      <a href="reserva_pasajes.html" class="wf-nav-link">Reserva y Pasajeros <span class="wf-badge-us">US-15..19</span></a>
+      <a href="pago_comprobantes.html" class="wf-nav-link active">Pagos y Comprobantes <span class="wf-badge-us">US-20..24</span></a>
+      <a href="contingencia_pasajero.html" class="wf-nav-link">Contingencias <span class="wf-badge-us">US-25/26</span></a>
+      <a href="reportes_admin.html" class="wf-nav-link">Admin: Reportes <span class="wf-badge-us">US-22/27</span></a>
+      <a href="autenticacion_usuarios.html" class="wf-nav-link">Seguridad y Roles <span class="wf-badge-us">US-28..30</span></a>
+      <a href="gestion_personal.html" class="wf-nav-link">Admin: Personal <span class="wf-badge-us">US-31</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Portal Web > Compra de Pasajes > <strong>Pago y Emisión de Comprobantes</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Pasarela de Pagos y Emisión de Pasajes Electrónicos</h1>
+        <p class="wf-subtitle">Confirmación de compra, procesamiento con pasarela, emisión de e-tickets individuales, facturación y despacho por email.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-20: Ingreso Pago</span>
+        <span class="wf-badge-us">US-21: Pasarela Pago</span>
+        <span class="wf-badge-us">US-23: Pasajes y Factura</span>
+        <span class="wf-badge-us">US-24: Envío Email</span>
+      </div>
+    </div>
+
+    <!-- Indicador de Progreso de Compra -->
+    <div class="wf-steps-bar">
+      <div class="wf-step-item completed">1. Selección de Vuelo ✓</div>
+      <div class="wf-step-item completed">2. Datos de Pasajeros ✓</div>
+      <div class="wf-step-item active">3. Pago Seguro (US-20/21)</div>
+      <div class="wf-step-item">4. Comprobantes Emitidos (US-23/24)</div>
+    </div>
+
+    <!-- SECCIÓN 1: INGRESO DE INFORMACIÓN DE PAGO (US-20) -->
+    <div class="wf-grid-2" style="grid-template-columns: 1.4fr 1.2fr; align-items: start; margin-bottom: 24px;">
+
+      <!-- Formulario de Tarjeta de Crédito / Débito -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">1. Formulario de Pago con Tarjeta (US-20)</h2>
+          <span class="wf-tag wf-tag-active">Conexión Encriptada SSL</span>
+        </div>
+
+        <!-- Banner de Cumplimiento de Seguridad RNF-08 (Criterio US-20) -->
+        <div class="wf-alert" style="background-color: var(--wf-gray-lighter); border: 1px solid var(--wf-black);">
+          <div>
+            <strong>🔒 Seguridad de Datos Sensibles (RNF-08):</strong><br>
+            Los números de tarjeta y códigos de seguridad son transmitidos en forma segura directamente a la pasarela bancaria. <strong>El sistema no persiste datos bancarios sensibles en su base de datos</strong>.
+          </div>
+        </div>
+
+        <form action="#" method="POST" onsubmit="return false;">
+          <div class="wf-form-group">
+            <label class="wf-label">Seleccionar Medio de Pago <span class="required">(*)</span></label>
+            <div class="wf-checkbox-group">
+              <label class="wf-checkbox-label"><input type="radio" name="medio_pago" value="tc" checked> Tarjeta de Crédito</label>
+              <label class="wf-checkbox-label"><input type="radio" name="medio_pago" value="td"> Tarjeta de Débito</label>
+            </div>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="nro-tarjeta">Número de Tarjeta <span class="required">(*)</span></label>
+            <input type="text" id="nro-tarjeta" class="wf-input" placeholder="•••• •••• •••• 4242" value="4517 8820 9912 4242">
+            <span class="wf-help-text">16 dígitos sin espacios.</span>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="titular-tarjeta">Nombre y Apellido del Titular <span class="required">(*)</span></label>
+            <input type="text" id="titular-tarjeta" class="wf-input" value="JUAN CARLOS PEREZ">
+            <span class="wf-help-text">Tal como figura impreso en el plástico.</span>
+          </div>
+
+          <div class="wf-grid-2">
+            <div class="wf-form-group">
+              <label class="wf-label" for="vencimiento">Vencimiento (MM/AA) <span class="required">(*)</span></label>
+              <input type="text" id="vencimiento" class="wf-input" placeholder="MM/AA" value="08/29">
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="cvv">Código de Seguridad (CVV) <span class="required">(*)</span></label>
+              <input type="password" id="cvv" class="wf-input" placeholder="•••" value="123" maxlength="4">
+              <span class="wf-help-text">3 dígitos al dorso.</span>
+            </div>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="cuotas">Planes de Financiación</label>
+            <select id="cuotas" class="wf-select">
+              <option value="1" selected>1 pago de $ 135.000 ARS (Sin recargo)</option>
+              <option value="3">3 cuotas fijas de $ 49.500 ARS</option>
+              <option value="6">6 cuotas fijas de $ 26.100 ARS</option>
+            </select>
+          </div>
+
+          <!-- Botones de Acción de Pago -->
+          <div class="wf-btn-group" style="flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button class="wf-btn wf-btn-primary wf-btn-lg" style="width: 100%; text-align: center;" type="submit">
+              Pagar y Confirmar Compra ($ 135.000) (US-21) &rarr;
+            </button>
+            <a href="reserva_pasajes.html" class="wf-btn wf-btn-outline" style="width: 100%; text-align: center;">
+              &larr; Volver y Modificar Datos de Pasajeros
+            </a>
+          </div>
+        </form>
+      </section>
+
+      <!-- Panel de Resumen Previo al Pago (US-20) y Simulación de Estados de Pasarela (US-21) -->
+      <div>
+        
+        <!-- Resumen del Importe a Abonar (Criterio US-20) -->
+        <section class="wf-summary-card">
+          <div class="wf-card-header" style="border-bottom: 2px solid var(--wf-black);">
+            <h3 class="wf-card-title">Resumen de Cargo (US-20)</h3>
+            <span class="wf-tag wf-tag-active">Listo para Facturar</span>
+          </div>
+
+          <div style="font-size: 0.9rem; margin-bottom: 12px;">
+            <div><strong>Vuelo:</strong> VU-20261002-01 (AEP &rarr; COR)</div>
+            <div><strong>Fecha:</strong> 02/10/2026 - 08:30 hs</div>
+            <div><strong>Pasajeros:</strong> 3 personas (Economy)</div>
+          </div>
+
+          <div class="wf-summary-row">
+            <span>Tarifa ($45.000 &times; 3):</span>
+            <span>$ 135.000</span>
+          </div>
+          <div class="wf-summary-row">
+            <span>Cargos Administrativos:</span>
+            <span>$ 0</span>
+          </div>
+
+          <div class="wf-summary-total">
+            <span>IMPORTE TOTAL:</span>
+            <span>$ 135.000 ARS</span>
+          </div>
+        </section>
+
+        <!-- SIMULACIÓN DE RESULTADOS DE LA PASARELA DE PAGO (CRITERIO US-21) -->
+        <section class="wf-card" style="border: 2px dashed var(--wf-black);">
+          <div class="wf-card-header">
+            <h3 class="wf-card-title">[Simulación US-21] Respuesta de Pasarela</h3>
+            <span class="wf-tag wf-tag-inactive">Demostración</span>
+          </div>
+
+          <!-- Caso Aprobado -->
+          <div class="wf-alert" style="margin-bottom: 12px; background-color: var(--wf-gray-lighter); border: 2px solid var(--wf-black);">
+            <div>
+              <strong>✓ Transacción Aprobada (US-21):</strong><br>
+              ID Transacción: <strong>TX-9823471</strong><br>
+              • Compra confirmada exitosamente.<br>
+              • Se descuentan 3 cupos definitivamente.<br>
+              • Se dispara emisión de pasajes y factura (RF-09).
+            </div>
+          </div>
+
+          <!-- Caso Rechazado -->
+          <div class="wf-alert" style="border: 1px dashed var(--wf-black); background-color: var(--wf-white);">
+            <div>
+              <strong>✕ Simulación: Transacción Rechazada (US-21):</strong><br>
+              Motivo: <em>Fondos insuficientes o límite de tarjeta excedido</em>.<br>
+              • La compra no se procesa.<br>
+              • Se libera el cupo reservado de inmediato.
+            </div>
+            <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Probar Rechazo</button>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+
+    <!-- SECCIÓN 2: GENERACIÓN DE PASAJES ELECTRÓNICOS Y FACTURA (US-23) + ENVÍO POR EMAIL (US-24) -->
+    <section class="wf-card" style="margin-top: 30px; border: 2px solid var(--wf-black);">
+      <div class="wf-card-header" style="background-color: var(--wf-gray-lighter); padding: 12px 16px; margin: -20px -20px 20px -20px;">
+        <div>
+          <h2 class="wf-card-title" style="font-size: 1.3rem;">¡Compra Confirmada! Pasajes Emitidos y Facturación</h2>
+          <span style="font-size: 0.85rem; font-weight: 700;">Código de Reserva: <strong>RES-202610-ARG77</strong></span>
+        </div>
+        <div class="wf-btn-group">
+          <span class="wf-tag wf-tag-active">Estado: Pagado y Emitido</span>
+        </div>
+      </div>
+
+      <!-- BANNER DE ENVÍO AUTOMÁTICO POR EMAIL (CRITERIO US-24 / RNF-02) -->
+      <div class="wf-alert" style="border: 2px solid var(--wf-black); margin-bottom: 24px;">
+        <div>
+          <strong>✉️ Envío Automático de Comprobantes por Correo Electrónico (US-24 / RNF-02):</strong><br>
+          Se remitieron automáticamente los <strong>3 e-tickets y la factura fiscal en formato PDF</strong> adjunto a la casilla <strong>juan.perez@email.com</strong> (Tiempo de despacho garantizado menor a 2 minutos).
+        </div>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Reenviar Email</button>
+      </div>
+
+      <!-- LISTADO DE PASAJES ELECTRÓNICOS GENERADOS (CRITERIO US-23) -->
+      <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; border-bottom: 1px solid var(--wf-gray-light); padding-bottom: 6px;">
+        Pasajes Electrónicos Emitidos (1 por Pasajero) (US-23)
+      </h3>
+
+      <div class="wf-grid-3">
+        <!-- Ticket 1 -->
+        <article class="wf-ticket-card">
+          <div class="wf-ticket-header">
+            <div>
+              <span style="font-weight: 800; font-size: 0.85rem;">E-TICKET #1</span>
+              <div style="font-size: 0.75rem; color: var(--wf-gray-dark);">Vuelo: VU-20261002-01</div>
+            </div>
+            <span class="wf-tag wf-tag-active">Economy</span>
+          </div>
+          <div style="font-size: 0.9rem; line-height: 1.5;">
+            <div>Pasajero: <strong>PÉREZ, JUAN CARLOS</strong></div>
+            <div>Doc: <strong>DNI 32.456.789</strong></div>
+            <div>Ruta: <strong>AEP &rarr; COR</strong></div>
+            <div>Fecha: <strong>02/10/2026 &bull; 08:30 hs</strong></div>
+            <div>Asiento Asignado: <strong>14A</strong></div>
+          </div>
+          <div class="wf-barcode"></div>
+          <div style="text-align: right; margin-top: 10px;">
+            <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Descargar PDF</button>
+          </div>
+        </article>
+
+        <!-- Ticket 2 -->
+        <article class="wf-ticket-card">
+          <div class="wf-ticket-header">
+            <div>
+              <span style="font-weight: 800; font-size: 0.85rem;">E-TICKET #2</span>
+              <div style="font-size: 0.75rem; color: var(--wf-gray-dark);">Vuelo: VU-20261002-01</div>
+            </div>
+            <span class="wf-tag wf-tag-active">Economy</span>
+          </div>
+          <div style="font-size: 0.9rem; line-height: 1.5;">
+            <div>Pasajero: <strong>GONZÁLEZ, MARÍA ELENA</strong></div>
+            <div>Doc: <strong>DNI 34.123.987</strong></div>
+            <div>Ruta: <strong>AEP &rarr; COR</strong></div>
+            <div>Fecha: <strong>02/10/2026 &bull; 08:30 hs</strong></div>
+            <div>Asiento Asignado: <strong>14B</strong></div>
+          </div>
+          <div class="wf-barcode"></div>
+          <div style="text-align: right; margin-top: 10px;">
+            <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Descargar PDF</button>
+          </div>
+        </article>
+
+        <!-- Ticket 3 -->
+        <article class="wf-ticket-card">
+          <div class="wf-ticket-header">
+            <div>
+              <span style="font-weight: 800; font-size: 0.85rem;">E-TICKET #3</span>
+              <div style="font-size: 0.75rem; color: var(--wf-gray-dark);">Vuelo: VU-20261002-01</div>
+            </div>
+            <span class="wf-tag wf-tag-active">Economy</span>
+          </div>
+          <div style="font-size: 0.9rem; line-height: 1.5;">
+            <div>Pasajero: <strong>PÉREZ, LUCAS</strong></div>
+            <div>Doc: <strong>DNI 38.990.112</strong></div>
+            <div>Ruta: <strong>AEP &rarr; COR</strong></div>
+            <div>Fecha: <strong>02/10/2026 &bull; 08:30 hs</strong></div>
+            <div>Asiento Asignado: <strong>14C</strong></div>
+          </div>
+          <div class="wf-barcode"></div>
+          <div style="text-align: right; margin-top: 10px;">
+            <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Descargar PDF</button>
+          </div>
+        </article>
+      </div>
+
+      <!-- DETALLE DE FACTURA OFICIAL DE VENTA (CRITERIO US-23) -->
+      <div style="border: 1px solid var(--wf-dark); border-radius: var(--wf-radius); padding: 16px; margin-top: 20px; background-color: #fafafa;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--wf-black); padding-bottom: 8px; margin-bottom: 12px;">
+          <div>
+            <h4 style="font-size: 1.1rem; font-weight: 800;">FACTURA ELECTRÓNICA TIPO B (US-23)</h4>
+            <div style="font-size: 0.8rem; color: var(--wf-gray-dark);">N° Factura: 0001-00045921 &bull; Fecha: 07/10/2026 &bull; CUIT: 30-71123456-9</div>
+          </div>
+          <div style="text-align: right;">
+            <span style="font-size: 0.8rem;">Titular: <strong>Juan Carlos Pérez (DNI 32.456.789)</strong></span>
+          </div>
+        </div>
+
+        <table class="wf-table" style="background-color: var(--wf-white); margin-bottom: 12px;">
+          <thead>
+            <tr>
+              <th>Concepto</th>
+              <th>Cantidad</th>
+              <th>Tarifa Unitaria</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Pasaje Aéreo de Cabotaje (AEP &rarr; COR) - Clase Economy</td>
+              <td>3</td>
+              <td>$ 45.000,00</td>
+              <td>$ 135.000,00</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div style="font-size: 0.8rem; color: var(--wf-gray-dark);">
+            CAE N°: 74928192839102 &bull; Vto CAE: 17/10/2026 &bull; Transacción Pasarela: TX-9823471 (US-22)
+          </div>
+          <div style="font-size: 1.2rem; font-weight: 800;">
+            TOTAL ABONADO: $ 135.000,00 ARS
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones de Acción Final -->
+      <div class="wf-btn-group" style="justify-content: flex-end; margin-top: 24px; gap: 12px;">
+        <button class="wf-btn wf-btn-secondary" type="button">Descargar Todos los Comprobantes (ZIP)</button>
+        <button class="wf-btn wf-btn-outline" type="button">Descargar Factura PDF (US-23)</button>
+        <a href="index.html" class="wf-btn wf-btn-primary">Finalizar y Volver al Menú Principal</a>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

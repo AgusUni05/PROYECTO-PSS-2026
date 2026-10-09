@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-22 y US-27: Reportes de Ocupación y Registro de Pagos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Panel Administración</div>
+      <div class="wf-user-session">
+        <span>Usuario: <strong>admin@vuelos.com</strong> (Administrador)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Cerrar Sesión</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="aeropuertos.html" class="wf-nav-link">Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link">Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link">Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Gestión Vuelos <span class="wf-badge-us">US-04..12</span></a>
+      <a href="reportes_admin.html" class="wf-nav-link active">Admin: Reportes <span class="wf-badge-us">US-22/27</span></a>
+      <a href="autenticacion_usuarios.html" class="wf-nav-link">Seguridad y Roles <span class="wf-badge-us">US-28..30</span></a>
+      <a href="gestion_personal.html" class="wf-nav-link">Admin: Personal <span class="wf-badge-us">US-31</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero <span class="wf-badge-us">US-08..24</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Administración > Inteligencia Operativa y Finanzas > <strong>Reportes de Ocupación y Pagos</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Métricas de Ocupación y Registro Transaccional de Pagos</h1>
+        <p class="wf-subtitle">Análisis de carga por vuelo, clase y fechas para toma de decisiones y auditoría financiera de cobros.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-22: Registro de Pagos</span>
+        <span class="wf-badge-us">US-27: Reportes de Ocupación</span>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 1: FILTROS DE CONSULTA DE REPORTES (US-27 / RF-11) -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Filtros de Reporte] Criterios de Análisis (US-27)</h2>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Restablecer Período</button>
+      </div>
+
+      <div class="wf-grid-4">
+        <div class="wf-form-group">
+          <label class="wf-label" for="rep-fecha-desde">Fecha Desde <span class="required">(*)</span></label>
+          <input type="date" id="rep-fecha-desde" class="wf-input" value="2026-10-01">
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="rep-fecha-hasta">Fecha Hasta <span class="required">(*)</span></label>
+          <input type="date" id="rep-fecha-hasta" class="wf-input" value="2026-10-31">
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="rep-vuelo">Filtrar por Vuelo / Trayecto</label>
+          <select id="rep-vuelo" class="wf-select">
+            <option value="todos">Todos los vuelos del período</option>
+            <option value="TR-001" selected>TR-001: AEP &rarr; COR</option>
+            <option value="TR-002">TR-002: COR &rarr; AEP</option>
+          </select>
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="rep-clase">Categoría / Clase</label>
+          <select id="rep-clase" class="wf-select">
+            <option value="todas" selected>Global (Economy + Primera)</option>
+            <option value="eco">Solo Clase Economy</option>
+            <option value="primera">Solo Primera Clase</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="wf-btn-group" style="justify-content: space-between; flex-wrap: wrap; margin-top: 8px;">
+        <button class="wf-btn wf-btn-primary" type="button">Generar Métricas y Reporte (US-27)</button>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm" type="button">Exportar a Excel / CSV</button>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Imprimir Informe PDF</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESUMEN DE INDICADORES CLAVE (KPIS DE OCUPACIÓN - US-27) -->
+    <div class="wf-stat-grid">
+      <div class="wf-stat-box">
+        <div class="wf-stat-label">Ocupación Promedio Global</div>
+        <div class="wf-stat-number">88.6%</div>
+        <div class="wf-stat-progress">
+          <div class="wf-stat-progress-bar" style="width: 88.6%;"></div>
+        </div>
+        <small style="color: var(--wf-gray-dark); font-size: 0.75rem;">Sobre capacidad total ofertada</small>
+      </div>
+
+      <div class="wf-stat-box">
+        <div class="wf-stat-label">Total Asientos Vendidos</div>
+        <div class="wf-stat-number">468</div>
+        <div style="font-size: 0.8rem; font-weight: 700; margin-top: 4px;">De 528 disponibles</div>
+        <small style="color: var(--wf-gray-dark); font-size: 0.75rem;">60 asientos libres remanentes</small>
+      </div>
+
+      <div class="wf-stat-box">
+        <div class="wf-stat-label">Ocupación por Clase</div>
+        <div class="wf-stat-number">92% / 62%</div>
+        <div style="font-size: 0.8rem; font-weight: 700; margin-top: 4px;">Economy: 92% | Primera: 62%</div>
+        <small style="color: var(--wf-gray-dark); font-size: 0.75rem;">Asientos vendidos discriminados</small>
+      </div>
+
+      <div class="wf-stat-box">
+        <div class="wf-stat-label">Recaudación Bruta Confirmada</div>
+        <div class="wf-stat-number">$ 24.4M</div>
+        <div style="font-size: 0.8rem; font-weight: 700; margin-top: 4px;">Total pagos aprobados</div>
+        <small style="color: var(--wf-gray-dark); font-size: 0.75rem;">Auditado vía pasarela (US-22)</small>
+      </div>
+    </div>
+
+    <!-- TABLA 1: REPORTE DE OCUPACIÓN POR VUELO Y POR CLASE (CRITERIO US-27) -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Reporte Detallado] Ocupación por Vuelo, Clase y Fecha (US-27)</h2>
+        <span class="wf-tag wf-tag-active">Período: Octubre 2026</span>
+      </div>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>ID Vuelo</th>
+              <th>Fecha Real</th>
+              <th>Ruta</th>
+              <th>Avión</th>
+              <th>Ocupación Economy (US-27)</th>
+              <th>Ocupación Primera (US-27)</th>
+              <th>% Ocupación Total</th>
+              <th>Ingresos ($ ARS)</th>
+              <th style="text-align: right;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>VU-20261002-01</strong></td>
+              <td>02/10/2026</td>
+              <td>AEP &rarr; COR</td>
+              <td>LV-ARG01 (B738)</td>
+              <td>
+                <strong>142</strong> / 150 <small>(94.6%)</small>
+              </td>
+              <td>
+                <strong>12</strong> / 16 <small>(75.0%)</small>
+              </td>
+              <td>
+                <strong>92.7%</strong>
+                <div class="wf-stat-progress" style="width: 80px; height: 6px;">
+                  <div class="wf-stat-progress-bar" style="width: 92.7%;"></div>
+                </div>
+              </td>
+              <td>$ 7.530.000</td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ver Pasajeros</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td><strong>VU-20261002-02</strong></td>
+              <td>02/10/2026</td>
+              <td>AEP &rarr; COR</td>
+              <td>LV-ARG02 (A320)</td>
+              <td>
+                <strong>155</strong> / 160 <small>(96.8%)</small>
+              </td>
+              <td>
+                <strong>12</strong> / 12 <small>(100% - Agotado)</small>
+              </td>
+              <td>
+                <strong>97.0%</strong>
+                <div class="wf-stat-progress" style="width: 80px; height: 6px;">
+                  <div class="wf-stat-progress-bar" style="width: 97%;"></div>
+                </div>
+              </td>
+              <td>$ 8.616.000</td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ver Pasajeros</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td><strong>VU-20261004-01</strong></td>
+              <td>04/10/2026</td>
+              <td>AEP &rarr; COR</td>
+              <td>LV-ARG01 (B738)</td>
+              <td>
+                <strong>135</strong> / 150 <small>(90.0%)</small>
+              </td>
+              <td>
+                <strong>8</strong> / 16 <small>(50.0%)</small>
+              </td>
+              <td>
+                <strong>86.1%</strong>
+                <div class="wf-stat-progress" style="width: 80px; height: 6px;">
+                  <div class="wf-stat-progress-bar" style="width: 86.1%;"></div>
+                </div>
+              </td>
+              <td>$ 6.835.000</td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ver Pasajeros</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td><strong>VU-20261005-01</strong></td>
+              <td>05/10/2026</td>
+              <td>AEP &rarr; COR</td>
+              <td>LV-ARG01 (B738)</td>
+              <td>
+                <strong>150</strong> / 150 <small>(100% - Lleno)</small>
+              </td>
+              <td>
+                <strong>14</strong> / 16 <small>(87.5%)</small>
+              </td>
+              <td>
+                <strong>98.7%</strong>
+                <div class="wf-stat-progress" style="width: 80px; height: 6px;">
+                  <div class="wf-stat-progress-bar" style="width: 98.7%;"></div>
+                </div>
+              </td>
+              <td>$ 8.080.000</td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ver Pasajeros</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="wf-pagination">
+        <span>Mostrando 4 vuelos analizados</span>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>&laquo; Anterior</button>
+          <button class="wf-btn wf-btn-primary wf-btn-sm">1</button>
+          <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>Siguiente &raquo;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: REGISTRO TRANSACCIONAL DE PAGOS (CRITERIO US-22 / RF-08) -->
+    <section class="wf-card" style="margin-top: 30px; border: 2px solid var(--wf-black);">
+      <div class="wf-card-header">
+        <div>
+          <h2 class="wf-card-title">Auditoría y Registro Transaccional de Pagos (US-22)</h2>
+          <p class="wf-subtitle">Persistencia obligatoria de todos los intentos de cobro (aprobados y rechazados) con fecha, monto y resultado.</p>
+        </div>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm" type="button">Exportar Libro de Transacciones</button>
+        </div>
+      </div>
+
+      <!-- Filtros de Auditoría -->
+      <div class="wf-grid-3" style="margin-bottom: 16px;">
+        <div class="wf-form-group">
+          <label class="wf-label" for="f-tx-id">Buscar por ID de Transacción o Pasajero</label>
+          <input type="text" id="f-tx-id" class="wf-input" placeholder="Ej: TX-9823471, Pérez...">
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="f-tx-estado">Resultado de la Transacción</label>
+          <select id="f-tx-estado" class="wf-select">
+            <option value="todas">Todos los resultados (Aprobados y Rechazados)</option>
+            <option value="aprob">Solo Aprobados</option>
+            <option value="rech">Solo Rechazados</option>
+          </select>
+        </div>
+
+        <div class="wf-form-group" style="align-self: flex-end; margin-bottom: 16px;">
+          <button class="wf-btn wf-btn-primary" style="width: 100%;" type="button">Filtrar Transacciones</button>
+        </div>
+      </div>
+
+      <!-- Tabla de Transacciones Persistidas (US-22) -->
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>ID Transacción</th>
+              <th>Fecha y Hora (Timestamp)</th>
+              <th>Pasajero Comprador</th>
+              <th>Vuelo Asociado</th>
+              <th>Monto Cobrado</th>
+              <th>Medio / Tarjeta</th>
+              <th>Resultado</th>
+              <th style="text-align: right;">Detalle Pasarela</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>TX-9823471</code></td>
+              <td>07/10/2026 14:48:12</td>
+              <td>Juan Carlos Pérez (DNI 32.456.789)</td>
+              <td>VU-20261002-01</td>
+              <td><strong>$ 135.000,00</strong></td>
+              <td>Visa Crédito (•••• 4242)</td>
+              <td><span class="wf-tag wf-tag-active">✓ APROBADA</span></td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ver Log</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td><code>TX-9823470</code></td>
+              <td>07/10/2026 14:45:03</td>
+              <td>Juan Carlos Pérez (DNI 32.456.789)</td>
+              <td>VU-20261002-01</td>
+              <td><strong>$ 135.000,00</strong></td>
+              <td>Mastercard (•••• 8812)</td>
+              <td><span class="wf-tag wf-tag-inactive" style="border: 2px solid var(--wf-black);">✕ RECHAZADA</span></td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" title="Fondos insuficientes">Ver Error</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td><code>TX-9823469</code></td>
+              <td>07/10/2026 14:32:55</td>
+              <td>Martín Gómez (DNI 28.119.002)</td>
+              <td>VU-20261002-02</td>
+              <td><strong>$ 96.000,00</strong></td>
+              <td>Visa Débito (•••• 1009)</td>
+              <td><span class="wf-tag wf-tag-active">✓ APROBADA</span></td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ver Log</button>
+              </td>
+            </tr>
+
+            <tr>
+              <td><code>TX-9823468</code></td>
+              <td>07/10/2026 14:15:20</td>
+              <td>Lucía Fernández (DNI 39.882.174)</td>
+              <td>VU-20261005-01</td>
+              <td><strong>$ 45.000,00</strong></td>
+              <td>Amex (•••• 3301)</td>
+              <td><span class="wf-tag wf-tag-active">✓ APROBADA</span></td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Ver Log</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="wf-annotation" style="margin-top: 14px; margin-bottom: 0;">
+        <strong>Trazabilidad y Alimentación de Reportes (Criterios US-22):</strong> Todos los registros se almacenan con timestamp indeleble para auditoría contable y alimentan directamente el cálculo de ingresos y ocupación del módulo RF-11.
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>
