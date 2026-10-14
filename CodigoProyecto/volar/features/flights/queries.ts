@@ -23,6 +23,7 @@ export type FlightListItem = {
   economyFare: string;
   firstClassFare: string;
   status: "SCHEDULED" | "COMPLETED" | "CANCELLED";
+  issuedTickets: number;
 };
 
 /** US-04: listado de vuelos generados, filtrado y paginado. */
@@ -53,6 +54,7 @@ export async function listFlights(rawFilters: Record<string, string | undefined>
         airplane: {
           select: { id: true, identifier: true, economySeats: true, firstClassSeats: true },
         },
+        _count: { select: { tickets: { where: { status: "ISSUED" } } } },
       },
     }),
   ]);
@@ -76,6 +78,7 @@ export async function listFlights(rawFilters: Record<string, string | undefined>
     economyFare: f.economyFare.toString(),
     firstClassFare: f.firstClassFare.toString(),
     status: f.status,
+    issuedTickets: f._count.tickets,
   }));
 
   return {
@@ -85,4 +88,42 @@ export async function listFlights(rawFilters: Record<string, string | undefined>
     page: filters.page,
     pageCount: Math.max(1, Math.ceil(total / FLIGHTS_PAGE_SIZE)),
   };
+}
+
+export type RouteForCancellationOption = {
+  id: string;
+  code: string;
+  originCode: string;
+  destinationCode: string;
+  futureFlightCount: number;
+};
+
+/**
+ * US-06: trayectos activos que tienen al menos un vuelo programado futuro, para
+ * el selector de cancelación masiva. Ordenados por código.
+ */
+export async function listRoutesForCancellation(): Promise<RouteForCancellationOption[]> {
+  const now = new Date();
+  const routes = await prisma.route.findMany({
+    where: {
+      isActive: true,
+      flights: { some: { status: "SCHEDULED", departureAt: { gt: now } } },
+    },
+    orderBy: { code: "asc" },
+    include: {
+      origin: { select: { code: true } },
+      destination: { select: { code: true } },
+      _count: {
+        select: { flights: { where: { status: "SCHEDULED", departureAt: { gt: now } } } },
+      },
+    },
+  });
+
+  return routes.map((r) => ({
+    id: r.id,
+    code: r.code,
+    originCode: r.origin.code,
+    destinationCode: r.destination.code,
+    futureFlightCount: r._count.flights,
+  }));
 }

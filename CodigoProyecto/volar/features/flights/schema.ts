@@ -77,6 +77,31 @@ export const editFlightFormSchema = z
 
 export type EditFlightFormValues = z.infer<typeof editFlightFormSchema>;
 
+// US-06: motivo operativo de la cancelación, obligatorio (opciones del wireframe
+// vuelos_admin.html). Se persiste legible en Flight.cancellationReason y FlightChange.reason.
+export const CANCELLATION_REASONS = ["mantenimiento", "meteorologico", "operativo"] as const;
+export type CancellationReason = (typeof CANCELLATION_REASONS)[number];
+export const CANCELLATION_REASON_LABELS: Record<CancellationReason, string> = {
+  mantenimiento: "Mantenimiento imprevisto de aeronave",
+  meteorologico: "Condiciones meteorológicas adversas",
+  operativo: "Reestructuración operativa de itinerarios",
+};
+
+const cancellationReasonField = z.enum(CANCELLATION_REASONS, {
+  error: "Seleccioná un motivo de cancelación",
+});
+
+// US-06: cancelación puntual de un vuelo de una fecha determinada.
+export const cancelFlightSchema = z.object({ reason: cancellationReasonField });
+export type CancelFlightValues = z.infer<typeof cancelFlightSchema>;
+
+// US-06: cancelación masiva de todos los vuelos programados futuros de un trayecto.
+export const cancelRouteFlightsSchema = z.object({
+  routeId: idSchema("Route"),
+  reason: cancellationReasonField,
+});
+export type CancelRouteFlightsValues = z.infer<typeof cancelRouteFlightsSchema>;
+
 export const FLIGHT_STATUS_FILTERS = ["SCHEDULED", "COMPLETED", "CANCELLED", "todos"] as const;
 
 export const flightFiltersSchema = z.object({

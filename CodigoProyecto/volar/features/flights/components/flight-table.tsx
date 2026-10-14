@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   Table,
@@ -16,6 +17,7 @@ import type { ActiveAirplaneOption } from "@/features/airplanes/queries";
 import { availableSeats } from "../availability";
 import { formatCurrency, formatDate, formatTime } from "../format";
 import { EditFlightDialog } from "./edit-flight-dialog";
+import { CancelFlightButton } from "./cancel-flight-button";
 
 type Props = {
   flights: FlightListItem[];
@@ -26,8 +28,8 @@ type Props = {
   airplanes: ActiveAirplaneOption[];
 };
 
-// US-04: listado de vuelos reales generados. US-05/US-09/US-11: edici��n puntual de horario,
-// avi��n, capacidad y tarifas (solo vuelos programados que no partieron; cancelaci��n puntual es US-06).
+// US-04: listado de vuelos reales generados. US-05/US-06/US-09/US-11: edición puntual de horario,
+// avión, capacidad y tarifas, y cancelación puntual de vuelos programados que no partieron.
 export function FlightTable({ flights, total, page, pageCount, filters, airplanes }: Props) {
   const now = new Date();
 
@@ -112,7 +114,15 @@ export function FlightTable({ flights, total, page, pageCount, filters, airplane
                   </TableCell>
                   <TableCell className="text-right">
                     {f.status === "SCHEDULED" && f.departureAt > now && (
-                      <EditFlightDialog flight={f} airplanes={airplanes} />
+                      <div className="flex justify-end gap-2">
+                        <EditFlightDialog flight={f} airplanes={airplanes} />
+                        <CancelFlightButton flight={f} />
+                      </div>
+                    )}
+                    {f.status === "CANCELLED" && (
+                      <Button variant="secondary" size="sm" disabled>
+                        Vuelo Cancelado
+                      </Button>
                     )}
                   </TableCell>
                 </TableRow>
