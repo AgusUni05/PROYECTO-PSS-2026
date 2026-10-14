@@ -16,7 +16,7 @@ import { parseDateString } from "@/lib/dates";
 export const metadata: Metadata = {
   title: "Buscar vuelos — VolAR",
 };
-
+//asdasd
 type SearchParams = Record<string, string | string[] | undefined>;
 
 // US-13/US-14: búsqueda pública de vuelos y detalle de cada opción
