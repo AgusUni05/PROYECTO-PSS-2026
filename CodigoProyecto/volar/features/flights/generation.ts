@@ -36,11 +36,28 @@ export function matchingDates(
 
 export type FlightWindow = { date: Date; departureAt: Date; arrivalAt: Date };
 
-function combineDateAndTime(date: Date, time: string): Date {
+export function combineDateAndTime(date: Date, time: string): Date {
   const [h, m] = time.split(":").map(Number);
   const result = new Date(date);
   result.setUTCHours(h, m, 0, 0);
   return result;
+}
+
+/**
+ * Combina una fecha (Date) con horarios "HH:mm". La llegada cruza al día
+ * siguiente cuando corresponde (reusa isNextDayArrival, la misma regla de US-03).
+ */
+export function buildWindowFromTimes(
+  date: Date,
+  departureTime: string,
+  arrivalTime: string,
+): { departureAt: Date; arrivalAt: Date } {
+  const departureAt = combineDateAndTime(date, departureTime);
+  const arrivalAt = combineDateAndTime(date, arrivalTime);
+  if (isNextDayArrival(departureTime, arrivalTime)) {
+    arrivalAt.setUTCDate(arrivalAt.getUTCDate() + 1);
+  }
+  return { departureAt, arrivalAt };
 }
 
 /**
@@ -53,11 +70,7 @@ export function buildFlightWindow(
   departureTime: string,
   arrivalTime: string,
 ): FlightWindow {
-  const departureAt = combineDateAndTime(date, departureTime);
-  const arrivalAt = combineDateAndTime(date, arrivalTime);
-  if (isNextDayArrival(departureTime, arrivalTime)) {
-    arrivalAt.setUTCDate(arrivalAt.getUTCDate() + 1);
-  }
+  const { departureAt, arrivalAt } = buildWindowFromTimes(date, departureTime, arrivalTime);
   return { date, departureAt, arrivalAt };
 }
 

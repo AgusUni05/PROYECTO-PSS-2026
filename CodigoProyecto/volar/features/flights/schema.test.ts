@@ -184,4 +184,52 @@ describe("editFlightFormSchema (US-09/US-11)", () => {
       false,
     );
   });
+
+  it("acepta reasignar avión y cambiar ambos horarios (US-05)", () => {
+    expect(
+      editFlightFormSchema.safeParse({
+        ...capacity,
+        airplaneId: newId("Airplane"),
+        departureTime: "09:15",
+        arrivalTime: "10:45",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("acepta horarios limite 00:00 y 23:59", () => {
+    expect(
+      editFlightFormSchema.safeParse({
+        ...capacity,
+        departureTime: "00:00",
+        arrivalTime: "23:59",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rechaza un solo horario sin el otro (US-05)", () => {
+    const result = editFlightFormSchema.safeParse({ ...capacity, departureTime: "09:15" });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.arrivalTime).toBeDefined();
+    }
+  });
+
+  it("rechaza horarios con formato invalido (US-05)", () => {
+    for (const [departureTime, arrivalTime] of [
+      ["25:00", "10:00"],
+      ["10:70", "11:00"],
+      ["9:15", "10:45"],
+    ]) {
+      const result = editFlightFormSchema.safeParse({
+        ...capacity,
+        departureTime,
+        arrivalTime,
+      });
+      expect(result.success).toBe(false);
+    }
+  });
+
+  it("acepta omitir los campos operativos (sin cambios de horario ni avion)", () => {
+    expect(editFlightFormSchema.safeParse(capacity).success).toBe(true);
+  });
 });

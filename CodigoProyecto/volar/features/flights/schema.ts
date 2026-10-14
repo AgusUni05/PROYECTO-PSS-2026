@@ -58,8 +58,22 @@ export const editFlightFormSchema = z
     firstClassCapacity: capacityField,
     economyFare: fareField,
     firstClassFare: fareField,
+    airplaneId: idSchema("Airplane").optional(),
+    departureTime: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d$/, "Formato de hora invalido (HH:mm)").optional(),
+    arrivalTime: z.string().regex(/^([0-1]\d|2[0-3]):[0-5]\d$/, "Formato de hora invalido (HH:mm)").optional(),
   })
-  .refine(hasSomeCapacity, SOME_CAPACITY_ERROR);
+  .refine(hasSomeCapacity, SOME_CAPACITY_ERROR)
+  .refine((data) => {
+    const depChanged = data.departureTime !== undefined;
+    const arrChanged = data.arrivalTime !== undefined;
+    if ((depChanged && !arrChanged) || (!depChanged && arrChanged)) {
+      return false;
+    }
+    return true;
+  }, {
+    message: "Debe completar ambos horarios o dejar ambos sin cambios",
+    path: ["arrivalTime"],
+  });
 
 export type EditFlightFormValues = z.infer<typeof editFlightFormSchema>;
 

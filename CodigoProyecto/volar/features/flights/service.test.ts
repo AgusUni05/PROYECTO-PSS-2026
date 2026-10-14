@@ -167,13 +167,20 @@ describe("generateFlights", () => {
   });
 });
 
-describe("updateFlight (US-09/US-11)", () => {
+describe("updateFlight (US-05/US-09/US-11)", () => {
   const inOneWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const flightDate = new Date(
+    Date.UTC(inOneWeek.getUTCFullYear(), inOneWeek.getUTCMonth(), inOneWeek.getUTCDate()),
+  );
+  const arrivalAt = new Date(inOneWeek.getTime() + 90 * 60 * 1000);
 
   const flight = {
     id: "VUE_1",
     status: "SCHEDULED",
+    date: flightDate,
     departureAt: inOneWeek,
+    arrivalAt,
+    airplaneId: "AVI_1",
     economyCapacity: 150,
     firstClassCapacity: 16,
     economyOccupied: 8,
@@ -291,8 +298,159 @@ describe("updateFlight (US-09/US-11)", () => {
         firstClassCapacity: 12,
         economyFare: 50000,
         firstClassFare: 99999.99,
+        departureAt: inOneWeek,
+        arrivalAt,
+        airplaneId: "AVI_1",
         updatedById: "USU_admin",
       },
     });
+  });
+});
+
+describe("updateFlight — modificación puntual (US-05)", () => {
+  const inOneWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const flightDate = new Date(
+    Date.UTC(inOneWeek.getUTCFullYear(), inOneWeek.getUTCMonth(), inOneWeek.getUTCDate()),
+  );
+  const departureAt = new Date(inOneWeek.getTime());
+  const arrivalAt = new Date(inOneWeek.getTime() + 90 * 60 * 1000);
+
+  const baseFlight = {
+    id: "VUE_1",
+    status: "SCHEDULED",
+    date: flightDate,
+    departureAt,
+    arrivalAt,
+    airplaneId: "AVI_1",
+    economyCapacity: 150,
+    firstClassCapacity: 16,
+    economyOccupied: 8,
+    firstClassOccupied: 4,
+    airplane: { identifier: "LV-ARG01", economySeats: 150, firstClassSeats: 16 },
+  };
+
+  const values = {
+    economyCapacity: 150,
+    firstClassCapacity: 16,
+    economyFare: 45000,
+    firstClassFare: 95000,
+  };
+
+  it("rechaza reasignar a un avión con menos asientos que los pasajes vendidos", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(baseFlight as never);
+    prismaMock.airplane.findUnique.mockResolvedValue({
+      id: "AVI_2",
+      identifier: "LV-CHICA",
+      economySeats: 6,
+      firstClassSeats: 2,
+      isActive: true,
+    } as never);
+
+    const result = await updateFlight("VUE_1", { ...values, airplaneId: "AVI_2" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.fieldErrors?.airplaneId).toBeDefined();
+    expect(prismaMock.flight.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("rechaza reasignar a un avión inexistente o inactivo", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(baseFlight as never);
+    prismaMock.airplane.findUnique.mockResolvedValue(null);
+
+    const result = await updateFlight("VUE_1", { ...values, airplaneId: "AVI_X" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    expect(prismaMock.flight.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("rechaza si el avión destino queda con un vuelo superpuesto", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(baseFlight as never);
+    prismaMock.flight.findFirst.mockResolvedValue({ code: "VU-20261010-01" } as never);
+
+    const result = await updateFlight(
+      "VUE_1",
+      { ...values, departureTime: "09:00", arrivalTime: "10:30" },
+      "USU_admin",
+    );
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toMatch(/superpuesto/);
+    expect(prismaMock.flight.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("cambia el horario y registra el FlightChange cuando hay ventas (US-05/RF-10)", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(baseFlight as never);
+    prismaMock.flight.findFirst.mockResolvedValue(null);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+    prismaMock.flightChange.create.mockResolvedValue({} as never);
+
+    const result = await updateFlight(
+      "VUE_1",
+      { ...values, departureTime: "09:00", arrivalTime: "10:30" },
+      "USU_admin",
+    );
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.flightChange.create).toHaveBeenCalledTimes(1);
+    const arg = prismaMock.flightChange.create.mock.calls[0][0];
+    expect(arg.data.type).toBe("SCHEDULE_CHANGE");
+    expect(arg.data.previousDepartureAt).toEqual(departureAt);
+    expect(arg.data.previousArrivalAt).toEqual(arrivalAt);
+    expect(arg.data.newDepartureAt).toEqual(
+      new Date(Date.UTC(flightDate.getUTCFullYear(), flightDate.getUTCMonth(), flightDate.getUTCDate(), 9, 0)),
+    );
+    expect(arg.data.newArrivalAt).toEqual(
+      new Date(Date.UTC(flightDate.getUTCFullYear(), flightDate.getUTCMonth(), flightDate.getUTCDate(), 10, 30)),
+    );
+    expect(arg.data.createdById).toBe("USU_admin");
+  });
+
+  it("no registra FlightChange si cambia el horario pero no hay ventas", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue({
+      ...baseFlight,
+      economyOccupied: 0,
+      firstClassOccupied: 0,
+    } as never);
+    prismaMock.flight.findFirst.mockResolvedValue(null);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await updateFlight(
+      "VUE_1",
+      { ...values, departureTime: "09:00", arrivalTime: "10:30" },
+      "USU_admin",
+    );
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.flightChange.create).not.toHaveBeenCalled();
+  });
+
+  it("no registra FlightChange al cambiar solo el avión sin tocar el horario", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(baseFlight as never);
+    prismaMock.airplane.findUnique.mockResolvedValue({
+      id: "AVI_2",
+      identifier: "LV-GRANDE",
+      economySeats: 200,
+      firstClassSeats: 20,
+      isActive: true,
+    } as never);
+    prismaMock.flight.findFirst.mockResolvedValue(null);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await updateFlight("VUE_1", { ...values, airplaneId: "AVI_2" }, "USU_admin");
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.flightChange.create).not.toHaveBeenCalled();
+    const arg = prismaMock.flight.updateMany.mock.calls[0][0];
+    expect(arg.data.airplaneId).toBe("AVI_2");
+  });
+
+  it("no consulta superposición si no cambia ni el avión ni el horario", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(baseFlight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await updateFlight("VUE_1", values, "USU_admin");
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.flight.findFirst).not.toHaveBeenCalled();
   });
 });

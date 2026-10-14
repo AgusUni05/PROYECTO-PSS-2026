@@ -12,6 +12,7 @@ export type FlightListItem = {
   arrivalAt: Date;
   originCode: string;
   destinationCode: string;
+  airplaneId: string;
   airplaneIdentifier: string;
   airplaneEconomySeats: number;
   airplaneFirstClassSeats: number;
@@ -49,7 +50,9 @@ export async function listFlights(rawFilters: Record<string, string | undefined>
       take: FLIGHTS_PAGE_SIZE,
       include: {
         route: { include: { origin: { select: { code: true } }, destination: { select: { code: true } } } },
-        airplane: { select: { identifier: true, economySeats: true, firstClassSeats: true } },
+        airplane: {
+          select: { id: true, identifier: true, economySeats: true, firstClassSeats: true },
+        },
       },
     }),
   ]);
@@ -62,6 +65,7 @@ export async function listFlights(rawFilters: Record<string, string | undefined>
     arrivalAt: f.arrivalAt,
     originCode: f.route.origin.code,
     destinationCode: f.route.destination.code,
+    airplaneId: f.airplane.id,
     airplaneIdentifier: f.airplane.identifier,
     airplaneEconomySeats: f.airplane.economySeats,
     airplaneFirstClassSeats: f.airplane.firstClassSeats,

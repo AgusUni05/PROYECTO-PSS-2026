@@ -2,7 +2,13 @@ import { prisma } from "@/lib/prisma";
 import { newId } from "@/lib/id";
 import type { ActionResult } from "@/lib/action-result";
 import type { EditFlightFormValues, GenerateFlightsFormValues } from "./schema";
-import { buildFlightWindow, matchingDates, windowsOverlap, type FlightWindow } from "./generation";
+import {
+  buildFlightWindow,
+  buildWindowFromTimes,
+  matchingDates,
+  windowsOverlap,
+  type FlightWindow,
+} from "./generation";
 
 function formatDate(date: Date): string {
   return date.toISOString().slice(0, 10);
@@ -169,11 +175,13 @@ function capacityAboveSeatsErrors(
 }
 
 /**
- * US-09/US-11: modifica la capacidad y la tarifa por clase de un vuelo
- * puntual. Solo vuelos programados que todavía no partieron. La capacidad de
- * cada clase no puede quedar por debajo de los asientos ya ocupados ni superar
- * los del avión. La tarifa nueva aplica a las compras futuras: las ya hechas
- * conservan el precio pagado (Booking/Ticket.unitPrice).
+ * US-05/US-09/US-11/US-12: modifica un vuelo puntual. Solo vuelos programados
+ * que todavía no partieron. Permite reasignar el avión (US-05, sin bajar de lo
+ * vendido) y cambiar el horario de partida/llegada (US-05); si hay ventas y
+ * cambia el horario se registra un FlightChange que dispara la notificación de
+ * contingencia (RF-10). También ajusta capacidad (US-09) y tarifas (US-11/12).
+ * La tarifa nueva aplica a las compras futuras: las ya hechas conservan el
+ * precio pagado (Booking/Ticket.unitPrice).
  */
 export async function updateFlight(
   id: string,
@@ -192,7 +200,20 @@ export async function updateFlight(
     return { ok: false, error: "No se puede modificar un vuelo que ya partió." };
   }
 
-  const fieldErrors: FieldErrors = { ...capacityAboveSeatsErrors(data, flight.airplane) };
+  // US-05: reasignación de avión. Si no se indica, se mantiene el actual.
+  const changingAirplane = data.airplaneId !== undefined && data.airplaneId !== flight.airplaneId;
+  let targetAirplane = flight.airplane;
+  let targetAirplaneId = flight.airplaneId;
+  if (changingAirplane) {
+    const airplane = await prisma.airplane.findUnique({ where: { id: data.airplaneId } });
+    if (!airplane || !airplane.isActive) {
+      return { ok: false, error: "El avión seleccionado no existe o está inactivo." };
+    }
+    targetAirplane = airplane;
+    targetAirplaneId = airplane.id;
+  }
+
+  const fieldErrors: FieldErrors = { ...capacityAboveSeatsErrors(data, targetAirplane) };
   if (data.economyCapacity < flight.economyOccupied) {
     fieldErrors.economyCapacity = [
       `No puede ser menor a los ${flight.economyOccupied} pasajes Economy ya vendidos`,
@@ -203,26 +224,94 @@ export async function updateFlight(
       `No puede ser menor a los ${flight.firstClassOccupied} pasajes de Primera ya vendidos`,
     ];
   }
+
+  // US-05: el avión reasignado no puede tener menos capacidad que lo ya vendido.
+  if (changingAirplane) {
+    if (targetAirplane.economySeats < flight.economyOccupied) {
+      fieldErrors.airplaneId = [
+        `El avión ${targetAirplane.identifier} tiene menos asientos Economy (${targetAirplane.economySeats}) que los ${flight.economyOccupied} pasajes vendidos`,
+      ];
+    } else if (targetAirplane.firstClassSeats < flight.firstClassOccupied) {
+      fieldErrors.airplaneId = [
+        `El avión ${targetAirplane.identifier} tiene menos asientos de Primera (${targetAirplane.firstClassSeats}) que los ${flight.firstClassOccupied} pasajes vendidos`,
+      ];
+    }
+  }
   if (Object.keys(fieldErrors).length > 0) return { ok: false, fieldErrors };
 
-  // Escritura condicionada (atómica): si entre la lectura y la escritura se
-  // vendieron asientos y la nueva capacidad ya no alcanza, no se actualiza nada.
-  const { count } = await prisma.flight.updateMany({
-    where: {
-      id,
-      status: "SCHEDULED",
-      economyOccupied: { lte: data.economyCapacity },
-      firstClassOccupied: { lte: data.firstClassCapacity },
-    },
-    data: {
-      economyCapacity: data.economyCapacity,
-      firstClassCapacity: data.firstClassCapacity,
-      economyFare: data.economyFare,
-      firstClassFare: data.firstClassFare,
-      updatedById,
-    },
-  });
-  if (count === 0) {
+  // US-05: nuevo horario. Si no se envían horarios, se conservan los actuales.
+  const hasNewTimes = data.departureTime !== undefined && data.arrivalTime !== undefined;
+  const newWindow = hasNewTimes
+    ? buildWindowFromTimes(flight.date, data.departureTime as string, data.arrivalTime as string)
+    : { departureAt: flight.departureAt, arrivalAt: flight.arrivalAt };
+  const scheduleChanged =
+    newWindow.departureAt.getTime() !== flight.departureAt.getTime() ||
+    newWindow.arrivalAt.getTime() !== flight.arrivalAt.getTime();
+
+  // US-05: si cambia el avión o el horario, el avión destino no puede quedar
+  // con otro vuelo superpuesto en la nueva ventana.
+  if (changingAirplane || scheduleChanged) {
+    const conflict = await prisma.flight.findFirst({
+      where: {
+        id: { not: flight.id },
+        airplaneId: targetAirplaneId,
+        status: { not: "CANCELLED" },
+        departureAt: { lt: newWindow.arrivalAt },
+        arrivalAt: { gt: newWindow.departureAt },
+      },
+      select: { code: true },
+    });
+    if (conflict) {
+      return {
+        ok: false,
+        error: `El avión ${targetAirplane.identifier} ya tiene el vuelo ${conflict.code} superpuesto en ese horario.`,
+      };
+    }
+  }
+
+  const hasSales = flight.economyOccupied > 0 || flight.firstClassOccupied > 0;
+  // US-05/RF-10: si había ventas y cambia el horario, se registra el cambio de
+  // contingencia con los valores anteriores y nuevos.
+  const registerChange = scheduleChanged && hasSales;
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      if (registerChange) {
+        await tx.flightChange.create({
+          data: {
+            id: newId("FlightChange"),
+            flightId: flight.id,
+            type: "SCHEDULE_CHANGE",
+            previousDepartureAt: flight.departureAt,
+            previousArrivalAt: flight.arrivalAt,
+            newDepartureAt: newWindow.departureAt,
+            newArrivalAt: newWindow.arrivalAt,
+            createdById: updatedById,
+          },
+        });
+      }
+
+      const { count } = await tx.flight.updateMany({
+        where: {
+          id,
+          status: "SCHEDULED",
+          economyOccupied: { lte: data.economyCapacity },
+          firstClassOccupied: { lte: data.firstClassCapacity },
+        },
+        data: {
+          economyCapacity: data.economyCapacity,
+          firstClassCapacity: data.firstClassCapacity,
+          economyFare: data.economyFare,
+          firstClassFare: data.firstClassFare,
+          departureAt: newWindow.departureAt,
+          arrivalAt: newWindow.arrivalAt,
+          airplaneId: targetAirplaneId,
+          updatedById,
+        },
+      });
+      if (count === 0) throw new Error("FLIGHT_CHANGED");
+    });
+  } catch {
     return {
       ok: false,
       error: "El vuelo cambió mientras lo editabas (nuevas ventas o cancelación). Volvé a intentarlo.",

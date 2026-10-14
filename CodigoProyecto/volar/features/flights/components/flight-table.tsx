@@ -12,6 +12,7 @@ import {
 import { PaginationLinks } from "@/components/pagination-links";
 import type { FlightListItem } from "../queries";
 import type { FlightFilters } from "../schema";
+import type { ActiveAirplaneOption } from "@/features/airplanes/queries";
 import { availableSeats } from "../availability";
 import { formatCurrency, formatDate, formatTime } from "../format";
 import { EditFlightDialog } from "./edit-flight-dialog";
@@ -22,11 +23,12 @@ type Props = {
   page: number;
   pageCount: number;
   filters: FlightFilters;
+  airplanes: ActiveAirplaneOption[];
 };
 
-// US-04: listado de vuelos reales generados. US-09/US-11: edición puntual de capacidad y tarifas
-// (solo vuelos programados que no partieron; cancelación puntual es US-06).
-export function FlightTable({ flights, total, page, pageCount, filters }: Props) {
+// US-04: listado de vuelos reales generados. US-05/US-09/US-11: edici��n puntual de horario,
+// avi��n, capacidad y tarifas (solo vuelos programados que no partieron; cancelaci��n puntual es US-06).
+export function FlightTable({ flights, total, page, pageCount, filters, airplanes }: Props) {
   const now = new Date();
 
   function buildHref(targetPage: number) {
@@ -109,7 +111,9 @@ export function FlightTable({ flights, total, page, pageCount, filters }: Props)
                     )}
                   </TableCell>
                   <TableCell className="text-right">
-                    {f.status === "SCHEDULED" && f.departureAt > now && <EditFlightDialog flight={f} />}
+                    {f.status === "SCHEDULED" && f.departureAt > now && (
+                      <EditFlightDialog flight={f} airplanes={airplanes} />
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

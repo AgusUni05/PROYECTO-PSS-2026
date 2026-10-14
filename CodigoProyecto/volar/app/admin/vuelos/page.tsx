@@ -61,8 +61,9 @@ export default async function VuelosPage({
             elegido queda con horarios superpuestos, no se genera nada: hay que ajustar el rango o
             elegir otro avión. La capacidad y la tarifa se aplican a todos los vuelos generados; la
             capacidad por clase no puede superar los asientos del avión y las tarifas deben ser mayores
-            a 0. Después, la capacidad y la tarifa de cada vuelo se ajustan con &quot;Editar
-            Vuelo&quot; (sin bajar de los pasajes ya vendidos).
+            a 0. Después, con &quot;Editar Vuelo&quot; se ajusta un vuelo puntual: horario, avión
+            (sin bajar de los pasajes ya vendidos), capacidad y tarifa. Un cambio de horario con
+            ventas dispara la notificación de contingencia a los pasajeros.
           </p>
         </div>
       </div>
@@ -73,7 +74,14 @@ export default async function VuelosPage({
         <FlightFilters filters={filters} airports={airports} />
 
         <ListResults skeleton={<TableSkeleton columns={10} />}>
-          <FlightTable flights={flights} total={total} page={page} pageCount={pageCount} filters={filters} />
+          <FlightTable
+            flights={flights}
+            total={total}
+            page={page}
+            pageCount={pageCount}
+            filters={filters}
+            airplanes={airplanes}
+          />
         </ListResults>
       </ListNavigationProvider>
     </div>
