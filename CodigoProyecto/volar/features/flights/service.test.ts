@@ -307,6 +307,73 @@ describe("updateFlight (US-05/US-09/US-11)", () => {
   });
 });
 
+describe("updateFlight — modificación de tarifas (US-12)", () => {
+  const inOneWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const flightDate = new Date(
+    Date.UTC(inOneWeek.getUTCFullYear(), inOneWeek.getUTCMonth(), inOneWeek.getUTCDate()),
+  );
+
+  // Vuelo con tarifas vigentes 45000 / 95000 y pasajes ya vendidos en ambas clases.
+  const flight = {
+    id: "VUE_1",
+    status: "SCHEDULED",
+    date: flightDate,
+    departureAt: inOneWeek,
+    arrivalAt: new Date(inOneWeek.getTime() + 90 * 60 * 1000),
+    airplaneId: "AVI_1",
+    economyCapacity: 150,
+    firstClassCapacity: 16,
+    economyFare: 45000,
+    firstClassFare: 95000,
+    economyOccupied: 8,
+    firstClassOccupied: 4,
+    airplane: { identifier: "LV-ARG01", economySeats: 150, firstClassSeats: 16 },
+  };
+
+  const values = {
+    economyCapacity: 150,
+    firstClassCapacity: 16,
+    economyFare: 45000,
+    firstClassFare: 95000,
+  };
+
+  it("CA1: sobrescribe la tarifa vigente con la nueva sin tocar la capacidad (modificación, no alta)", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await updateFlight(
+      "VUE_1",
+      { ...values, economyFare: 52000, firstClassFare: 105000 },
+      "USU_admin",
+    );
+
+    expect(result.ok).toBe(true);
+    const arg = prismaMock.flight.updateMany.mock.calls[0][0];
+    expect(arg.data.economyFare).toBe(52000);
+    expect(arg.data.firstClassFare).toBe(105000);
+    expect(arg.data.economyCapacity).toBe(150);
+    expect(arg.data.firstClassCapacity).toBe(16);
+  });
+
+  it("CA2: las ventas ya confirmadas conservan su unitPrice (no se tocan Booking/Ticket)", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await updateFlight(
+      "VUE_1",
+      { ...values, economyFare: 52000, firstClassFare: 105000 },
+      "USU_admin",
+    );
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.flight.updateMany).toHaveBeenCalledTimes(1);
+    expect(prismaMock.booking.update).not.toHaveBeenCalled();
+    expect(prismaMock.booking.updateMany).not.toHaveBeenCalled();
+    expect(prismaMock.ticket.update).not.toHaveBeenCalled();
+    expect(prismaMock.ticket.updateMany).not.toHaveBeenCalled();
+  });
+});
+
 describe("updateFlight — modificación puntual (US-05)", () => {
   const inOneWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const flightDate = new Date(
