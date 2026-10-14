@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { newId } from "@/lib/id";
-import { editFlightFormSchema, flightFiltersSchema, generateFlightsFormSchema } from "./schema";
+import {
+  cancelFlightSchema,
+  cancelRouteFlightsSchema,
+  editFlightFormSchema,
+  flightFiltersSchema,
+  generateFlightsFormSchema,
+} from "./schema";
 
 function isoDaysFromToday(days: number): string {
   const date = new Date();
@@ -231,5 +237,30 @@ describe("editFlightFormSchema (US-09/US-11)", () => {
 
   it("acepta omitir los campos operativos (sin cambios de horario ni avion)", () => {
     expect(editFlightFormSchema.safeParse(capacity).success).toBe(true);
+  });
+});
+
+describe("cancelFlightSchema / cancelRouteFlightsSchema (US-06)", () => {
+  it("acepta un motivo válido de cancelación", () => {
+    for (const reason of ["mantenimiento", "meteorologico", "operativo"]) {
+      expect(cancelFlightSchema.safeParse({ reason }).success).toBe(true);
+    }
+  });
+
+  it("rechaza un motivo faltante o fuera del enum", () => {
+    expect(cancelFlightSchema.safeParse({}).success).toBe(false);
+    expect(cancelFlightSchema.safeParse({ reason: "otro" }).success).toBe(false);
+  });
+
+  it("valida el routeId y el motivo para la cancelación masiva", () => {
+    expect(
+      cancelRouteFlightsSchema.safeParse({ routeId: newId("Route"), reason: "operativo" }).success,
+    ).toBe(true);
+    expect(
+      cancelRouteFlightsSchema.safeParse({ routeId: "no-valido", reason: "operativo" }).success,
+    ).toBe(false);
+    expect(
+      cancelRouteFlightsSchema.safeParse({ routeId: newId("Route"), reason: "x" }).success,
+    ).toBe(false);
   });
 });

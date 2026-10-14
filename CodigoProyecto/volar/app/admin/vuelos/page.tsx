@@ -2,9 +2,10 @@ import { ListNavigationProvider, ListResults } from "@/components/list-navigatio
 import { TableSkeleton } from "@/components/table-skeleton";
 import { Info } from "lucide-react";
 import { GenerateFlightsForm } from "@/features/flights/components/generate-flights-form";
+import { CancelRouteFlightsButton } from "@/features/flights/components/cancel-route-flights-button";
 import { FlightFilters } from "@/features/flights/components/flight-filters";
 import { FlightTable } from "@/features/flights/components/flight-table";
-import { listFlights } from "@/features/flights/queries";
+import { listFlights, listRoutesForCancellation } from "@/features/flights/queries";
 import { listActiveRoutes } from "@/features/routes/queries";
 import { listActiveAirplanes } from "@/features/airplanes/queries";
 import { listActiveAirports } from "@/features/airports/queries";
@@ -24,13 +25,19 @@ export default async function VuelosPage({
   searchParams: Promise<SearchParams>;
 }) {
   const sp = await searchParams;
-  const [{ flights, total, page, pageCount, filters }, routes, airplanes, airports] =
-    await Promise.all([
-      listFlights(sp),
-      listActiveRoutes(),
-      listActiveAirplanes(),
-      listActiveAirports(),
-    ]);
+  const [
+    { flights, total, page, pageCount, filters },
+    routes,
+    airplanes,
+    airports,
+    cancellableRoutes,
+  ] = await Promise.all([
+    listFlights(sp),
+    listActiveRoutes(),
+    listActiveAirplanes(),
+    listActiveAirports(),
+    listRoutesForCancellation(),
+  ]);
 
   return (
     <div className="space-y-6">
@@ -69,6 +76,10 @@ export default async function VuelosPage({
       </div>
 
       <GenerateFlightsForm routes={routes} airplanes={airplanes} />
+
+      <div className="flex justify-end">
+        <CancelRouteFlightsButton routes={cancellableRoutes} />
+      </div>
 
       <ListNavigationProvider>
         <FlightFilters filters={filters} airports={airports} />

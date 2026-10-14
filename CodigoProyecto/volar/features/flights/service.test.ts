@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import { prismaMock } from "@/tests/prisma-mock";
-import { generateFlights, updateFlight } from "./service";
-import type { GenerateFlightsFormValues } from "./schema";
+import { cancelFlight, cancelFlightsByRoute, generateFlights, updateFlight } from "./service";
+import { CANCELLATION_REASON_LABELS, type GenerateFlightsFormValues } from "./schema";
 
 const route = {
   id: "TRA_1",
@@ -519,5 +519,216 @@ describe("updateFlight — modificación puntual (US-05)", () => {
 
     expect(result.ok).toBe(true);
     expect(prismaMock.flight.findFirst).not.toHaveBeenCalled();
+  });
+});
+
+describe("cancelFlight (US-06/RF-10)", () => {
+  const inOneWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const baseFlight = {
+    id: "VUE_1",
+    code: "VU-20261001-001",
+    status: "SCHEDULED",
+    departureAt: inOneWeek,
+    arrivalAt: new Date(inOneWeek.getTime() + 90 * 60 * 1000),
+    tickets: [],
+  };
+
+  const tickets = [
+    { id: "PAS_1", booking: { id: "RES_1", contactEmail: "a@x.com" } },
+    { id: "PAS_2", booking: { id: "RES_1", contactEmail: "a@x.com" } },
+    { id: "PAS_3", booking: { id: "RES_2", contactEmail: "b@x.com" } },
+  ];
+
+  it("rechaza si el vuelo no existe", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(null);
+
+    const result = await cancelFlight("VUE_1", { reason: "mantenimiento" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    expect(prismaMock.flight.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("rechaza si el vuelo ya está cancelado", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue({ ...baseFlight, status: "CANCELLED" } as never);
+
+    const result = await cancelFlight("VUE_1", { reason: "operativo" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    expect(prismaMock.flight.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("rechaza si el vuelo ya partió", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue({
+      ...baseFlight,
+      departureAt: new Date(Date.now() - 60_000),
+    } as never);
+
+    const result = await cancelFlight("VUE_1", { reason: "operativo" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    expect(prismaMock.flight.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("cancela, marca CANCELLED y registra el outbox cuando hay pasajes vendidos", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue({ ...baseFlight, tickets } as never);
+    prismaMock.flightChange.create.mockResolvedValue({} as never);
+    prismaMock.ticketContingency.createMany.mockResolvedValue({ count: 3 } as never);
+    prismaMock.emailNotification.createMany.mockResolvedValue({ count: 2 } as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await cancelFlight("VUE_1", { reason: "meteorologico" }, "USU_admin");
+
+    expect(result).toEqual({ ok: true, data: { id: "VUE_1", affectedTickets: 3 } });
+
+    const changeArg = prismaMock.flightChange.create.mock.calls[0][0];
+    expect(changeArg.data.type).toBe("CANCELLATION");
+    expect(changeArg.data.newDepartureAt).toBeNull();
+    expect(changeArg.data.newArrivalAt).toBeNull();
+    expect(changeArg.data.reason).toBe(CANCELLATION_REASON_LABELS.meteorologico);
+    expect(changeArg.data.createdById).toBe("USU_admin");
+
+    const contingencyArg = prismaMock.ticketContingency.createMany.mock.calls[0][0] as unknown as {
+      data: { ticketId: string; accessToken: string }[];
+    };
+    expect(contingencyArg.data).toHaveLength(3);
+    expect(contingencyArg.data[0].accessToken).toBeTruthy();
+    expect(contingencyArg.data[0].ticketId).toBe("PAS_1");
+
+    const emailArg = prismaMock.emailNotification.createMany.mock.calls[0][0] as unknown as {
+      data: { type: string; status: string; recipientEmail: string }[];
+    };
+    expect(emailArg.data).toHaveLength(2);
+    expect(emailArg.data[0].type).toBe("FLIGHT_CANCELLATION");
+    expect(emailArg.data[0].status).toBe("PENDING");
+    expect(emailArg.data[0].recipientEmail).toBe("a@x.com");
+
+    expect(prismaMock.flight.updateMany).toHaveBeenCalledWith({
+      where: { id: "VUE_1", status: "SCHEDULED" },
+      data: expect.objectContaining({
+        status: "CANCELLED",
+        cancellationReason: CANCELLATION_REASON_LABELS.meteorologico,
+        updatedById: "USU_admin",
+      }),
+    });
+  });
+
+  it("no genera contingencias ni emails si no hay pasajes vendidos", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue({ ...baseFlight, tickets: [] } as never);
+    prismaMock.flightChange.create.mockResolvedValue({} as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await cancelFlight("VUE_1", { reason: "operativo" }, "USU_admin");
+
+    expect(result).toEqual({ ok: true, data: { id: "VUE_1", affectedTickets: 0 } });
+    expect(prismaMock.flightChange.create).toHaveBeenCalledTimes(1);
+    expect(prismaMock.ticketContingency.createMany).not.toHaveBeenCalled();
+    expect(prismaMock.emailNotification.createMany).not.toHaveBeenCalled();
+  });
+
+  it("no pisa una cancelación concurrente: si la escritura condicionada no actualiza nada, informa el error", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue({ ...baseFlight, tickets: [] } as never);
+    prismaMock.flightChange.create.mockResolvedValue({} as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 0 });
+
+    const result = await cancelFlight("VUE_1", { reason: "operativo" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toBeDefined();
+  });
+});
+
+describe("cancelFlightsByRoute (US-06/RF-10)", () => {
+  const inOneWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const futureFlight = (
+    id: string,
+    code: string,
+    tickets: { id: string; booking: { id: string; contactEmail: string } }[] = [],
+  ) => ({
+    id,
+    code,
+    departureAt: inOneWeek,
+    arrivalAt: new Date(inOneWeek.getTime() + 60 * 60 * 1000),
+    tickets,
+  });
+
+  it("rechaza si el trayecto no existe", async () => {
+    prismaMock.route.findUnique.mockResolvedValue(null);
+
+    const result = await cancelFlightsByRoute({ routeId: "TRA_1", reason: "operativo" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    expect(prismaMock.flight.findMany).not.toHaveBeenCalled();
+  });
+
+  it("rechaza si el trayecto no tiene vuelos programados futuros", async () => {
+    prismaMock.route.findUnique.mockResolvedValue({ id: "TRA_1" } as never);
+    prismaMock.flight.findMany.mockResolvedValue([] as never);
+
+    const result = await cancelFlightsByRoute({ routeId: "TRA_1", reason: "operativo" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    expect(prismaMock.$transaction).not.toHaveBeenCalled();
+  });
+
+  it("cancela todos los vuelos futuros del trayecto y arma el outbox", async () => {
+    prismaMock.route.findUnique.mockResolvedValue({ id: "TRA_1" } as never);
+    prismaMock.flight.findMany.mockResolvedValue([
+      futureFlight("VUE_1", "VU-1", [
+        { id: "PAS_1", booking: { id: "RES_1", contactEmail: "a@x.com" } },
+      ]),
+      futureFlight("VUE_2", "VU-2"),
+    ] as never);
+    prismaMock.flightChange.createMany.mockResolvedValue({ count: 2 } as never);
+    prismaMock.ticketContingency.createMany.mockResolvedValue({ count: 1 } as never);
+    prismaMock.emailNotification.createMany.mockResolvedValue({ count: 1 } as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 2 });
+
+    const result = await cancelFlightsByRoute(
+      { routeId: "TRA_1", reason: "mantenimiento" },
+      "USU_admin",
+    );
+
+    expect(result).toEqual({ ok: true, data: { cancelled: 2, affectedTickets: 1 } });
+
+    const changesArg = prismaMock.flightChange.createMany.mock.calls[0][0] as unknown as {
+      data: { type: string; reason: string }[];
+    };
+    expect(changesArg.data).toHaveLength(2);
+    expect(changesArg.data[0].type).toBe("CANCELLATION");
+    expect(changesArg.data[0].reason).toBe(CANCELLATION_REASON_LABELS.mantenimiento);
+
+    const routeContingencies = prismaMock.ticketContingency.createMany.mock.calls[0][0] as unknown as {
+      data: unknown[];
+    };
+    const routeEmails = prismaMock.emailNotification.createMany.mock.calls[0][0] as unknown as {
+      data: unknown[];
+    };
+    expect(routeContingencies.data).toHaveLength(1);
+    expect(routeEmails.data).toHaveLength(1);
+
+    expect(prismaMock.flight.updateMany).toHaveBeenCalledWith({
+      where: {
+        routeId: "TRA_1",
+        status: "SCHEDULED",
+        departureAt: { gt: expect.any(Date) },
+      },
+      data: expect.objectContaining({
+        status: "CANCELLED",
+        cancellationReason: CANCELLATION_REASON_LABELS.mantenimiento,
+        updatedById: "USU_admin",
+      }),
+    });
+  });
+
+  it("no pisa cancelaciones concurrentes: si la escritura condicionada no actualiza nada, informa el error", async () => {
+    prismaMock.route.findUnique.mockResolvedValue({ id: "TRA_1" } as never);
+    prismaMock.flight.findMany.mockResolvedValue([futureFlight("VUE_1", "VU-1")] as never);
+    prismaMock.flightChange.createMany.mockResolvedValue({ count: 1 } as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 0 });
+
+    const result = await cancelFlightsByRoute({ routeId: "TRA_1", reason: "operativo" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toBeDefined();
   });
 });

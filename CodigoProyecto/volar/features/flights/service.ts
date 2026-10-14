@@ -1,7 +1,14 @@
+import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { newId } from "@/lib/id";
 import type { ActionResult } from "@/lib/action-result";
-import type { EditFlightFormValues, GenerateFlightsFormValues } from "./schema";
+import type {
+  CancelFlightValues,
+  CancelRouteFlightsValues,
+  EditFlightFormValues,
+  GenerateFlightsFormValues,
+} from "./schema";
+import { CANCELLATION_REASON_LABELS } from "./schema";
 import {
   buildFlightWindow,
   buildWindowFromTimes,
@@ -319,4 +326,222 @@ export async function updateFlight(
   }
 
   return { ok: true, data: { id } };
+}
+
+type AffectedTicket = {
+  id: string;
+  booking: { id: string; contactEmail: string };
+};
+
+/**
+ * US-06/RF-10: arma el "outbox" de la contingencia a partir de los pasajes ya
+ * emitidos de un vuelo: una TicketContingency por pasaje (con su accessToken
+ * para que el pasajero elija reprogramación o reembolso, US-26) y una
+ * EmailNotification por comprador (deduplicado). No envía nada: el envío real
+ * es US-25, que procesará los registros PENDING.
+ */
+function contingencyRecords(
+  flightChangeId: string,
+  flightCode: string,
+  tickets: AffectedTicket[],
+): {
+  contingencies: { id: string; flightChangeId: string; ticketId: string; accessToken: string }[];
+  emails: {
+    id: string;
+    type: "FLIGHT_CANCELLATION";
+    recipientEmail: string;
+    subject: string;
+    bookingId: string;
+    flightChangeId: string;
+    status: "PENDING";
+  }[];
+} {
+  const contingencies = tickets.map((ticket) => ({
+    id: newId("TicketContingency"),
+    flightChangeId,
+    ticketId: ticket.id,
+    accessToken: randomUUID(),
+  }));
+
+  const recipients = new Map<string, string>();
+  for (const ticket of tickets) {
+    recipients.set(ticket.booking.id, ticket.booking.contactEmail);
+  }
+
+  const emails = [...recipients].map(([bookingId, recipientEmail]) => ({
+    id: newId("EmailNotification"),
+    type: "FLIGHT_CANCELLATION" as const,
+    recipientEmail,
+    subject: `Cancelación del vuelo ${flightCode}`,
+    bookingId,
+    flightChangeId,
+    status: "PENDING" as const,
+  }));
+
+  return { contingencies, emails };
+}
+
+/**
+ * US-06: cancela un vuelo puntual. Solo vuelos programados que todavía no
+ * partieron. El vuelo no se elimina: pasa a estado CANCELLED (así deja de
+ * aparecer en las búsquedas, que filtran por SCHEDULED). Si hay pasajes
+ * emitidos, registra el cambio de contingencia (FlightChange CANCELLATION) y
+ * el outbox de notificación por email a los compradores (RF-10).
+ */
+export async function cancelFlight(
+  id: string,
+  data: CancelFlightValues,
+  cancelledById: string,
+): Promise<ActionResult<{ id: string; affectedTickets: number }>> {
+  const flight = await prisma.flight.findUnique({
+    where: { id },
+    include: {
+      tickets: {
+        where: { status: "ISSUED" },
+        select: { id: true, booking: { select: { id: true, contactEmail: true } } },
+      },
+    },
+  });
+
+  if (!flight) return { ok: false, error: "El vuelo no existe." };
+  if (flight.status === "CANCELLED") return { ok: false, error: "El vuelo ya está cancelado." };
+  if (flight.status === "COMPLETED" || flight.departureAt <= new Date()) {
+    return { ok: false, error: "No se puede cancelar un vuelo que ya partió." };
+  }
+
+  const reason = CANCELLATION_REASON_LABELS[data.reason];
+  const flightChangeId = newId("FlightChange");
+  const { contingencies, emails } = contingencyRecords(
+    flightChangeId,
+    flight.code,
+    flight.tickets,
+  );
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.flightChange.create({
+        data: {
+          id: flightChangeId,
+          flightId: flight.id,
+          type: "CANCELLATION",
+          previousDepartureAt: flight.departureAt,
+          previousArrivalAt: flight.arrivalAt,
+          newDepartureAt: null,
+          newArrivalAt: null,
+          reason,
+          createdById: cancelledById,
+        },
+      });
+
+      if (contingencies.length > 0) {
+        await tx.ticketContingency.createMany({ data: contingencies });
+      }
+      if (emails.length > 0) {
+        await tx.emailNotification.createMany({ data: emails });
+      }
+
+      const { count } = await tx.flight.updateMany({
+        where: { id, status: "SCHEDULED" },
+        data: {
+          status: "CANCELLED",
+          cancelledAt: new Date(),
+          cancellationReason: reason,
+          updatedById: cancelledById,
+        },
+      });
+      if (count === 0) throw new Error("FLIGHT_CHANGED");
+    });
+  } catch {
+    return {
+      ok: false,
+      error: "El vuelo cambió mientras lo cancelabas. Volvé a intentarlo.",
+    };
+  }
+
+  return { ok: true, data: { id, affectedTickets: contingencies.length } };
+}
+
+/**
+ * US-06: cancela de una vez todos los vuelos programados futuros de un
+ * trayecto. Los ya partidos/completados/cancelados no se tocan. Registra un
+ * FlightChange CANCELLATION por vuelo y el outbox de notificación a los
+ * compradores con pasajes emitidos (RF-10).
+ */
+export async function cancelFlightsByRoute(
+  data: CancelRouteFlightsValues,
+  cancelledById: string,
+): Promise<ActionResult<{ cancelled: number; affectedTickets: number }>> {
+  const route = await prisma.route.findUnique({ where: { id: data.routeId } });
+  if (!route) return { ok: false, error: "El trayecto seleccionado no existe." };
+
+  const flights = await prisma.flight.findMany({
+    where: { routeId: route.id, status: "SCHEDULED", departureAt: { gt: new Date() } },
+    select: {
+      id: true,
+      code: true,
+      departureAt: true,
+      arrivalAt: true,
+      tickets: {
+        where: { status: "ISSUED" },
+        select: { id: true, booking: { select: { id: true, contactEmail: true } } },
+      },
+    },
+  });
+
+  if (flights.length === 0) {
+    return { ok: false, error: "El trayecto no tiene vuelos programados futuros para cancelar." };
+  }
+
+  const reason = CANCELLATION_REASON_LABELS[data.reason];
+
+  const planned = flights.map((flight) => {
+    const changeId = newId("FlightChange");
+    return { flight, changeId, ...contingencyRecords(changeId, flight.code, flight.tickets) };
+  });
+
+  const contingencies = planned.flatMap((p) => p.contingencies);
+  const emails = planned.flatMap((p) => p.emails);
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      await tx.flightChange.createMany({
+        data: planned.map(({ flight, changeId }) => ({
+          id: changeId,
+          flightId: flight.id,
+          type: "CANCELLATION" as const,
+          previousDepartureAt: flight.departureAt,
+          previousArrivalAt: flight.arrivalAt,
+          newDepartureAt: null,
+          newArrivalAt: null,
+          reason,
+          createdById: cancelledById,
+        })),
+      });
+
+      if (contingencies.length > 0) {
+        await tx.ticketContingency.createMany({ data: contingencies });
+      }
+      if (emails.length > 0) {
+        await tx.emailNotification.createMany({ data: emails });
+      }
+
+      const { count } = await tx.flight.updateMany({
+        where: { routeId: route.id, status: "SCHEDULED", departureAt: { gt: new Date() } },
+        data: {
+          status: "CANCELLED",
+          cancelledAt: new Date(),
+          cancellationReason: reason,
+          updatedById: cancelledById,
+        },
+      });
+      if (count === 0) throw new Error("FLIGHT_CHANGED");
+    });
+  } catch {
+    return {
+      ok: false,
+      error: "Los vuelos del trayecto cambiaron mientras los cancelabas. Volvé a intentarlo.",
+    };
+  }
+
+  return { ok: true, data: { cancelled: flights.length, affectedTickets: contingencies.length } };
 }
