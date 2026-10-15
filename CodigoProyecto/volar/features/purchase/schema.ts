@@ -11,6 +11,13 @@ export const purchaseSelectionSchema = z.object({
 
 export type PurchaseSelection = z.infer<typeof purchaseSelectionSchema>;
 
+// US-20/US-34: código de reserva (Booking.code, 8 caracteres alfanuméricos).
+// Puede llegar por URL o desde el formulario: se normaliza a mayúsculas.
+export const bookingCodeSchema = z
+  .string({ error: "Código de reserva inválido" })
+  .transform((value) => value.trim().toUpperCase())
+  .refine((value) => /^[A-Z0-9]{8}$/.test(value), "Código de reserva inválido");
+
 // US-20: medio de pago y planes de financiación ofrecidos (pago_comprobantes.html).
 export const PAYMENT_METHODS = ["CREDIT", "DEBIT"] as const;
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
