@@ -5,6 +5,12 @@ import { idSchema } from "@/lib/id";
 import type { ActionResult } from "@/lib/action-result";
 import { confirmPurchaseSchema, type ConfirmPurchaseValues } from "./schema";
 import * as purchaseService from "./service";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { bookingCodeSchema, paymentFormSchema, type PaymentFormValues } from "./schema";
+import type { PaymentOutcome } from "./service";
+
+const PAYMENT_PATH = "/compra/pago";
 
 /** US-15: confirma cantidad y clase, retiene el cupo y crea la reserva (hold de 10 minutos). */
 export async function confirmPurchaseAction(
@@ -30,4 +36,24 @@ export async function confirmPurchaseAction(
 export async function expireBookingAction(id: string): Promise<void> {
   if (!idSchema("Booking").safeParse(id).success) return;
   await purchaseService.expireBookingIfDue(id);
+}
+
+export async function processPaymentAction(
+  bookingCode: string,
+  values: PaymentFormValues,
+): Promise<ActionResult<PaymentOutcome>> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/sign-in");
+
+  const parsedCode = bookingCodeSchema.safeParse(bookingCode);
+  if (!parsedCode.success) return { ok: false, error: "Código de reserva inválido" };
+
+  const parsed = paymentFormSchema.safeParse(values);
+  if (!parsed.success) {
+    return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
+  }
+
+  const result = await purchaseService.processPayment(parsedCode.data, parsed.data);
+  if (result.ok) revalidatePath(PAYMENT_PATH);
+  return result;
 }
