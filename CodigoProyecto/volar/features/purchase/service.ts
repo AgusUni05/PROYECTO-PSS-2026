@@ -5,6 +5,7 @@ import type { ActionResult } from "@/lib/action-result";
 import type { BookingStatus } from "@/generated/prisma/enums";
 import type { PaymentFormValues } from "./schema";
 import { isHoldExpired } from "./queries";
+import { issueComprobantes } from "./issuance";
 
 // Nombre de la pasarela simulada (US-21). No hay integración real: el
 // resultado se deriva de la tarjeta, ver simulateGateway.
@@ -75,12 +76,20 @@ export async function processPayment(
     where: { code },
     select: {
       id: true,
+      code: true,
       status: true,
       holdExpiresAt: true,
       quantity: true,
       totalAmount: true,
       flightId: true,
       seatClass: true,
+      contactName: true,
+      contactEmail: true,
+      flight: { select: { code: true, economyCapacity: true, firstClassCapacity: true } },
+      tickets: {
+        orderBy: { createdAt: "asc" },
+        select: { id: true, firstName: true, lastName: true, unitPrice: true },
+      },
     },
   });
 
@@ -126,7 +135,8 @@ export async function processPayment(
 
       // US-21: el rechazo no procesa la compra: cancela los pasajes y libera el
       // cupo retenido. La aprobación no toca los contadores (los asientos ya
-      // estaban retenidos por el hold y pasan a vendidos).
+      // estaban retenidos por el hold y pasan a vendidos) y dispara la emisión
+      // de los comprobantes (US-23/US-24).
       if (!approved) {
         await tx.ticket.updateMany({
           where: { bookingId: booking.id, status: "PENDING" },
@@ -142,6 +152,8 @@ export async function processPayment(
               ? { economyOccupied: { decrement: booking.quantity } }
               : { firstClassOccupied: { decrement: booking.quantity } },
         });
+      } else {
+        await issueComprobantes(tx, booking, now);
       }
     });
   } catch {

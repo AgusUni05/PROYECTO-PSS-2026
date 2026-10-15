@@ -6,12 +6,21 @@ import type { PaymentFormValues } from "./schema";
 function bookingRow(overrides: Record<string, unknown> = {}) {
   return {
     id: "RES_1",
+    code: "DEMO0001",
     status: "PENDING_PAYMENT",
     holdExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
     quantity: 3,
     totalAmount: { toString: () => "135000" },
     flightId: "VUE_1",
     seatClass: "ECONOMY",
+    contactName: "Pasajero Demo",
+    contactEmail: "demo@volar.test",
+    flight: { code: "VU-DEMO-01", economyCapacity: 150, firstClassCapacity: 12 },
+    tickets: [
+      { id: "PAS_1", firstName: "María", lastName: "Demo", unitPrice: { toString: () => "45000" } },
+      { id: "PAS_2", firstName: "Juan", lastName: "Demo", unitPrice: { toString: () => "45000" } },
+      { id: "PAS_3", firstName: "Ana", lastName: "Demo", unitPrice: { toString: () => "45000" } },
+    ],
     ...overrides,
   };
 }
@@ -37,6 +46,8 @@ beforeEach(() => {
     }
     return Promise.all(callback as Promise<unknown>[]);
   });
+  // Asientos ya ocupados por pasajes emitidos del vuelo: ninguno (asientos libres).
+  prismaMock.ticket.findMany.mockResolvedValue([] as never);
 });
 
 describe("cardBrand (US-20)", () => {
@@ -80,6 +91,32 @@ describe("processPayment (US-20/US-21/US-22)", () => {
     );
     // La aprobación no toca los contadores (los asientos ya estaban retenidos).
     expect(prismaMock.flight.updateMany).not.toHaveBeenCalled();
+
+    // US-23: un e-ticket por pasajero, con número y asiento, y la factura.
+    const issued = prismaMock.ticket.update.mock.calls.map(
+      (call) => call[0].data as Record<string, unknown>,
+    );
+    expect(issued).toHaveLength(3);
+    expect(issued[0]).toMatchObject({
+      status: "ISSUED",
+      number: "ETK-DEMO0001-1",
+      seat: "1A",
+      issuedAt: expect.any(Date),
+    });
+    expect(issued.map((data) => data.seat)).toEqual(["1A", "1B", "1C"]);
+    expect(issued.map((data) => data.number)).toEqual([
+      "ETK-DEMO0001-1",
+      "ETK-DEMO0001-2",
+      "ETK-DEMO0001-3",
+    ]);
+    expect(prismaMock.invoice.create).toHaveBeenCalledTimes(1);
+
+    // US-24: envío simulado de los comprobantes al correo del comprador.
+    expect(prismaMock.emailNotification.create.mock.calls[0][0].data).toMatchObject({
+      type: "PURCHASE_CONFIRMATION",
+      recipientEmail: "demo@volar.test",
+      status: "SENT",
+    });
   });
 
   it("rechaza con último dígito impar, cancela los pasajes y libera el cupo", async () => {
