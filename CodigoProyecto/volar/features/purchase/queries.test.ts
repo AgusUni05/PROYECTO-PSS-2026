@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { prismaMock } from "@/tests/prisma-mock";
-import { getBookingForPayment, isHoldExpired } from "./queries";
+import { getBookingComprobantes, getBookingForPayment, isHoldExpired } from "./queries";
 
 function bookingRow(overrides: Record<string, unknown> = {}) {
   return {
@@ -81,5 +81,120 @@ describe("isHoldExpired (US-17)", () => {
   it("es true si venció (incluido el instante exacto)", () => {
     expect(isHoldExpired(new Date("2026-10-15T11:59:59.000Z"), now)).toBe(true);
     expect(isHoldExpired(now, now)).toBe(true);
+  });
+});
+
+function comprobantesRow(overrides: Record<string, unknown> = {}) {
+  const issuedAt = new Date("2026-10-07T12:00:00.000Z");
+  return {
+    code: "DEMO0001",
+    status: "CONFIRMED",
+    seatClass: "ECONOMY",
+    quantity: 2,
+    totalAmount: { toString: () => "90000" },
+    confirmedAt: issuedAt,
+    contactEmail: "demo@volar.test",
+    flight: {
+      code: "VU-DEMO-01",
+      date: new Date("2026-10-29T00:00:00.000Z"),
+      departureAt: new Date("2026-10-29T08:30:00.000Z"),
+      arrivalAt: new Date("2026-10-29T11:30:00.000Z"),
+      route: {
+        origin: { code: "DEM1", city: "Ciudad Demo" },
+        destination: { code: "DEM2", city: "Destino Demo" },
+      },
+    },
+    tickets: [
+      {
+        id: "PAS_1",
+        number: "ETK-DEMO0001-1",
+        seat: "1A",
+        seatClass: "ECONOMY",
+        firstName: "María",
+        lastName: "Demo",
+        documentType: "DNI",
+        documentNumber: "30000001",
+        issuedAt,
+      },
+      {
+        id: "PAS_2",
+        number: "ETK-DEMO0001-2",
+        seat: "1B",
+        seatClass: "ECONOMY",
+        firstName: "Juan",
+        lastName: "Demo",
+        documentType: "DNI",
+        documentNumber: "30000002",
+        issuedAt,
+      },
+    ],
+    invoice: {
+      id: "FAC_1",
+      number: 1,
+      customerName: "Pasajero Demo",
+      customerEmail: "demo@volar.test",
+      totalAmount: { toString: () => "90000" },
+      issuedAt,
+      items: [
+        {
+          description: "Pasaje Economy VU-DEMO-01 - Demo, María",
+          quantity: 1,
+          unitPrice: { toString: () => "45000" },
+          amount: { toString: () => "45000" },
+        },
+        {
+          description: "Pasaje Economy VU-DEMO-01 - Demo, Juan",
+          quantity: 1,
+          unitPrice: { toString: () => "45000" },
+          amount: { toString: () => "45000" },
+        },
+      ],
+    },
+    emails: [{ status: "SENT", sentAt: issuedAt, recipientEmail: "demo@volar.test" }],
+    payments: [{ transactionId: "TX-ABCDEF123456" }],
+    ...overrides,
+  };
+}
+
+describe("getBookingComprobantes (US-23/US-24)", () => {
+  it("devuelve los e-tickets, la factura y el correo de la compra", async () => {
+    prismaMock.booking.findUnique.mockResolvedValue(comprobantesRow() as never);
+
+    const result = await getBookingComprobantes("DEMO0001");
+
+    expect(prismaMock.booking.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { code: "DEMO0001" } }),
+    );
+    expect(result).toMatchObject({
+      code: "DEMO0001",
+      status: "CONFIRMED",
+      totalAmount: "90000",
+      confirmedAt: new Date("2026-10-07T12:00:00.000Z"),
+      flight: {
+        code: "VU-DEMO-01",
+        origin: { code: "DEM1", city: "Ciudad Demo" },
+        destination: { code: "DEM2", city: "Destino Demo" },
+      },
+      tickets: [
+        { number: "ETK-DEMO0001-1", seat: "1A", documentNumber: "30000001" },
+        { number: "ETK-DEMO0001-2", seat: "1B", documentNumber: "30000002" },
+      ],
+      invoice: {
+        number: 1,
+        totalAmount: "90000",
+        items: [
+          { quantity: 1, unitPrice: "45000", amount: "45000" },
+          { quantity: 1, unitPrice: "45000", amount: "45000" },
+        ],
+      },
+      email: { status: "SENT", recipientEmail: "demo@volar.test" },
+      transactionId: "TX-ABCDEF123456",
+    });
+  });
+
+  it("devuelve null si el código no existe", async () => {
+    prismaMock.booking.findUnique.mockResolvedValue(null);
+
+    expect(await getBookingComprobantes("NADA0000")).toBeNull();
   });
 });
