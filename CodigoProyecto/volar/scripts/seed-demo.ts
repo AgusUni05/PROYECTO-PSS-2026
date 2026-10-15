@@ -44,6 +44,7 @@ function utcDaysFromToday(days: number): Date {
 async function clean() {
   // Orden de borrado: las FK con RESTRICT exigen ir de hoja a raíz.
   await prisma.payment.deleteMany({ where: { bookingId: IDS.booking } });
+  await prisma.invoice.deleteMany({ where: { bookingId: IDS.booking } }); // US-23
   await prisma.emailNotification.deleteMany({
     where: { OR: [{ bookingId: IDS.booking }, { flightChange: { flightId: IDS.flight } }] },
   });
@@ -187,8 +188,11 @@ async function seed() {
     },
   });
 
-  // Intentos de pago de pruebas anteriores: se descartan al restaurar.
+  // Intentos de pago y comprobantes de pruebas anteriores: se descartan al
+  // restaurar, así la reserva vuelve a un estado cobrable (US-20..US-24).
   await prisma.payment.deleteMany({ where: { bookingId: IDS.booking } });
+  await prisma.invoice.deleteMany({ where: { bookingId: IDS.booking } }); // US-23
+  await prisma.emailNotification.deleteMany({ where: { bookingId: IDS.booking } }); // US-24
 
   await prisma.booking.upsert({
     where: { code: "DEMO0001" },
@@ -239,6 +243,7 @@ async function seed() {
         ...passenger,
         status: "PENDING",
         number: null,
+        seat: null,
         issuedAt: null,
         pdfPath: null,
       },
