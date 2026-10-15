@@ -9,6 +9,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { getFlightOnSale, type FlightSearchResult } from "@/features/flight-search/queries";
 import { buildClassOptions } from "@/features/flight-search/class-options";
 import { purchaseSelectionSchema } from "@/features/purchase/schema";
+import { ConfirmPurchaseForm } from "@/features/purchase/components/confirm-purchase-form";
 import { formatCurrency, formatLongDate, formatTime } from "@/features/flights/format";
 import { cn } from "@/lib/utils";
 
@@ -130,11 +131,19 @@ export default async function CompraPage({
             <strong className="text-[28px] font-extrabold tracking-[-0.03em]">{formatCurrency(option.fare)}</strong>
           </div>
 
+          <ConfirmPurchaseForm
+            flightId={flight.id}
+            seatClass={option.seatClass}
+            maxAvailable={option.available}
+            fare={option.fare}
+          />
+
           <Alert>
             <AlertTitle>Próximo paso</AlertTitle>
             <AlertDescription>
-              La elección de la cantidad de pasajes, la carga de datos de los pasajeros y el pago se
-              habilitan en la próxima etapa del sistema.
+              La carga de datos de los pasajeros y el pago se habilitan en la próxima etapa del
+              sistema. Al confirmar, los cupos quedan retenidos por 10 minutos para completar la
+              compra.
             </AlertDescription>
           </Alert>
 
