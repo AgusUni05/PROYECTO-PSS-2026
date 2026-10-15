@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "make-admin": "tsx scripts/make-admin.ts",
+    "seed:demo": "tsx scripts/seed-demo.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {
