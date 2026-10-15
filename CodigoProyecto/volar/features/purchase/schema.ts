@@ -10,3 +10,15 @@ export const purchaseSelectionSchema = z.object({
 });
 
 export type PurchaseSelection = z.infer<typeof purchaseSelectionSchema>;
+
+// US-15: cantidad de pasajes a confirmar sobre la selección anterior (misma
+// clase para todo el grupo). 1 a 9 pasajes por transacción.
+export const confirmPurchaseSchema = purchaseSelectionSchema.extend({
+  cantidad: z.coerce
+    .number({ error: "Cantidad inválida" })
+    .int("La cantidad debe ser un número entero")
+    .min(1, "Mínimo 1 pasaje")
+    .max(9, "Máximo 9 pasajes por transacción"),
+});
+
+export type ConfirmPurchaseValues = z.infer<typeof confirmPurchaseSchema>;
