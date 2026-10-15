@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { newId } from "@/lib/id";
-import { installmentAmount, paymentFormSchema, purchaseSelectionSchema } from "./schema";
+import {
+  formatCardNumber,
+  formatCvv,
+  formatExpiry,
+  installmentAmount,
+  paymentFormSchema,
+  purchaseSelectionSchema,
+} from "./schema";
 
 describe("purchaseSelectionSchema (US-14)", () => {
   const vuelo = newId("Flight");
@@ -91,5 +98,28 @@ describe("installmentAmount (US-20)", () => {
     expect(installmentAmount(135000, 1)).toBe(135000);
     expect(installmentAmount(135000, 3)).toBe(45000);
     expect(installmentAmount(135000, 6)).toBe(22500);
+  });
+});
+
+describe("máscaras de pago (US-20)", () => {
+  it("agrupa el número de tarjeta de a 4 y descarta lo que no sea dígito", () => {
+    expect(formatCardNumber("4517882099124242")).toBe("4517 8820 9912 4242");
+    expect(formatCardNumber("4517 8820-9912 4242")).toBe("4517 8820 9912 4242");
+    expect(formatCardNumber("4517abc8820")).toBe("4517 8820");
+    expect(formatCardNumber("4517882099124242999")).toBe("4517 8820 9912 4242");
+  });
+
+  it("inserta la barra del vencimiento MM/AA", () => {
+    expect(formatExpiry("1229")).toBe("12/29");
+    expect(formatExpiry("12")).toBe("12");
+    expect(formatExpiry("1")).toBe("1");
+    expect(formatExpiry("12/29")).toBe("12/29");
+    expect(formatExpiry("12a29")).toBe("12/29");
+    expect(formatExpiry("12299")).toBe("12/29");
+  });
+
+  it("deja el CVV solo con dígitos (hasta 4)", () => {
+    expect(formatCvv("12a3")).toBe("123");
+    expect(formatCvv("12345")).toBe("1234");
   });
 });

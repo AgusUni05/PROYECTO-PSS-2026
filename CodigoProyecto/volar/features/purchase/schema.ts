@@ -81,3 +81,20 @@ export const paymentFormSchema = z.object({
 });
 
 export type PaymentFormValues = z.infer<typeof paymentFormSchema>;
+
+// US-20: máscaras de los campos de tarjeta. Se aplican al tipear para que el
+// input solo acepte dígitos y sea más fácil de leer; el schema igual valida el
+// valor final. El número se agrupa de a 4 y el vencimiento inserta la barra.
+export function formatCardNumber(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 16);
+  return digits.replace(/(\d{4})(?=\d)/g, "$1 ");
+}
+
+export function formatExpiry(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 4);
+  return digits.length <= 2 ? digits : `${digits.slice(0, 2)}/${digits.slice(2)}`;
+}
+
+export function formatCvv(value: string): string {
+  return value.replace(/\D/g, "").slice(0, 4);
+}

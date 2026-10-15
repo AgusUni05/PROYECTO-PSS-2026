@@ -24,6 +24,9 @@ import { processPaymentAction } from "../actions";
 import {
   INSTALLMENT_PLANS,
   PAYMENT_METHODS,
+  formatCardNumber,
+  formatCvv,
+  formatExpiry,
   installmentAmount,
   paymentFormSchema,
   type InstallmentPlan,
@@ -148,13 +151,21 @@ export function PaymentForm({ bookingCode, total }: PaymentFormProps) {
             <Label htmlFor="numeroTarjeta">
               Número de Tarjeta <span className="text-destructive">*</span>
             </Label>
-            <Input
-              id="numeroTarjeta"
-              inputMode="numeric"
-              autoComplete="cc-number"
-              placeholder="•••• •••• •••• 4242"
-              aria-invalid={!!form.formState.errors.numeroTarjeta}
-              {...form.register("numeroTarjeta")}
+            <Controller
+              control={form.control}
+              name="numeroTarjeta"
+              render={({ field }) => (
+                <Input
+                  id="numeroTarjeta"
+                  inputMode="numeric"
+                  autoComplete="cc-number"
+                  placeholder="•••• •••• •••• 4242"
+                  aria-invalid={!!form.formState.errors.numeroTarjeta}
+                  {...field}
+                  value={formatCardNumber(field.value)}
+                  onChange={(event) => field.onChange(formatCardNumber(event.target.value))}
+                />
+              )}
             />
             {form.formState.errors.numeroTarjeta ? (
               <p className="text-xs text-destructive">{form.formState.errors.numeroTarjeta.message}</p>
@@ -184,13 +195,22 @@ export function PaymentForm({ bookingCode, total }: PaymentFormProps) {
               <Label htmlFor="vencimiento">
                 Vencimiento (MM/AA) <span className="text-destructive">*</span>
               </Label>
-              <Input
-                id="vencimiento"
-                autoComplete="cc-exp"
-                placeholder="MM/AA"
-                maxLength={5}
-                aria-invalid={!!form.formState.errors.vencimiento}
-                {...form.register("vencimiento")}
+              <Controller
+                control={form.control}
+                name="vencimiento"
+                render={({ field }) => (
+                  <Input
+                    id="vencimiento"
+                    inputMode="numeric"
+                    autoComplete="cc-exp"
+                    placeholder="MM/AA"
+                    maxLength={5}
+                    aria-invalid={!!form.formState.errors.vencimiento}
+                    {...field}
+                    value={formatExpiry(field.value)}
+                    onChange={(event) => field.onChange(formatExpiry(event.target.value))}
+                  />
+                )}
               />
               {form.formState.errors.vencimiento && (
                 <p className="text-xs text-destructive">{form.formState.errors.vencimiento.message}</p>
@@ -201,15 +221,23 @@ export function PaymentForm({ bookingCode, total }: PaymentFormProps) {
               <Label htmlFor="cvv">
                 Código de Seguridad (CVV) <span className="text-destructive">*</span>
               </Label>
-              <Input
-                id="cvv"
-                type="password"
-                inputMode="numeric"
-                autoComplete="cc-csc"
-                placeholder="•••"
-                maxLength={4}
-                aria-invalid={!!form.formState.errors.cvv}
-                {...form.register("cvv")}
+              <Controller
+                control={form.control}
+                name="cvv"
+                render={({ field }) => (
+                  <Input
+                    id="cvv"
+                    type="password"
+                    inputMode="numeric"
+                    autoComplete="cc-csc"
+                    placeholder="•••"
+                    maxLength={4}
+                    aria-invalid={!!form.formState.errors.cvv}
+                    {...field}
+                    value={formatCvv(field.value)}
+                    onChange={(event) => field.onChange(formatCvv(event.target.value))}
+                  />
+                )}
               />
               {form.formState.errors.cvv ? (
                 <p className="text-xs text-destructive">{form.formState.errors.cvv.message}</p>
