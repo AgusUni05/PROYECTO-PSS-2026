@@ -1,11 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { SiteHeader } from "@/components/site-header";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { buttonVariants } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 import { getCurrentUser } from "@/lib/auth";
 import { SEAT_CLASS_LABELS } from "@/features/flight-search/class-options";
 import { formatCurrency, formatLongDate, formatTime } from "@/features/flights/format";
@@ -16,6 +11,7 @@ import {
   type BookingForPayment,
 } from "@/features/purchase/queries";
 import { PaymentForm } from "@/features/purchase/components/payment-form";
+import { PurchaseShell, Unavailable } from "@/features/purchase/components/purchase-shell";
 
 export const metadata: Metadata = {
   title: "Pago de la compra — VolAR",
@@ -36,7 +32,7 @@ export default async function PagoPage({
 
   if (!code.success) {
     return (
-      <PurchaseShell>
+      <PurchaseShell title="Pago de la compra" currentStep={3}>
         <Unavailable
           title="No pudimos identificar la reserva"
           description="El enlace con el que llegaste está incompleto o fue modificado. Iniciá la compra de nuevo."
@@ -54,7 +50,7 @@ export default async function PagoPage({
   const booking = await getBookingForPayment(code.data);
   if (!booking) {
     return (
-      <PurchaseShell>
+      <PurchaseShell title="Pago de la compra" currentStep={3}>
         <Unavailable
           title="No encontramos esta reserva"
           description="El código no corresponde a ninguna reserva registrada. Iniciá la compra de nuevo."
@@ -66,14 +62,14 @@ export default async function PagoPage({
   const closed = closedBookingMessage(booking);
   if (closed) {
     return (
-      <PurchaseShell>
+      <PurchaseShell title="Pago de la compra" currentStep={3}>
         <Unavailable title={closed.title} description={closed.description} />
       </PurchaseShell>
     );
   }
 
   return (
-    <PurchaseShell>
+    <PurchaseShell title="Pago de la compra" currentStep={3}>
       <div className="grid grid-cols-1 items-start gap-5 md:grid-cols-[minmax(0,1fr)_300px]">
         <PaymentForm bookingCode={booking.code} total={Number(booking.totalAmount)} />
         <PaymentSummary booking={booking} />
@@ -175,88 +171,5 @@ function PaymentSummary({ booking }: { booking: BookingForPayment }) {
         </strong>
       </div>
     </Card>
-  );
-}
-
-function PurchaseShell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex flex-1 flex-col bg-background">
-      <SiteHeader />
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-        <nav className="flex items-center gap-2 text-[13px] text-muted-foreground">
-          <Link href="/" className="hover:text-foreground">
-            Inicio
-          </Link>
-          <span aria-hidden>/</span>
-          <Link href="/vuelos" className="hover:text-foreground">
-            Búsqueda de vuelos
-          </Link>
-          <span aria-hidden>/</span>
-          <b className="font-semibold text-foreground">Pago de la compra</b>
-        </nav>
-
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <h1 className="text-[22px] font-extrabold tracking-[-0.035em] sm:text-[26px] lg:text-[30px]">
-            Pago de la compra
-          </h1>
-          <ol className="flex list-none items-center gap-1.5 p-0 text-[11px] font-bold text-muted-foreground sm:gap-2.5 sm:text-[13px]">
-            <Step n={1} label="Selección" done />
-            <StepLine />
-            <Step n={2} label="Pasajeros" done />
-            <StepLine />
-            <Step n={3} label="Pago" active />
-            <StepLine />
-            <Step n={4} label="Comprobantes" />
-          </ol>
-        </div>
-
-        {children}
-      </main>
-    </div>
-  );
-}
-
-function Step({
-  n,
-  label,
-  active = false,
-  done = false,
-}: {
-  n: number;
-  label: string;
-  active?: boolean;
-  done?: boolean;
-}) {
-  return (
-    <li className={cn("flex items-center gap-2", (active || done) && "text-foreground")}>
-      <span
-        className={cn(
-          "grid size-7 place-items-center rounded-full border-[1.5px] border-[#D6D4E2] bg-card text-xs",
-          done && "border-primary bg-secondary text-foreground",
-          active && "border-primary bg-primary text-primary-foreground shadow-[0_0_0_5px_var(--secondary)]",
-        )}
-      >
-        {done ? "✓" : n}
-      </span>
-      {label}
-    </li>
-  );
-}
-
-function StepLine() {
-  return <span aria-hidden className="h-0.5 w-4 rounded-full bg-[#DCDAE8] sm:w-9" />;
-}
-
-function Unavailable({ title, description }: { title: string; description: string }) {
-  return (
-    <Alert variant="destructive" className="rounded-2xl p-5">
-      <AlertTitle className="text-[15px]">{title}</AlertTitle>
-      <AlertDescription className="space-y-3">
-        <p>{description}</p>
-        <Link href="/vuelos" className={buttonVariants({ variant: "outline", size: "sm" })}>
-          Volver a buscar
-        </Link>
-      </AlertDescription>
-    </Alert>
   );
 }
