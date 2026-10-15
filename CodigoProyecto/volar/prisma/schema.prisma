@@ -343,6 +343,7 @@ model Ticket {
   flight    Flight    @relation("TicketFlight", fields: [flightId], references: [id])
   seatClass SeatClass
   unitPrice Decimal   @db.Decimal(12, 2) // Precio pagado (US-12)
+  seat      String? // US-23: asiento asignado al emitirse (ej. "14A"). Único por vuelo
 
   // US-18: datos identificatorios del pasajero
   firstName      String
@@ -359,6 +360,7 @@ model Ticket {
   contingencies TicketContingency[]
   refunds       Refund[]
 
+  @@unique([flightId, seat]) // US-23: dos pasajes del mismo vuelo no comparten asiento
   @@index([bookingId])
   @@index([flightId, status])
   @@index([documentNumber]) // US-34: búsqueda por DNI
