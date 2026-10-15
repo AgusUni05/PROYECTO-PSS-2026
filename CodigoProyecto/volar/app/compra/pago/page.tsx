@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Card } from "@/components/ui/card";
+import { buttonVariants } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/auth";
 import { SEAT_CLASS_LABELS } from "@/features/flight-search/class-options";
 import { formatCurrency, formatLongDate, formatTime } from "@/features/flights/format";
@@ -59,6 +61,24 @@ export default async function PagoPage({
     );
   }
 
+  if (booking.status === "CONFIRMED") {
+    const comprobantes = `/compra/comprobantes?${new URLSearchParams({ reserva: booking.code })}`;
+    return (
+      <PurchaseShell title="Pago de la compra" currentStep={3}>
+        <Card className="gap-4 p-5">
+          <h2 className="text-[17px] font-extrabold">Esta reserva ya está pagada</h2>
+          <p className="text-[13px] text-muted-foreground">
+            La compra {booking.code} quedó confirmada y ya se emitieron los e-tickets y la factura
+            (US-23/US-24).
+          </p>
+          <Link href={comprobantes} className={buttonVariants()}>
+            Ver comprobantes
+          </Link>
+        </Card>
+      </PurchaseShell>
+    );
+  }
+
   const closed = closedBookingMessage(booking);
   if (closed) {
     return (
@@ -80,12 +100,6 @@ export default async function PagoPage({
 
 /** Motivo por el que la reserva ya no admite pago (null si todavía se puede pagar). */
 function closedBookingMessage(booking: BookingForPayment): { title: string; description: string } | null {
-  if (booking.status === "CONFIRMED") {
-    return {
-      title: "Esta reserva ya está pagada",
-      description: `La compra ${booking.code} está confirmada. Los e-tickets y la factura se emiten en la próxima etapa del sistema.`,
-    };
-  }
   if (booking.status === "REJECTED") {
     return {
       title: "El pago de esta reserva fue rechazado",

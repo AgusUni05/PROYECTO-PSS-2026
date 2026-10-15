@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
@@ -295,39 +296,7 @@ export function PaymentForm({ bookingCode, total }: PaymentFormProps) {
 }
 
 function PaymentResult({ outcome }: { outcome: PaymentOutcome }) {
-  if (outcome.status === "APPROVED") {
-    return (
-      <Card>
-        <CardHeader className="flex-row items-center justify-between space-y-0">
-          <CardTitle>Compra confirmada</CardTitle>
-          <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold">
-            Pago aprobado
-          </span>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Alert>
-            <AlertTitle>Transacción aprobada (US-21)</AlertTitle>
-            <AlertDescription className="space-y-1">
-              <p>
-                ID de transacción: <b>{outcome.transactionId}</b>
-              </p>
-              <p>
-                La reserva <b>{outcome.bookingCode}</b> quedó confirmada y el cupo retenido pasó a
-                vendido.
-              </p>
-              <p>
-                La emisión de los e-tickets y la factura llega en la próxima etapa del sistema
-                (US-23/US-24).
-              </p>
-            </AlertDescription>
-          </Alert>
-          <Link href="/" className={buttonVariants()}>
-            Volver al inicio
-          </Link>
-        </CardContent>
-      </Card>
-    );
-  }
+  if (outcome.status === "APPROVED") return <ApprovedResult outcome={outcome} />;
 
   return (
     <Card>
@@ -351,6 +320,47 @@ function PaymentResult({ outcome }: { outcome: PaymentOutcome }) {
             </Link>
           </AlertDescription>
         </Alert>
+      </CardContent>
+    </Card>
+  );
+}
+
+// US-23/US-24: al aprobar, los comprobantes ya están emitidos y enviados, así
+// que la compra pasa a la pantalla de comprobantes.
+function ApprovedResult({ outcome }: { outcome: PaymentOutcome }) {
+  const router = useRouter();
+  const href = `/compra/comprobantes?${new URLSearchParams({ reserva: outcome.bookingCode })}`;
+
+  useEffect(() => {
+    const timer = setTimeout(() => router.replace(href), 900);
+    return () => clearTimeout(timer);
+  }, [router, href]);
+
+  return (
+    <Card>
+      <CardHeader className="flex-row items-center justify-between space-y-0">
+        <CardTitle>Compra confirmada</CardTitle>
+        <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold">
+          Pago aprobado
+        </span>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <Alert>
+          <AlertTitle>Transacción aprobada (US-21)</AlertTitle>
+          <AlertDescription className="space-y-1">
+            <p>
+              ID de transacción: <b>{outcome.transactionId}</b>
+            </p>
+            <p>
+              La reserva <b>{outcome.bookingCode}</b> quedó confirmada, el cupo retenido pasó a
+              vendido y se emitieron los e-tickets y la factura (US-23/US-24).
+            </p>
+            <p>Abriendo tus comprobantes…</p>
+          </AlertDescription>
+        </Alert>
+        <Link href={href} className={buttonVariants()}>
+          Ver comprobantes
+        </Link>
       </CardContent>
     </Card>
   );
