@@ -156,10 +156,22 @@ export async function processPayment(
         await issueComprobantes(tx, booking, now);
       }
     });
-  } catch {
+  } catch (error) {
+    // El guard de concurrencia (updateMany con count 0) señala que otro proceso
+    // cambió la reserva entre la lectura y la escritura: eso sí es una carrera.
+    if (error instanceof Error && error.message === "BOOKING_CHANGED") {
+      return {
+        ok: false,
+        error: "La reserva cambió mientras se procesaba el pago. Volvé a intentarlo.",
+      };
+    }
+
+    // Cualquier otro fallo viene de la transacción misma (p.ej. la emisión de
+    // comprobantes de US-23/24), no de una carrera: no le mentimos al usuario.
+    console.error("Fallo al procesar el pago de", code, error);
     return {
       ok: false,
-      error: "La reserva cambió mientras se procesaba el pago. Volvé a intentarlo.",
+      error: "No pudimos completar la compra. Volvé a intentarlo en unos minutos.",
     };
   }
 

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { prismaMock } from "@/tests/prisma-mock";
 import { cardBrand, processPayment } from "./service";
 import type { PaymentFormValues } from "./schema";
@@ -195,6 +195,25 @@ describe("processPayment (US-20/US-21/US-22)", () => {
 
     const result = await processPayment("DEMO0001", values);
 
-    expect(result.ok).toBe(false);
+    expect(result).toEqual({
+      ok: false,
+      error: "La reserva cambió mientras se procesaba el pago. Volvé a intentarlo.",
+    });
+  });
+
+  it("no atribuye a una carrera los fallos de la emisión y deja el error en el log", async () => {
+    prismaMock.booking.findUnique.mockResolvedValue(bookingRow() as never);
+    prismaMock.booking.updateMany.mockResolvedValue({ count: 1 });
+    prismaMock.invoice.create.mockRejectedValue(new Error("boom") as never);
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+
+    const result = await processPayment("DEMO0001", values);
+
+    expect(result).toEqual({
+      ok: false,
+      error: "No pudimos completar la compra. Volvé a intentarlo en unos minutos.",
+    });
+    expect(log).toHaveBeenCalled();
+    log.mockRestore();
   });
 });
