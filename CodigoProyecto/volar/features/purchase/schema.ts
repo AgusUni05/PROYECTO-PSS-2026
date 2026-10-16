@@ -27,7 +27,9 @@ export type ConfirmPurchaseValues = z.infer<typeof confirmPurchaseSchema>;
 export const bookingCodeSchema = z
   .string({ error: "Código de reserva inválido" })
   .transform((value) => value.trim().toUpperCase())
-  .refine((value) => /^[A-Z0-9]{8}$/.test(value), "Código de reserva inválido");
+  // El generador de reservas produce 6 caracteres (US-15); se acepta hasta 8
+  // para no invalidar códigos de demo/documentación más largos.
+  .refine((value) => /^[A-Z0-9]{6,8}$/.test(value), "Código de reserva inválido");
 
 // US-20: medio de pago y planes de financiación ofrecidos (pago_comprobantes.html).
 export const PAYMENT_METHODS = ["CREDIT", "DEBIT"] as const;
