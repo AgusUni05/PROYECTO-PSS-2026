@@ -3,7 +3,12 @@
 import { getCurrentUser } from "@/lib/auth";
 import { idSchema } from "@/lib/id";
 import type { ActionResult } from "@/lib/action-result";
-import { confirmPurchaseSchema, type ConfirmPurchaseValues } from "./schema";
+import {
+  confirmPurchaseSchema,
+  passengersFormSchema,
+  type ConfirmPurchaseValues,
+  type PassengersFormValues,
+} from "./schema";
 import * as purchaseService from "./service";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -31,11 +36,40 @@ export async function confirmPurchaseAction(
 /**
  * US-15: vence una reserva puntual (idempotente). La llama el countdown del
  * cliente al llegar a 0 para liberar el cupo apenas se agota el tiempo, sin
- * esperar a que alguien más toque ese vuelo.
+ * esperar a que alguien más toque ese vuelo. Devuelve false si la reserva ya
+ * se resolvió de otra forma (pagada o rechazada) y no hay que echar al usuario.
  */
-export async function expireBookingAction(id: string): Promise<void> {
-  if (!idSchema("Booking").safeParse(id).success) return;
-  await purchaseService.expireBookingIfDue(id);
+export async function expireBookingAction(id: string): Promise<boolean> {
+  if (!idSchema("Booking").safeParse(id).success) return false;
+  return purchaseService.expireBookingIfDue(id);
+}
+
+/**
+ * US-18/US-19: guarda los datos de cada pasajero de la reserva y devuelve el
+ * código para pasar al pago. Los errores de formato vuelven por campo
+ * ("pasajeros.2.numeroDocumento") para resaltar el pasajero exacto.
+ */
+export async function savePassengersAction(
+  bookingId: string,
+  values: PassengersFormValues,
+): Promise<ActionResult<{ code: string }>> {
+  const user = await getCurrentUser();
+  if (!user) return { ok: false, error: "Tenés que iniciar sesión para comprar." };
+
+  if (!idSchema("Booking").safeParse(bookingId).success) {
+    return { ok: false, error: "La reserva no es válida." };
+  }
+
+  const parsed = passengersFormSchema.safeParse(values);
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string[]> = {};
+    for (const issue of parsed.error.issues) {
+      (fieldErrors[issue.path.join(".")] ??= []).push(issue.message);
+    }
+    return { ok: false, error: "Revisá los datos de los pasajeros.", fieldErrors };
+  }
+
+  return purchaseService.savePassengers(bookingId, user.id, parsed.data.pasajeros);
 }
 
 export async function processPaymentAction(
