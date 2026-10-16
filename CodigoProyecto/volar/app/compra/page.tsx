@@ -1,17 +1,20 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { SiteHeader } from "@/components/site-header";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { getCurrentUser } from "@/lib/auth";
-import { getFlightOnSale, type FlightSearchResult } from "@/features/flight-search/queries";
+import { getFlightOnSale } from "@/features/flight-search/queries";
 import { buildClassOptions } from "@/features/flight-search/class-options";
 import { purchaseSelectionSchema } from "@/features/purchase/schema";
 import { ConfirmPurchaseForm } from "@/features/purchase/components/confirm-purchase-form";
 import { formatCurrency, formatLongDate, formatTime } from "@/features/flights/format";
-import { cn } from "@/lib/utils";
+import {
+  PurchaseShell,
+  Unavailable,
+  resultsHref,
+} from "@/features/purchase/components/purchase-shell";
 
 export const metadata: Metadata = {
   title: "Iniciar compra — VolAR",
@@ -21,7 +24,7 @@ type SearchParams = Record<string, string | string[] | undefined>;
 
 // US-14: inicio del flujo de compra desde un resultado de búsqueda. Es el
 // único punto del sitio público que pide sesión (se navega y busca sin cuenta).
-// Cantidad de pasajes, datos de pasajeros y pago: US-15 en adelante.
+// Es el paso 1 del flujo; pasajeros (paso 2) y pago (paso 3): US-15 en adelante.
 export default async function CompraPage({
   searchParams,
 }: {
@@ -31,7 +34,7 @@ export default async function CompraPage({
 
   if (!parsed.success) {
     return (
-      <PurchaseShell>
+      <PurchaseShell title="Iniciar compra" currentStep={1}>
         <Unavailable
           title="La selección no es válida"
           description="El enlace con el que llegaste está incompleto o fue modificado. Buscá el vuelo de nuevo."
@@ -50,7 +53,7 @@ export default async function CompraPage({
   const flight = await getFlightOnSale(selection.vuelo);
   if (!flight) {
     return (
-      <PurchaseShell>
+      <PurchaseShell title="Iniciar compra" currentStep={1}>
         <Unavailable
           title="Este vuelo ya no está disponible para la venta"
           description="Puede haberse agotado, cancelado o quedado fuera de su período de venta. Buscá otra opción."
@@ -62,7 +65,7 @@ export default async function CompraPage({
   const option = buildClassOptions(flight).find((o) => o.seatClass === selection.clase)!;
   if (option.status === "sold-out") {
     return (
-      <PurchaseShell>
+      <PurchaseShell title="Iniciar compra" currentStep={1}>
         <Unavailable
           title={`No quedan asientos en ${option.label} para el vuelo ${flight.code}`}
           description="Podés elegir otra clase de este vuelo u otro vuelo."
@@ -73,7 +76,7 @@ export default async function CompraPage({
   }
 
   return (
-    <PurchaseShell>
+    <PurchaseShell title="Iniciar compra" currentStep={1}>
       <div className="grid grid-cols-1 items-start gap-5 md:grid-cols-[minmax(0,1fr)_300px]">
         <Card>
           <CardHeader className="flex-row items-center justify-between space-y-0">
@@ -141,9 +144,8 @@ export default async function CompraPage({
           <Alert>
             <AlertTitle>Próximo paso</AlertTitle>
             <AlertDescription>
-              La carga de datos de los pasajeros y el pago se habilitan en la próxima etapa del
-              sistema. Al confirmar, los cupos quedan retenidos por 10 minutos para completar la
-              compra.
+              Al confirmar, los cupos quedan retenidos por 10 minutos para que cargues los datos
+              de cada pasajero y completes el pago.
             </AlertDescription>
           </Alert>
 
@@ -153,93 +155,6 @@ export default async function CompraPage({
         </Card>
       </div>
     </PurchaseShell>
-  );
-}
-
-function resultsHref(flight: FlightSearchResult): string {
-  const params = new URLSearchParams({
-    origen: flight.origin.id,
-    destino: flight.destination.id,
-    fecha: flight.date.toISOString().slice(0, 10),
-  });
-  return `/vuelos?${params}`;
-}
-
-function PurchaseShell({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex flex-1 flex-col bg-background">
-      <SiteHeader />
-      <main className="mx-auto w-full max-w-3xl flex-1 space-y-6 px-4 py-8 sm:px-6 lg:px-8">
-        <nav className="flex items-center gap-2 text-[13px] text-muted-foreground">
-          <Link href="/" className="hover:text-foreground">
-            Inicio
-          </Link>
-          <span aria-hidden>/</span>
-          <Link href="/vuelos" className="hover:text-foreground">
-            Búsqueda de vuelos
-          </Link>
-          <span aria-hidden>/</span>
-          <b className="font-semibold text-foreground">Iniciar compra</b>
-        </nav>
-
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <h1 className="text-[22px] font-extrabold tracking-[-0.035em] sm:text-[26px] lg:text-[30px]">
-            Iniciar compra
-          </h1>
-          <ol className="flex list-none items-center gap-1.5 p-0 text-[11px] font-bold text-muted-foreground sm:gap-2.5 sm:text-[13px]">
-            <Step n={1} label="Selección" active />
-            <StepLine />
-            <Step n={2} label="Pasajeros" />
-            <StepLine />
-            <Step n={3} label="Pago" />
-          </ol>
-        </div>
-
-        {children}
-      </main>
-    </div>
-  );
-}
-
-function Step({ n, label, active = false }: { n: number; label: string; active?: boolean }) {
-  return (
-    <li className={cn("flex items-center gap-2", active && "text-foreground")}>
-      <span
-        className={cn(
-          "grid size-7 place-items-center rounded-full border-[1.5px] border-[#D6D4E2] bg-card text-xs",
-          active && "border-primary bg-primary text-primary-foreground shadow-[0_0_0_5px_var(--secondary)]",
-        )}
-      >
-        {n}
-      </span>
-      {label}
-    </li>
-  );
-}
-
-function StepLine() {
-  return <span aria-hidden className="h-0.5 w-4 rounded-full bg-[#DCDAE8] sm:w-9" />;
-}
-
-function Unavailable({
-  title,
-  description,
-  backHref = "/vuelos",
-}: {
-  title: string;
-  description: string;
-  backHref?: string;
-}) {
-  return (
-    <Alert variant="destructive" className="rounded-2xl p-5">
-      <AlertTitle className="text-[15px]">{title}</AlertTitle>
-      <AlertDescription className="space-y-3">
-        <p>{description}</p>
-        <Link href={backHref} className={buttonVariants({ variant: "outline", size: "sm" })}>
-          Volver a buscar
-        </Link>
-      </AlertDescription>
-    </Alert>
   );
 }
 

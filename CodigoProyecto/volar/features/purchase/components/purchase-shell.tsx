@@ -1,12 +1,18 @@
+import { Fragment } from "react";
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { SiteHeader } from "@/components/site-header";
 import { cn } from "@/lib/utils";
 
+const STEPS = ["Selección", "Pasajeros", "Pago", "Comprobantes"] as const;
+
+export type PurchaseStep = 1 | 2 | 3 | 4;
+
 /**
- * US-20..US-24: marco de la compra en línea (4 pasos). Lo comparten la pantalla
- * de pago (paso 3) y la de comprobantes (paso 4).
+ * US-14..US-24: marco de la compra en línea (4 pasos). Lo comparten la
+ * selección (paso 1), la carga de pasajeros (paso 2), el pago (paso 3) y los
+ * comprobantes (paso 4): resalta el paso actual y marca los ya completados.
  */
 export function PurchaseShell({
   title,
@@ -14,11 +20,9 @@ export function PurchaseShell({
   children,
 }: {
   title: string;
-  currentStep: 3 | 4;
+  currentStep: PurchaseStep;
   children: React.ReactNode;
 }) {
-  const comprobantes = currentStep === 4;
-
   return (
     <div className="flex flex-1 flex-col bg-background">
       <SiteHeader />
@@ -40,13 +44,15 @@ export function PurchaseShell({
             {title}
           </h1>
           <ol className="flex list-none items-center gap-1.5 p-0 text-[11px] font-bold text-muted-foreground sm:gap-2.5 sm:text-[13px]">
-            <Step n={1} label="Selección" done />
-            <StepLine />
-            <Step n={2} label="Pasajeros" done />
-            <StepLine />
-            <Step n={3} label="Pago" done={comprobantes} active={!comprobantes} />
-            <StepLine />
-            <Step n={4} label="Comprobantes" active={comprobantes} />
+            {STEPS.map((label, index) => {
+              const n = index + 1;
+              return (
+                <Fragment key={label}>
+                  {index > 0 && <StepLine reached={n <= currentStep} />}
+                  <Step n={n} label={label} active={n === currentStep} done={n < currentStep} />
+                </Fragment>
+              );
+            })}
           </ol>
         </div>
 
@@ -68,33 +74,65 @@ function Step({
   done?: boolean;
 }) {
   return (
-    <li className={cn("flex items-center gap-2", (active || done) && "text-foreground")}>
+    <li
+      className={cn("flex items-center gap-2", (active || done) && "text-foreground")}
+      aria-current={active ? "step" : undefined}
+    >
       <span
         className={cn(
-          "grid size-7 place-items-center rounded-full border-[1.5px] border-[#D6D4E2] bg-card text-xs",
+          "grid size-7 shrink-0 place-items-center rounded-full border-[1.5px] border-[#D6D4E2] bg-card text-xs",
           done && "border-primary bg-secondary text-foreground",
           active && "border-primary bg-primary text-primary-foreground shadow-[0_0_0_5px_var(--secondary)]",
         )}
+        aria-label={done ? `${label} (completado)` : undefined}
       >
         {done ? "✓" : n}
       </span>
-      {label}
+      {/* En pantallas chicas solo se nombra el paso actual para que entren los 4. */}
+      <span className={cn(!active && "sr-only sm:not-sr-only")}>{label}</span>
     </li>
   );
 }
 
-function StepLine() {
-  return <span aria-hidden className="h-0.5 w-4 rounded-full bg-[#DCDAE8] sm:w-9" />;
+function StepLine({ reached }: { reached: boolean }) {
+  return (
+    <span
+      aria-hidden
+      className={cn("h-0.5 w-4 rounded-full bg-[#DCDAE8] sm:w-9", reached && "bg-primary")}
+    />
+  );
+}
+
+/** Búsqueda de la que salió el vuelo, para volver a elegir. */
+export function resultsHref(flight: {
+  date: Date;
+  origin: { id: string };
+  destination: { id: string };
+}): string {
+  const params = new URLSearchParams({
+    origen: flight.origin.id,
+    destino: flight.destination.id,
+    fecha: flight.date.toISOString().slice(0, 10),
+  });
+  return `/vuelos?${params}`;
 }
 
 /** Motivo por el que la pantalla de compra no puede mostrarse. */
-export function Unavailable({ title, description }: { title: string; description: string }) {
+export function Unavailable({
+  title,
+  description,
+  backHref = "/vuelos",
+}: {
+  title: string;
+  description: string;
+  backHref?: string;
+}) {
   return (
     <Alert variant="destructive" className="rounded-2xl p-5">
       <AlertTitle className="text-[15px]">{title}</AlertTitle>
       <AlertDescription className="space-y-3">
         <p>{description}</p>
-        <Link href="/vuelos" className={buttonVariants({ variant: "outline", size: "sm" })}>
+        <Link href={backHref} className={buttonVariants({ variant: "outline", size: "sm" })}>
           Volver a buscar
         </Link>
       </AlertDescription>

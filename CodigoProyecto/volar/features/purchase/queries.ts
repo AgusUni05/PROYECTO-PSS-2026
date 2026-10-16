@@ -32,8 +32,8 @@ export type BookingForPayment = {
     departureAt: Date;
     arrivalAt: Date;
     airplaneModel: string;
-    origin: { code: string; city: string };
-    destination: { code: string; city: string };
+    origin: { id: string; code: string; city: string };
+    destination: { id: string; code: string; city: string };
   };
   passengers: BookingPassenger[];
 };
@@ -43,8 +43,8 @@ const BOOKING_FOR_PAYMENT_INCLUDE = {
     include: {
       route: {
         select: {
-          origin: { select: { code: true, city: true } },
-          destination: { select: { code: true, city: true } },
+          origin: { select: { id: true, code: true, city: true } },
+          destination: { select: { id: true, code: true, city: true } },
         },
       },
       airplane: { select: { model: true } },

@@ -33,11 +33,15 @@ export function CountdownTimer({ bookingId, expiresAt, backHref }: Props) {
   useEffect(() => {
     if (remainingMs > 0) return;
     let active = true;
-    expireBookingAction(bookingId).finally(() => {
-      if (!active) return;
-      toast.error("Se agotó el tiempo para completar la compra. Los cupos se liberaron.");
-      router.push(backHref);
-    });
+    expireBookingAction(bookingId)
+      // Si no se pudo consultar, se asume vencida igual que antes.
+      .catch(() => true)
+      .then((expired) => {
+        // false: la reserva ya se pagó o rechazó (p.ej. desde el paso Pago); no hay nada que liberar.
+        if (!active || !expired) return;
+        toast.error("Se agotó el tiempo para completar la compra. Los cupos se liberaron.");
+        router.push(backHref);
+      });
     return () => {
       active = false;
     };
@@ -50,7 +54,7 @@ export function CountdownTimer({ bookingId, expiresAt, backHref }: Props) {
 
   return (
     <div className="flex flex-col items-center gap-1 rounded-2xl bg-muted px-4 py-3">
-      <span className="text-xs font-semibold text-muted-foreground">Tiempo para pagar</span>
+      <span className="text-xs font-semibold text-muted-foreground">Tiempo restante para completar la compra</span>
       <span
         className={cn(
           "font-mono text-[28px] font-extrabold tabular-nums tracking-[-0.02em]",

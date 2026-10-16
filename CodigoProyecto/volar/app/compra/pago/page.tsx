@@ -13,7 +13,12 @@ import {
   type BookingForPayment,
 } from "@/features/purchase/queries";
 import { PaymentForm } from "@/features/purchase/components/payment-form";
-import { PurchaseShell, Unavailable } from "@/features/purchase/components/purchase-shell";
+import { CountdownTimer } from "@/features/purchase/components/countdown-timer";
+import {
+  PurchaseShell,
+  Unavailable,
+  resultsHref,
+} from "@/features/purchase/components/purchase-shell";
 
 export const metadata: Metadata = {
   title: "Pago de la compra — VolAR",
@@ -22,9 +27,10 @@ export const metadata: Metadata = {
 type SearchParams = Record<string, string | string[] | undefined>;
 
 // US-20/US-21: pantalla de pago de una reserva existente (/compra/pago?reserva=…).
-// Los datos de pasajeros (US-15..19) son la etapa previa; acá se ingresa el
-// pago y se lo procesa contra la pasarela simulada. La emisión de comprobantes
-// (US-23/24) es la etapa siguiente.
+// Los datos de pasajeros (US-15..19) son la etapa previa, a la que se puede
+// volver para editarlos mientras siga el hold; acá se ingresa el pago y se lo
+// procesa contra la pasarela simulada. La emisión de comprobantes (US-23/24)
+// es la etapa siguiente.
 export default async function PagoPage({
   searchParams,
 }: {
@@ -88,6 +94,11 @@ export default async function PagoPage({
     );
   }
 
+  // US-19: no se llega al pago sin los datos de todos los pasajeros.
+  if (booking.passengers.length !== booking.quantity) {
+    redirect(`/compra/reserva/${booking.id}`);
+  }
+
   return (
     <PurchaseShell title="Pago de la compra" currentStep={3}>
       <div className="grid grid-cols-1 items-start gap-5 md:grid-cols-[minmax(0,1fr)_300px]">
@@ -133,7 +144,13 @@ function PaymentSummary({ booking }: { booking: BookingForPayment }) {
   const total = Number(booking.totalAmount);
 
   return (
-    <Card className="gap-4 p-5">
+    <Card className="gap-4 p-5 md:sticky md:top-6">
+      <CountdownTimer
+        bookingId={booking.id}
+        expiresAt={booking.holdExpiresAt.toISOString()}
+        backHref={resultsHref(flight)}
+      />
+
       <h2 className="text-base font-extrabold">Resumen de Cargo</h2>
 
       <div className="space-y-1 text-sm">
@@ -164,6 +181,13 @@ function PaymentSummary({ booking }: { booking: BookingForPayment }) {
           </li>
         ))}
       </ul>
+
+      <Link
+        href={`/compra/reserva/${booking.id}`}
+        className={buttonVariants({ variant: "outline", size: "sm" })}
+      >
+        ← Volver a Pasajeros para editar
+      </Link>
 
       <div className="space-y-2 border-t border-dashed border-border pt-3 text-sm">
         <div className="flex justify-between text-muted-foreground">

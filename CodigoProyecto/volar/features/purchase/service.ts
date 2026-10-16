@@ -7,8 +7,8 @@ import type { ActionResult } from "@/lib/action-result";
 import { availableSeats, isOnSale } from "@/features/flights/availability";
 import { randomUUID } from "node:crypto";
 import type { BookingStatus } from "@/generated/prisma/enums";
-import type { PaymentFormValues } from "./schema";
-import { isHoldExpired } from "./queries";
+import type { PassengerValues, PaymentFormValues } from "./schema";
+import { isHoldExpired, type BookingPassenger } from "./queries";
 import { issueComprobantes } from "./issuance";
 
 /** US-15/US-17: minutos que se retiene el cupo esperando el pago. */
@@ -204,6 +204,8 @@ export type BookingHold = {
     origin: { id: string; code: string; city: string };
     destination: { id: string; code: string; city: string };
   };
+  /** US-18: pasajeros ya cargados (para editarlos al volver desde el pago). */
+  passengers: BookingPassenger[];
 };
 
 /**
@@ -231,6 +233,10 @@ export async function getBookingHold(id: string, buyerId: string): Promise<Booki
           },
         },
       },
+      tickets: {
+        orderBy: { createdAt: "asc" },
+        select: { firstName: true, lastName: true, documentType: true, documentNumber: true },
+      },
     },
   });
   if (!booking || booking.buyerId !== buyerId) return null;
@@ -252,7 +258,93 @@ export async function getBookingHold(id: string, buyerId: string): Promise<Booki
       origin: booking.flight.route.origin,
       destination: booking.flight.route.destination,
     },
+    passengers: booking.tickets,
   };
+}
+
+/**
+ * US-18: guarda los datos de los pasajeros de una reserva pendiente, un pasaje
+ * (PENDING) por pasajero. Reemplaza los cargados antes, así el comprador puede
+ * volver desde el pago a editarlos mientras siga vigente la retención.
+ */
+export async function savePassengers(
+  bookingId: string,
+  buyerId: string,
+  passengers: PassengerValues[],
+): Promise<ActionResult<{ code: string }>> {
+  const booking = await prisma.booking.findUnique({
+    where: { id: bookingId },
+    select: {
+      id: true,
+      code: true,
+      buyerId: true,
+      status: true,
+      holdExpiresAt: true,
+      quantity: true,
+      flightId: true,
+      seatClass: true,
+      unitPrice: true,
+    },
+  });
+  if (!booking || booking.buyerId !== buyerId) {
+    return { ok: false, error: "No encontramos la reserva indicada." };
+  }
+  if (booking.status !== "PENDING_PAYMENT") {
+    return { ok: false, error: notPayableMessage(booking.status) };
+  }
+
+  const now = new Date();
+  if (isHoldExpired(booking.holdExpiresAt, now)) {
+    return {
+      ok: false,
+      error: "Se agotó el tiempo para completar la compra (la retención de cupo dura 10 minutos).",
+    };
+  }
+  // US-18: un formulario por pasaje, ni más ni menos.
+  if (passengers.length !== booking.quantity) {
+    return { ok: false, error: `Completá los datos de los ${booking.quantity} pasajeros.` };
+  }
+
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Re-chequea (y bloquea la fila) dentro de la transacción para no pisarse
+      // con un pago o un vencimiento concurrente de la misma reserva.
+      const { count } = await tx.booking.updateMany({
+        where: { id: booking.id, status: "PENDING_PAYMENT", holdExpiresAt: { gt: now } },
+        data: { updatedAt: now },
+      });
+      if (count === 0) throw new Error("BOOKING_CHANGED");
+
+      await tx.ticket.deleteMany({ where: { bookingId: booking.id, status: "PENDING" } });
+      await tx.ticket.createMany({
+        data: passengers.map((passenger, index) => ({
+          id: newId("Ticket"),
+          bookingId: booking.id,
+          flightId: booking.flightId,
+          seatClass: booking.seatClass,
+          unitPrice: booking.unitPrice,
+          firstName: passenger.nombre,
+          lastName: passenger.apellido,
+          documentType: passenger.tipoDocumento,
+          documentNumber: passenger.numeroDocumento,
+          status: "PENDING" as const,
+          // Los pasajes se leen ordenados por createdAt: un ms de diferencia
+          // conserva el orden en que se cargaron los pasajeros.
+          createdAt: new Date(now.getTime() + index),
+        })),
+      });
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "BOOKING_CHANGED") {
+      return {
+        ok: false,
+        error: "La reserva cambió mientras se guardaban los datos. Volvé a intentarlo.",
+      };
+    }
+    throw error;
+  }
+
+  return { ok: true, data: { code: booking.code } };
 }
 
 // Nombre de la pasarela simulada (US-21). No hay integración real: el
@@ -351,6 +443,14 @@ export async function processPayment(
     return {
       ok: false,
       error: "La reserva venció (la retención de cupo dura 10 minutos). Volvé a iniciar la compra.",
+    };
+  }
+
+  // US-19: no se puede pagar sin los datos de todos los pasajeros.
+  if (booking.tickets.length !== booking.quantity) {
+    return {
+      ok: false,
+      error: "Faltan datos de pasajeros. Volvé al paso Pasajeros para completarlos.",
     };
   }
 

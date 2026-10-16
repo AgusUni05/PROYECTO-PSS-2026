@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { SeatClass } from "@/generated/prisma/enums";
+import { DocumentType, SeatClass } from "@/generated/prisma/enums";
 import { idSchema } from "@/lib/id";
 
 // US-14: selección con la que se inicia la compra desde un resultado de
@@ -22,6 +22,78 @@ export const confirmPurchaseSchema = purchaseSelectionSchema.extend({
 });
 
 export type ConfirmPurchaseValues = z.infer<typeof confirmPurchaseSchema>;
+
+export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
+  DNI: "DNI",
+  PASSPORT: "Pasaporte",
+};
+
+const PERSON_NAME_PATTERN = /^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+(?:[ '.-][A-Za-zÁÉÍÓÚÜÑáéíóúüñ]+)*$/;
+
+function personNameField(label: string) {
+  return z
+    .string({ error: `Ingresá el ${label}` })
+    .trim()
+    .min(1, `Ingresá el ${label}`)
+    .min(2, `El ${label} debe tener al menos 2 letras`)
+    .max(50, `El ${label} es demasiado largo`)
+    .regex(PERSON_NAME_PATTERN, `El ${label} solo puede tener letras`);
+}
+
+/** US-19: formato del número según el tipo (DNI: solo dígitos; pasaporte: alfanumérico). */
+function documentNumberError(type: DocumentType, number: string): string | null {
+  if (number === "") return "Ingresá el número de documento";
+  if (type === "DNI" && !/^\d{7,8}$/.test(number)) {
+    return "El DNI debe tener 7 u 8 dígitos, sin puntos ni letras";
+  }
+  if (type === "PASSPORT" && !/^[A-Z0-9]{6,9}$/.test(number)) {
+    return "El pasaporte debe tener de 6 a 9 letras o números";
+  }
+  return null;
+}
+
+// US-18/US-19: datos identificatorios de un pasajero. El número de documento
+// se valida según el tipo, así que la regla vive a nivel del objeto pero el
+// error se marca sobre el campo exacto.
+export const passengerSchema = z
+  .object({
+    nombre: personNameField("nombre"),
+    apellido: personNameField("apellido"),
+    tipoDocumento: z.enum(DocumentType, { error: "Seleccioná el tipo de documento" }),
+    numeroDocumento: z.string({ error: "Ingresá el número de documento" }).trim().toUpperCase(),
+  })
+  .superRefine((passenger, ctx) => {
+    const message = documentNumberError(passenger.tipoDocumento, passenger.numeroDocumento);
+    if (message) ctx.addIssue({ code: "custom", path: ["numeroDocumento"], message });
+  });
+
+export type PassengerValues = z.infer<typeof passengerSchema>;
+
+// US-18/US-19: un formulario por pasaje. Una misma persona no puede figurar dos
+// veces en la compra: el documento repetido se marca en el pasajero que lo repite.
+export const passengersFormSchema = z
+  .object({
+    pasajeros: z.array(passengerSchema).min(1).max(9, "Máximo 9 pasajes por transacción"),
+  })
+  .superRefine(({ pasajeros }, ctx) => {
+    const seen = new Map<string, number>();
+    pasajeros.forEach((passenger, index) => {
+      if (!passenger.numeroDocumento) return;
+      const key = `${passenger.tipoDocumento}:${passenger.numeroDocumento}`;
+      const first = seen.get(key);
+      if (first === undefined) {
+        seen.set(key, index);
+        return;
+      }
+      ctx.addIssue({
+        code: "custom",
+        path: ["pasajeros", index, "numeroDocumento"],
+        message: `Este documento ya está cargado en el Pasajero ${first + 1}`,
+      });
+    });
+  });
+
+export type PassengersFormValues = z.infer<typeof passengersFormSchema>;
 // US-20/US-34: código de reserva (Booking.code, 8 caracteres alfanuméricos).
 // Puede llegar por URL o desde el formulario: se normaliza a mayúsculas.
 export const bookingCodeSchema = z

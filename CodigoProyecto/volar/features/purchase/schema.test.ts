@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { newId } from "@/lib/id";
-import { confirmPurchaseSchema, purchaseSelectionSchema } from "./schema";
+import {
+  confirmPurchaseSchema,
+  passengerSchema,
+  passengersFormSchema,
+  purchaseSelectionSchema,
+} from "./schema";
 import {
   formatCardNumber,
   formatCvv,
@@ -154,5 +159,82 @@ describe("máscaras de pago (US-20)", () => {
   it("deja el CVV solo con dígitos (hasta 4)", () => {
     expect(formatCvv("12a3")).toBe("123");
     expect(formatCvv("12345")).toBe("1234");
+  });
+});
+
+describe("passengerSchema / passengersFormSchema (US-18/US-19)", () => {
+  const valid = {
+    nombre: "Juan Carlos",
+    apellido: "Pérez",
+    tipoDocumento: "DNI" as const,
+    numeroDocumento: "32456789",
+  };
+
+  function issuesOf(value: unknown) {
+    const result = passengersFormSchema.safeParse(value);
+    return result.success ? [] : result.error.issues.map((i) => [i.path.join("."), i.message]);
+  }
+
+  it("acepta un pasajero con DNI o pasaporte válido y normaliza el documento", () => {
+    expect(passengerSchema.safeParse(valid).success).toBe(true);
+    const passport = passengerSchema.safeParse({
+      ...valid,
+      tipoDocumento: "PASSPORT",
+      numeroDocumento: " aaa123456 ",
+    });
+    expect(passport.success && passport.data.numeroDocumento).toBe("AAA123456");
+  });
+
+  it("exige nombre, apellido y número de documento", () => {
+    const issues = issuesOf({
+      pasajeros: [{ nombre: "", apellido: "  ", tipoDocumento: "DNI", numeroDocumento: "" }],
+    });
+    expect(issues).toContainEqual(["pasajeros.0.nombre", "Ingresá el nombre"]);
+    expect(issues).toContainEqual(["pasajeros.0.apellido", "Ingresá el apellido"]);
+    expect(issues).toContainEqual(["pasajeros.0.numeroDocumento", "Ingresá el número de documento"]);
+  });
+
+  it("rechaza nombres con números o símbolos", () => {
+    expect(passengerSchema.safeParse({ ...valid, nombre: "Juan3" }).success).toBe(false);
+    expect(passengerSchema.safeParse({ ...valid, apellido: "Pérez!" }).success).toBe(false);
+  });
+
+  it("valida el formato del documento según el tipo y marca al pasajero exacto", () => {
+    const issues = issuesOf({
+      pasajeros: [valid, { ...valid, numeroDocumento: "32.456.780" }],
+    });
+    expect(issues).toEqual([
+      ["pasajeros.1.numeroDocumento", "El DNI debe tener 7 u 8 dígitos, sin puntos ni letras"],
+    ]);
+    expect(
+      passengerSchema.safeParse({ ...valid, tipoDocumento: "PASSPORT", numeroDocumento: "AB-12" })
+        .success,
+    ).toBe(false);
+  });
+
+  it("marca todos los errores a la vez, aunque haya varios campos inválidos", () => {
+    const issues = issuesOf({
+      pasajeros: [{ ...valid, nombre: "", numeroDocumento: "abc" }],
+    });
+    expect(issues.map(([path]) => path)).toEqual(
+      expect.arrayContaining(["pasajeros.0.nombre", "pasajeros.0.numeroDocumento"]),
+    );
+  });
+
+  it("rechaza el mismo documento repetido en dos pasajeros", () => {
+    const issues = issuesOf({
+      pasajeros: [valid, { ...valid, nombre: "Ana" }],
+    });
+    expect(issues).toEqual([
+      ["pasajeros.1.numeroDocumento", "Este documento ya está cargado en el Pasajero 1"],
+    ]);
+  });
+
+  it("acepta de 1 a 9 pasajeros", () => {
+    const docs = (n: number) =>
+      Array.from({ length: n }, (_, i) => ({ ...valid, numeroDocumento: String(30000000 + i) }));
+    expect(passengersFormSchema.safeParse({ pasajeros: docs(9) }).success).toBe(true);
+    expect(passengersFormSchema.safeParse({ pasajeros: docs(10) }).success).toBe(false);
+    expect(passengersFormSchema.safeParse({ pasajeros: [] }).success).toBe(false);
   });
 });
