@@ -1,11 +1,11 @@
 /**
- * Genera ProjectLibre/AuraHealth_v6.xml — plan del proyecto en formato MS Project XML (MSPDI),
+ * Genera ProjectLibre/AuraHealth_v7.xml — plan del proyecto en formato MS Project XML (MSPDI),
  * que ProjectLibre abre con Archivo > Abrir.
  *
  * Uso:  node ProjectLibre/build-plan.js
  *
  * v6 — reincorpora al alcance el modulo de vacunas (US-24, US-63, US-28, US-29, US-57),
- * el modulo de reportes (US-48, US-49, US-50), US-17, US-30 y US-62. US-22 entra arrastrada
+ * el modulo de reportes (US-45, US-47, US-48), US-17, US-30 y US-62. US-22 entra arrastrada
  * por US-30: el aviso a los pacientes afectados es un criterio de aceptacion de US-30.
  * La aplicacion movil NO se implementa como modulo: la web es responsive (RNF-08 transversal).
  *
@@ -38,6 +38,26 @@
  * tocar otras asignaciones del sprint, porque solo I2 tiene margen real disponible. Se deja
  * documentado en vez de forzar un reparto que no cierre; el Sprint 2 ya corria 2,65 h/dia
  * en vez de las 2,5 originales, asi que el margen era chico de entrada.
+ *
+ * v7 — 16/10/2026: por decision del cliente (reunion del 16/10), US-49 (Filtros comunes de
+ * reportes) y US-50 (Exportacion de reportes) se dan de baja como historias propias: son
+ * requerimientos especiales que quedan incluidos con la implementacion de las US de reportes
+ * (US-45, US-47, US-48), por lo que no se estiman como US. El catalogo de US queda en 35
+ * historias y el Sprint 3 pasa de 45 a 43 puntos (141,9 h).
+ *
+ * v7 — ajuste de calendario 16/10/2026: los sprints quedan anclados a las fechas reales del
+ * enunciado: S1 del 28/09 al 09/10 (demo jue 08/10), S2 del 12/10 al 23/10 (demo jue 22/10)
+ * y S3 del 26/10 al 13/11 (demo jue 12/11; entrega dom 15/11). El cierre del proyecto queda
+ * del 16/11 al 20/11. Cada sprint depende del anterior (SPR2 -> SPR1, SPR3 -> SPR2), las
+ * demos arrancan con fecha fija (restriccion SNET) el jueves de su semana y las historias
+ * de cada sprint arrancan despues del refinement (REFn).
+ *
+ * v7 — segunda pasada de fechas 16/10/2026: al abrir el plan, las cadenas CC (comienzo a
+ * comienzo) se encadenaban casi secuencialmente y estiraban el Sprint 1 hasta ~21/10. Se
+ * reemplazan por anclas SNET por tarea (ConstraintType 4): cada US tiene su fecha de inicio
+ * planificada y conserva unicamente las dependencias FC cuyo predecesor termina antes de
+ * esa ancla. Las demos mantienen su SNET (jueves de demo). Span resultante: S1 28/09-09/10
+ * (10 dias habiles), S2 12/10-23/10 (10) y S3 26/10-13/11 (15); cierre 16/11-20/11.
  */
 
 const fs = require('fs');
@@ -48,6 +68,7 @@ const H_POR_DIA = 2.65;
 const RECURSOS = ['I1', 'I2', 'I3', 'I4', 'I5'];
 
 // Dias de implementacion de cada sprint y su ventana en dias continuos (1 a 26).
+// El calendario real ancla los sprints: S1 28/09-09/10, S2 12/10-23/10, S3 26/10-13/11.
 const DIAS_IMPL = {1: 7, 2: 7, 3: 12};
 const VENTANA = {1: [0, 7], 2: [7, 14], 3: [14, 26]};
 
@@ -58,73 +79,75 @@ const SPRINTS = [
     n: 1,
     nombre: 'Sprint 1 - Cimientos y agenda',
     refinement: 'Refinement Sprint 1 - conocimiento de las US',
-    demo: 'Demo Sprint 1 (jue 08/10)',
+    demo: 'Demo Sprint 1 (jue 08/10)', snet: '2026-10-08T09:00:00',
     cierre: 'Testing de regresion y cierre Sprint 1',
     tareas: [
-      {id: 'US-01', nom: 'US-01 Registro y gestion de la cuenta de usuario', pts: 4, eq: ['I1', 'I3', 'I5'], pred: []},
-      {id: 'US-02', nom: 'US-02 Inicio de sesion con interfaz segun rol', pts: 3, eq: ['I2', 'I4'], pred: [['US-01', 'CC', 2]]},
-      {id: 'US-03', nom: 'US-03 Alta y baja de usuarios internos', pts: 3, eq: ['I2', 'I4'], pred: [['US-02', 'CC', 2]]},
-      {id: 'US-06', nom: 'US-06 Carga de disponibilidad mensual y validacion de jornadas', pts: 5, eq: ['I5', 'I1', 'I3'], pred: [['US-03', 'CC', 2]]},
-      {id: 'US-08', nom: 'US-08 Generacion automatica de turnos de 30 minutos', pts: 4, eq: ['I3', 'I1', 'I5'], pred: [['US-06', 'CC', 2]]},
-      {id: 'US-11', nom: 'US-11 Vista de agenda del profesional', pts: 4, eq: ['I4', 'I2'], pred: [['US-08', 'CC', 2]]},
+      {id: 'US-01', nom: 'US-01 Registro y gestion de la cuenta de usuario', pts: 4, eq: ['I1', 'I3', 'I5'], pred: [], snet: '2026-09-29T09:00:00'},
+      {id: 'US-02', nom: 'US-02 Inicio de sesion con interfaz segun rol', pts: 3, eq: ['I2', 'I4'], pred: [], snet: '2026-09-30T09:00:00'},
+      {id: 'US-03', nom: 'US-03 Alta y baja de usuarios internos', pts: 3, eq: ['I2', 'I4'], pred: [], snet: '2026-10-01T09:00:00'},
+      {id: 'US-06', nom: 'US-06 Carga de disponibilidad mensual y validacion de jornadas', pts: 5, eq: ['I5', 'I1', 'I3'], pred: [], snet: '2026-10-02T09:00:00'},
+      {id: 'US-08', nom: 'US-08 Generacion automatica de turnos de 30 minutos', pts: 4, eq: ['I3', 'I1', 'I5'], pred: [], snet: '2026-10-05T09:00:00'},
+      {id: 'US-11', nom: 'US-11 Vista de agenda del profesional', pts: 4, eq: ['I4', 'I2'], pred: [], snet: '2026-10-05T09:00:00'},
     ],
   },
   {
     n: 2,
     nombre: 'Sprint 2 - Ciclo de reserva de turnos',
     refinement: 'Refinement Sprint 2 - conocimiento de las US',
-    demo: 'Demo Sprint 2 (jue 22/10)',
+    demo: 'Demo Sprint 2 (jue 22/10)', snet: '2026-10-22T09:00:00',
     cierre: 'Testing de regresion y cierre Sprint 2',
     tareas: [
-      {id: 'US-21', nom: 'US-21 Servicio de envio de notificaciones por email', pts: 3, eq: ['I1', 'I3'], pred: [['US-01', 'CC', 2]]},
-      {id: 'US-24', nom: 'US-24 Catalogo de vacunas', pts: 2, eq: ['I1'], pred: [['US-03', 'FC', 0]]},
-      {id: 'US-10', nom: 'US-10 Busqueda de turnos por especialidad, profesional y rango de fechas', pts: 4, eq: ['I3', 'I4', 'I2'], pred: [['US-08', 'FC', 0]]},
-      {id: 'US-13', nom: 'US-13 Reserva de turno con control de concurrencia', pts: 5, eq: ['I2', 'I5', 'I4'], pred: [['US-10', 'CC', 2]]},
-      {id: 'US-14', nom: 'US-14 Confirmacion de reserva por email', pts: 2, eq: ['I3'], pred: [['US-13', 'CC', 2], ['US-21', 'FC', 0]]},
-      {id: 'US-15', nom: 'US-15 Recordatorio automatico de turno', pts: 2, eq: ['I5'], pred: [['US-13', 'CC', 2], ['US-21', 'FC', 0]]},
-      {id: 'US-16', nom: 'US-16 Cancelacion de turno por el paciente', pts: 2, eq: ['I4'], pred: [['US-13', 'CC', 2]]},
-      {id: 'US-18', nom: 'US-18 Registro del estado del turno', pts: 2, eq: ['I1'], pred: [['US-13', 'CC', 2]]},
-      {id: 'US-64', nom: 'US-64 Reserva de turno a nombre de otra persona', pts: 2, eq: ['I2'], pred: [['US-13', 'FC', 0]]},
-      {id: 'BUG1a', nom: 'Reserva para bugs del Sprint 1 (I4)', pts: 1, eq: ['I4'], pred: []},
-      {id: 'BUG1b', nom: 'Reserva para bugs del Sprint 1 (I5, bloque 1)', pts: 1, eq: ['I5'], pred: []},
-      {id: 'BUG1c', nom: 'Reserva para bugs del Sprint 1 (I5, bloque 2)', pts: 1, eq: ['I5'], pred: []},
+      {id: 'US-21', nom: 'US-21 Servicio de envio de notificaciones por email', pts: 3, eq: ['I1', 'I3'], pred: [['US-01', 'FC', 0]], snet: '2026-10-13T09:00:00'},
+      {id: 'US-24', nom: 'US-24 Catalogo de vacunas', pts: 2, eq: ['I1'], pred: [['US-03', 'FC', 0]], snet: '2026-10-14T09:00:00'},
+      {id: 'US-10', nom: 'US-10 Busqueda de turnos por especialidad, profesional y rango de fechas', pts: 4, eq: ['I3', 'I4', 'I2'], pred: [['US-08', 'FC', 0]], snet: '2026-10-13T09:00:00'},
+      {id: 'US-13', nom: 'US-13 Reserva de turno con control de concurrencia', pts: 5, eq: ['I2', 'I5', 'I4'], pred: [['US-10', 'FC', 0]], snet: '2026-10-14T09:00:00'},
+      {id: 'US-14', nom: 'US-14 Confirmacion de reserva por email', pts: 2, eq: ['I3'], pred: [['US-21', 'FC', 0]], snet: '2026-10-15T09:00:00'},
+      {id: 'US-15', nom: 'US-15 Recordatorio automatico de turno', pts: 2, eq: ['I5'], pred: [['US-21', 'FC', 0]], snet: '2026-10-14T09:00:00'},
+      {id: 'US-16', nom: 'US-16 Cancelacion de turno por el paciente', pts: 2, eq: ['I4'], pred: [], snet: '2026-10-16T09:00:00'},
+      {id: 'US-18', nom: 'US-18 Registro del estado del turno', pts: 2, eq: ['I1'], pred: [], snet: '2026-10-15T09:00:00'},
+      {id: 'US-64', nom: 'US-64 Reserva de turno a nombre de otra persona', pts: 2, eq: ['I2'], pred: [['US-13', 'FC', 0]], snet: '2026-10-16T09:00:00'},
+      {id: 'BUG1a', nom: 'Reserva para bugs del Sprint 1 (I4)', pts: 1, eq: ['I4'], pred: [], snet: '2026-10-13T09:00:00'},
+      {id: 'BUG1b', nom: 'Reserva para bugs del Sprint 1 (I5, bloque 1)', pts: 1, eq: ['I5'], pred: [], snet: '2026-10-14T09:00:00'},
+      {id: 'BUG1c', nom: 'Reserva para bugs del Sprint 1 (I5, bloque 2)', pts: 1, eq: ['I5'], pred: [], snet: '2026-10-15T09:00:00'},
     ],
   },
   {
     n: 3,
     nombre: 'Sprint 3 - Vacunas, dinero, datos clinicos y reportes',
     refinement: 'Refinement Sprint 3 - conocimiento de las US',
-    demo: 'Demo Sprint 3 (jue 12/11)',
+    demo: 'Demo Sprint 3 (jue 12/11)', snet: '2026-11-12T09:00:00',
     cierre: 'Testing de regresion y cierre Sprint 3',
     tareas: [
-      {id: 'US-63', nom: 'US-63 Agenda del vacunatorio', pts: 3, eq: ['I5', 'I1'], pred: [['US-08', 'FC', 0]]},
-      {id: 'US-33', nom: 'US-33 Definicion del costo de la consulta por el medico', pts: 2, eq: ['I5'], pred: [['US-03', 'FC', 0]]},
-      {id: 'US-32', nom: 'US-32 Gestion de la cobertura medica', pts: 2, eq: ['I1'], pred: [['US-03', 'FC', 0]]},
-      {id: 'US-39', nom: 'US-39 Ficha de diagnostico del paciente', pts: 3, eq: ['I3', 'I4'], pred: [['US-18', 'CC', 1]]},
-      {id: 'US-45', nom: 'US-45 Reporte de turnos por especialidad', pts: 2, eq: ['I4'], pred: [['US-18', 'FC', 0]]},
-      {id: 'US-48', nom: 'US-48 Reporte de asistencia de pacientes', pts: 1, eq: ['I1'], pred: [['US-18', 'FC', 0]]},
-      {id: 'US-30', nom: 'US-30 Bloqueo de turnos disponibles de una franja publicada', pts: 2, eq: ['I5'], pred: [['US-10', 'FC', 0], ['US-13', 'FC', 0]]},
-      {id: 'US-28', nom: 'US-28 Turno de vacunacion', pts: 3, eq: ['I5', 'I3'], pred: [['US-13', 'FC', 0], ['US-24', 'FC', 0], ['US-63', 'FC', 0]]},
-      {id: 'US-34', nom: 'US-34 Calculo del importe segun cobertura', pts: 3, eq: ['I1', 'I2'], pred: [['US-32', 'CC', 1], ['US-33', 'CC', 1], ['US-18', 'FC', 0]]},
-      {id: 'US-22', nom: 'US-22 Aviso por modificacion de agenda', pts: 1, eq: ['I3'], pred: [['US-21', 'FC', 0], ['US-30', 'FC', 0]]},
-      {id: 'US-40', nom: 'US-40 Consulta de la ficha del paciente', pts: 2, eq: ['I3'], pred: [['US-39', 'CC', 2]]},
-      {id: 'US-41', nom: 'US-41 Historial clinico del paciente', pts: 2, eq: ['I4'], pred: [['US-39', 'CC', 2]]},
-      {id: 'US-62', nom: 'US-62 Adjuntar estudios a la ficha', pts: 3, eq: ['I3', 'I2'], pred: [['US-39', 'FC', 0]]},
-      {id: 'US-29', nom: 'US-29 Registro de aplicacion de dosis', pts: 1, eq: ['I4'], pred: [['US-28', 'CC', 1]]},
-      {id: 'US-17', nom: 'US-17 Gestion de turnos desde mostrador', pts: 3, eq: ['I5', 'I4'], pred: [['US-16', 'FC', 0], ['US-28', 'FC', 0]]},
-      {id: 'US-35', nom: 'US-35 Registro del pago en efectivo o por transferencia', pts: 2, eq: ['I2'], pred: [['US-34', 'CC', 1]]},
-      {id: 'US-44', nom: 'US-44 Auditoria de accesos al historial', pts: 1, eq: ['I4'], pred: [['US-40', 'FC', 0], ['US-41', 'FC', 0]]},
-      {id: 'US-57', nom: 'US-57 Carnet de vacunacion del paciente', pts: 1, eq: ['I3'], pred: [['US-29', 'FC', 0]]},
-      {id: 'US-36', nom: 'US-36 Comprobante de pago en PDF', pts: 2, eq: ['I2'], pred: [['US-35', 'FC', 0]]},
-      {id: 'US-47', nom: 'US-47 Reporte de pagos realizados', pts: 1, eq: ['I2'], pred: [['US-35', 'FC', 0]]},
-      {id: 'US-49', nom: 'US-49 Filtros comunes de reportes', pts: 1, eq: ['I1'], pred: [['US-45', 'FC', 0], ['US-47', 'FC', 0], ['US-48', 'FC', 0]]},
-      {id: 'US-50', nom: 'US-50 Exportacion de reportes', pts: 1, eq: ['I2'], pred: [['US-49', 'FC', 0]]},
-      {id: 'BUG2a', nom: 'Reserva para bugs del Sprint 2 (I1, bloque 1)', pts: 1, eq: ['I1'], pred: []},
-      {id: 'BUG2b', nom: 'Reserva para bugs del Sprint 2 (I1, bloque 2)', pts: 1, eq: ['I1'], pred: []},
-      {id: 'BUG2c', nom: 'Reserva para bugs del Sprint 2 (I5)', pts: 1, eq: ['I5'], pred: []},
+      {id: 'US-63', nom: 'US-63 Agenda del vacunatorio', pts: 3, eq: ['I5', 'I1'], pred: [['US-08', 'FC', 0]], snet: '2026-10-27T09:00:00'},
+      {id: 'US-33', nom: 'US-33 Definicion del costo de la consulta por el medico', pts: 2, eq: ['I5'], pred: [['US-06', 'FC', 0]], snet: '2026-10-27T09:00:00'},
+      {id: 'US-32', nom: 'US-32 Gestion de la cobertura medica', pts: 2, eq: ['I1'], pred: [['US-06', 'FC', 0]], snet: '2026-10-28T09:00:00'},
+      {id: 'US-39', nom: 'US-39 Ficha de diagnostico del paciente', pts: 3, eq: ['I3', 'I4'], pred: [['US-18', 'FC', 0]], snet: '2026-10-28T09:00:00'},
+      {id: 'US-45', nom: 'US-45 Reporte de turnos por especialidad', pts: 2, eq: ['I4'], pred: [['US-18', 'FC', 0]], snet: '2026-10-29T09:00:00'},
+      {id: 'US-48', nom: 'US-48 Reporte de asistencia de pacientes', pts: 1, eq: ['I1'], pred: [['US-18', 'FC', 0]], snet: '2026-10-29T09:00:00'},
+      {id: 'US-30', nom: 'US-30 Bloqueo de turnos disponibles de una franja publicada', pts: 2, eq: ['I5'], pred: [['US-10', 'FC', 0], ['US-13', 'FC', 0]], snet: '2026-10-30T09:00:00'},
+      {id: 'US-28', nom: 'US-28 Turno de vacunacion', pts: 3, eq: ['I5', 'I3'], pred: [['US-13', 'FC', 0], ['US-24', 'FC', 0], ['US-63', 'FC', 0]], snet: '2026-11-02T09:00:00'},
+      {id: 'US-34', nom: 'US-34 Calculo del importe segun cobertura', pts: 3, eq: ['I1', 'I2'], pred: [['US-32', 'FC', 0], ['US-33', 'FC', 0], ['US-18', 'FC', 0]], snet: '2026-10-30T09:00:00'},
+      {id: 'US-22', nom: 'US-22 Aviso por modificacion de agenda', pts: 1, eq: ['I3'], pred: [['US-21', 'FC', 0], ['US-30', 'FC', 0]], snet: '2026-11-02T09:00:00'},
+      {id: 'US-40', nom: 'US-40 Consulta de la ficha del paciente', pts: 2, eq: ['I3'], pred: [['US-39', 'FC', 0]], snet: '2026-10-30T09:00:00'},
+      {id: 'US-41', nom: 'US-41 Historial clinico del paciente', pts: 2, eq: ['I4'], pred: [['US-39', 'FC', 0]], snet: '2026-10-30T09:00:00'},
+      {id: 'US-62', nom: 'US-62 Adjuntar estudios a la ficha', pts: 3, eq: ['I3', 'I2'], pred: [['US-39', 'FC', 0]], snet: '2026-11-02T09:00:00'},
+      {id: 'US-29', nom: 'US-29 Registro de aplicacion de dosis', pts: 1, eq: ['I4'], pred: [['US-28', 'FC', 0]], snet: '2026-11-03T09:00:00'},
+      {id: 'US-17', nom: 'US-17 Gestion de turnos desde mostrador', pts: 3, eq: ['I5', 'I4'], pred: [['US-16', 'FC', 0], ['US-28', 'FC', 0]], snet: '2026-11-03T09:00:00'},
+      {id: 'US-35', nom: 'US-35 Registro del pago en efectivo o por transferencia', pts: 2, eq: ['I2'], pred: [['US-34', 'FC', 0]], snet: '2026-11-03T09:00:00'},
+      {id: 'US-44', nom: 'US-44 Auditoria de accesos al historial', pts: 1, eq: ['I4'], pred: [['US-40', 'FC', 0], ['US-41', 'FC', 0]], snet: '2026-11-03T09:00:00'},
+      {id: 'US-57', nom: 'US-57 Carnet de vacunacion del paciente', pts: 1, eq: ['I3'], pred: [['US-29', 'FC', 0]], snet: '2026-11-04T09:00:00'},
+      {id: 'US-36', nom: 'US-36 Comprobante de pago en PDF', pts: 2, eq: ['I2'], pred: [['US-35', 'FC', 0]], snet: '2026-11-05T09:00:00'},
+      {id: 'US-47', nom: 'US-47 Reporte de pagos realizados', pts: 1, eq: ['I2'], pred: [['US-35', 'FC', 0]], snet: '2026-11-05T09:00:00'},
+      {id: 'BUG2a', nom: 'Reserva para bugs del Sprint 2 (I1, bloque 1)', pts: 1, eq: ['I1'], pred: [], snet: '2026-10-27T09:00:00'},
+      {id: 'BUG2b', nom: 'Reserva para bugs del Sprint 2 (I1, bloque 2)', pts: 1, eq: ['I1'], pred: [], snet: '2026-10-28T09:00:00'},
+      {id: 'BUG2c', nom: 'Reserva para bugs del Sprint 2 (I5)', pts: 1, eq: ['I5'], pred: [], snet: '2026-10-29T09:00:00'},
     ],
   },
 ];
+
+// Sprint al que pertenece cada historia (para gatear con el refinement del sprint).
+const SPRINT_DE = {};
+for (const sp of SPRINTS) for (const t of sp.tareas) SPRINT_DE[t.id] = sp.n;
 
 // ---------------------------------------------------------------- construccion
 const tasks = [];
@@ -139,25 +162,34 @@ function addTask(o) {
   return t;
 }
 
-addTask({key: 'ROOT', nom: 'Sala Medica Privada - Enunciado 2 (v6)', nivel: 1, summary: true});
+addTask({key: 'ROOT', nom: 'Sala Medica Privada - Enunciado 2 (v7)', nivel: 1, summary: true});
 
 for (const sp of SPRINTS) {
   const n = sp.n;
-  addTask({key: 'SPR' + n, nom: sp.nombre, nivel: 2, summary: true});
+  addTask({
+    key: 'SPR' + n, nom: sp.nombre, nivel: 2, summary: true,
+    pred: n === 1 ? [] : [['SPR' + (n - 1), 'FC', 0]],
+  });
   addTask({
     key: 'REF' + n, nom: sp.refinement, nivel: 3, dias: 1, horas: 0,
     pred: n === 1 ? [] : [['CIE' + (n - 1), 'FC', 0]],
   });
   for (const t of sp.tareas) {
     const horas = t.pts * H_POR_PUNTO;
+    const pred = t.pred.slice();
+    const tieneCompanera = pred.some(([k]) => SPRINT_DE[k] === n);
+    if (!tieneCompanera && !pred.some(([k]) => k === 'REF' + n)) pred.push(['REF' + n, 'FC', 0]);
     addTask({
       key: t.id, nom: t.nom, nivel: 3,
       dias: horas / (t.eq.length * H_POR_DIA),
       horas, eq: t.eq, pts: t.pts, sprint: n,
-      pred: t.pred.length ? t.pred : [['REF' + n, 'FC', 0]],
+      pred, snet: t.snet,
     });
   }
-  addTask({key: 'DEM' + n, nom: sp.demo, nivel: 3, dias: 1, horas: 0, pred: sp.tareas.map(t => [t.id, 'FC', 0])});
+  addTask({
+    key: 'DEM' + n, nom: sp.demo, nivel: 3, dias: 1, horas: 0,
+    pred: sp.tareas.map(t => [t.id, 'FC', 0]), snet: sp.snet,
+  });
   addTask({key: 'CIE' + n, nom: sp.cierre, nivel: 3, dias: 1, horas: 0, pred: [['DEM' + n, 'FC', 0]]});
 }
 
@@ -223,8 +255,8 @@ if (plan.sinUbicar.length) console.warn('!! sin ubicar:', plan.sinUbicar.join(',
 const out = [];
 out.push('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>');
 out.push('<Project xmlns="http://schemas.microsoft.com/project">');
-out.push('  <Name>AuraHealth_v6.xml</Name>');
-out.push('  <Title>Sala Medica Privada - plan de sprints v6</Title>');
+out.push('  <Name>AuraHealth_v7.xml</Name>');
+out.push('  <Title>Sala Medica Privada - plan de sprints v7</Title>');
 out.push('  <Author>Comision de Analisis y Management</Author>');
 out.push('  <ScheduleFromStart>1</ScheduleFromStart>');
 out.push('  <StartDate>2026-09-28T09:00:00</StartDate>');
@@ -267,7 +299,8 @@ for (const t of tasks) {
   out.push('      <Priority>500</Priority>');
   out.push(`      <Summary>${t.summary ? 1 : 0}</Summary>`);
   out.push('      <Milestone>0</Milestone>');
-  out.push('      <ConstraintType>0</ConstraintType>');
+  out.push(`      <ConstraintType>${t.snet ? 4 : 0}</ConstraintType>`);
+  if (t.snet) out.push(`      <ConstraintDate>${t.snet}</ConstraintDate>`);
   if (!t.summary) {
     out.push(`      <Duration>${dur(t.dias)}</Duration>`);
     out.push('      <DurationFormat>7</DurationFormat>');
@@ -276,9 +309,16 @@ for (const t of tasks) {
     if (t.pts) {
       const rol = t.eq.length === 1 ? `Implementador unico: ${t.eq[0]}`
         : `Dueno: ${t.eq[0]}. Copiloto${t.eq.length > 2 ? 's' : ''}: ${t.eq.slice(1).join(', ')}`;
+      const notaSnet = t.snet
+        ? ` Inicio planificado: ${t.snet.slice(8, 10)}/${t.snet.slice(5, 7)}/${t.snet.slice(0, 4)} (restriccion SNET).`
+        : '';
       out.push(`      <Notes>${t.pts} puntos x 3,30 h = ${coma(t.horas)} h. ${rol}. ` +
         `${coma(t.horas / t.eq.length)} h cada uno, ${coma(t.dias)} dias a 2,65 h por dia. ` +
-        `Ventana calculada: dias ${coma(plan.ini[t.key])} a ${coma(plan.fin[t.key])} de 26.</Notes>`);
+        `Ventana calculada: dias ${coma(plan.ini[t.key])} a ${coma(plan.fin[t.key])} de 26.` +
+        notaSnet + '</Notes>');
+    } else if (t.snet) {
+      out.push(`      <Notes>Fecha fija: ${t.snet.slice(8, 10)}/${t.snet.slice(5, 7)}/${t.snet.slice(0, 4)}. ` +
+        'El inicio no puede ser anterior a esa fecha (restriccion SNET).</Notes>');
     }
   }
   for (const [k, tipo, lag] of (t.pred || [])) {
@@ -329,11 +369,11 @@ for (const t of tasks) {
 out.push('  </Assignments>');
 out.push('</Project>');
 
-const dest = path.join(__dirname, 'AuraHealth_v6.xml');
+const dest = path.join(__dirname, 'AuraHealth_v7.xml');
 fs.writeFileSync(dest, out.join('\n') + '\n', 'utf8');
 
-// Sidecar con los datos del plan, para que los documentos de docs-src se generen
-// desde la misma fuente que el XML.
+// Sidecar con los datos del plan, generado desde la misma fuente que el XML
+// (insumo de los documentos y de la planificacion de demos).
 const datos = {
   hPorPunto: H_POR_PUNTO, hPorDia: H_POR_DIA, recursos: RECURSOS,
   diasImpl: DIAS_IMPL, ventana: VENTANA,
@@ -349,7 +389,7 @@ for (const t of tasks.filter(x => x.pts)) {
     pred: (t.pred || []).filter(([k]) => byKey[k].pts),
   };
 }
-fs.writeFileSync(path.join(__dirname, 'plan-v6.json'), JSON.stringify(datos, null, 2), 'utf8');
+fs.writeFileSync(path.join(__dirname, 'plan-v7.json'), JSON.stringify(datos, null, 2), 'utf8');
 
 // ---------------------------------------------------------------- verificacion
 const conEquipo = tasks.filter(t => t.pts);
@@ -400,7 +440,7 @@ for (const h of [2.0, 2.5, 2.65, 2.8, 3.0]) {
   const p = planificar(h);
   const f = Math.max(...Object.values(p.fin));
   const dentro = historias.filter(t => p.fin[t.key] <= VENTANA[t.sprint][1] + 0.05).length;
-  console.log(`      ${coma(h, 2)} h/dia -> fin dia ${coma(f).padStart(4)} de 26 - ${String(dentro).padStart(2)} de 39 US cierran en su sprint`);
+  console.log(`      ${coma(h, 2)} h/dia -> fin dia ${coma(f).padStart(4)} de 26 - ${String(dentro).padStart(2)} de ${historias.length} US cierran en su sprint`);
 }
 
 console.log('');

@@ -1,0 +1,945 @@
+{
+  "hPorPunto": 3.3,
+  "hPorDia": 2.65,
+  "recursos": [
+    "I1",
+    "I2",
+    "I3",
+    "I4",
+    "I5"
+  ],
+  "diasImpl": {
+    "1": 7,
+    "2": 7,
+    "3": 12
+  },
+  "ventana": {
+    "1": [
+      0,
+      7
+    ],
+    "2": [
+      7,
+      14
+    ],
+    "3": [
+      14,
+      26
+    ]
+  },
+  "historias": {
+    "US-01": {
+      "pts": 4,
+      "horas": 13.2,
+      "sprint": 1,
+      "eq": [
+        "I1",
+        "I3",
+        "I5"
+      ],
+      "dueno": "I1",
+      "copilotos": [
+        "I3",
+        "I5"
+      ],
+      "hCadaUno": 4.3999999999999995,
+      "dias": 1.6603773584905661,
+      "ini": 0,
+      "fin": 1.6603773584905661,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "US-02": {
+      "pts": 3,
+      "horas": 9.899999999999999,
+      "sprint": 1,
+      "eq": [
+        "I2",
+        "I4"
+      ],
+      "dueno": "I2",
+      "copilotos": [
+        "I4"
+      ],
+      "hCadaUno": 4.949999999999999,
+      "dias": 1.8679245283018866,
+      "ini": 0,
+      "fin": 1.8679245283018866,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "US-03": {
+      "pts": 3,
+      "horas": 9.899999999999999,
+      "sprint": 1,
+      "eq": [
+        "I2",
+        "I4"
+      ],
+      "dueno": "I2",
+      "copilotos": [
+        "I4"
+      ],
+      "hCadaUno": 4.949999999999999,
+      "dias": 1.8679245283018866,
+      "ini": 1.8679245283018866,
+      "fin": 3.735849056603773,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "US-06": {
+      "pts": 5,
+      "horas": 16.5,
+      "sprint": 1,
+      "eq": [
+        "I5",
+        "I1",
+        "I3"
+      ],
+      "dueno": "I5",
+      "copilotos": [
+        "I1",
+        "I3"
+      ],
+      "hCadaUno": 5.5,
+      "dias": 2.0754716981132075,
+      "ini": 1.6603773584905661,
+      "fin": 3.7358490566037736,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "US-08": {
+      "pts": 4,
+      "horas": 13.2,
+      "sprint": 1,
+      "eq": [
+        "I3",
+        "I1",
+        "I5"
+      ],
+      "dueno": "I3",
+      "copilotos": [
+        "I1",
+        "I5"
+      ],
+      "hCadaUno": 4.3999999999999995,
+      "dias": 1.6603773584905661,
+      "ini": 3.735849056603773,
+      "fin": 5.39622641509434,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "US-11": {
+      "pts": 4,
+      "horas": 13.2,
+      "sprint": 1,
+      "eq": [
+        "I4",
+        "I2"
+      ],
+      "dueno": "I4",
+      "copilotos": [
+        "I2"
+      ],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 3.735849056603773,
+      "fin": 6.226415094339622,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "US-21": {
+      "pts": 3,
+      "horas": 9.899999999999999,
+      "sprint": 2,
+      "eq": [
+        "I1",
+        "I3"
+      ],
+      "dueno": "I1",
+      "copilotos": [
+        "I3"
+      ],
+      "hCadaUno": 4.949999999999999,
+      "dias": 1.8679245283018866,
+      "ini": 7,
+      "fin": 8.867924528301886,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-01",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-24": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 2,
+      "eq": [
+        "I1"
+      ],
+      "dueno": "I1",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 8.867924528301886,
+      "fin": 11.358490566037736,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-03",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-10": {
+      "pts": 4,
+      "horas": 13.2,
+      "sprint": 2,
+      "eq": [
+        "I3",
+        "I4",
+        "I2"
+      ],
+      "dueno": "I3",
+      "copilotos": [
+        "I4",
+        "I2"
+      ],
+      "hCadaUno": 4.3999999999999995,
+      "dias": 1.6603773584905661,
+      "ini": 11.358490566037736,
+      "fin": 13.018867924528301,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-08",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-13": {
+      "pts": 5,
+      "horas": 16.5,
+      "sprint": 2,
+      "eq": [
+        "I2",
+        "I5",
+        "I4"
+      ],
+      "dueno": "I2",
+      "copilotos": [
+        "I5",
+        "I4"
+      ],
+      "hCadaUno": 5.5,
+      "dias": 2.0754716981132075,
+      "ini": 13.018867924528301,
+      "fin": 15.09433962264151,
+      "cierraEnSprint": false,
+      "pred": [
+        [
+          "US-10",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-14": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 2,
+      "eq": [
+        "I3"
+      ],
+      "dueno": "I3",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 8.867924528301886,
+      "fin": 11.358490566037736,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-21",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-15": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 2,
+      "eq": [
+        "I5"
+      ],
+      "dueno": "I5",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 9.49056603773585,
+      "fin": 11.981132075471699,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-21",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-16": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 2,
+      "eq": [
+        "I4"
+      ],
+      "dueno": "I4",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 7,
+      "fin": 9.49056603773585,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "US-18": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 2,
+      "eq": [
+        "I1"
+      ],
+      "dueno": "I1",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 11.358490566037736,
+      "fin": 13.849056603773585,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "US-64": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 2,
+      "eq": [
+        "I2"
+      ],
+      "dueno": "I2",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 15.09433962264151,
+      "fin": 17.58490566037736,
+      "cierraEnSprint": false,
+      "pred": [
+        [
+          "US-13",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "BUG1a": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 2,
+      "eq": [
+        "I4"
+      ],
+      "dueno": "I4",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 9.49056603773585,
+      "fin": 10.735849056603774,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "BUG1b": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 2,
+      "eq": [
+        "I5"
+      ],
+      "dueno": "I5",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 7,
+      "fin": 8.245283018867925,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "BUG1c": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 2,
+      "eq": [
+        "I5"
+      ],
+      "dueno": "I5",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 8.245283018867925,
+      "fin": 9.49056603773585,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "US-63": {
+      "pts": 3,
+      "horas": 9.899999999999999,
+      "sprint": 3,
+      "eq": [
+        "I5",
+        "I1"
+      ],
+      "dueno": "I5",
+      "copilotos": [
+        "I1"
+      ],
+      "hCadaUno": 4.949999999999999,
+      "dias": 1.8679245283018866,
+      "ini": 22.094339622641506,
+      "fin": 23.962264150943394,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-08",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-33": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 3,
+      "eq": [
+        "I5"
+      ],
+      "dueno": "I5",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 15.09433962264151,
+      "fin": 17.58490566037736,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-06",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-32": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 3,
+      "eq": [
+        "I1"
+      ],
+      "dueno": "I1",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 14,
+      "fin": 16.49056603773585,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-06",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-39": {
+      "pts": 3,
+      "horas": 9.899999999999999,
+      "sprint": 3,
+      "eq": [
+        "I3",
+        "I4"
+      ],
+      "dueno": "I3",
+      "copilotos": [
+        "I4"
+      ],
+      "hCadaUno": 4.949999999999999,
+      "dias": 1.8679245283018866,
+      "ini": 15.09433962264151,
+      "fin": 16.962264150943398,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-18",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-45": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 3,
+      "eq": [
+        "I4"
+      ],
+      "dueno": "I4",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 16.962264150943398,
+      "fin": 19.452830188679247,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-18",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-48": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 3,
+      "eq": [
+        "I1"
+      ],
+      "dueno": "I1",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 16.49056603773585,
+      "fin": 17.735849056603772,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-18",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-30": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 3,
+      "eq": [
+        "I5"
+      ],
+      "dueno": "I5",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 17.58490566037736,
+      "fin": 20.07547169811321,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-10",
+          "FC",
+          0
+        ],
+        [
+          "US-13",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-28": {
+      "pts": 3,
+      "horas": 9.899999999999999,
+      "sprint": 3,
+      "eq": [
+        "I5",
+        "I3"
+      ],
+      "dueno": "I5",
+      "copilotos": [
+        "I3"
+      ],
+      "hCadaUno": 4.949999999999999,
+      "dias": 1.8679245283018866,
+      "ini": 23.962264150943394,
+      "fin": 25.830188679245282,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-13",
+          "FC",
+          0
+        ],
+        [
+          "US-24",
+          "FC",
+          0
+        ],
+        [
+          "US-63",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-34": {
+      "pts": 3,
+      "horas": 9.899999999999999,
+      "sprint": 3,
+      "eq": [
+        "I1",
+        "I2"
+      ],
+      "dueno": "I1",
+      "copilotos": [
+        "I2"
+      ],
+      "hCadaUno": 4.949999999999999,
+      "dias": 1.8679245283018866,
+      "ini": 17.735849056603772,
+      "fin": 19.60377358490566,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-32",
+          "FC",
+          0
+        ],
+        [
+          "US-33",
+          "FC",
+          0
+        ],
+        [
+          "US-18",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-22": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 3,
+      "eq": [
+        "I3"
+      ],
+      "dueno": "I3",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 21.471698113207548,
+      "fin": 22.71698113207547,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-21",
+          "FC",
+          0
+        ],
+        [
+          "US-30",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-40": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 3,
+      "eq": [
+        "I3"
+      ],
+      "dueno": "I3",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 16.962264150943398,
+      "fin": 19.452830188679247,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-39",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-41": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 3,
+      "eq": [
+        "I4"
+      ],
+      "dueno": "I4",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 19.452830188679247,
+      "fin": 21.943396226415096,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-39",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-62": {
+      "pts": 3,
+      "horas": 9.899999999999999,
+      "sprint": 3,
+      "eq": [
+        "I3",
+        "I2"
+      ],
+      "dueno": "I3",
+      "copilotos": [
+        "I2"
+      ],
+      "hCadaUno": 4.949999999999999,
+      "dias": 1.8679245283018866,
+      "ini": 19.60377358490566,
+      "fin": 21.471698113207548,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-39",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-29": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 3,
+      "eq": [
+        "I4"
+      ],
+      "dueno": "I4",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 25.830188679245282,
+      "fin": 27.075471698113205,
+      "cierraEnSprint": false,
+      "pred": [
+        [
+          "US-28",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-17": {
+      "pts": 3,
+      "horas": 9.899999999999999,
+      "sprint": 3,
+      "eq": [
+        "I5",
+        "I4"
+      ],
+      "dueno": "I5",
+      "copilotos": [
+        "I4"
+      ],
+      "hCadaUno": 4.949999999999999,
+      "dias": 1.8679245283018866,
+      "ini": 27.075471698113205,
+      "fin": 28.943396226415093,
+      "cierraEnSprint": false,
+      "pred": [
+        [
+          "US-16",
+          "FC",
+          0
+        ],
+        [
+          "US-28",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-35": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 3,
+      "eq": [
+        "I2"
+      ],
+      "dueno": "I2",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 21.471698113207548,
+      "fin": 23.962264150943398,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-34",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-44": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 3,
+      "eq": [
+        "I4"
+      ],
+      "dueno": "I4",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 21.943396226415096,
+      "fin": 23.18867924528302,
+      "cierraEnSprint": true,
+      "pred": [
+        [
+          "US-40",
+          "FC",
+          0
+        ],
+        [
+          "US-41",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-57": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 3,
+      "eq": [
+        "I3"
+      ],
+      "dueno": "I3",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 27.075471698113205,
+      "fin": 28.320754716981128,
+      "cierraEnSprint": false,
+      "pred": [
+        [
+          "US-29",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-36": {
+      "pts": 2,
+      "horas": 6.6,
+      "sprint": 3,
+      "eq": [
+        "I2"
+      ],
+      "dueno": "I2",
+      "copilotos": [],
+      "hCadaUno": 6.6,
+      "dias": 2.490566037735849,
+      "ini": 23.962264150943394,
+      "fin": 26.452830188679243,
+      "cierraEnSprint": false,
+      "pred": [
+        [
+          "US-35",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "US-47": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 3,
+      "eq": [
+        "I2"
+      ],
+      "dueno": "I2",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 26.452830188679243,
+      "fin": 27.698113207547166,
+      "cierraEnSprint": false,
+      "pred": [
+        [
+          "US-35",
+          "FC",
+          0
+        ]
+      ]
+    },
+    "BUG2a": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 3,
+      "eq": [
+        "I1"
+      ],
+      "dueno": "I1",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 19.60377358490566,
+      "fin": 20.849056603773583,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "BUG2b": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 3,
+      "eq": [
+        "I1"
+      ],
+      "dueno": "I1",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 20.849056603773583,
+      "fin": 22.094339622641506,
+      "cierraEnSprint": true,
+      "pred": []
+    },
+    "BUG2c": {
+      "pts": 1,
+      "horas": 3.3,
+      "sprint": 3,
+      "eq": [
+        "I5"
+      ],
+      "dueno": "I5",
+      "copilotos": [],
+      "hCadaUno": 3.3,
+      "dias": 1.2452830188679245,
+      "ini": 20.07547169811321,
+      "fin": 21.32075471698113,
+      "cierraEnSprint": true,
+      "pred": []
+    }
+  }
+}
