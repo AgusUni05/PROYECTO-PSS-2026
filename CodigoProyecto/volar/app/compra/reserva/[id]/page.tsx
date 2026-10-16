@@ -116,13 +116,16 @@ export default async function ReservaPage({ params }: { params: Promise<{ id: st
             </strong>
           </div>
 
-          <Alert>
-            <AlertTitle>Próximo paso</AlertTitle>
-            <AlertDescription>
-              La carga de los datos de cada pasajero y el pago se habilitan en la próxima etapa del
-              sistema. Si se agota el tiempo, los cupos se liberan automáticamente.
-            </AlertDescription>
-          </Alert>
+          <Link
+            href={`/compra/pago?${new URLSearchParams({ reserva: booking.code })}`}
+            className={buttonVariants({ size: "lg", className: "w-full" })}
+          >
+            Ir a pagar
+          </Link>
+
+          <p className="text-center text-xs text-muted-foreground">
+            Si se agota el tiempo, los cupos se liberan automáticamente.
+          </p>
         </Card>
       </div>
     </ReservaShell>
