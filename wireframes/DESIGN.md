@@ -25,23 +25,23 @@ El equipo implementador adoptó la regla de que **cada User Story la ejecuta un 
 | `wf_catalogo_vacunas.html` | US-24 | 2 | I1 | **Nueva.** Alta, edición y desactivación de vacunas (denominación, laboratorio, esquema de dosis). |
 | `wf_servicio_email.html` | US-21 | 2 | I1 | **Nueva.** Dejó de ser infraestructura sin pantalla: el administrador edita solo el mensaje de cada plantilla (asunto y destinatarios no editables) y define la cantidad máxima de envíos fallidos que se le admite a un mismo usuario. |
 | `wf_agenda_vacunatorio.html` | US-63 | 3 | I5, I1 | **Nueva.** Agenda mensual del vacunatorio, independiente de las médicas: la enfermera carga días y franjas y el sistema publica los turnos de 30 minutos. |
-| `wf_turno_vacunacion.html` | US-28 | 3 | I5, I3 | **Nueva.** Turno de vacunación desde mostrador: vacuna, horario del vacunatorio y confirmación por email; puede convivir con un turno médico a la misma hora. |
+| `wf_turno_vacunacion.html` | US-28 | 3 | I5, I3 | **Actualizada.** Turno de vacunación desde mostrador: vacuna, horario del vacunatorio, filtro por rango de fechas y reserva a nombre de otra persona (reutiliza `wf_reserva_terceros.html`, US-64); puede convivir con un turno médico a la misma hora. |
 | `wf_dosis_aplicada.html` | US-29 | 3 | I4 | **Nueva.** Registro de la dosis aplicada (paciente, vacuna, dosis, fecha y hora, enfermera del usuario autenticado) y anulación con motivo. |
 | `wf_carnet_vacunacion.html` | US-57 | 3 | I3 | **Nueva.** Carnet de vacunación en PDF con las aplicaciones de la sala y el aviso de esquema incompleto. |
-| `wf_cobertura_medica.html` | US-32 | 3 | I1 | **Nueva.** Cobertura del paciente y listado de obras sociales administrado por el administrador; plan y número de afiliado declarativos, sin efecto en el precio. |
-| `wf_costo_consulta.html` | US-33 | 3 | I5 | **Actualizada.** Precio de la consulta por obra social (particular incluido) definido por cada médico, con historial de vigencias. |
-| `wf_calculo_importe.html` | US-34 | 3 | I1, I2 | **Nueva.** Desglose del importe por la obra social de la persona atendida con el precio vigente a la fecha; sin precio configurado no se cierra el cobro. |
+| — (sin pantalla propia) | US-32 | 3 | I1 | **Se retiró el wireframe propio.** La cobertura que declara el paciente (entidad, plan, número de afiliado) se consulta y corrige desde `wf_mis_datos.html` (US-01) o al reservar para un tercero (`wf_reserva_terceros.html`, US-64). El listado de obras sociales y su **descuento porcentual predefinido** —que se aplica sobre el precio sin cobertura del médico (US-33)— pasó a `wf_configuracion.html` (US-06), mismo criterio que US-49/US-50. |
+| `wf_costo_consulta.html` | US-33 | 3 | I5 | **Actualizada.** El médico define un único precio de consulta sin cobertura, con historial de vigencias; ya no carga un precio distinto por cada obra social. |
+| `wf_calculo_importe.html` | US-34 | 3 | I1, I2 | **Actualizada.** Desglose del importe: precio sin cobertura del médico menos el descuento predefinido de la obra social de la persona atendida (US-32), con el precio vigente a la fecha; sin precio configurado no se cierra el cobro. |
 | `wf_registro_pago.html` | US-35 | 3 | I2 | **Nueva.** Pago en efectivo (solo administrativo) o por transferencia con referencia; un único pago activo por turno cumplido. |
 | `wf_comprobante.html` | US-36 | 3 | I2 | **Nueva.** Comprobante en PDF con numeración correlativa, disponible para titular, reservante y administrativo. |
 | `wf_reporte_pagos.html` | US-47 | 3 | I2 | **Nueva.** Pagos por período, medio y obra social, con los anulados identificados sin sumar. |
 | `wf_ficha_diagnostico.html` | US-39 | 3 | I3, I4 | **Nueva.** Entrada de la ficha sobre turno cumplido; edición solo del autor y solo el día de la consulta, con fecha y hora de última edición. |
-| `wf_ficha_consolidada.html` | US-40 | 3 | I3 | **Nueva.** Fichas de todos los médicos con autor y especialidad; la propia se edita durante el día de la consulta, las demás en modo lectura. |
+| `wf_ficha_consolidada.html` | US-40 | 3 | I3 | **Actualizada.** Fichas de todos los médicos con autor y especialidad, con filtro por paciente además de profesional, especialidad y rango de fechas; la vista es siempre de solo lectura, incluida la ficha propia del día (la edición vive en `wf_ficha_diagnostico.html`, US-39, que ahora enlaza a esta pantalla). |
 | `wf_historial_paciente.html` | US-41 | 3 | I4 | **Nueva.** Historial clínico de solo lectura para el paciente, con descarga en PDF. |
 | `wf_auditoria_accesos.html` | US-44 | 3 | I4 | **Nueva.** Auditoría de accesos al historial —exitosos y rechazados— de solo lectura para el administrador. |
 | `wf_adjuntos_estudios.html` | US-62 | 3 | I3, I2 | **Nueva.** Adjuntar imágenes o PDF a una entrada de la ficha, con tamaño máximo configurable. |
 | `wf_bloqueo_franja.html` | US-30 | 3 | I5 | **Nueva.** Bloqueo de los turnos libres de una franja publicada, con los ya reservados listados aparte; reversible. |
 | `wf_aviso_bloqueo.html` | US-22 | 3 | I3 | **Nueva.** Pacientes a contactar tras un bloqueo y modelo del email de aviso; no modifica reservas. |
-| `wf_mostrador.html` | US-17 | 3 | I5, I4 | **Nueva.** Gestión de turnos desde mostrador (médicos y de vacunación), alta de paciente en el flujo y reprogramación como cancelar + reservar. |
+| `wf_mostrador.html` | US-17 | 3 | I5, I4 | **Actualizada.** Gestión de turnos desde mostrador (médicos y de vacunación), alta de paciente en el flujo, reprogramación como cancelar + reservar y marca de asistencia (cumplido / ausente) igual que el médico (US-18), que habilita el cálculo del importe y el pago. |
 | `wf_reporte_turnos.html` | US-45 | 3 | I4 | **Nueva.** Totales y desglose por especialidad y profesional con rango de fechas y gráfico; incluye exportación. |
 | `wf_reporte_ausentismo.html` | US-48 | 3 | I1 | **Nueva.** Ausentismo sobre turnos reservados por profesional, especialidad, tipo y día, y pacientes con más ausencias; incluye exportación. |
 | `wf_acceso_denegado.html` | — | 1 a 3 | — | Estado transversal de RNF-03, verificado dentro de cada historia según la condición 6 de la definición de terminado. |
@@ -54,7 +54,16 @@ Las 20 historias del Sprint 3 (US-63, US-33, US-32, US-39, US-45, US-48, US-30, 
 
 ### Fuera del alcance, sin wireframe
 
-Solo la aplicación móvil (cubierta por RNF-08, sin pantalla propia) y la recuperación de contraseña. Los filtros comunes y la exportación de reportes no tienen pantalla propia: viven dentro de los reportes (US-45, US-47 y US-48).
+Solo la aplicación móvil (cubierta por RNF-08, sin pantalla propia), la recuperación de contraseña y, desde el ajuste del 17/10, US-32 (ver abajo). Los filtros comunes y la exportación de reportes no tienen pantalla propia: viven dentro de los reportes (US-45, US-47 y US-48).
+
+### Ajustes del cliente (17/10)
+
+- **Descuento por obra social.** Nueva regla de negocio: cada obra social del listado tiene un descuento porcentual predefinido, que se aplica sobre el precio de consulta sin cobertura. Afecta a US-32, US-33 y US-34.
+- **US-33 redefinida.** El médico ya no carga un precio por cada obra social: carga un único precio de consulta sin cobertura (`wf_costo_consulta.html`). El importe final (US-34, `wf_calculo_importe.html`) sale de aplicar sobre ese precio el descuento de la obra social de la persona atendida.
+- **US-32 sin pantalla propia.** Se retira `wf_cobertura_medica.html`. La cobertura del paciente ya se declaraba en US-01/US-64; el listado de obras sociales y su descuento se mueven a `wf_configuracion.html` (US-06), mismo criterio que US-49/US-50.
+- **US-28 alineada con US-13.** `wf_turno_vacunacion.html` suma el filtro por rango de fechas de US-10 y la reserva a nombre de otra persona reutilizando `wf_reserva_terceros.html` (US-64), igual que el turno médico.
+- **US-17 suma marca de asistencia.** `wf_mostrador.html` incorpora la marca de cumplido/ausente que hoy tiene el médico en US-18; marcar cumplido habilita el cálculo del importe y el pago (US-34, US-35), igual que en la vista del médico.
+- **US-40 con filtro por paciente y siempre de solo lectura.** `wf_ficha_consolidada.html` suma el filtro por paciente y deja explícito que la vista nunca es editable, ni siquiera la ficha propia del día. `wf_ficha_diagnostico.html` (US-39) suma un acceso directo a la ficha consolidada del paciente.
 
 ### Advertencia de cronograma
 

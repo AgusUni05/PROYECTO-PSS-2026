@@ -58,6 +58,15 @@
  * planificada y conserva unicamente las dependencias FC cuyo predecesor termina antes de
  * esa ancla. Las demos mantienen su SNET (jueves de demo). Span resultante: S1 28/09-09/10
  * (10 dias habiles), S2 12/10-23/10 (10) y S3 26/10-13/11 (15); cierre 16/11-20/11.
+ *
+ * v7 — ajuste de alcance 17/10/2026: por decision del cliente, cada obra social del listado
+ * tiene un descuento predefinido que se aplica sobre el precio de consulta. US-33 pasa de
+ * "precio por obra social" a "precio unico sin cobertura"; US-32 pierde su pantalla propia
+ * (la cobertura del paciente ya vivia en US-01/US-64, y el listado de obras sociales con su
+ * descuento se integra en la pantalla de US-06). US-28 suma filtro de fechas y reserva para
+ * terceros, US-17 suma la marca de asistencia que hoy tiene el medico en US-18, y US-40 suma
+ * el filtro por paciente. Son cambios de alcance/nombre de tarea, no de puntos, equipo ni
+ * fechas: el cronograma no se recalcula.
  */
 
 const fs = require('fs');
@@ -119,20 +128,20 @@ const SPRINTS = [
     cierre: 'Testing de regresion y cierre Sprint 3',
     tareas: [
       {id: 'US-63', nom: 'US-63 Agenda del vacunatorio', pts: 3, eq: ['I5', 'I1'], pred: [['US-08', 'FC', 0]], snet: '2026-10-27T09:00:00'},
-      {id: 'US-33', nom: 'US-33 Definicion del costo de la consulta por el medico', pts: 2, eq: ['I5'], pred: [['US-06', 'FC', 0]], snet: '2026-10-27T09:00:00'},
-      {id: 'US-32', nom: 'US-32 Gestion de la cobertura medica', pts: 2, eq: ['I1'], pred: [['US-06', 'FC', 0]], snet: '2026-10-28T09:00:00'},
+      {id: 'US-33', nom: 'US-33 Definicion del precio unico de consulta sin cobertura por el medico', pts: 2, eq: ['I5'], pred: [['US-06', 'FC', 0]], snet: '2026-10-27T09:00:00'},
+      {id: 'US-32', nom: 'US-32 Gestion de la cobertura del paciente y descuento por obra social (sin pantalla propia)', pts: 2, eq: ['I1'], pred: [['US-06', 'FC', 0]], snet: '2026-10-28T09:00:00'},
       {id: 'US-39', nom: 'US-39 Ficha de diagnostico del paciente', pts: 3, eq: ['I3', 'I4'], pred: [['US-18', 'FC', 0]], snet: '2026-10-28T09:00:00'},
       {id: 'US-45', nom: 'US-45 Reporte de turnos por especialidad', pts: 2, eq: ['I4'], pred: [['US-18', 'FC', 0]], snet: '2026-10-29T09:00:00'},
       {id: 'US-48', nom: 'US-48 Reporte de asistencia de pacientes', pts: 1, eq: ['I1'], pred: [['US-18', 'FC', 0]], snet: '2026-10-29T09:00:00'},
       {id: 'US-30', nom: 'US-30 Bloqueo de turnos disponibles de una franja publicada', pts: 2, eq: ['I5'], pred: [['US-10', 'FC', 0], ['US-13', 'FC', 0]], snet: '2026-10-30T09:00:00'},
-      {id: 'US-28', nom: 'US-28 Turno de vacunacion', pts: 3, eq: ['I5', 'I3'], pred: [['US-13', 'FC', 0], ['US-24', 'FC', 0], ['US-63', 'FC', 0]], snet: '2026-11-02T09:00:00'},
-      {id: 'US-34', nom: 'US-34 Calculo del importe segun cobertura', pts: 3, eq: ['I1', 'I2'], pred: [['US-32', 'FC', 0], ['US-33', 'FC', 0], ['US-18', 'FC', 0]], snet: '2026-10-30T09:00:00'},
+      {id: 'US-28', nom: 'US-28 Turno de vacunacion, con filtro de fechas y reserva para terceros', pts: 3, eq: ['I5', 'I3'], pred: [['US-13', 'FC', 0], ['US-24', 'FC', 0], ['US-63', 'FC', 0]], snet: '2026-11-02T09:00:00'},
+      {id: 'US-34', nom: 'US-34 Calculo del importe aplicando el descuento de la obra social', pts: 3, eq: ['I1', 'I2'], pred: [['US-32', 'FC', 0], ['US-33', 'FC', 0], ['US-18', 'FC', 0]], snet: '2026-10-30T09:00:00'},
       {id: 'US-22', nom: 'US-22 Aviso por modificacion de agenda', pts: 1, eq: ['I3'], pred: [['US-21', 'FC', 0], ['US-30', 'FC', 0]], snet: '2026-11-02T09:00:00'},
-      {id: 'US-40', nom: 'US-40 Consulta de la ficha del paciente', pts: 2, eq: ['I3'], pred: [['US-39', 'FC', 0]], snet: '2026-10-30T09:00:00'},
+      {id: 'US-40', nom: 'US-40 Consulta de la ficha del paciente, con filtro por paciente (siempre lectura)', pts: 2, eq: ['I3'], pred: [['US-39', 'FC', 0]], snet: '2026-10-30T09:00:00'},
       {id: 'US-41', nom: 'US-41 Historial clinico del paciente', pts: 2, eq: ['I4'], pred: [['US-39', 'FC', 0]], snet: '2026-10-30T09:00:00'},
       {id: 'US-62', nom: 'US-62 Adjuntar estudios a la ficha', pts: 3, eq: ['I3', 'I2'], pred: [['US-39', 'FC', 0]], snet: '2026-11-02T09:00:00'},
       {id: 'US-29', nom: 'US-29 Registro de aplicacion de dosis', pts: 1, eq: ['I4'], pred: [['US-28', 'FC', 0]], snet: '2026-11-03T09:00:00'},
-      {id: 'US-17', nom: 'US-17 Gestion de turnos desde mostrador', pts: 3, eq: ['I5', 'I4'], pred: [['US-16', 'FC', 0], ['US-28', 'FC', 0]], snet: '2026-11-03T09:00:00'},
+      {id: 'US-17', nom: 'US-17 Gestion de turnos desde mostrador, con marca de asistencia', pts: 3, eq: ['I5', 'I4'], pred: [['US-16', 'FC', 0], ['US-28', 'FC', 0]], snet: '2026-11-03T09:00:00'},
       {id: 'US-35', nom: 'US-35 Registro del pago en efectivo o por transferencia', pts: 2, eq: ['I2'], pred: [['US-34', 'FC', 0]], snet: '2026-11-03T09:00:00'},
       {id: 'US-44', nom: 'US-44 Auditoria de accesos al historial', pts: 1, eq: ['I4'], pred: [['US-40', 'FC', 0], ['US-41', 'FC', 0]], snet: '2026-11-03T09:00:00'},
       {id: 'US-57', nom: 'US-57 Carnet de vacunacion del paciente', pts: 1, eq: ['I3'], pred: [['US-29', 'FC', 0]], snet: '2026-11-04T09:00:00'},

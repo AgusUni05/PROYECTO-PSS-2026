@@ -28,7 +28,7 @@
         <section class="wf-block">
             <h3 style="margin: 0 0 10px; font-size: 15px;">Jornadas por semana</h3>
             <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">Cantidad de jornadas que cada médico tiene que cargar por semana al declarar su disponibilidad mensual.</p>
-            
+
             <div class="field-grid">
                 <div class="field">
                     <label for="minimo">Mínimo</label>
@@ -55,14 +55,44 @@
                     </select>
                 </div>
             </div>
-            
+
             <p class="hint" style="margin-top: 20px;">El cambio rige para las próximas cargas de disponibilidad. Las ya confirmadas no se modifican.</p>
-            
+
             <div class="actions">
                 <a class="btn btn--primary" style="background: #185c6c; border-color: #185c6c;" href="#">Guardar</a>
             </div>
         </section>
-        <p class="foot">Pantalla de Configuración. Implementador: I2.</p>
+        <section class="wf-block">
+            <span class="wf-block__num">US-32 · Sin pantalla propia</span>
+            <h3 style="margin: 0 0 10px; font-size: 15px;">Obras sociales y descuento</h3>
+            <p style="font-size: 13px; color: var(--muted); margin-bottom: 20px;">Listado de obras sociales de la sala. Cada una tiene un descuento porcentual predefinido que se aplica sobre el precio de consulta sin cobertura que carga cada médico (US-33); los pacientes particulares no reciben descuento.</p>
+
+            <table class="table">
+                <thead><tr><th>Obra social</th><th>Descuento</th><th>Estado</th><th></th></tr></thead>
+                <tbody>
+                    <tr><td>IOMA</td><td>30%</td><td><span class="badge">Activa</span></td><td><button class="btn" type="button">Editar</button> <button class="btn" type="button">Desactivar</button></td></tr>
+                    <tr><td>OSDE</td><td>20%</td><td><span class="badge">Activa</span></td><td><button class="btn" type="button">Editar</button> <button class="btn" type="button">Desactivar</button></td></tr>
+                    <tr><td>Swiss Medical</td><td>25%</td><td><span class="badge">Inactiva</span></td><td><button class="btn" type="button">Editar</button> <button class="btn" type="button">Activar</button></td></tr>
+                </tbody>
+            </table>
+
+            <div class="field-grid field-grid--3" style="margin-top: 16px;">
+                <div class="field">
+                    <label for="nueva-os">Nueva obra social</label>
+                    <input class="input" id="nueva-os" placeholder="Nombre de la entidad">
+                </div>
+                <div class="field">
+                    <label for="nuevo-desc">Descuento</label>
+                    <input class="input" id="nuevo-desc" placeholder="Ej.: 30%">
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn btn--accent" type="button">Agregar al listado</button>
+            </div>
+
+            <p class="hint" style="margin-top: 20px;">Esta pantalla reemplaza al wireframe propio que tenía US-32: la cobertura declarada por cada paciente (entidad, plan y número de afiliado) se consulta y corrige desde «Mi cuenta» (US-01) o al reservar para un tercero (US-64); aquí el administrador solo mantiene el listado de entidades y su descuento.</p>
+        </section>
+        <p class="foot">Pantalla de Configuración. Cubre US-06 (jornadas) y US-32 (obras sociales y descuento, sin pantalla propia). Implementador: I2.</p>
     </main>
 </body>
 </html>
