@@ -9,11 +9,13 @@ export const ADMIN_NAV_ITEMS = [
   { href: "/admin/aviones", label: "Aviones" },
   { href: "/admin/trayectos", label: "Trayectos" },
   { href: "/admin/vuelos", label: "Vuelos" },
+  { href: "/admin/personal", label: "Personal" },
 ] as const;
 
 const GROUPS = [
   { label: "Catálogo maestro", items: ADMIN_NAV_ITEMS.slice(0, 3) },
-  { label: "Operaciones", items: ADMIN_NAV_ITEMS.slice(3) },
+  { label: "Operaciones", items: ADMIN_NAV_ITEMS.slice(3, 4) },
+  { label: "Seguridad", items: ADMIN_NAV_ITEMS.slice(4) },
 ] as const;
 
 export function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
