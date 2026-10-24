@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it, vi, beforeEach } from "vitest";
 import type { User } from "@/generated/prisma/client";
 import { prismaMock } from "@/tests/prisma-mock";
 
@@ -7,8 +7,22 @@ vi.mock("@clerk/nextjs/server", () => ({
   currentUser: vi.fn(),
 }));
 
-import { currentUser } from "@clerk/nextjs/server";
-import { isAdmin, syncClerkUser } from "./auth";
+vi.mock("next/navigation", () => ({
+  redirect: vi.fn((url: string) => {
+    throw new Error(`redirect:${url}`);
+  }),
+  forbidden: vi.fn(() => {
+    throw new Error("forbidden");
+  }),
+}));
+
+import { currentUser, auth } from "@clerk/nextjs/server";
+import { isAdmin, syncClerkUser, requireCurrentUser, requirePassenger } from "./auth";
+
+beforeEach(() => {
+  vi.mocked(auth).mockReset();
+  vi.mocked(currentUser).mockReset();
+});
 
 function makeUser(overrides: Partial<User>): User {
   return {
@@ -130,5 +144,49 @@ describe("syncClerkUser", () => {
 
     expect(result).toBeNull();
     expect(prismaMock.user.create).not.toHaveBeenCalled();
+  });
+});
+
+// Guardias reutilizables para vistas que requieren sesión (US-26 / US-28).
+describe("requireCurrentUser", () => {
+  it("redirige a sign-in cuando no hay sesión", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: null } as never);
+
+    await expect(requireCurrentUser()).rejects.toThrow("redirect:/sign-in");
+  });
+
+  it("sincroniza y devuelve el usuario cuando hay sesión", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    const existing = makeUser({ clerkId: "clerk_1" });
+    prismaMock.user.findUnique.mockResolvedValue(existing);
+
+    const result = await requireCurrentUser();
+
+    expect(result).toEqual(existing);
+  });
+});
+
+describe("requirePassenger", () => {
+  it("redirige a sign-in cuando no hay sesión", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: null } as never);
+
+    await expect(requirePassenger()).rejects.toThrow("redirect:/sign-in");
+  });
+
+  it("devuelve 403 cuando el usuario no es pasajero", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    prismaMock.user.findUnique.mockResolvedValue(makeUser({ role: "ADMIN" }));
+
+    await expect(requirePassenger()).rejects.toThrow("forbidden");
+  });
+
+  it("devuelve el usuario cuando es pasajero", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    const passenger = makeUser({ role: "PASSENGER" });
+    prismaMock.user.findUnique.mockResolvedValue(passenger);
+
+    const result = await requirePassenger();
+
+    expect(result).toEqual(passenger);
   });
 });

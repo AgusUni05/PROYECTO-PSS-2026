@@ -62,3 +62,23 @@ export async function requireAdmin(): Promise<User> {
   if (!isAdmin(user)) forbidden();
   return user;
 }
+
+/**
+ * Guardia reutilizable para vistas que requieren un usuario autenticado.
+ * Sin sesión → redirige a sign-in. No impone ningún rol.
+ */
+export async function requireCurrentUser(): Promise<User> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/sign-in");
+  return user;
+}
+
+/**
+ * Guardia reutilizable para vistas de pasajeros (US-28). Sin sesión → redirige
+ * a sign-in; sin rol PASSENGER → 403.
+ */
+export async function requirePassenger(): Promise<User> {
+  const user = await requireCurrentUser();
+  if (user.role !== "PASSENGER") forbidden();
+  return user;
+}
