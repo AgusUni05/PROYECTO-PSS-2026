@@ -3,11 +3,13 @@ import { prismaMock } from "@/tests/prisma-mock";
 import {
   BookingStatus,
   ContingencyResolution,
+  EmailStatus,
+  EmailType,
   RefundStatus,
   SeatClass,
   TicketStatus,
 } from "@/generated/prisma/enums";
-import { resolveRefund } from "./contingency-resolution";
+import { resolveRefund, resolveRebooking } from "./contingency-resolution";
 
 const origin = { id: "AER_1", code: "EZE", city: "Buenos Aires", isActive: true };
 const destination = { id: "AER_2", code: "MDZ", city: "Mendoza", isActive: true };
@@ -349,5 +351,365 @@ describe("resolveRefund", () => {
       resolvedAt,
     });
     expect(prismaMock.refund.create).toHaveBeenCalledTimes(1);
+  });
+});
+
+// US-26: reprogramación sin cargo a un vuelo futuro de la misma ruta y clase.
+const rebookingFlight = {
+  id: "VUE_2",
+  code: "VU-20300104-001",
+  date: new Date("2030-01-04T00:00:00.000Z"),
+  departureAt: new Date("2030-01-04T08:30:00.000Z"),
+  arrivalAt: new Date("2030-01-04T10:00:00.000Z"),
+  economyCapacity: 150,
+  economyOccupied: 10,
+  firstClassCapacity: 16,
+  firstClassOccupied: 4,
+  status: "SCHEDULED",
+};
+
+function makeRebookingContingency(
+  overrides: {
+    resolution?: (typeof ContingencyResolution)[keyof typeof ContingencyResolution];
+    resolvedAt?: Date | null;
+    ticketOverride?: TicketFixture;
+  } = {},
+) {
+  const t = overrides.ticketOverride ?? ticket;
+  return {
+    id: "CON_1",
+    flightChangeId: flightChange.id,
+    ticketId: t.id,
+    accessToken: "tok-abc-123",
+    resolution: overrides.resolution ?? ContingencyResolution.PENDING,
+    newFlightId: null,
+    resolvedAt: overrides.resolvedAt ?? null,
+    createdAt: new Date("2026-09-25T10:00:00.000Z"),
+    ticket: {
+      ...t,
+      flight: { id: flight.id, routeId: route.id },
+      booking: {
+        ...booking,
+        tickets: [{ id: t.id }],
+      },
+    },
+    flightChange,
+    newFlight: null,
+  };
+}
+
+function mockSuccessfulRebooking(contingency = makeRebookingContingency()) {
+  prismaMock.ticketContingency.findUnique.mockResolvedValue(contingency as never);
+  prismaMock.flight.findFirst.mockResolvedValue(rebookingFlight as never);
+  prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+  prismaMock.ticketContingency.updateMany.mockResolvedValue({ count: 1 });
+  prismaMock.flight.update.mockResolvedValue(flight as never);
+  prismaMock.ticket.findMany.mockResolvedValue([{ seat: "1A" }] as never);
+  prismaMock.ticket.update.mockResolvedValue(ticket as never);
+  prismaMock.emailNotification.create.mockResolvedValue({ id: "NOT_1" } as never);
+}
+
+describe("resolveRebooking", () => {
+  it("reprograma el pasaje a un vuelo elegible conservando clase e importe, mueve el cupo, actualiza el asiento/número y encola el correo", async () => {
+    mockSuccessfulRebooking();
+
+    const result = await resolveRebooking(
+      "tok-abc-123",
+      rebookingFlight.id,
+      { now: new Date("2026-09-26T12:00:00.000Z") },
+    );
+
+    expect(result.type).toBe("ok");
+    if (result.type !== "ok") return;
+
+    expect(result.ticketId).toBe(ticket.id);
+    expect(result.newFlightId).toBe(rebookingFlight.id);
+    expect(result.flightCode).toBe(rebookingFlight.code);
+    expect(result.seat).toBe("1B");
+    expect(result.ticketNumber).toBe("ETK-RES1A2B3-1-R1");
+    expect(result.resolvedAt).toEqual(new Date("2026-09-26T12:00:00.000Z"));
+
+    // El vuelo enviado por el cliente solo se acepta si cumple el criterio.
+    expect(prismaMock.flight.findFirst).toHaveBeenCalledWith({
+      where: {
+        routeId: route.id,
+        id: { equals: rebookingFlight.id, not: flight.id },
+        status: "SCHEDULED",
+        departureAt: { gt: new Date("2026-09-26T12:00:00.000Z") },
+      },
+      select: expect.any(Object),
+    });
+
+    // El cupo nuevo se toma de forma condicional (race-safe).
+    expect(prismaMock.flight.updateMany).toHaveBeenCalledWith({
+      where: {
+        id: rebookingFlight.id,
+        status: "SCHEDULED",
+        departureAt: { gt: new Date("2026-09-26T12:00:00.000Z") },
+        economyOccupied: { lt: rebookingFlight.economyCapacity },
+      },
+      data: { economyOccupied: { increment: 1 } },
+    });
+
+    expect(prismaMock.ticketContingency.updateMany).toHaveBeenCalledWith({
+      where: { accessToken: "tok-abc-123", resolution: ContingencyResolution.PENDING },
+      data: {
+        resolution: ContingencyResolution.REBOOK,
+        newFlightId: rebookingFlight.id,
+        resolvedAt: new Date("2026-09-26T12:00:00.000Z"),
+      },
+    });
+
+    // El asiento anterior queda libre al mover el pasaje y bajar la ocupación.
+    expect(prismaMock.flight.update).toHaveBeenCalledWith({
+      where: { id: flight.id },
+      data: { economyOccupied: { decrement: 1 } },
+    });
+
+    expect(prismaMock.ticket.findMany).toHaveBeenCalledWith({
+      where: { flightId: rebookingFlight.id, seatClass: SeatClass.ECONOMY, seat: { not: null } },
+      select: { seat: true },
+      distinct: ["seat"],
+    });
+
+    expect(prismaMock.ticket.update).toHaveBeenCalledWith({
+      where: { id: ticket.id },
+      data: {
+        flightId: rebookingFlight.id,
+        seat: "1B",
+        number: "ETK-RES1A2B3-1-R1",
+        issuedAt: new Date("2026-09-26T12:00:00.000Z"),
+      },
+    });
+
+    const ticketUpdateData = prismaMock.ticket.update.mock.calls[0][0].data as Record<string, unknown>;
+    expect(ticketUpdateData).not.toHaveProperty("unitPrice");
+    expect(ticketUpdateData).not.toHaveProperty("seatClass");
+
+    const email = prismaMock.emailNotification.create.mock.calls[0][0].data as Record<string, unknown>;
+    expect(email).toMatchObject({
+      type: EmailType.REBOOKING_CONFIRMATION,
+      recipientEmail: booking.contactEmail,
+      bookingId: booking.id,
+      status: EmailStatus.PENDING,
+      attempts: 0,
+    });
+    expect(String(email.subject)).toContain(rebookingFlight.code);
+    expect(String(email.subject)).toContain(booking.code);
+
+    // No se crea una venta, un pago, un reembolso ni una factura nuevos.
+    expect(prismaMock.booking.create).not.toHaveBeenCalled();
+    expect(prismaMock.payment.create).not.toHaveBeenCalled();
+    expect(prismaMock.refund.create).not.toHaveBeenCalled();
+    expect(prismaMock.invoice.create).not.toHaveBeenCalled();
+  });
+
+  it("rechaza un vuelo de otra ruta y no muta el pasaje ni la contingencia", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(
+      makeRebookingContingency() as never,
+    );
+    // La query filtra por routeId: un vuelo de otra ruta no se encuentra.
+    prismaMock.flight.findFirst.mockResolvedValue(null);
+
+    const result = await resolveRebooking("tok-abc-123", "VUE_OTRA_RUTA");
+
+    expect(result).toEqual({ type: "conflict", reason: "FLIGHT_NOT_ELIGIBLE" });
+    expect(prismaMock.flight.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({ routeId: route.id }),
+      }),
+    );
+    expect(prismaMock.flight.updateMany).not.toHaveBeenCalled();
+    expect(prismaMock.ticketContingency.updateMany).not.toHaveBeenCalled();
+    expect(prismaMock.ticket.update).not.toHaveBeenCalled();
+    expect(prismaMock.emailNotification.create).not.toHaveBeenCalled();
+  });
+
+  it("rechaza un vuelo cancelado o ya partido aunque la página lo haya mostrado antes", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(
+      makeRebookingContingency() as never,
+    );
+    prismaMock.flight.findFirst.mockResolvedValue(null);
+
+    const result = await resolveRebooking("tok-abc-123", "VUE_CANCELADO");
+
+    expect(result).toEqual({ type: "conflict", reason: "FLIGHT_NOT_ELIGIBLE" });
+    expect(prismaMock.flight.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          status: "SCHEDULED",
+          departureAt: { gt: expect.any(Date) },
+        }),
+      }),
+    );
+    expect(prismaMock.ticket.update).not.toHaveBeenCalled();
+  });
+
+  it("rechaza la clase agotada sin mutaciones parciales", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(
+      makeRebookingContingency() as never,
+    );
+    prismaMock.flight.findFirst.mockResolvedValue({
+      ...rebookingFlight,
+      economyOccupied: rebookingFlight.economyCapacity,
+      firstClassOccupied: 0,
+    } as never);
+
+    const result = await resolveRebooking("tok-abc-123", rebookingFlight.id);
+
+    expect(result).toEqual({ type: "conflict", reason: "NO_CAPACITY" });
+    expect(prismaMock.flight.updateMany).not.toHaveBeenCalled();
+    expect(prismaMock.ticketContingency.updateMany).not.toHaveBeenCalled();
+    expect(prismaMock.flight.update).not.toHaveBeenCalled();
+    expect(prismaMock.ticket.update).not.toHaveBeenCalled();
+    expect(prismaMock.emailNotification.create).not.toHaveBeenCalled();
+  });
+
+  it("rechaza el cupo perdido entre la lectura y la reserva (updateMany condicional en 0)", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(
+      makeRebookingContingency() as never,
+    );
+    prismaMock.flight.findFirst.mockResolvedValue(rebookingFlight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 0 });
+
+    const result = await resolveRebooking("tok-abc-123", rebookingFlight.id);
+
+    expect(result).toEqual({ type: "conflict", reason: "NO_CAPACITY" });
+    expect(prismaMock.ticketContingency.updateMany).not.toHaveBeenCalled();
+    expect(prismaMock.ticket.update).not.toHaveBeenCalled();
+    expect(prismaMock.emailNotification.create).not.toHaveBeenCalled();
+  });
+
+  it("usa el cupo de primera clase y conserva la clase del ticket", async () => {
+    const firstClassTicket: TicketFixture = {
+      ...ticket,
+      seatClass: SeatClass.FIRST,
+      unitPrice: 95000,
+    };
+
+    mockSuccessfulRebooking(
+      makeRebookingContingency({ ticketOverride: firstClassTicket }),
+    );
+    prismaMock.ticket.findMany.mockResolvedValue([
+      { seat: "1A" },
+      { seat: "1B" },
+      { seat: "1C" },
+      { seat: "1D" },
+      { seat: "2A" },
+    ] as never);
+
+    const result = await resolveRebooking("tok-abc-123", rebookingFlight.id);
+
+    expect(result.type).toBe("ok");
+    if (result.type !== "ok") return;
+    expect(result.seat).toBe("2B");
+
+    expect(prismaMock.flight.updateMany).toHaveBeenCalledWith({
+      where: {
+        id: rebookingFlight.id,
+        status: "SCHEDULED",
+        departureAt: { gt: expect.any(Date) },
+        firstClassOccupied: { lt: rebookingFlight.firstClassCapacity },
+      },
+      data: { firstClassOccupied: { increment: 1 } },
+    });
+    expect(prismaMock.flight.update).toHaveBeenCalledWith({
+      where: { id: flight.id },
+      data: { firstClassOccupied: { decrement: 1 } },
+    });
+
+    const data = prismaMock.ticket.update.mock.calls[0][0].data as Record<string, unknown>;
+    expect(data).not.toHaveProperty("seatClass");
+  });
+
+  it("devuelve notFound cuando el token no existe", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(null);
+
+    const result = await resolveRebooking("token-inexistente", rebookingFlight.id);
+
+    expect(result).toEqual({ type: "notFound" });
+    expect(prismaMock.flight.findFirst).not.toHaveBeenCalled();
+  });
+
+  it("devuelve alreadyResolved para un token ya reembolsado sin crear otro cambio ni correo", async () => {
+    const resolvedAt = new Date("2026-09-26T14:00:00.000Z");
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(
+      makeRebookingContingency({
+        resolution: ContingencyResolution.REFUND,
+        resolvedAt,
+      }) as never,
+    );
+
+    const result = await resolveRebooking("tok-abc-123", rebookingFlight.id);
+
+    expect(result).toEqual({
+      type: "alreadyResolved",
+      resolution: "REFUND",
+      resolvedAt,
+    });
+    expect(prismaMock.flight.findFirst).not.toHaveBeenCalled();
+    expect(prismaMock.ticket.update).not.toHaveBeenCalled();
+    expect(prismaMock.emailNotification.create).not.toHaveBeenCalled();
+  });
+
+  it("una segunda resolución no genera otro cambio de vuelo ni otro correo", async () => {
+    // Nota: la suite mockea Prisma; el aislamiento real entre solicitudes
+    // concurrentes depende del bloqueo de fila de PostgreSQL que adquiere el
+    // updateMany condicionado a `resolution: PENDING` dentro de la transacción.
+    let resolution: (typeof ContingencyResolution)[keyof typeof ContingencyResolution] =
+      ContingencyResolution.PENDING;
+    let resolvedAt: Date | null = null;
+
+    prismaMock.ticketContingency.findUnique.mockImplementation((async () =>
+      makeRebookingContingency({ resolution, resolvedAt }) as never) as never);
+    prismaMock.flight.findFirst.mockResolvedValue(rebookingFlight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+    prismaMock.ticketContingency.updateMany.mockImplementation((async () => {
+      if (resolution !== ContingencyResolution.PENDING) return { count: 0 };
+      resolution = ContingencyResolution.REBOOK;
+      resolvedAt = new Date("2026-09-26T15:00:00.000Z");
+      return { count: 1 };
+    }) as never);
+    prismaMock.flight.update.mockResolvedValue(flight as never);
+    prismaMock.ticket.findMany.mockResolvedValue([] as never);
+    prismaMock.ticket.update.mockResolvedValue(ticket as never);
+    prismaMock.emailNotification.create.mockResolvedValue({ id: "NOT_1" } as never);
+
+    const first = await resolveRebooking("tok-abc-123", rebookingFlight.id);
+    const second = await resolveRebooking("tok-abc-123", rebookingFlight.id);
+
+    expect(first.type).toBe("ok");
+    expect(second).toEqual({
+      type: "alreadyResolved",
+      resolution: "REBOOK",
+      resolvedAt: new Date("2026-09-26T15:00:00.000Z"),
+    });
+    expect(prismaMock.ticket.update).toHaveBeenCalledTimes(1);
+    expect(prismaMock.emailNotification.create).toHaveBeenCalledTimes(1);
+    expect(prismaMock.flight.updateMany).toHaveBeenCalledTimes(1);
+  });
+
+  it("si otra solicitud reserva la contingencia primero, devuelve alreadyResolved sin tocar el pasaje", async () => {
+    const resolvedAt = new Date("2026-09-26T15:00:00.000Z");
+    prismaMock.ticketContingency.findUnique
+      .mockResolvedValueOnce(makeRebookingContingency() as never)
+      .mockResolvedValueOnce({
+        resolution: ContingencyResolution.REBOOK,
+        resolvedAt,
+      } as never);
+    prismaMock.flight.findFirst.mockResolvedValue(rebookingFlight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+    prismaMock.ticketContingency.updateMany.mockResolvedValue({ count: 0 });
+
+    const result = await resolveRebooking("tok-abc-123", rebookingFlight.id);
+
+    expect(result).toEqual({
+      type: "alreadyResolved",
+      resolution: "REBOOK",
+      resolvedAt,
+    });
+    expect(prismaMock.flight.update).not.toHaveBeenCalled();
+    expect(prismaMock.ticket.update).not.toHaveBeenCalled();
+    expect(prismaMock.emailNotification.create).not.toHaveBeenCalled();
   });
 });

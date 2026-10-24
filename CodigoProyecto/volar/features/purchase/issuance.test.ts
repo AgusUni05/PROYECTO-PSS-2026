@@ -1,12 +1,33 @@
 import { describe, expect, it } from "vitest";
 import { prismaMock } from "@/tests/prisma-mock";
-import { assignSeats, issueComprobantes, seatRows, type BookingToIssue } from "./issuance";
+import {
+  assignSeats,
+  issueComprobantes,
+  seatLetters,
+  seatRows,
+  ticketNumber,
+  type BookingToIssue,
+} from "./issuance";
 
 describe("seatRows (US-23)", () => {
   it("calcula las filas según la capacidad de la clase", () => {
     expect(seatRows("ECONOMY", 150)).toBe(25); // 6 asientos por fila
     expect(seatRows("FIRST", 12)).toBe(3); // 4 asientos por fila
     expect(seatRows("ECONOMY", 1)).toBe(1);
+  });
+});
+
+describe("ticketNumber (US-23/US-26)", () => {
+  it("usa la base ETK-reserva-índice y agrega el sufijo de reemisión cuando se indica", () => {
+    expect(ticketNumber("DEMO0001", 0)).toBe("ETK-DEMO0001-1");
+    expect(ticketNumber("DEMO0001", 2, "R1")).toBe("ETK-DEMO0001-3-R1");
+  });
+});
+
+describe("seatLetters (US-23/US-26)", () => {
+  it("expone las letras por clase para reutilizar la asignación de asientos", () => {
+    expect(seatLetters("ECONOMY")).toEqual(["A", "B", "C", "D", "E", "F"]);
+    expect(seatLetters("FIRST")).toEqual(["A", "B", "C", "D"]);
   });
 });
 

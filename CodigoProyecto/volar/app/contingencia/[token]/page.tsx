@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
-import { getContingencyByToken } from "@/features/flights/contingency-queries";
+import {
+  getContingencyByToken,
+  getRebookingAlternatives,
+} from "@/features/flights/contingency-queries";
 import {
   ContingencyNotFound,
   ContingencyResolution,
@@ -23,9 +26,12 @@ export default async function ContingenciaPage({
     return <ContingencyNotFound />;
   }
 
+  // Las alternativas solo tienen sentido mientras la contingencia está pendiente.
+  const alternatives = view.status === "PENDING" ? await getRebookingAlternatives(token) : null;
+
   return (
     <main className="flex-1 px-4 py-6 md:px-8">
-      <ContingencyResolution view={view} />
+      <ContingencyResolution view={view} alternatives={alternatives ?? []} />
     </main>
   );
 }

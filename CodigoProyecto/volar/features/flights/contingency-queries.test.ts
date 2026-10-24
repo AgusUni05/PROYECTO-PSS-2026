@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { prismaMock } from "@/tests/prisma-mock";
-import { getContingencyByToken } from "./contingency-queries";
+import { getContingencyByToken, getRebookingAlternatives } from "./contingency-queries";
 
 const origin = { id: "AER_1", code: "EZE", city: "Buenos Aires", isActive: true };
 const destination = { id: "AER_2", code: "MDZ", city: "Mendoza", isActive: true };
@@ -245,5 +245,152 @@ describe("getContingencyByToken", () => {
     const result = await getContingencyByToken("tok-abc-123");
 
     expect(result?.status).toBe("PENDING");
+  });
+});
+
+// US-26: alternativas de reprogramación para un pasaje afectado. El token es
+// el único dato de entrada; la ruta y la clase salen del ticket de la
+// contingencia, nunca de parámetros enviados por el cliente.
+function makeRebookingContext(
+  overrides: {
+    resolution?: "PENDING" | "REFUND" | "REBOOK";
+    seatClass?: "ECONOMY" | "FIRST";
+    routeId?: string;
+    flightId?: string;
+  } = {},
+) {
+  return {
+    resolution: overrides.resolution ?? "PENDING",
+    ticket: {
+      flightId: overrides.flightId ?? flight.id,
+      seatClass: overrides.seatClass ?? "ECONOMY",
+      flight: { routeId: overrides.routeId ?? route.id },
+    },
+  };
+}
+
+const alternativeFlight = {
+  id: "VUE_2",
+  code: "VU-20300104-001",
+  date: new Date("2030-01-04T00:00:00.000Z"),
+  departureAt: new Date("2030-01-04T08:30:00.000Z"),
+  arrivalAt: new Date("2030-01-04T10:00:00.000Z"),
+  economyCapacity: 150,
+  economyOccupied: 10,
+  firstClassCapacity: 16,
+  firstClassOccupied: 16,
+};
+
+const secondAlternativeFlight = {
+  id: "VUE_3",
+  code: "VU-20300105-001",
+  date: new Date("2030-01-05T00:00:00.000Z"),
+  departureAt: new Date("2030-01-05T08:30:00.000Z"),
+  arrivalAt: new Date("2030-01-05T10:00:00.000Z"),
+  economyCapacity: 150,
+  economyOccupied: 0,
+  firstClassCapacity: 16,
+  firstClassOccupied: 16,
+};
+
+describe("getRebookingAlternatives", () => {
+  it("devuelve solo vuelos de la misma ruta, programados, futuros, distintos del original y con cupo en la clase del ticket, ordenados por partida", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(makeRebookingContext() as never);
+    prismaMock.flight.findMany.mockResolvedValue([
+      alternativeFlight,
+      secondAlternativeFlight,
+    ] as never);
+
+    const result = await getRebookingAlternatives("tok-abc-123");
+
+    expect(result).toEqual([
+      {
+        id: "VUE_2",
+        code: "VU-20300104-001",
+        date: alternativeFlight.date,
+        departureAt: alternativeFlight.departureAt,
+        arrivalAt: alternativeFlight.arrivalAt,
+        availableSeats: 140,
+      },
+      {
+        id: "VUE_3",
+        code: "VU-20300105-001",
+        date: secondAlternativeFlight.date,
+        departureAt: secondAlternativeFlight.departureAt,
+        arrivalAt: secondAlternativeFlight.arrivalAt,
+        availableSeats: 150,
+      },
+    ]);
+
+    expect(prismaMock.ticketContingency.findUnique).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { accessToken: "tok-abc-123" } }),
+    );
+    expect(prismaMock.flight.findMany).toHaveBeenCalledWith({
+      where: {
+        routeId: route.id,
+        id: { not: flight.id },
+        status: "SCHEDULED",
+        departureAt: { gt: expect.any(Date) },
+      },
+      orderBy: { departureAt: "asc" },
+      select: expect.any(Object),
+    });
+  });
+
+  it("no devuelve vuelos cuando la clase del ticket está agotada aunque la otra clase tenga cupo", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(makeRebookingContext() as never);
+    prismaMock.flight.findMany.mockResolvedValue([
+      {
+        ...alternativeFlight,
+        economyCapacity: 150,
+        economyOccupied: 150,
+        firstClassCapacity: 16,
+        firstClassOccupied: 0,
+      },
+    ] as never);
+
+    const result = await getRebookingAlternatives("tok-abc-123");
+
+    expect(result).toEqual([]);
+  });
+
+  it("usa la capacidad de primera clase cuando el ticket es de primera clase", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(
+      makeRebookingContext({ seatClass: "FIRST" }) as never,
+    );
+    prismaMock.flight.findMany.mockResolvedValue([
+      {
+        ...alternativeFlight,
+        economyCapacity: 150,
+        economyOccupied: 150,
+        firstClassCapacity: 16,
+        firstClassOccupied: 4,
+      },
+    ] as never);
+
+    const result = await getRebookingAlternatives("tok-abc-123");
+
+    expect(result).toHaveLength(1);
+    expect(result?.[0].availableSeats).toBe(12);
+  });
+
+  it("devuelve null para un token inexistente y no consulta vuelos", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(null);
+
+    const result = await getRebookingAlternatives("token-inexistente");
+
+    expect(result).toBeNull();
+    expect(prismaMock.flight.findMany).not.toHaveBeenCalled();
+  });
+
+  it("devuelve null para un token ya resuelto y no expone datos de la contingencia", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(
+      makeRebookingContext({ resolution: "REFUND" }) as never,
+    );
+
+    const result = await getRebookingAlternatives("tok-abc-123");
+
+    expect(result).toBeNull();
+    expect(prismaMock.flight.findMany).not.toHaveBeenCalled();
   });
 });

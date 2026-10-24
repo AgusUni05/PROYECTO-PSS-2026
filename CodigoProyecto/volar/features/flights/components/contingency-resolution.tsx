@@ -5,11 +5,29 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { NativeSelect } from "@/components/ui/native-select";
 import { AlertCircle, CalendarSync, Wallet } from "lucide-react";
+import type { SeatClass } from "@/generated/prisma/enums";
+import type { ActionResult } from "@/lib/action-result";
 import { SEAT_CLASS_LABELS } from "@/features/flight-search/class-options";
 import { formatCurrency, formatLongDate, formatTime } from "@/features/flights/format";
-import type { ContingencyResolutionView } from "@/features/flights/contingency-queries";
-import { resolveRefundAction } from "@/features/flights/contingency-actions";
+import type {
+  ContingencyResolutionView,
+  RebookingAlternative,
+} from "@/features/flights/contingency-queries";
+import { resolveRebookingAction, resolveRefundAction } from "@/features/flights/contingency-actions";
+
+/**
+ * Envía la selección de la UI a la server action. Se exporta para poder probar
+ * el cableado (token + vuelo elegido) sin depender de un DOM interactivo.
+ */
+export async function submitRebooking(
+  token: string,
+  flightId: string,
+): Promise<ActionResult<{ ticketNumber: string; flightCode: string; seat: string }>> {
+  return resolveRebookingAction(token, flightId);
+}
 
 export function ContingencyNotFound() {
   return (
@@ -47,7 +65,13 @@ export function ContingencyResolved({
   );
 }
 
-export function ContingencyResolution({ view }: { view: NonNullable<ContingencyResolutionView> }) {
+export function ContingencyResolution({
+  view,
+  alternatives = [],
+}: {
+  view: NonNullable<ContingencyResolutionView>;
+  alternatives?: RebookingAlternative[];
+}) {
   if (view.status === "REFUND" || view.status === "REBOOK") {
     return <ContingencyResolved resolution={view.resolution} resolvedAt={view.resolvedAt} />;
   }
@@ -70,7 +94,13 @@ export function ContingencyResolution({ view }: { view: NonNullable<ContingencyR
       <SummaryCard view={view} />
 
       <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
-        <RebookCard />
+        <RebookCard
+          token={view.token}
+          alternatives={alternatives}
+          originCode={view.flight.origin.code}
+          destinationCode={view.flight.destination.code}
+          seatClass={view.ticket.seatClass}
+        />
         <RefundCard token={view.token} amount={view.ticket.unitPrice} />
       </div>
 
@@ -126,7 +156,58 @@ function SummaryItem({ label, children }: { label: string; children: React.React
   );
 }
 
-function RebookCard() {
+function alternativeLabel(alternative: RebookingAlternative): string {
+  const seats =
+    alternative.availableSeats === 1
+      ? "1 cupo libre"
+      : `${alternative.availableSeats} cupos libres`;
+
+  return `${alternative.code} - ${formatLongDate(alternative.date)} a las ${formatTime(alternative.departureAt)} hs (${seats})`;
+}
+
+function RebookCard({
+  token,
+  alternatives,
+  originCode,
+  destinationCode,
+  seatClass,
+}: {
+  token: string;
+  alternatives: RebookingAlternative[];
+  originCode: string;
+  destinationCode: string;
+  seatClass: SeatClass;
+}) {
+  const router = useRouter();
+  const [selectedFlightId, setSelectedFlightId] = useState(alternatives[0]?.id ?? "");
+  const [isPending, startTransition] = useTransition();
+  const [resolved, setResolved] = useState(false);
+  const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(
+    null,
+  );
+
+  function handleRebook() {
+    if (!selectedFlightId) return;
+
+    startTransition(async () => {
+      const result = await submitRebooking(token, selectedFlightId);
+
+      if (!result.ok) {
+        const message = result.error ?? "No se pudo procesar la reprogramación.";
+        setFeedback({ type: "error", message });
+        toast.error(message);
+        return;
+      }
+
+      const message = `Reprogramación confirmada: ${result.data.flightCode}, asiento ${result.data.seat}.`;
+      setResolved(true);
+      setFeedback({ type: "success", message });
+      toast.success(message);
+      // Refresca el Server Component para mostrar la vista resuelta.
+      router.refresh();
+    });
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -134,11 +215,51 @@ function RebookCard() {
           <CalendarSync className="size-5 text-primary" />
           Reprogramar
         </CardTitle>
-        <CardDescription>Elegí otra fecha del mismo trayecto sin cargo.</CardDescription>
+        <CardDescription>
+          Sin costo adicional: elegí un vuelo futuro de la misma ruta ({originCode} →{" "}
+          {destinationCode}) conservando tu categoría {SEAT_CLASS_LABELS[seatClass]}.
+        </CardDescription>
       </CardHeader>
       <CardContent>
-        <Button className="w-full" disabled>
-          Ver alternativas
+        {alternatives.length === 0 ? (
+          <p className="mb-4 text-sm text-muted-foreground">
+            No hay vuelos alternativos disponibles para este trayecto.
+          </p>
+        ) : (
+          <div className="mb-4 space-y-1.5">
+            <Label htmlFor="vuelo-reprogramado">Elegir vuelo alternativo</Label>
+            <NativeSelect
+              id="vuelo-reprogramado"
+              value={selectedFlightId}
+              disabled={isPending || resolved}
+              onChange={(event) => setSelectedFlightId(event.target.value)}
+            >
+              {alternatives.map((alternative) => (
+                <option key={alternative.id} value={alternative.id}>
+                  {alternativeLabel(alternative)}
+                </option>
+              ))}
+            </NativeSelect>
+          </div>
+        )}
+
+        {feedback?.type === "error" && (
+          <p className="mb-3 text-center text-xs text-destructive">{feedback.message}</p>
+        )}
+        {feedback?.type === "success" && (
+          <p className="mb-3 text-center text-xs text-green-600">{feedback.message}</p>
+        )}
+
+        <Button
+          className="w-full"
+          disabled={isPending || resolved || alternatives.length === 0 || !selectedFlightId}
+          onClick={handleRebook}
+        >
+          {resolved
+            ? "Reprogramación registrada"
+            : isPending
+              ? "Procesando…"
+              : "Confirmar reprogramación gratuita"}
         </Button>
       </CardContent>
     </Card>

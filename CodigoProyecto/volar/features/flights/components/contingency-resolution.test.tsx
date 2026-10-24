@@ -5,9 +5,16 @@ vi.mock("next/navigation", () => ({
   useRouter: vi.fn(() => ({ refresh: vi.fn() })),
 }));
 
+vi.mock("@/features/flights/contingency-actions", () => ({
+  resolveRefundAction: vi.fn(),
+  resolveRebookingAction: vi.fn(),
+}));
+
+import { resolveRebookingAction } from "@/features/flights/contingency-actions";
 import {
   ContingencyNotFound,
   ContingencyResolution,
+  submitRebooking,
 } from "./contingency-resolution";
 
 const pendingView = {
@@ -85,7 +92,55 @@ describe("ContingencyResolution", () => {
     expect(html).toContain("Solicitar reembolso");
     expect(html).toContain("Una vez que elijas");
 
-    // Reprogramar sigue siendo placeholder (Task 8); reembolso ya está habilitado (Task 7).
-    expect(html).toMatch(/disabled/);
+    // Sin alternativas cargadas la reprogramación queda deshabilitada.
+    expect(html).toContain("No hay vuelos alternativos disponibles");
+    expect(html).toContain('data-disabled=""');
+  });
+
+  it("muestra los vuelos alternativos con su cupo y habilita la confirmación de reprogramación", () => {
+    const html = renderToString(
+      <ContingencyResolution
+        view={pendingView}
+        alternatives={[
+          {
+            id: "VUE_2",
+            code: "VU-20300104-001",
+            date: new Date("2030-01-04T00:00:00.000Z"),
+            departureAt: new Date("2030-01-04T08:30:00.000Z"),
+            arrivalAt: new Date("2030-01-04T10:00:00.000Z"),
+            availableSeats: 140,
+          },
+          {
+            id: "VUE_3",
+            code: "VU-20300105-001",
+            date: new Date("2030-01-05T00:00:00.000Z"),
+            departureAt: new Date("2030-01-05T08:30:00.000Z"),
+            arrivalAt: new Date("2030-01-05T10:00:00.000Z"),
+            availableSeats: 1,
+          },
+        ]}
+      />,
+    );
+
+    expect(html).toContain("Elegir vuelo alternativo");
+    expect(html).toContain("VU-20300104-001");
+    expect(html).toContain("140 cupos libres");
+    expect(html).toContain("VU-20300105-001");
+    expect(html).toContain("1 cupo libre");
+    expect(html).toContain("Confirmar reprogramación gratuita");
+    expect(html).not.toContain('data-disabled=""');
+    expect(html).not.toContain("No hay vuelos alternativos disponibles");
+  });
+
+  it("envía el token y el vuelo alternativo seleccionado a la server action", async () => {
+    vi.mocked(resolveRebookingAction).mockResolvedValue({
+      ok: true,
+      data: { ticketNumber: "ETK-RES1A2B3-1-R1", flightCode: "VU-20300104-001", seat: "1B" },
+    });
+
+    const result = await submitRebooking("tok-abc-123", "VUE_2");
+
+    expect(resolveRebookingAction).toHaveBeenCalledWith("tok-abc-123", "VUE_2");
+    expect(result.ok).toBe(true);
   });
 });

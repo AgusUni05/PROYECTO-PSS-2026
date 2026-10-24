@@ -18,6 +18,11 @@ export type BookingToIssue = Pick<
   tickets: Pick<Ticket, "id" | "firstName" | "lastName" | "unitPrice">[];
 };
 
+/** Letras de asiento disponibles en la clase (US-26 las reutiliza al reprogramar). */
+export function seatLetters(seatClass: SeatClass): string[] {
+  return SEAT_LETTERS[seatClass];
+}
+
 /** Cantidad de filas necesarias para acomodar `capacity` asientos de la clase. */
 export function seatRows(seatClass: SeatClass, capacity: number): number {
   return Math.max(1, Math.ceil(capacity / SEAT_LETTERS[seatClass].length));
@@ -48,9 +53,13 @@ export function assignSeats(
   return seats;
 }
 
-/** Número de e-ticket, único porque el código de reserva lo es. */
-function ticketNumber(bookingCode: string, index: number): string {
-  return `ETK-${bookingCode}-${index + 1}`;
+/**
+ * Número de e-ticket, único porque el código de reserva lo es. `suffix` permite
+ * reemisiones deterministas (US-26) sin chocar con el número original.
+ */
+export function ticketNumber(bookingCode: string, index: number, suffix?: string): string {
+  const base = `ETK-${bookingCode}-${index + 1}`;
+  return suffix ? `${base}-${suffix}` : base;
 }
 
 /**

@@ -6,13 +6,15 @@ vi.mock("next/cache", () => ({
 
 vi.mock("./contingency-resolution", () => ({
   resolveRefund: vi.fn(),
+  resolveRebooking: vi.fn(),
 }));
 
 import { revalidatePath } from "next/cache";
-import { resolveRefund } from "./contingency-resolution";
-import { resolveRefundAction } from "./contingency-actions";
+import { resolveRebooking, resolveRefund } from "./contingency-resolution";
+import { resolveRebookingAction, resolveRefundAction } from "./contingency-actions";
 
 const mockedResolveRefund = vi.mocked(resolveRefund);
+const mockedResolveRebooking = vi.mocked(resolveRebooking);
 
 describe("resolveRefundAction", () => {
   it("rechaza un token vacío", async () => {
@@ -60,5 +62,84 @@ describe("resolveRefundAction", () => {
     const result = await resolveRefundAction("tok-abc-123");
 
     expect(result).toEqual({ ok: false, error: "No se pudo procesar el reembolso." });
+  });
+});
+
+describe("resolveRebookingAction", () => {
+  it("rechaza un token vacío sin llamar al dominio", async () => {
+    const result = await resolveRebookingAction("", "VUE_2");
+
+    expect(result).toEqual({ ok: false, error: "El enlace no es válido." });
+    expect(mockedResolveRebooking).not.toHaveBeenCalled();
+  });
+
+  it("exige un vuelo alternativo seleccionado", async () => {
+    const result = await resolveRebookingAction("tok-abc-123", "");
+
+    expect(result).toEqual({ ok: false, error: "Elegí un vuelo alternativo." });
+    expect(mockedResolveRebooking).not.toHaveBeenCalled();
+  });
+
+  it("devuelve el nuevo comprobante y revalida la página", async () => {
+    mockedResolveRebooking.mockResolvedValue({
+      type: "ok",
+      ticketId: "PAS_1",
+      newFlightId: "VUE_2",
+      flightCode: "VU-20300104-001",
+      seat: "1B",
+      ticketNumber: "ETK-RES1A2B3-1-R1",
+      resolvedAt: new Date("2026-09-26T12:00:00.000Z"),
+    });
+
+    const result = await resolveRebookingAction("tok-abc-123", "VUE_2");
+
+    expect(mockedResolveRebooking).toHaveBeenCalledWith("tok-abc-123", "VUE_2", {});
+    expect(result).toEqual({
+      ok: true,
+      data: { ticketNumber: "ETK-RES1A2B3-1-R1", flightCode: "VU-20300104-001", seat: "1B" },
+    });
+    expect(revalidatePath).toHaveBeenCalledWith("/contingencia/tok-abc-123");
+  });
+
+  it("rechaza una contingencia ya resuelta y revalida la página", async () => {
+    mockedResolveRebooking.mockResolvedValue({
+      type: "alreadyResolved",
+      resolution: "REBOOK",
+      resolvedAt: new Date("2026-09-26T15:00:00.000Z"),
+    });
+
+    const result = await resolveRebookingAction("tok-abc-123", "VUE_2");
+
+    expect(result).toEqual({ ok: false, error: "Esta contingencia ya fue resuelta." });
+    expect(revalidatePath).toHaveBeenCalledWith("/contingencia/tok-abc-123");
+  });
+
+  it("informa un token inexistente", async () => {
+    mockedResolveRebooking.mockResolvedValue({ type: "notFound" });
+
+    const result = await resolveRebookingAction("tok-abc-123", "VUE_2");
+
+    expect(result).toEqual({ ok: false, error: "El enlace no es válido o expiró." });
+  });
+
+  it("traduce un vuelo no elegible o sin cupo a un mensaje para el pasajero sin exponer el motivo interno", async () => {
+    mockedResolveRebooking.mockResolvedValue({ type: "conflict", reason: "NO_CAPACITY" });
+
+    const result = await resolveRebookingAction("tok-abc-123", "VUE_2");
+
+    expect(result).toEqual({
+      ok: false,
+      error: "El vuelo elegido ya no está disponible. Elegí otra alternativa.",
+    });
+    expect(JSON.stringify(result)).not.toContain("NO_CAPACITY");
+  });
+
+  it("devuelve error genérico ante una excepción inesperada sin exponer detalles internos", async () => {
+    mockedResolveRebooking.mockRejectedValue(new Error("DB connection lost"));
+
+    const result = await resolveRebookingAction("tok-abc-123", "VUE_2");
+
+    expect(result).toEqual({ ok: false, error: "No se pudo procesar la reprogramación." });
+    expect(JSON.stringify(result)).not.toContain("DB connection lost");
   });
 });
