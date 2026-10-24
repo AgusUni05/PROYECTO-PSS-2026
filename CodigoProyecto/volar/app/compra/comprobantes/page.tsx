@@ -8,7 +8,7 @@ import { SEAT_CLASS_LABELS } from "@/features/flight-search/class-options";
 import { formatCurrency, formatDate, formatTime } from "@/features/flights/format";
 import { bookingCodeSchema } from "@/features/purchase/schema";
 import {
-  getBookingComprobantes,
+  getBookingComprobantesForBuyer,
   type ComprobanteTicket,
   type PurchaseComprobantes,
 } from "@/features/purchase/queries";
@@ -47,7 +47,9 @@ export default async function ComprobantesPage({
     redirect(`/sign-in?${new URLSearchParams({ redirect_url: returnTo })}`);
   }
 
-  const booking = await getBookingComprobantes(code.data);
+  // I2: la titularidad se resuelve solo con la sesión. Un comprador distinto
+  // obtiene el mismo estado "no encontrado" que un código inexistente.
+  const booking = await getBookingComprobantesForBuyer(code.data, user.id);
   if (!booking) {
     return (
       <PurchaseShell title="Comprobantes de la compra" currentStep={4}>
@@ -70,6 +72,9 @@ export default async function ComprobantesPage({
     );
   }
 
+  // I3: un pasaje reembolsado o cancelado no cuenta ni se muestra como emitido.
+  const issuedTickets = booking.tickets.filter((ticket) => ticket.status === "ISSUED");
+
   return (
     <PurchaseShell title="Comprobantes de la compra" currentStep={4}>
       <ConfirmationHeader booking={booking} />
@@ -77,10 +82,10 @@ export default async function ComprobantesPage({
 
       <section className="space-y-3">
         <h2 className="border-b border-border pb-2 text-[15px] font-extrabold">
-          Pasajes electrónicos emitidos ({booking.tickets.length})
+          Pasajes electrónicos emitidos ({issuedTickets.length})
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {booking.tickets.map((ticket, index) => (
+          {issuedTickets.map((ticket, index) => (
             <ETicketCard key={ticket.id} ticket={ticket} index={index} />
           ))}
         </div>
@@ -97,7 +102,7 @@ export default async function ComprobantesPage({
         </p>
         <PurchaseDownloadActions
           code={booking.code}
-          ticketCount={booking.tickets.length}
+          ticketCount={issuedTickets.length}
           hasInvoice={booking.invoice !== null}
           canDownload
         />

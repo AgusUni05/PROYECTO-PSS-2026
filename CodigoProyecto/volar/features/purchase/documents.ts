@@ -332,16 +332,20 @@ function drawETicketPage(
 export async function buildETicketsPdf(
   purchase: PurchaseComprobantes,
 ): Promise<Uint8Array> {
-  if (purchase.tickets.length === 0) {
+  // I3: un pasaje reembolsado o cancelado no es un e-ticket válido. La factura
+  // se mantiene intacta: sigue reflejando lo abonado.
+  const issuedTickets = purchase.tickets.filter((ticket) => ticket.status === "ISSUED");
+
+  if (issuedTickets.length === 0) {
     throw new Error("TICKETS_NOT_FOUND");
   }
 
   const pdfDoc = await newDocument(`E-tickets ${purchase.code}`, "Pasajes electronicos");
   const fonts = await embedFonts(pdfDoc);
 
-  purchase.tickets.forEach((ticket, index) => {
+  issuedTickets.forEach((ticket, index) => {
     const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
-    drawETicketPage(page, fonts, purchase, ticket, index, purchase.tickets.length);
+    drawETicketPage(page, fonts, purchase, ticket, index, issuedTickets.length);
   });
 
   return pdfDoc.save({ useObjectStreams: false });

@@ -120,6 +120,7 @@ function comprobantesRow(overrides: Record<string, unknown> = {}) {
         lastName: "Demo",
         documentType: "DNI",
         documentNumber: "30000001",
+        status: "ISSUED",
         issuedAt,
         flight: {
           code: "VU-DEMO-02",
@@ -141,6 +142,7 @@ function comprobantesRow(overrides: Record<string, unknown> = {}) {
         lastName: "Demo",
         documentType: "DNI",
         documentNumber: "30000002",
+        status: "ISSUED",
         issuedAt,
         flight: {
           code: "VU-DEMO-02",
@@ -230,6 +232,8 @@ describe("getBookingComprobantes (US-23/US-24)", () => {
       email: { status: "SENT", recipientEmail: "demo@volar.test" },
       transactionId: "TX-ABCDEF123456",
     });
+    // I3: el estado del pasaje viaja en el DTO para filtrar e-tickets válidos.
+    expect(result?.tickets.map((ticket) => ticket.status)).toEqual(["ISSUED", "ISSUED"]);
   });
 
   it("mapea el vuelo de cada pasaje desde el ticket y no desde la reserva", async () => {

@@ -134,6 +134,18 @@ describe("resolveRebookingAction", () => {
     expect(JSON.stringify(result)).not.toContain("NO_CAPACITY");
   });
 
+  it("informa que el pasaje ya no está activo cuando otro token lo resolvió", async () => {
+    mockedResolveRebooking.mockResolvedValue({ type: "conflict", reason: "TICKET_NOT_ACTIVE" });
+
+    const result = await resolveRebookingAction("tok-abc-123", "VUE_2");
+
+    expect(result).toEqual({
+      ok: false,
+      error: "Este pasaje ya no está activo. Revisá el estado de tu compra.",
+    });
+    expect(JSON.stringify(result)).not.toContain("TICKET_NOT_ACTIVE");
+  });
+
   it("devuelve error genérico ante una excepción inesperada sin exponer detalles internos", async () => {
     mockedResolveRebooking.mockRejectedValue(new Error("DB connection lost"));
 

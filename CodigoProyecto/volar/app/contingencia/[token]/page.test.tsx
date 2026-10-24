@@ -23,6 +23,7 @@ const pendingView = {
   passenger: {
     firstName: "Juan",
     lastName: "Pérez",
+    documentType: "DNI" as const,
     documentNumber: "30123456",
   },
   ticket: {

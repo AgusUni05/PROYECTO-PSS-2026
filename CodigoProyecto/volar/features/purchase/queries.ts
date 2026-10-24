@@ -5,6 +5,7 @@ import type {
   DocumentType,
   EmailStatus,
   SeatClass,
+  TicketStatus,
 } from "@/generated/prisma/enums";
 
 export type BookingPassenger = {
@@ -121,6 +122,7 @@ export type ComprobanteTicket = {
   lastName: string;
   documentType: DocumentType;
   documentNumber: string;
+  status: TicketStatus;
   issuedAt: Date | null;
   /**
    * US-26/US-36: vuelo actual del pasaje. Tras una reprogramación la reserva
@@ -176,6 +178,7 @@ const BOOKING_FOR_COMPROBANTES_INCLUDE = {
       lastName: true,
       documentType: true,
       documentNumber: true,
+      status: true,
       issuedAt: true,
       flight: {
         select: {
@@ -251,6 +254,7 @@ function toPurchaseComprobantes(booking: ComprobantesRow): PurchaseComprobantes 
       lastName: ticket.lastName,
       documentType: ticket.documentType,
       documentNumber: ticket.documentNumber,
+      status: ticket.status,
       issuedAt: ticket.issuedAt,
       flight: {
         code: ticket.flight.code,

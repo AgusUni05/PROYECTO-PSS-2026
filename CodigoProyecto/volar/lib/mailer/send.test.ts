@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import { prismaMock } from "@/tests/prisma-mock";
 import type { EmailNotificationModel } from "@/generated/prisma/models/EmailNotification";
 import type { FlightChangeModel } from "@/generated/prisma/models/FlightChange";
-import { sendContingencyEmail } from "./send";
+import { buildContingencyActionUrl, sendContingencyEmail } from "./send";
 
 vi.mock("nodemailer", () => ({
   default: {
@@ -101,7 +101,7 @@ describe("sendContingencyEmail", () => {
     expect(prismaMock.emailNotification.update).not.toHaveBeenCalled();
   });
 
-  it("envía un email de SCHEDULE_CHANGE con to, from, subject, texto, HTML y enlace con accessToken", async () => {
+  it("envía un email de SCHEDULE_CHANGE con to, from, subject, texto, HTML y enlaces de contingencia", async () => {
     prismaMock.ticketContingency.findMany.mockResolvedValue([
       { accessToken: "token-abc" },
       { accessToken: "token-def" },
@@ -124,14 +124,70 @@ describe("sendContingencyEmail", () => {
     expect(message.text).toMatch(/10:00/);
     expect(message.text).toMatch(/09:00/);
     expect(message.text).toMatch(/10:30/);
-    expect(message.text).toMatch(/token=token-abc/);
-    expect(message.text).toMatch(/token=token-def/);
+    expect(message.text).toMatch(/\/contingencia\/token-abc\b/);
+    expect(message.text).toMatch(/\/contingencia\/token-def\b/);
+    expect(message.text).not.toContain("token=token-abc");
 
     expect(message.html).toMatch(/VU-20261001-001/);
-    expect(message.html).toMatch(/token=token-abc/);
-    expect(message.html).toMatch(/token=token-def/);
+    expect(message.html).toMatch(/\/contingencia\/token-abc\b/);
+    expect(message.html).toMatch(/\/contingencia\/token-def\b/);
 
     expect(message.attachments).toBeUndefined();
+  });
+
+  it("consulta solo tokens PENDING de la reserva de la notificación", async () => {
+    prismaMock.ticketContingency.findMany.mockResolvedValue([
+      { accessToken: "token-abc" },
+    ] as never);
+
+    await sendContingencyEmail(
+      notification,
+      scheduleChange,
+      "https://volar.example.com/contingencia",
+    );
+
+    expect(prismaMock.ticketContingency.findMany).toHaveBeenCalledWith({
+      where: {
+        flightChangeId: scheduleChange.id,
+        resolution: "PENDING",
+        ticket: { bookingId: notification.bookingId },
+      },
+      select: { accessToken: true },
+    });
+  });
+
+  it("no envía nada si no quedan tokens pendientes (email sin acciones)", async () => {
+    prismaMock.ticketContingency.findMany.mockResolvedValue([] as never);
+    const createTransport = nodemailer.createTransport as ReturnType<typeof vi.fn>;
+    createTransport.mockClear();
+
+    const outcome = await sendContingencyEmail(
+      notification,
+      scheduleChange,
+      "https://volar.example.com/contingencia",
+    );
+
+    expect(outcome).toBe("SKIPPED");
+    expect(createTransport).not.toHaveBeenCalled();
+    expect(sendMail).not.toHaveBeenCalled();
+    expect(prismaMock.emailNotification.update).not.toHaveBeenCalled();
+  });
+
+  it("no consulta tokens ni envía cuando la notificación no tiene bookingId", async () => {
+    const createTransport = nodemailer.createTransport as ReturnType<typeof vi.fn>;
+    createTransport.mockClear();
+
+    const outcome = await sendContingencyEmail(
+      { ...notification, bookingId: null },
+      scheduleChange,
+      "https://volar.example.com/contingencia",
+    );
+
+    expect(outcome).toBe("SKIPPED");
+    expect(prismaMock.ticketContingency.findMany).not.toHaveBeenCalled();
+    expect(prismaMock.flight.findUnique).not.toHaveBeenCalled();
+    expect(createTransport).not.toHaveBeenCalled();
+    expect(sendMail).not.toHaveBeenCalled();
   });
 
   it("envía un email de CANCELLATION con el cuerpo adecuado", async () => {
@@ -150,7 +206,7 @@ describe("sendContingencyEmail", () => {
 
     const message = sendMail.mock.calls[0][0];
     expect(message.text).toMatch(/fue cancelado/);
-    expect(message.html).toMatch(/token=token-xyz/);
+    expect(message.html).toMatch(/\/contingencia\/token-xyz\b/);
   });
 
   it("actualiza la notificación a SENT y devuelve SENT cuando el envío es exitoso", async () => {
@@ -195,8 +251,32 @@ describe("sendContingencyEmail", () => {
     });
   });
 
+  it("el enlace generado resuelve al contrato de ruta /contingencia/[token]", async () => {
+    prismaMock.ticketContingency.findMany.mockResolvedValue([
+      { accessToken: "token-contrato" },
+    ] as never);
+
+    await sendContingencyEmail(
+      notification,
+      scheduleChange,
+      "https://volar.example.com/contingencia",
+    );
+
+    const message = sendMail.mock.calls[0][0];
+    const link = message.text.match(/https:\/\/volar\.example\.com\/contingencia\/\S+/)?.[0];
+
+    expect(link).toBeDefined();
+    const url = new URL(link!);
+    // La ruta [token] recibe exactamente un segmento después de /contingencia.
+    expect(url.pathname.split("/").filter(Boolean)).toEqual(["contingencia", "token-contrato"]);
+    expect(url.searchParams.has("token")).toBe(false);
+  });
+
   it("falla con mensaje claro si falta configuración SMTP", async () => {
     delete (process.env as Record<string, string | undefined>).SMTP_HOST;
+    prismaMock.ticketContingency.findMany.mockResolvedValue([
+      { accessToken: "token-abc" },
+    ] as never);
 
     await expect(
       sendContingencyEmail(
@@ -208,4 +288,30 @@ describe("sendContingencyEmail", () => {
 
     expect(sendMail).not.toHaveBeenCalled();
   });
+});
+
+// US-25/C1: el email debe apuntar a la ruta real de Next
+// (`app/contingencia/[token]/page.tsx`), no a un query string inexistente.
+describe("buildContingencyActionUrl (contrato de ruta)", () => {
+  it("arma un enlace absoluto con el token como segmento de ruta", () => {
+    const url = new URL(
+      buildContingencyActionUrl("https://volar.example.com/contingencia", "tok-abc-123"),
+    );
+
+    expect(url.origin).toBe("https://volar.example.com");
+    expect(url.pathname).toBe("/contingencia/tok-abc-123");
+    expect(url.search).toBe("");
+    expect(url.toString()).not.toContain("token=");
+  });
+
+  it("escapa el token dentro del segmento sin cambiar el path de la pantalla", () => {
+    const url = new URL(
+      buildContingencyActionUrl("https://volar.example.com/contingencia/", "tok/abc 1"),
+    );
+
+    expect(url.pathname).toBe("/contingencia/tok%2Fabc%201");
+    expect(decodeURIComponent(url.pathname.split("/").at(-1)!)).toBe("tok/abc 1");
+    expect(url.search).toBe("");
+  });
+
 });

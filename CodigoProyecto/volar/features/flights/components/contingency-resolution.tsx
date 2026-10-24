@@ -5,6 +5,17 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/native-select";
 import { AlertCircle, CalendarSync, Wallet } from "lucide-react";
@@ -17,6 +28,36 @@ import type {
   RebookingAlternative,
 } from "@/features/flights/contingency-queries";
 import { resolveRebookingAction, resolveRefundAction } from "@/features/flights/contingency-actions";
+
+export type ResolutionConfirmation = {
+  title: string;
+  description: string;
+  confirmLabel: string;
+  cancelLabel: string;
+};
+
+/**
+ * M1: texto de confirmación previa a una acción irreversible. Se exporta para
+ * probar el contrato sin DOM; el primer clic solo abre el AlertDialog y la
+ * server action se ejecuta recién desde `AlertDialogAction`.
+ */
+export function buildRefundConfirmation(amount: number): ResolutionConfirmation {
+  return {
+    title: "Confirmar reembolso",
+    description: `Se reembolsarán ${formatCurrency(amount)} y el pasaje quedará reembolsado. Esta acción no se puede deshacer.`,
+    confirmLabel: "Confirmar reembolso",
+    cancelLabel: "Volver",
+  };
+}
+
+export function buildRebookingConfirmation(flightCode: string): ResolutionConfirmation {
+  return {
+    title: "Confirmar reprogramación",
+    description: `El pasaje se moverá al vuelo ${flightCode} sin costo adicional. Esta acción no se puede deshacer desde este enlace.`,
+    confirmLabel: "Confirmar reprogramación",
+    cancelLabel: "Volver",
+  };
+}
 
 /**
  * Envía la selección de la UI a la server action. Se exporta para poder probar
@@ -122,7 +163,9 @@ function SummaryCard({ view }: { view: Extract<ContingencyResolutionView, { stat
           <h2 className="text-base font-extrabold">
             {passenger.lastName}, {passenger.firstName}
           </h2>
-          <p className="text-xs text-muted-foreground">DNI {passenger.documentNumber}</p>
+          <p className="text-xs text-muted-foreground">
+            {passenger.documentType === "DNI" ? "DNI" : "Pasaporte"} {passenger.documentNumber}
+          </p>
         </div>
         <span className="rounded-full bg-muted px-2.5 py-1 font-mono text-xs">{flight.code}</span>
       </div>
@@ -182,12 +225,17 @@ function RebookCard({
   const [selectedFlightId, setSelectedFlightId] = useState(alternatives[0]?.id ?? "");
   const [isPending, startTransition] = useTransition();
   const [resolved, setResolved] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(
     null,
   );
+  const selectedAlternative =
+    alternatives.find((alternative) => alternative.id === selectedFlightId) ?? alternatives[0];
+  const confirmation = buildRebookingConfirmation(selectedAlternative?.code ?? "seleccionado");
 
   function handleRebook() {
     if (!selectedFlightId) return;
+    setConfirmOpen(false);
 
     startTransition(async () => {
       const result = await submitRebooking(token, selectedFlightId);
@@ -250,17 +298,36 @@ function RebookCard({
           <p className="mb-3 text-center text-xs text-green-600">{feedback.message}</p>
         )}
 
-        <Button
-          className="w-full"
-          disabled={isPending || resolved || alternatives.length === 0 || !selectedFlightId}
-          onClick={handleRebook}
-        >
-          {resolved
-            ? "Reprogramación registrada"
-            : isPending
-              ? "Procesando…"
-              : "Confirmar reprogramación gratuita"}
-        </Button>
+        <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+          <AlertDialogTrigger
+            render={
+              <Button
+                className="w-full"
+                disabled={
+                  isPending || resolved || alternatives.length === 0 || !selectedFlightId
+                }
+              />
+            }
+          >
+            {resolved
+              ? "Reprogramación registrada"
+              : isPending
+                ? "Procesando…"
+                : "Confirmar reprogramación gratuita"}
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{confirmation.title}</AlertDialogTitle>
+              <AlertDialogDescription>{confirmation.description}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{confirmation.cancelLabel}</AlertDialogCancel>
+              <AlertDialogAction disabled={isPending} onClick={handleRebook}>
+                {confirmation.confirmLabel}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardContent>
     </Card>
   );
@@ -270,9 +337,12 @@ function RefundCard({ token, amount }: { token: string; amount: number }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [resolved, setResolved] = useState(false);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const confirmation = buildRefundConfirmation(amount);
 
   function handleRefund() {
+    setConfirmOpen(false);
     startTransition(async () => {
       const result = await resolveRefundAction(token);
 
@@ -310,14 +380,31 @@ function RefundCard({ token, amount }: { token: string; amount: number }) {
         {feedback?.type === "success" && (
           <p className="mb-3 text-center text-xs text-green-600">{feedback.message}</p>
         )}
-        <Button
-          variant="outline"
-          className="w-full"
-          disabled={isPending || resolved}
-          onClick={handleRefund}
-        >
-          {resolved ? "Reembolso registrado" : isPending ? "Procesando…" : "Solicitar reembolso"}
-        </Button>
+        <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+          <AlertDialogTrigger
+            render={
+              <Button
+                variant="outline"
+                className="w-full"
+                disabled={isPending || resolved}
+              />
+            }
+          >
+            {resolved ? "Reembolso registrado" : isPending ? "Procesando…" : "Solicitar reembolso"}
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{confirmation.title}</AlertDialogTitle>
+              <AlertDialogDescription>{confirmation.description}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{confirmation.cancelLabel}</AlertDialogCancel>
+              <AlertDialogAction disabled={isPending} onClick={handleRefund}>
+                {confirmation.confirmLabel}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </CardContent>
     </Card>
   );

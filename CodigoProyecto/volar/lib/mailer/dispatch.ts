@@ -11,8 +11,9 @@ export type DispatchSummary = {
 
 /**
  * Tipos de email que este comando puede despachar. Es una allowlist explícita:
- * las confirmaciones de reprogramación (`REBOOKING_CONFIRMATION`) se crean
- * PENDING pero no deben enviarse con la plantilla de contingencia.
+ * las confirmaciones de reprogramación (`REBOOKING_CONFIRMATION`) no se envían
+ * en Sprint 3 (no hay plantilla propia) y el dominio las crea ya `FAILED`, así
+ * que nunca entran en esta cola.
  */
 export const CONTINGENCY_EMAIL_TYPES: EmailType[] = [
   "FLIGHT_CANCELLATION",

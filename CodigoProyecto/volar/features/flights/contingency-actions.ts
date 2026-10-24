@@ -85,6 +85,13 @@ export async function resolveRebookingAction(
         return { ok: false, error: "El enlace no es válido o expiró." };
       }
       case "conflict": {
+        if (result.reason === "TICKET_NOT_ACTIVE") {
+          return {
+            ok: false,
+            error: "Este pasaje ya no está activo. Revisá el estado de tu compra.",
+          };
+        }
+
         return {
           ok: false,
           error: "El vuelo elegido ya no está disponible. Elegí otra alternativa.",

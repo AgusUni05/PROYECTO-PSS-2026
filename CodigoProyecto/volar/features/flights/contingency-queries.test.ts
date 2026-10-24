@@ -135,6 +135,7 @@ describe("getContingencyByToken", () => {
     expect(result.passenger).toEqual({
       firstName: "Juan",
       lastName: "Pérez",
+      documentType: "DNI",
       documentNumber: "30123456",
     });
 

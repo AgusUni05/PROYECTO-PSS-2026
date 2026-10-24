@@ -188,6 +188,30 @@ describe("PurchaseHistoryView", () => {
     expect(html).toContain("Todavía no tenés compras pasadas.");
   });
 
+  it("cuenta y ofrece descarga solo de los pasajes ISSUED de la compra", () => {
+    const refundedTicket: PurchaseHistoryTicket = {
+      ...upcomingTicket,
+      id: "PAS_REFUND",
+      number: "ETK-00000009",
+      firstName: "Ana",
+      lastName: "Gómez",
+      status: "REFUNDED",
+    };
+    const entry: PurchaseHistoryEntry = {
+      ...upcomingEntry,
+      tickets: [upcomingTicket, refundedTicket],
+    };
+
+    // React intercala comentarios de texto en SSR.
+    const html = render({ upcoming: [entry], past: [] }).replace(/<!--.*?-->/g, "");
+
+    expect(html).toContain("1 pasaje");
+    expect(html).toContain("Descargar E-Tickets (1 pasaje PDF)");
+    expect(html).not.toContain("2 pasajes PDF");
+    // El pasaje reembolsado se informa como tal, pero no suma como emitido.
+    expect(html).toContain("Reembolsado");
+  });
+
   it("muestra las descargas como links internos a las rutas autorizadas", () => {
     const html = render({ upcoming: [upcomingEntry], past: [pastEntry] });
 

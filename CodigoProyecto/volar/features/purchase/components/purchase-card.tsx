@@ -82,6 +82,7 @@ function ContingencyAlert({
  */
 export function PurchaseCard({ entry }: { entry: PurchaseHistoryEntry }) {
   const groups = groupTicketsByFlight(entry.tickets);
+  const issuedTicketCount = entry.tickets.filter((ticket) => ticket.status === "ISSUED").length;
 
   return (
     <article className="min-w-0 rounded-2xl border border-border bg-card p-4 sm:p-5">
@@ -107,7 +108,7 @@ export function PurchaseCard({ entry }: { entry: PurchaseHistoryEntry }) {
             <div key={group.flight.id} className="min-w-0">
               <PurchaseSummary
                 flight={group.flight}
-                ticketCount={group.tickets.length}
+                ticketCount={group.tickets.filter((ticket) => ticket.status === "ISSUED").length}
                 seatClass={group.tickets[0]?.seatClass ?? entry.seatClass}
               />
               <ul className="mt-2 grid gap-1.5">
@@ -137,7 +138,7 @@ export function PurchaseCard({ entry }: { entry: PurchaseHistoryEntry }) {
       <div className="mt-4 border-t border-border pt-3">
         <PurchaseDownloadActions
           code={entry.code}
-          ticketCount={entry.tickets.length}
+          ticketCount={issuedTicketCount}
           hasInvoice={entry.invoice !== null}
           canDownload={entry.status === "CONFIRMED"}
         />

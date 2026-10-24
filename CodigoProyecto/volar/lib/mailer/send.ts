@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { ContingencyResolution } from "@/generated/prisma/enums";
 import type { EmailNotificationModel } from "@/generated/prisma/models/EmailNotification";
 import type { FlightChangeModel } from "@/generated/prisma/models/FlightChange";
 import { createMailerTransport } from "./index";
@@ -7,6 +8,22 @@ import { buildContingencyEmailContent } from "./templates";
 type FlightChangeWithFlightCode = FlightChangeModel & {
   flight?: { code: string } | null;
 };
+
+/**
+ * US-25/US-26: enlace absoluto a la pantalla pública de resolución. El token
+ * viaja como segmento de ruta (`/contingencia/{token}`), que es el contrato que
+ * expone `app/contingencia/[token]/page.tsx`; nunca como query string.
+ */
+export function buildContingencyActionUrl(
+  actionUrl: string,
+  accessToken: string,
+): string {
+  const url = new URL(actionUrl);
+  url.pathname = `${url.pathname.replace(/\/+$/, "")}/${encodeURIComponent(accessToken)}`;
+  url.search = "";
+  url.hash = "";
+  return url.toString();
+}
 
 export async function sendContingencyEmail(
   notification: EmailNotificationModel,
@@ -25,6 +42,23 @@ export async function sendContingencyEmail(
     return "SKIPPED";
   }
 
+  // M7: sin `bookingId` no se puede acotar la consulta de tokens. Se omite la
+  // fila en lugar de consultar contingencias de otras reservas.
+  if (!notification.bookingId) return "SKIPPED";
+
+  // M6: solo los tokens todavía accionables. Un email sin enlaces útiles no se
+  // envía: sería un mensaje sin acción posible.
+  const tokens = await prisma.ticketContingency.findMany({
+    where: {
+      flightChangeId: change.id,
+      resolution: ContingencyResolution.PENDING,
+      ticket: { bookingId: notification.bookingId },
+    },
+    select: { accessToken: true },
+  });
+
+  if (tokens.length === 0) return "SKIPPED";
+
   const flightCode =
     change.flight?.code ??
     (await prisma.flight.findUnique({ where: { id: change.flightId }, select: { code: true } }))
@@ -34,19 +68,10 @@ export async function sendContingencyEmail(
     throw new Error("No se encontró el vuelo asociado al cambio.");
   }
 
-  const tokens = await prisma.ticketContingency.findMany({
-    where: {
-      flightChangeId: change.id,
-      ticket: { bookingId: notification.bookingId ?? undefined },
-    },
-    select: { accessToken: true },
-  });
-
-  const actionLinks = tokens.map((token) => {
-    const url = new URL(actionUrl);
-    url.searchParams.set("token", token.accessToken);
-    return { accessToken: token.accessToken, url: url.toString() };
-  });
+  const actionLinks = tokens.map((token) => ({
+    accessToken: token.accessToken,
+    url: buildContingencyActionUrl(actionUrl, token.accessToken),
+  }));
 
   const { text, html } = buildContingencyEmailContent(
     change.type,

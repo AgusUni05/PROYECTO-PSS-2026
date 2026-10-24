@@ -12,6 +12,8 @@ vi.mock("@/features/flights/contingency-actions", () => ({
 
 import { resolveRebookingAction } from "@/features/flights/contingency-actions";
 import {
+  buildRebookingConfirmation,
+  buildRefundConfirmation,
   ContingencyNotFound,
   ContingencyResolution,
   submitRebooking,
@@ -24,6 +26,7 @@ const pendingView = {
   passenger: {
     firstName: "Juan",
     lastName: "Pérez",
+    documentType: "DNI" as const,
     documentNumber: "30123456",
   },
   ticket: {
@@ -130,6 +133,66 @@ describe("ContingencyResolution", () => {
     expect(html).toContain("Confirmar reprogramación gratuita");
     expect(html).not.toContain('data-disabled=""');
     expect(html).not.toContain("No hay vuelos alternativos disponibles");
+  });
+
+  it("muestra Pasaporte cuando el documento no es DNI (M8)", () => {
+    const html = renderToString(
+      <ContingencyResolution
+        view={{
+          ...pendingView,
+          passenger: {
+            firstName: "Ana",
+            lastName: "Gómez",
+            documentType: "PASSPORT" as const,
+            documentNumber: "AB123456",
+          },
+        }}
+      />,
+    );
+
+    expect(html).toContain("Pasaporte");
+    expect(html).toContain("AB123456");
+    expect(html).not.toContain("DNI");
+  });
+
+  it("pide confirmación explícita antes de reembolsar (M1)", () => {
+    // El primer clic solo abre el diálogo; la acción vive en AlertDialogAction.
+    const html = renderToString(<ContingencyResolution view={pendingView} />);
+    expect(html).toContain("Solicitar reembolso");
+    expect(html).not.toContain("Reembolso registrado");
+
+    const confirmation = buildRefundConfirmation(45000);
+    expect(confirmation.title).toContain("Confirmar reembolso");
+    expect(confirmation.confirmLabel).toBe("Confirmar reembolso");
+    expect(confirmation.cancelLabel).toBe("Volver");
+    expect(confirmation.description).toContain("no se puede deshacer");
+    expect(confirmation.description).toMatch(/\$\s*45\.000/);
+  });
+
+  it("pide confirmación explícita antes de reprogramar (M1)", () => {
+    const html = renderToString(
+      <ContingencyResolution
+        view={pendingView}
+        alternatives={[
+          {
+            id: "VUE_2",
+            code: "VU-20300104-001",
+            date: new Date("2030-01-04T00:00:00.000Z"),
+            departureAt: new Date("2030-01-04T08:30:00.000Z"),
+            arrivalAt: new Date("2030-01-04T10:00:00.000Z"),
+            availableSeats: 140,
+          },
+        ]}
+      />,
+    );
+    expect(html).toContain("Confirmar reprogramación gratuita");
+    expect(html).not.toContain("Reprogramación registrada");
+
+    const confirmation = buildRebookingConfirmation("VU-20300104-001");
+    expect(confirmation.title).toContain("Confirmar reprogramación");
+    expect(confirmation.description).toContain("VU-20300104-001");
+    expect(confirmation.description).toContain("no se puede deshacer");
+    expect(confirmation.cancelLabel).toBe("Volver");
   });
 
   it("envía el token y el vuelo alternativo seleccionado a la server action", async () => {

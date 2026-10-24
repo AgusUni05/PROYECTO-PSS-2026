@@ -1,6 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@/generated/prisma/client";
-import { ContingencyResolution, type SeatClass } from "@/generated/prisma/enums";
+import {
+  ContingencyResolution,
+  type DocumentType,
+  type SeatClass,
+} from "@/generated/prisma/enums";
 import { availableSeats } from "./availability";
 
 export type ContingencyResolutionView =
@@ -11,6 +15,7 @@ export type ContingencyResolutionView =
       passenger: {
         firstName: string;
         lastName: string;
+        documentType: DocumentType;
         documentNumber: string;
       };
       ticket: {
@@ -99,6 +104,7 @@ export async function getContingencyByToken(
     passenger: {
       firstName: ticket.firstName,
       lastName: ticket.lastName,
+      documentType: ticket.documentType,
       documentNumber: ticket.documentNumber,
     },
     ticket: {

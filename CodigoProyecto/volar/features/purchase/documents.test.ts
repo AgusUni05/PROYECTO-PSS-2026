@@ -39,6 +39,7 @@ function ticket(overrides: Partial<ComprobanteTicket> = {}): ComprobanteTicket {
     lastName: "Demo",
     documentType: "DNI",
     documentNumber: "30000001",
+    status: "ISSUED",
     issuedAt: ISSUED_AT,
     flight: REPROGRAMMED_FLIGHT,
     ...overrides,
@@ -197,6 +198,39 @@ describe("buildETicketsPdf (US-36)", () => {
     await expect(buildETicketsPdf(purchaseFixture({ tickets: [] }))).rejects.toThrow(
       "TICKETS_NOT_FOUND",
     );
+  });
+
+  it("omite pasajes reembolsados y emite solo los ISSUED", async () => {
+    const purchase = purchaseFixture({
+      tickets: [
+        ticket(),
+        ticket({
+          id: "PAS_2",
+          number: "ETK-DEMO0001-2",
+          seat: "1B",
+          firstName: "Juan",
+          documentNumber: "30000002",
+          status: "REFUNDED",
+        }),
+      ],
+    });
+
+    const bytes = await buildETicketsPdf(purchase);
+    const text = pdfText(bytes);
+    const pdf = await PDFDocument.load(bytes);
+
+    expect(pdf.getPageCount()).toBe(1);
+    expect(text).toContain("Demo, Maria");
+    expect(text).not.toContain("Demo, Juan");
+    expect(text).not.toContain("ETK-DEMO0001-2");
+  });
+
+  it("falla con TICKETS_NOT_FOUND si todos los pasajes fueron reembolsados", async () => {
+    const purchase = purchaseFixture({
+      tickets: [ticket({ status: "REFUNDED" }), ticket({ id: "PAS_2", status: "CANCELLED" })],
+    });
+
+    await expect(buildETicketsPdf(purchase)).rejects.toThrow("TICKETS_NOT_FOUND");
   });
 });
 

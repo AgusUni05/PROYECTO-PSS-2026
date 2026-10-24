@@ -42,6 +42,18 @@ export type ResolveRefundContext = {
 };
 
 /**
+ * US-26: la contingencia se pudo reservar pero el pasaje ya no está emitido
+ * (por ejemplo, otro token del mismo ticket lo reembolsó). Se lanza para
+ * revertir la transacción completa antes de crear un Refund o mover cupo.
+ */
+class TicketNotIssuedError extends Error {
+  constructor() {
+    super("TICKET_NOT_ISSUED");
+    this.name = "TicketNotIssuedError";
+  }
+}
+
+/**
  * US-26: resuelve una contingencia solicitando el reembolso del pasaje.
  *
  * - Idempotente: una segunda invocación con el mismo token devuelve
@@ -60,35 +72,156 @@ export async function resolveRefund(
 ): Promise<RefundResolutionResult> {
   const gateway = userContext.gateway ?? volarPayRefundGateway;
 
-  return prisma.$transaction(async (tx) => {
-    const now = new Date();
+  try {
+    return await prisma.$transaction(async (tx) => {
+      const now = new Date();
 
-    // 1. Reservar atómicamente la fila condicionada a estado PENDING.
-    const reserved = await tx.ticketContingency.updateMany({
-      where: {
-        accessToken,
-        resolution: ContingencyResolution.PENDING,
-      },
-      data: {
-        resolution: ContingencyResolution.REFUND,
+      // 1. Reservar atómicamente la fila condicionada a estado PENDING.
+      const reserved = await tx.ticketContingency.updateMany({
+        where: {
+          accessToken,
+          resolution: ContingencyResolution.PENDING,
+        },
+        data: {
+          resolution: ContingencyResolution.REFUND,
+          resolvedAt: now,
+        },
+      });
+
+      if (reserved.count === 0) {
+        const existing = await tx.ticketContingency.findUnique({
+          where: { accessToken },
+          select: { resolution: true, resolvedAt: true },
+        });
+
+        if (!existing) {
+          return { type: "notFound" };
+        }
+
+        if (existing.resolution === ContingencyResolution.REFUND) {
+          return {
+            type: "alreadyResolved",
+            resolution: "REFUND",
+            resolvedAt: existing.resolvedAt!,
+          };
+        }
+
+        return { type: "conflict" };
+      }
+
+      // 2. Leer la contingencia ya reservada con sus relaciones.
+      const contingency = await tx.ticketContingency.findUnique({
+        where: { accessToken },
+        include: {
+          ticket: {
+            include: {
+              booking: {
+                include: {
+                  tickets: { select: { id: true, status: true } },
+                },
+              },
+              flight: true,
+            },
+          },
+        },
+      });
+
+      if (!contingency) {
+        return { type: "notFound" };
+      }
+
+      const { ticket } = contingency;
+
+      // I1: dos contingencias PENDING del mismo ticket no pueden reembolsarlo dos
+      // veces. Si el pasaje ya no está emitido, se revierte la reserva de esta
+      // fila y no se toca Refund, ticket, vuelo ni cupo.
+      if (ticket.status !== TicketStatus.ISSUED) {
+        throw new TicketNotIssuedError();
+      }
+
+      const amount = Number(ticket.unitPrice);
+
+      // 3. Simular llamada a pasarela (sin red). Se persiste el id solo si responde.
+      const { gatewayRefundId } = await gateway.processRefund({
+        amount,
+        ticketId: ticket.id,
+        contingencyId: contingency.id,
+      });
+
+      // 4. Crear el reembolso, marcar el pasaje y liberar el cupo.
+      const refund = await tx.refund.create({
+        data: {
+          id: newId("Refund"),
+          ticketId: ticket.id,
+          contingencyId: contingency.id,
+          amount: ticket.unitPrice,
+          status: RefundStatus.COMPLETED,
+          gatewayRefundId,
+          processedAt: now,
+        },
+      });
+
+      await tx.ticket.update({
+        where: { id: ticket.id },
+        data: { status: TicketStatus.REFUNDED },
+      });
+
+      const occupiedField =
+        ticket.seatClass === SeatClass.FIRST ? "firstClassOccupied" : "economyOccupied";
+
+      await tx.flight.update({
+        where: { id: ticket.flightId },
+        data: { [occupiedField]: { decrement: 1 } },
+      });
+
+      // I1: cualquier otro token PENDING del mismo pasaje queda resuelto con la
+      // misma decisión. Así un enlace sibling ya no puede volver a actuar.
+      await tx.ticketContingency.updateMany({
+        where: {
+          ticketId: ticket.id,
+          resolution: ContingencyResolution.PENDING,
+        },
+        data: {
+          resolution: ContingencyResolution.REFUND,
+          resolvedAt: now,
+        },
+      });
+
+      // 5. Si la compra se quedó sin pasajes activos, marcarla cancelada.
+      const remainingActiveTickets = ticket.booking.tickets.filter(
+        (t) => t.id !== ticket.id && t.status !== TicketStatus.REFUNDED && t.status !== TicketStatus.CANCELLED,
+      );
+
+      if (remainingActiveTickets.length === 0) {
+        await tx.booking.update({
+          where: { id: ticket.bookingId },
+          data: { status: BookingStatus.CANCELLED },
+        });
+      }
+
+      return {
+        type: "ok",
+        refundId: refund.id,
+        amount,
+        gatewayRefundId,
+        ticketId: ticket.id,
         resolvedAt: now,
-      },
+      };
     });
-
-    if (reserved.count === 0) {
-      const existing = await tx.ticketContingency.findUnique({
+  } catch (error) {
+    if (error instanceof TicketNotIssuedError) {
+      // La transacción ya se revirtió. Se informa el estado real sin crear nada.
+      const existing = await prisma.ticketContingency.findUnique({
         where: { accessToken },
         select: { resolution: true, resolvedAt: true },
       });
 
-      if (!existing) {
-        return { type: "notFound" };
-      }
+      if (!existing) return { type: "notFound" };
 
-      if (existing.resolution === ContingencyResolution.REFUND) {
+      if (existing.resolution !== ContingencyResolution.PENDING) {
         return {
           type: "alreadyResolved",
-          resolution: "REFUND",
+          resolution: existing.resolution,
           resolvedAt: existing.resolvedAt!,
         };
       }
@@ -96,87 +229,15 @@ export async function resolveRefund(
       return { type: "conflict" };
     }
 
-    // 2. Leer la contingencia ya reservada con sus relaciones.
-    const contingency = await tx.ticketContingency.findUnique({
-      where: { accessToken },
-      include: {
-        ticket: {
-          include: {
-            booking: {
-              include: {
-                tickets: { select: { id: true, status: true } },
-              },
-            },
-            flight: true,
-          },
-        },
-      },
-    });
-
-    if (!contingency) {
-      return { type: "notFound" };
-    }
-
-    const { ticket } = contingency;
-    const amount = Number(ticket.unitPrice);
-
-    // 3. Simular llamada a pasarela (sin red). Se persiste el id solo si responde.
-    const { gatewayRefundId } = await gateway.processRefund({
-      amount,
-      ticketId: ticket.id,
-      contingencyId: contingency.id,
-    });
-
-    // 4. Crear el reembolso, marcar el pasaje y liberar el cupo.
-    const refund = await tx.refund.create({
-      data: {
-        id: newId("Refund"),
-        ticketId: ticket.id,
-        contingencyId: contingency.id,
-        amount: ticket.unitPrice,
-        status: RefundStatus.COMPLETED,
-        gatewayRefundId,
-        processedAt: now,
-      },
-    });
-
-    await tx.ticket.update({
-      where: { id: ticket.id },
-      data: { status: TicketStatus.REFUNDED },
-    });
-
-    const occupiedField =
-      ticket.seatClass === SeatClass.FIRST ? "firstClassOccupied" : "economyOccupied";
-
-    await tx.flight.update({
-      where: { id: ticket.flightId },
-      data: { [occupiedField]: { decrement: 1 } },
-    });
-
-    // 5. Si la compra se quedó sin pasajes activos, marcarla cancelada.
-    const remainingActiveTickets = ticket.booking.tickets.filter(
-      (t) => t.id !== ticket.id && t.status !== TicketStatus.REFUNDED && t.status !== TicketStatus.CANCELLED,
-    );
-
-    if (remainingActiveTickets.length === 0) {
-      await tx.booking.update({
-        where: { id: ticket.bookingId },
-        data: { status: BookingStatus.CANCELLED },
-      });
-    }
-
-    return {
-      type: "ok",
-      refundId: refund.id,
-      amount,
-      gatewayRefundId,
-      ticketId: ticket.id,
-      resolvedAt: now,
-    };
-  });
+    throw error;
+  }
 }
 
-export type RebookingConflictReason = "FLIGHT_NOT_ELIGIBLE" | "NO_CAPACITY" | "NO_SEAT";
+export type RebookingConflictReason =
+  | "FLIGHT_NOT_ELIGIBLE"
+  | "NO_CAPACITY"
+  | "NO_SEAT"
+  | "TICKET_NOT_ACTIVE";
 
 export type RebookingResolutionResult =
   | {
@@ -239,8 +300,9 @@ function rebookingNumberSuffix(contingencyId: string): string {
  * - Conserva `seatClass` y `unitPrice`: no se crea una venta, un pago ni una
  *   factura nuevos. Solo se reemite el e-ticket con vuelo, asiento, número y
  *   `issuedAt` nuevos.
- * - El correo queda en el outbox como `PENDING`; no se envía SMTP dentro de la
- *   transacción.
+ * - La confirmación de reprogramación no se envía en Sprint 3: no hay plantilla
+ *   propia. La fila queda `FAILED` con un `lastError` no secreto y nunca se
+ *   despacha con la plantilla de contingencia.
  */
 export async function resolveRebooking(
   accessToken: string,
@@ -283,6 +345,26 @@ export async function resolveRebooking(
 
         const { ticket } = contingency;
         const seatClass = ticket.seatClass;
+
+        // I1/M3: reservar la contingencia antes de bloquear el vuelo nuevo. El
+        // reembolso bloquea contingencia → vuelo original; este orden evita el
+        // deadlock cruzado entre ambas resoluciones.
+        const reserved = await tx.ticketContingency.updateMany({
+          where: { accessToken, resolution: ContingencyResolution.PENDING },
+          data: {
+            resolution: ContingencyResolution.REBOOK,
+            newFlightId,
+            resolvedAt: now,
+          },
+        });
+
+        if (reserved.count === 0) throw new RebookingRaceError();
+
+        // I1: el pasaje debe seguir emitido. Si otro token del mismo ticket ya
+        // lo reembolsó, se revierte todo sin mover vuelo, asiento ni cupo.
+        if (ticket.status !== TicketStatus.ISSUED) {
+          throw new TicketNotIssuedError();
+        }
 
         const candidate = await tx.flight.findFirst({
           where: rebookingCandidateWhere({
@@ -330,17 +412,6 @@ export async function resolveRebooking(
 
         if (seatTaken.count === 0) throw new RebookingConflictError("NO_CAPACITY");
 
-        const reserved = await tx.ticketContingency.updateMany({
-          where: { accessToken, resolution: ContingencyResolution.PENDING },
-          data: {
-            resolution: ContingencyResolution.REBOOK,
-            newFlightId: candidate.id,
-            resolvedAt: now,
-          },
-        });
-
-        if (reserved.count === 0) throw new RebookingRaceError();
-
         // El pasaje deja de ocupar cupo en el vuelo original.
         await tx.flight.update({
           where: { id: ticket.flightId },
@@ -381,6 +452,21 @@ export async function resolveRebooking(
           data: { flightId: candidate.id, seat, number, issuedAt: now },
         });
 
+        // I1: los demás tokens PENDING del mismo pasaje quedan resueltos como
+        // REBOOK para que ningún enlace sibling vuelva a operar sobre él.
+        await tx.ticketContingency.updateMany({
+          where: {
+            ticketId: ticket.id,
+            resolution: ContingencyResolution.PENDING,
+          },
+          data: {
+            resolution: ContingencyResolution.REBOOK,
+            resolvedAt: now,
+          },
+        });
+
+        // Sprint 3 no tiene plantilla de confirmación de reprogramación. La fila
+        // se registra en estado terminal (no PENDING invisible para siempre).
         await tx.emailNotification.create({
           data: {
             id: newId("EmailNotification"),
@@ -389,8 +475,9 @@ export async function resolveRebooking(
             subject: `Reprogramación confirmada - vuelo ${candidate.code} - reserva ${ticket.booking.code}`,
             bookingId: ticket.bookingId,
             flightChangeId: contingency.flightChangeId,
-            status: EmailStatus.PENDING,
+            status: EmailStatus.FAILED,
             attempts: 0,
+            lastError: "No hay plantilla de confirmación de reprogramación en Sprint 3",
           },
         });
 
@@ -408,6 +495,25 @@ export async function resolveRebooking(
   } catch (error) {
     if (error instanceof RebookingConflictError) {
       return { type: "conflict", reason: error.reason };
+    }
+
+    if (error instanceof TicketNotIssuedError) {
+      // La transacción ya se revirtió: no se movió el pasaje ni el cupo.
+      const existing = await prisma.ticketContingency.findUnique({
+        where: { accessToken },
+        select: { resolution: true, resolvedAt: true },
+      });
+
+      if (!existing) return { type: "notFound" };
+      if (existing.resolution !== ContingencyResolution.PENDING) {
+        return {
+          type: "alreadyResolved",
+          resolution: existing.resolution,
+          resolvedAt: existing.resolvedAt!,
+        };
+      }
+
+      return { type: "conflict", reason: "TICKET_NOT_ACTIVE" };
     }
 
     if (error instanceof RebookingRaceError) {

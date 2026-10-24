@@ -98,10 +98,12 @@ reales. Nunca se commitea `.env`.
 | `pnpm test:watch` | Vitest en modo watch. |
 | `pnpm make-admin <email>` | Promueve un usuario existente al rol `ADMIN`. |
 | `pnpm seed:demo [--clean]` | Crea o elimina datos demo para probar el flujo de pago. |
-| `pnpm mail:send` | Despacha las notificaciones de contingencia `PENDING`. |
+| `pnpm mail:send` | Despacha manualmente las notificaciones de contingencia `PENDING`. |
 
 `make-admin`, `seed:demo` y `mail:send` dependen de `tsx`, que es una
 devDependency: instalar con `pnpm install` completo, no con `pnpm install --prod`.
+`mail:send` es una tarea **manual** (o invocada por un cron externo); la
+aplicación no envía emails en segundo plano por sí sola.
 
 ## Email y SMTP
 
@@ -126,12 +128,21 @@ $env:APP_URL="https://tu-dominio"; pnpm mail:send
 
 Solo se despachan las filas `FLIGHT_CANCELLATION` y `FLIGHT_SCHEDULE_CHANGE`
 en estado `PENDING`; otros tipos (por ejemplo `REBOOKING_CONFIRMATION`) no se
-envían con este comando.
+envían con este comando. Cada email incluye un enlace absoluto por pasaje con
+la forma `/contingencia/{token}`, que es la ruta real de la pantalla pública.
+Si una notificación ya no tiene tokens `PENDING`, se omite en lugar de enviar
+un email sin acciones; si no tiene `bookingId`, también se omite para no
+consultar tokens de otras reservas.
 
 El comando imprime un resumen (`procesados`, `enviados`, `fallidos`,
 `omitidos`) y no imprime cuerpos de email ni credenciales. Las filas enviadas
 pasan a `SENT`; un fallo de envío las deja en `FAILED` con `lastError` y las
 incrementa en `attempts`.
+
+Las confirmaciones de reprogramación (`REBOOKING_CONFIRMATION`) **no se envían
+por email en Sprint 3**: no existe una plantilla propia y no deben reutilizar la
+de contingencia. Por eso se registran directamente en estado terminal `FAILED`
+con un `lastError` no secreto, en lugar de quedar `PENDING` para siempre.
 
 **Sin configuración SMTP cada fila de contingencia queda en `PENDING`**:
 `createMailerTransport()` lanza antes de actualizar la base, por lo que se
@@ -169,6 +180,17 @@ autenticado. Solo las compras `CONFIRMED` permiten descargar; el resto
 responde `409`. En la UI, una compra no confirmada no muestra links de descarga
 y explica el motivo.
 
+Los e-tickets incluyen únicamente pasajes en estado `ISSUED`: un pasaje
+reembolsado o cancelado no se emite como válido y tampoco suma en los conteos
+de la UI. Si no queda ningún pasaje `ISSUED`, la descarga de e-tickets responde
+`404` como comprobante no disponible. La factura no cambia: sigue reflejando lo
+abonado.
+
+La pantalla `/compra/comprobantes?reserva=…` también resuelve la titularidad con
+la sesión (`Booking.buyerId`). Si el código no existe o pertenece a otra cuenta,
+muestra el mismo estado "No encontramos esta reserva"; no es un `404` HTTP,
+sino una pantalla no disponible que no revela si la reserva existe.
+
 Tras una reprogramación (US-26), cada e-ticket usa el vuelo actual del pasaje
 (`Ticket.flight`), no el vuelo original de la reserva.
 
@@ -176,12 +198,14 @@ Tras una reprogramación (US-26), cada e-ticket usa el vuelo actual del pasaje
 
 - La sesión de Clerk es la única fuente de identidad: nunca se aceptan IDs de
   usuario enviados por el cliente.
-- Los recursos de compra se autorizan del lado del servidor por titularidad;
-  una reserva ajena y una inexistente devuelven el mismo `404`.
+- Los recursos de compra se autorizan del lado del servidor por titularidad. En
+  las rutas de descarga, una reserva ajena y una inexistente devuelven el mismo
+  `404`; en `/compra/comprobantes` muestran el mismo estado no disponible.
 - El panel `/admin` exige rol `ADMIN` activo tanto en el layout como al inicio
   de cada Server Action.
 - Los enlaces de contingencia usan un token aleatorio como único secreto y se
-  validan antes de cualquier cambio.
+  validan antes de cualquier cambio. Al resolver un pasaje, todos los tokens
+  `PENDING` de ese mismo ticket quedan resueltos para evitar dobles reembolsos.
 - No se persisten datos sensibles de tarjetas y no se commitean secretos,
   `.env` ni credenciales SMTP reales.
 - Los PDF se generan desde la base, sin aceptar rutas ni bytes del cliente.

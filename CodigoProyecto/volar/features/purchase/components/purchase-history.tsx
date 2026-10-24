@@ -74,8 +74,9 @@ export function PurchaseHistoryView({ history }: { history: PurchaseHistory }) {
 function PurchaseHistoryRow({ entry }: { entry: PurchaseHistoryEntry }) {
   const groups = groupTicketsByFlight(entry.tickets);
   const firstFlight = groups[0]?.flight ?? null;
+  const issuedTicketCount = entry.tickets.filter((ticket) => ticket.status === "ISSUED").length;
   const passengerCount =
-    entry.tickets.length === 1 ? "1 pasaje" : `${entry.tickets.length} pasajes`;
+    issuedTicketCount === 1 ? "1 pasaje" : `${issuedTicketCount} pasajes`;
 
   return (
     <div className="min-w-0 rounded-2xl border border-border bg-card p-4">
@@ -117,7 +118,7 @@ function PurchaseHistoryRow({ entry }: { entry: PurchaseHistoryEntry }) {
       <div className="mt-3 border-t border-border pt-3">
         <PurchaseDownloadActions
           code={entry.code}
-          ticketCount={entry.tickets.length}
+          ticketCount={issuedTicketCount}
           hasInvoice={entry.invoice !== null}
           canDownload={entry.status === "CONFIRMED"}
         />
