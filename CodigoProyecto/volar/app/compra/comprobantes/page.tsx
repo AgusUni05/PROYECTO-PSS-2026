@@ -80,7 +80,7 @@ export default async function ComprobantesPage({
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {booking.tickets.map((ticket, index) => (
-            <ETicketCard key={ticket.id} ticket={ticket} index={index} booking={booking} />
+            <ETicketCard key={ticket.id} ticket={ticket} index={index} />
           ))}
         </div>
       </section>
@@ -140,16 +140,9 @@ function EmailNotice({ booking }: { booking: PurchaseComprobantes }) {
   );
 }
 
-function ETicketCard({
-  ticket,
-  index,
-  booking,
-}: {
-  ticket: ComprobanteTicket;
-  index: number;
-  booking: PurchaseComprobantes;
-}) {
-  const { flight } = booking;
+function ETicketCard({ ticket, index }: { ticket: ComprobanteTicket; index: number }) {
+  // US-26: el pasaje puede volar en un vuelo distinto al original de la reserva.
+  const { flight } = ticket;
 
   return (
     <article className="rounded-2xl border border-border bg-card p-4">

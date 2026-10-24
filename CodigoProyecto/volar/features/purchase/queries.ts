@@ -103,6 +103,15 @@ export function isHoldExpired(holdExpiresAt: Date, now: Date): boolean {
   return holdExpiresAt <= now;
 }
 
+export type ComprobanteFlight = {
+  code: string;
+  date: Date;
+  departureAt: Date;
+  arrivalAt: Date;
+  origin: { code: string; city: string };
+  destination: { code: string; city: string };
+};
+
 export type ComprobanteTicket = {
   id: string;
   number: string | null;
@@ -113,6 +122,11 @@ export type ComprobanteTicket = {
   documentType: DocumentType;
   documentNumber: string;
   issuedAt: Date | null;
+  /**
+   * US-26/US-36: vuelo actual del pasaje. Tras una reprogramación la reserva
+   * conserva el vuelo original, así que los comprobantes usan este vuelo.
+   */
+  flight: ComprobanteFlight;
 };
 
 export type ComprobanteInvoice = {
@@ -133,14 +147,7 @@ export type PurchaseComprobantes = {
   totalAmount: string;
   confirmedAt: Date | null;
   contactEmail: string;
-  flight: {
-    code: string;
-    date: Date;
-    departureAt: Date;
-    arrivalAt: Date;
-    origin: { code: string; city: string };
-    destination: { code: string; city: string };
-  };
+  flight: ComprobanteFlight;
   tickets: ComprobanteTicket[];
   invoice: ComprobanteInvoice | null;
   email: { recipientEmail: string; status: EmailStatus; sentAt: Date | null } | null;
@@ -170,6 +177,20 @@ const BOOKING_FOR_COMPROBANTES_INCLUDE = {
       documentType: true,
       documentNumber: true,
       issuedAt: true,
+      flight: {
+        select: {
+          code: true,
+          date: true,
+          departureAt: true,
+          arrivalAt: true,
+          route: {
+            select: {
+              origin: { select: { code: true, city: true } },
+              destination: { select: { code: true, city: true } },
+            },
+          },
+        },
+      },
     },
   },
   invoice: {
@@ -231,6 +252,14 @@ function toPurchaseComprobantes(booking: ComprobantesRow): PurchaseComprobantes 
       documentType: ticket.documentType,
       documentNumber: ticket.documentNumber,
       issuedAt: ticket.issuedAt,
+      flight: {
+        code: ticket.flight.code,
+        date: ticket.flight.date,
+        departureAt: ticket.flight.departureAt,
+        arrivalAt: ticket.flight.arrivalAt,
+        origin: ticket.flight.route.origin,
+        destination: ticket.flight.route.destination,
+      },
     })),
     invoice: invoice
       ? {

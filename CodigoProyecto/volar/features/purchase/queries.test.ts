@@ -94,6 +94,7 @@ function comprobantesRow(overrides: Record<string, unknown> = {}) {
     totalAmount: { toString: () => "90000" },
     confirmedAt: issuedAt,
     contactEmail: "demo@volar.test",
+    // US-26: tras reprogramar, el vuelo de la reserva queda en el original.
     flight: {
       code: "VU-DEMO-01",
       date: new Date("2026-10-29T00:00:00.000Z"),
@@ -115,6 +116,16 @@ function comprobantesRow(overrides: Record<string, unknown> = {}) {
         documentType: "DNI",
         documentNumber: "30000001",
         issuedAt,
+        flight: {
+          code: "VU-DEMO-02",
+          date: new Date("2026-10-30T00:00:00.000Z"),
+          departureAt: new Date("2026-10-30T09:00:00.000Z"),
+          arrivalAt: new Date("2026-10-30T12:00:00.000Z"),
+          route: {
+            origin: { code: "DEM3", city: "Ciudad Nueva" },
+            destination: { code: "DEM4", city: "Destino Nuevo" },
+          },
+        },
       },
       {
         id: "PAS_2",
@@ -126,6 +137,16 @@ function comprobantesRow(overrides: Record<string, unknown> = {}) {
         documentType: "DNI",
         documentNumber: "30000002",
         issuedAt,
+        flight: {
+          code: "VU-DEMO-02",
+          date: new Date("2026-10-30T00:00:00.000Z"),
+          departureAt: new Date("2026-10-30T09:00:00.000Z"),
+          arrivalAt: new Date("2026-10-30T12:00:00.000Z"),
+          route: {
+            origin: { code: "DEM3", city: "Ciudad Nueva" },
+            destination: { code: "DEM4", city: "Destino Nuevo" },
+          },
+        },
       },
     ],
     invoice: {
@@ -176,8 +197,22 @@ describe("getBookingComprobantes (US-23/US-24)", () => {
         destination: { code: "DEM2", city: "Destino Demo" },
       },
       tickets: [
-        { number: "ETK-DEMO0001-1", seat: "1A", documentNumber: "30000001" },
-        { number: "ETK-DEMO0001-2", seat: "1B", documentNumber: "30000002" },
+        {
+          number: "ETK-DEMO0001-1",
+          seat: "1A",
+          documentNumber: "30000001",
+          flight: {
+            code: "VU-DEMO-02",
+            origin: { code: "DEM3", city: "Ciudad Nueva" },
+            destination: { code: "DEM4", city: "Destino Nuevo" },
+          },
+        },
+        {
+          number: "ETK-DEMO0001-2",
+          seat: "1B",
+          documentNumber: "30000002",
+          flight: { code: "VU-DEMO-02" },
+        },
       ],
       invoice: {
         number: 1,
@@ -189,6 +224,23 @@ describe("getBookingComprobantes (US-23/US-24)", () => {
       },
       email: { status: "SENT", recipientEmail: "demo@volar.test" },
       transactionId: "TX-ABCDEF123456",
+    });
+  });
+
+  it("mapea el vuelo de cada pasaje desde el ticket y no desde la reserva", async () => {
+    prismaMock.booking.findUnique.mockResolvedValue(comprobantesRow() as never);
+
+    const result = await getBookingComprobantes("DEMO0001");
+
+    expect(result?.flight.code).toBe("VU-DEMO-01");
+    expect(result?.tickets.map((ticket) => ticket.flight.code)).toEqual([
+      "VU-DEMO-02",
+      "VU-DEMO-02",
+    ]);
+    expect(result?.tickets[0].flight.origin).toEqual({ code: "DEM3", city: "Ciudad Nueva" });
+    expect(result?.tickets[0].flight.destination).toEqual({
+      code: "DEM4",
+      city: "Destino Nuevo",
     });
   });
 
