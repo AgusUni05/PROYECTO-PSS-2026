@@ -84,6 +84,23 @@ describe("sendContingencyEmail", () => {
     expect(prismaMock.emailNotification.update).not.toHaveBeenCalled();
   });
 
+  it("devuelve SKIPPED sin enviar ni crear transporte si el tipo no es de contingencia", async () => {
+    const createTransport = nodemailer.createTransport as ReturnType<typeof vi.fn>;
+    createTransport.mockClear();
+
+    const outcome = await sendContingencyEmail(
+      { ...notification, type: "REBOOKING_CONFIRMATION" },
+      scheduleChange,
+      "https://volar.example.com/contingencia",
+    );
+
+    expect(outcome).toBe("SKIPPED");
+    expect(createTransport).not.toHaveBeenCalled();
+    expect(sendMail).not.toHaveBeenCalled();
+    expect(prismaMock.flight.findUnique).not.toHaveBeenCalled();
+    expect(prismaMock.emailNotification.update).not.toHaveBeenCalled();
+  });
+
   it("envía un email de SCHEDULE_CHANGE con to, from, subject, texto, HTML y enlace con accessToken", async () => {
     prismaMock.ticketContingency.findMany.mockResolvedValue([
       { accessToken: "token-abc" },

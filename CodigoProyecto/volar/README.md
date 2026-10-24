@@ -80,8 +80,8 @@ El usuario debe haber iniciado sesión al menos una vez antes de promoverlo.
 | `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clave pública de Clerk. |
 | `CLERK_SECRET_KEY` | Clave secreta de Clerk (solo servidor). |
 | `APP_URL` | URL pública de la app; se usa para armar los enlaces de contingencia. Default del script: `http://localhost:3000`. |
-| `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASSWORD` | Configuración del servidor SMTP. |
-| `MAIL_FROM` | Remitente de los emails enviados. |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `MAIL_FROM` | Configuración SMTP requerida para enviar emails. |
+| `SMTP_SECURE` | Opcional: `true`/`1` para TLS implícito (puerto 465); ausente o `false` usa STARTTLS (puerto 587). |
 
 `.env.example` contiene la documentación de cada bloque, sin credenciales
 reales. Nunca se commitea `.env`.
@@ -98,7 +98,10 @@ reales. Nunca se commitea `.env`.
 | `pnpm test:watch` | Vitest en modo watch. |
 | `pnpm make-admin <email>` | Promueve un usuario existente al rol `ADMIN`. |
 | `pnpm seed:demo [--clean]` | Crea o elimina datos demo para probar el flujo de pago. |
-| `pnpm mail:send` | Despacha las `EmailNotification` en estado `PENDING`. |
+| `pnpm mail:send` | Despacha las notificaciones de contingencia `PENDING`. |
+
+`make-admin`, `seed:demo` y `mail:send` dependen de `tsx`, que es una
+devDependency: instalar con `pnpm install` completo, no con `pnpm install --prod`.
 
 ## Email y SMTP
 
@@ -107,8 +110,9 @@ transacción que registra el cambio de vuelo (US-25). El envío es un paso
 posterior y separado, para que una caída de SMTP no revierta una operación ya
 confirmada.
 
-Variables necesarias: `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`,
-`SMTP_PASSWORD` y `MAIL_FROM`. Verificar la conexión:
+Variables obligatorias: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` y
+`MAIL_FROM`. `SMTP_SECURE` es opcional (TLS implícito en el puerto 465;
+STARTTLS con `false` o sin definir en el 587). Verificar la conexión:
 
 ```bash
 pnpm exec tsx scripts/test-smtp.ts
@@ -116,18 +120,23 @@ pnpm exec tsx scripts/test-smtp.ts
 
 Despachar la cola:
 
-```bash
-APP_URL=https://tu-dominio pnpm mail:send
+```powershell
+$env:APP_URL="https://tu-dominio"; pnpm mail:send
 ```
+
+Solo se despachan las filas `FLIGHT_CANCELLATION` y `FLIGHT_SCHEDULE_CHANGE`
+en estado `PENDING`; otros tipos (por ejemplo `REBOOKING_CONFIRMATION`) no se
+envían con este comando.
 
 El comando imprime un resumen (`procesados`, `enviados`, `fallidos`,
 `omitidos`) y no imprime cuerpos de email ni credenciales. Las filas enviadas
 pasan a `SENT`; un fallo de envío las deja en `FAILED` con `lastError` y las
 incrementa en `attempts`.
 
-**Sin configuración SMTP cada fila queda en `PENDING`**: `createMailerTransport()`
-lanza antes de actualizar la base, por lo que se puede completar la
-configuración y reintentar el mismo comando sin perder notificaciones.
+**Sin configuración SMTP cada fila de contingencia queda en `PENDING`**:
+`createMailerTransport()` lanza antes de actualizar la base, por lo que se
+puede completar la configuración y reintentar el mismo comando sin perder
+notificaciones.
 
 Para desarrollo se recomienda un sandbox (por ejemplo Mailtrap) o un proveedor
 con "app password"; no usar credenciales reales en el repositorio.

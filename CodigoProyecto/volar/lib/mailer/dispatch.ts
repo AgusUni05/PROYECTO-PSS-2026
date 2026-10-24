@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { EmailType } from "@/generated/prisma/enums";
 import { sendContingencyEmail } from "./send";
 
 export type DispatchSummary = {
@@ -9,17 +10,28 @@ export type DispatchSummary = {
 };
 
 /**
+ * Tipos de email que este comando puede despachar. Es una allowlist explícita:
+ * las confirmaciones de reprogramación (`REBOOKING_CONFIRMATION`) se crean
+ * PENDING pero no deben enviarse con la plantilla de contingencia.
+ */
+export const CONTINGENCY_EMAIL_TYPES: EmailType[] = [
+  "FLIGHT_CANCELLATION",
+  "FLIGHT_SCHEDULE_CHANGE",
+];
+
+/**
  * US-25: despacha el outbox de contingencias. Recorre las notificaciones
- * PENDING en orden de creación y delega el envío en `sendContingencyEmail`,
- * que es quien actualiza el estado de cada fila. Una fila fallida nunca
- * aborta el resto del lote, y una notificación sin cambio de vuelo asociado
- * se cuenta como fallida pero se deja PENDING para revisión manual.
+ * PENDING de tipo contingencia en orden de creación y delega el envío en
+ * `sendContingencyEmail`, que es quien actualiza el estado de cada fila. Una
+ * fila fallida nunca aborta el resto del lote, y una notificación sin cambio
+ * de vuelo asociado se cuenta como fallida pero se deja PENDING para revisión
+ * manual.
  */
 export async function dispatchPendingContingencyEmails(
   baseUrl: string,
 ): Promise<DispatchSummary> {
   const notifications = await prisma.emailNotification.findMany({
-    where: { status: "PENDING" },
+    where: { status: "PENDING", type: { in: CONTINGENCY_EMAIL_TYPES } },
     include: { flightChange: { include: { flight: true } } },
     orderBy: { createdAt: "asc" },
   });

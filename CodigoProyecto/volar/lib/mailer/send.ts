@@ -15,6 +15,16 @@ export async function sendContingencyEmail(
 ): Promise<"SENT" | "FAILED" | "SKIPPED"> {
   if (notification.status !== "PENDING") return "SKIPPED";
 
+  // Defensa en profundidad: el dispatcher ya filtra por tipo, pero ningún
+  // llamador debe enviar otro email (p. ej. REBOOKING_CONFIRMATION) con esta
+  // plantilla de contingencia.
+  if (
+    notification.type !== "FLIGHT_CANCELLATION" &&
+    notification.type !== "FLIGHT_SCHEDULE_CHANGE"
+  ) {
+    return "SKIPPED";
+  }
+
   const flightCode =
     change.flight?.code ??
     (await prisma.flight.findUnique({ where: { id: change.flightId }, select: { code: true } }))

@@ -9,7 +9,7 @@ datos personales.
 
 | Historia | Criterio de aceptación |
 | --- | --- |
-| **US-25** | Un cambio de horario o una cancelación con pasajes emitidos registra `FlightChange`, una `TicketContingency` por pasaje con token único y una `EmailNotification` `PENDING` por comprador, con asunto y cuerpo acordes al tipo. Las notificaciones se despachan con `pnpm mail:send`; un envío exitoso pasa a `SENT`, un fallo a `FAILED`, y una fila sin cambio de vuelo no se envía. |
+| **US-25** | Un cambio de horario o una cancelación con pasajes emitidos registra `FlightChange`, una `TicketContingency` por pasaje con token único y una `EmailNotification` `PENDING` por comprador, con asunto y cuerpo acordes al tipo. Las notificaciones de contingencia (`FLIGHT_CANCELLATION`, `FLIGHT_SCHEDULE_CHANGE`) se despachan con `pnpm mail:send`; un envío exitoso pasa a `SENT`, un fallo a `FAILED`, y una fila sin cambio de vuelo no se envía. |
 | **US-26** | El pasajero resuelve la contingencia desde el enlace con token: reprogramación sin cargo a un vuelo futuro de la misma ruta y clase (con asiento y e-ticket nuevos) o reembolso simulado por el importe del pasaje. La operación es atómica e idempotente y libera el cupo correspondiente. |
 | **US-35** | "Mis Compras" muestra próximos vuelos e historial del usuario de la sesión, con alertas de contingencias pendientes. Un usuario nunca ve compras de otro y la vista no genera scroll horizontal en mobile. |
 | **US-36** | El comprador puede descargar e-tickets y factura fiscal en PDF generados al momento. Las rutas exigen sesión, verifican titularidad, responden `409` para compras no confirmadas y cada e-ticket usa el vuelo actual del pasaje. |
@@ -23,8 +23,8 @@ datos personales.
 | --- | --- |
 | Construcción del outbox: deduplicación por compra, un token por pasaje, asunto/cuerpo por tipo. | `features/flights/contingency.test.ts` |
 | Alta transaccional de `FlightChange`, contingencias y emails `PENDING` al reprogramar o cancelar vuelos. | `features/flights/service.test.ts` |
-| Contenido del email, enlaces con token, actualización `SENT`/`FAILED` y retorno del resultado. | `lib/mailer/send.test.ts` |
-| Despacho de la cola: filtro `PENDING`, orden, conteos, fila sin cambio de vuelo y error que no aborta el lote. | `lib/mailer/dispatch.test.ts` |
+| Contenido del email, enlaces con token, actualización `SENT`/`FAILED`, retorno del resultado y `SKIPPED` para tipos no soportados. | `lib/mailer/send.test.ts` |
+| Despacho de la cola: allowlist de tipos, orden, conteos, fila sin cambio de vuelo y error que no aborta el lote. | `lib/mailer/dispatch.test.ts` |
 | Configuración del transporte SMTP y errores por variables faltantes. | `lib/mailer/index.test.ts` |
 
 Producción: `features/flights/contingency.ts`, `features/flights/service.ts`,
@@ -58,7 +58,7 @@ Producción: `features/flights/contingency-resolution.ts`,
 Producción: `features/purchase/history.ts`,
 `features/purchase/components/purchase-history.tsx`,
 `features/purchase/components/purchase-card.tsx`,
-`features/purchase/components/purchase-summary.ts`,
+`features/purchase/components/purchase-summary.tsx`,
 `app/cuenta/[[...cuenta]]/page.tsx`.
 
 ### US-36 — Comprobantes PDF
@@ -104,7 +104,7 @@ git diff --check
 
 Resultado esperado: suite de Vitest completamente verde, ESLint sin errores ni
 warnings, TypeScript sin errores, build de Next.js exitoso y `git diff --check`
-sin salida. Al cierre del Sprint 3 la suite reportó **39 archivos / 418 tests**
+sin salida. Al cierre del Sprint 3 la suite reportó **39 archivos / 419 tests**
 en verde; el número puede crecer sin que esto invalide el documento.
 
 Los tests corren con `tests/prisma-mock.ts`, que sustituye Prisma por un
@@ -123,10 +123,11 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
       pasajes emitidos. Verificar en la base: un `FlightChange` `CANCELLATION`,
       una `TicketContingency` por pasaje y una `EmailNotification` `PENDING` por
       comprador. La compra afectada muestra la alerta en Mis Compras.
-- [ ] **Despacho con SMTP sandbox.** Completar `SMTP_*` y `MAIL_FROM` con el
-      sandbox, ejecutar `APP_URL=http://localhost:3000 pnpm mail:send` y
-      confirmar el resumen y la recepción en el sandbox. Repetir el comando: las
-      filas ya enviadas no vuelven a salir.
+- [ ] **Despacho con SMTP sandbox.** Completar `SMTP_HOST`, `SMTP_PORT`,
+      `SMTP_USER`, `SMTP_PASSWORD` y `MAIL_FROM` con el sandbox, ejecutar
+      `$env:APP_URL="http://localhost:3000"; pnpm mail:send` y confirmar el
+      resumen y la recepción en el sandbox. Repetir el comando: las filas ya
+      enviadas no vuelven a salir.
 - [ ] **Enlace de contingencia.** Abrir el enlace recibido
       (`/contingencia/{token}`). El token da acceso sin sesión; un token
       inválido muestra el estado "no encontrado".
@@ -161,14 +162,18 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
 - **Dispatcher probado a nivel unitario.** `dispatchPendingContingencyEmails`
   tiene cobertura de conteos y errores, pero no se ejecutó contra una base real
   dentro de la suite.
-- **Plantilla única de despacho.** `pnpm mail:send` procesa toda fila
-  `PENDING` con el contenido de contingencia. Hoy las filas pendientes las
-  generan US-25/US-26; si en el futuro se agregan otros tipos pendientes,
-  necesitarán su propia plantilla o un filtro por tipo.
+- **Despacho acotado a contingencias.** `pnpm mail:send` consulta únicamente
+  filas `PENDING` de tipo `FLIGHT_CANCELLATION` o `FLIGHT_SCHEDULE_CHANGE`.
+  Las `REBOOKING_CONFIRMATION` que crea US-26 quedan `PENDING` y **no** las
+  envía este comando: no deben reutilizar la plantilla de contingencia. Enviar
+  una confirmación de reprogramación requiere una plantilla propia, que no
+  forma parte de este sprint.
 - **Sin bloqueo entre ejecuciones.** Dos instancias simultáneas de
   `pnpm mail:send` podrían tomar las mismas filas. Ejecutar una sola a la vez.
 - **Reembolso simulado.** No hay devolución de dinero real ni integración con
-  una pasarela; el resultado y el identificador son deterministas.
+  una pasarela. El importe reembolsado es el del pasaje y queda registrado,
+  pero `gatewayRefundId` incluye un sufijo con `Date.now()`; es único, no
+  determinista.
 
 ## Notas operativas
 

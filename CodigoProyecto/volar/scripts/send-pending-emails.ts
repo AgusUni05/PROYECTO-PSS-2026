@@ -15,7 +15,7 @@ import { prisma } from "../lib/prisma";
 import { dispatchPendingContingencyEmails } from "../lib/mailer/dispatch";
 
 async function main() {
-  const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+  const appUrl = process.env.APP_URL || "http://localhost:3000";
   const summary = await dispatchPendingContingencyEmails(appUrl);
 
   console.log(

@@ -62,13 +62,16 @@ describe("dispatchPendingContingencyEmails", () => {
     expect(sendMock).not.toHaveBeenCalled();
   });
 
-  it("consulta solo las PENDING con vuelo incluido y en orden de creación ascendente", async () => {
+  it("consulta solo las PENDING de contingencia, con vuelo incluido y en orden de creación ascendente", async () => {
     prismaMock.emailNotification.findMany.mockResolvedValue([]);
 
     await dispatchPendingContingencyEmails(BASE_URL);
 
     expect(prismaMock.emailNotification.findMany).toHaveBeenCalledWith({
-      where: { status: "PENDING" },
+      where: {
+        status: "PENDING",
+        type: { in: ["FLIGHT_CANCELLATION", "FLIGHT_SCHEDULE_CHANGE"] },
+      },
       include: { flightChange: { include: { flight: true } } },
       orderBy: { createdAt: "asc" },
     });
