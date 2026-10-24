@@ -99,6 +99,7 @@ export default async function ComprobantesPage({
           code={booking.code}
           ticketCount={booking.tickets.length}
           hasInvoice={booking.invoice !== null}
+          canDownload
         />
       </section>
 

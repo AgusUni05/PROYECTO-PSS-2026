@@ -212,6 +212,17 @@ describe("PurchaseHistoryView", () => {
     expect(html).not.toContain("/api/compras/VOL-ABC123/factura");
   });
 
+  it("oculta las descargas de una compra cancelada y explica el motivo", () => {
+    const html = render({ upcoming: [], past: [cancelledEntry] });
+
+    expect(html).toContain(
+      "Los comprobantes no están disponibles porque la compra no está confirmada.",
+    );
+    expect(html).not.toContain("/api/compras/VOL-CAN789");
+    expect(html).not.toContain("Descargar E-Tickets");
+    expect(html).not.toContain("Descargar Factura Fiscal B (PDF)");
+  });
+
   it("muestra una alerta por cada contingencia pendiente de una compra pasada", () => {
     const scheduleChange: PendingPurchaseContingency = {
       ...cancellation,

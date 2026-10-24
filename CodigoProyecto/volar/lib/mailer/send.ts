@@ -12,8 +12,8 @@ export async function sendContingencyEmail(
   notification: EmailNotificationModel,
   change: FlightChangeWithFlightCode,
   actionUrl: string,
-): Promise<void> {
-  if (notification.status !== "PENDING") return;
+): Promise<"SENT" | "FAILED" | "SKIPPED"> {
+  if (notification.status !== "PENDING") return "SKIPPED";
 
   const flightCode =
     change.flight?.code ??
@@ -68,6 +68,8 @@ export async function sendContingencyEmail(
         lastError: null,
       },
     });
+
+    return "SENT";
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
 
@@ -79,5 +81,7 @@ export async function sendContingencyEmail(
         lastError: message,
       },
     });
+
+    return "FAILED";
   }
 }

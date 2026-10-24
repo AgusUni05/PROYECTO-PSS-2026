@@ -11,6 +11,7 @@
     "test:watch": "vitest",
     "make-admin": "tsx scripts/make-admin.ts",
     "seed:demo": "tsx scripts/seed-demo.ts",
+    "mail:send": "tsx scripts/send-pending-emails.ts",
     "postinstall": "prisma generate"
   },
   "dependencies": {

@@ -2,8 +2,14 @@ import { describe, expect, it } from "vitest";
 import { renderToString } from "react-dom/server";
 import { PurchaseDownloadActions, purchaseDocumentUrl } from "./purchase-download-actions";
 
-function render(props: { code: string; ticketCount: number; hasInvoice: boolean }): string {
-  return renderToString(<PurchaseDownloadActions {...props} />);
+function render(props: {
+  code: string;
+  ticketCount: number;
+  hasInvoice: boolean;
+  canDownload?: boolean;
+}): string {
+  const { canDownload = true, ...rest } = props;
+  return renderToString(<PurchaseDownloadActions canDownload={canDownload} {...rest} />);
 }
 
 function anchors(html: string): string[] {
@@ -80,6 +86,24 @@ describe("PurchaseDownloadActions", () => {
     expect(html).toContain('href="/api/compras/VOL%2012%2F34/etickets"');
     expect(html).toContain('href="/api/compras/VOL%2012%2F34/factura"');
     expect(html).not.toContain('href="/api/compras/VOL 12/34');
+  });
+
+  it("oculta todas las descargas cuando la compra no está confirmada", () => {
+    const html = render({
+      code: "VOL-ABC123",
+      ticketCount: 2,
+      hasInvoice: true,
+      canDownload: false,
+    });
+
+    expect(html).toContain(
+      "Los comprobantes no están disponibles porque la compra no está confirmada.",
+    );
+    expect(html).not.toContain("/api/compras/");
+    expect(html).not.toContain("Descargar E-Tickets");
+    expect(html).not.toContain("Descargar Factura Fiscal B (PDF)");
+    expect(html).not.toContain("La factura fiscal todavía no está disponible.");
+    expect(anchors(html)).toHaveLength(0);
   });
 
   it("renderiza links reales con download, no botones deshabilitados", () => {

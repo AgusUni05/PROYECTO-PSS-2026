@@ -26,11 +26,23 @@ export function PurchaseDownloadActions({
   code,
   ticketCount,
   hasInvoice,
+  canDownload,
 }: {
   code: string;
   ticketCount: number;
   hasInvoice: boolean;
+  canDownload: boolean;
 }): React.ReactElement {
+  if (!canDownload) {
+    return (
+      <div className="min-w-0">
+        <p className="text-xs text-muted-foreground">
+          Los comprobantes no están disponibles porque la compra no está confirmada.
+        </p>
+      </div>
+    );
+  }
+
   const hasTickets = ticketCount > 0;
 
   if (!hasTickets && !hasInvoice) {

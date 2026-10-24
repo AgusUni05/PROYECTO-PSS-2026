@@ -72,13 +72,14 @@ describe("sendContingencyEmail", () => {
     createdAt: new Date(),
   };
 
-  it("no envía nada si la notificación no está PENDING", async () => {
-    await sendContingencyEmail(
+  it("no envía nada y devuelve SKIPPED si la notificación no está PENDING", async () => {
+    const outcome = await sendContingencyEmail(
       { ...notification, status: "SENT" },
       scheduleChange,
       "https://volar.example.com/contingencia",
     );
 
+    expect(outcome).toBe("SKIPPED");
     expect(sendMail).not.toHaveBeenCalled();
     expect(prismaMock.emailNotification.update).not.toHaveBeenCalled();
   });
@@ -135,15 +136,16 @@ describe("sendContingencyEmail", () => {
     expect(message.html).toMatch(/token=token-xyz/);
   });
 
-  it("actualiza la notificación a SENT cuando el envío es exitoso", async () => {
+  it("actualiza la notificación a SENT y devuelve SENT cuando el envío es exitoso", async () => {
     prismaMock.ticketContingency.findMany.mockResolvedValue([{ accessToken: "token-abc" }] as never);
 
-    await sendContingencyEmail(
+    const outcome = await sendContingencyEmail(
       notification,
       scheduleChange,
       "https://volar.example.com/contingencia",
     );
 
+    expect(outcome).toBe("SENT");
     expect(prismaMock.emailNotification.update).toHaveBeenCalledWith({
       where: { id: notification.id },
       data: {
@@ -155,16 +157,17 @@ describe("sendContingencyEmail", () => {
     });
   });
 
-  it("actualiza la notificación a FAILED cuando el envío falla", async () => {
+  it("actualiza la notificación a FAILED y devuelve FAILED cuando el envío falla", async () => {
     prismaMock.ticketContingency.findMany.mockResolvedValue([{ accessToken: "token-abc" }] as never);
     sendMail.mockRejectedValue(new Error("connection refused"));
 
-    await sendContingencyEmail(
+    const outcome = await sendContingencyEmail(
       notification,
       scheduleChange,
       "https://volar.example.com/contingencia",
     );
 
+    expect(outcome).toBe("FAILED");
     expect(prismaMock.emailNotification.update).toHaveBeenCalledWith({
       where: { id: notification.id },
       data: {

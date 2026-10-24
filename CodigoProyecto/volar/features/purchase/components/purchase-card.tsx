@@ -139,6 +139,7 @@ export function PurchaseCard({ entry }: { entry: PurchaseHistoryEntry }) {
           code={entry.code}
           ticketCount={entry.tickets.length}
           hasInvoice={entry.invoice !== null}
+          canDownload={entry.status === "CONFIRMED"}
         />
       </div>
     </article>
