@@ -64,15 +64,15 @@ export async function purchasePdfResponse(
   rawCode: string,
   kind: PurchaseDocumentKind,
 ): Promise<NextResponse> {
-  const access = await authorizePurchaseDownload(rawCode);
-  if (!access.ok) {
-    return NextResponse.json({ error: access.error }, { status: access.status });
-  }
-
-  const { purchase } = access;
   const isETickets = kind === "etickets";
 
   try {
+    const access = await authorizePurchaseDownload(rawCode);
+    if (!access.ok) {
+      return NextResponse.json({ error: access.error }, { status: access.status });
+    }
+
+    const { purchase } = access;
     const pdf = isETickets
       ? await buildETicketsPdf(purchase)
       : await buildInvoicePdf(purchase);
@@ -93,6 +93,7 @@ export async function purchasePdfResponse(
     if (isMissingDocumentError(error)) {
       return NextResponse.json({ error: "Comprobante no disponible" }, { status: 404 });
     }
+    console.error("Error al generar el comprobante de compra:", error);
     return NextResponse.json(
       { error: "No se pudo generar el comprobante" },
       { status: 500 },

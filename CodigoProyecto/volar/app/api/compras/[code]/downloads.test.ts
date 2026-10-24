@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { User } from "@/generated/prisma/client";
 import type { PurchaseComprobantes } from "@/features/purchase/queries";
 
@@ -130,13 +130,27 @@ function callInvoice(code = "DEMO0001", search = "") {
   );
 }
 
+/** Todo error de la ruta debe ser JSON con el contrato `{ error }`. */
+async function expectJsonError(response: Response, status: number, error: string) {
+  expect(response.status).toBe(status);
+  expect(response.headers.get("Content-Type")).toContain("application/json");
+  expect(await response.json()).toEqual({ error });
+}
+
 describe("GET /api/compras/[code]/etickets (US-36)", () => {
+  let consoleError: ReturnType<typeof vi.spyOn>;
+
   beforeEach(() => {
     vi.clearAllMocks();
+    consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     vi.mocked(getCurrentUser).mockResolvedValue(makeUser());
     vi.mocked(getBookingComprobantesForBuyer).mockResolvedValue(makePurchase());
     vi.mocked(buildETicketsPdf).mockResolvedValue(PDF_BYTES);
     vi.mocked(buildInvoicePdf).mockResolvedValue(PDF_BYTES);
+  });
+
+  afterEach(() => {
+    consoleError.mockRestore();
   });
 
   it("sin sesión responde 401 y no consulta ni genera documentos", async () => {
@@ -144,8 +158,7 @@ describe("GET /api/compras/[code]/etickets (US-36)", () => {
 
     const response = await callETickets();
 
-    expect(response.status).toBe(401);
-    expect(await response.json()).toEqual({ error: "No autorizado" });
+    await expectJsonError(response, 401, "No autorizado");
     expect(getBookingComprobantesForBuyer).not.toHaveBeenCalled();
     expect(buildETicketsPdf).not.toHaveBeenCalled();
     expect(buildInvoicePdf).not.toHaveBeenCalled();
@@ -156,8 +169,7 @@ describe("GET /api/compras/[code]/etickets (US-36)", () => {
 
     const response = await callETickets();
 
-    expect(response.status).toBe(403);
-    expect(await response.json()).toEqual({ error: "Cuenta desactivada" });
+    await expectJsonError(response, 403, "Cuenta desactivada");
     expect(getBookingComprobantesForBuyer).not.toHaveBeenCalled();
     expect(buildETicketsPdf).not.toHaveBeenCalled();
   });
@@ -165,8 +177,7 @@ describe("GET /api/compras/[code]/etickets (US-36)", () => {
   it("con un código malformado responde 404 sin consultar la base", async () => {
     const response = await callETickets("no!");
 
-    expect(response.status).toBe(404);
-    expect(await response.json()).toEqual({ error: "Compra no encontrada" });
+    await expectJsonError(response, 404, "Compra no encontrada");
     expect(getBookingComprobantesForBuyer).not.toHaveBeenCalled();
     expect(buildETicketsPdf).not.toHaveBeenCalled();
   });
@@ -182,6 +193,7 @@ describe("GET /api/compras/[code]/etickets (US-36)", () => {
 
     expect(foreign.status).toBe(404);
     expect(missing.status).toBe(foreign.status);
+    expect(foreign.headers.get("Content-Type")).toContain("application/json");
     expect(missingBody).toBe(foreignBody);
     expect(JSON.parse(foreignBody)).toEqual({ error: "Compra no encontrada" });
     expect(buildETicketsPdf).not.toHaveBeenCalled();
@@ -226,8 +238,7 @@ describe("GET /api/compras/[code]/etickets (US-36)", () => {
 
     const response = await callETickets();
 
-    expect(response.status).toBe(409);
-    expect(await response.json()).toEqual({ error: "La compra no está confirmada" });
+    await expectJsonError(response, 409, "La compra no está confirmada");
     expect(buildETicketsPdf).not.toHaveBeenCalled();
     expect(buildInvoicePdf).not.toHaveBeenCalled();
   });
@@ -237,19 +248,35 @@ describe("GET /api/compras/[code]/etickets (US-36)", () => {
 
     const response = await callETickets();
 
-    expect(response.status).toBe(404);
-    expect(await response.json()).toEqual({ error: "Comprobante no disponible" });
+    await expectJsonError(response, 404, "Comprobante no disponible");
   });
 
-  it("no filtra detalles internos ante un fallo inesperado", async () => {
+  it("no filtra detalles internos ante un fallo inesperado del builder", async () => {
     vi.mocked(buildETicketsPdf).mockRejectedValue(new Error("SQL secret detail"));
 
     const response = await callETickets();
 
     expect(response.status).toBe(500);
+    expect(response.headers.get("Content-Type")).toContain("application/json");
     const body = await response.text();
     expect(JSON.parse(body)).toEqual({ error: "No se pudo generar el comprobante" });
     expect(body).not.toContain("SQL secret detail");
+    expect(consoleError).toHaveBeenCalled();
+  });
+
+  it("un fallo inesperado al consultar la reserva responde 500 JSON genérico", async () => {
+    vi.mocked(getBookingComprobantesForBuyer).mockRejectedValue(
+      new Error("connect ECONNREFUSED"),
+    );
+
+    const response = await callETickets();
+
+    expect(response.status).toBe(500);
+    expect(response.headers.get("Content-Type")).toContain("application/json");
+    const body = await response.text();
+    expect(JSON.parse(body)).toEqual({ error: "No se pudo generar el comprobante" });
+    expect(body).not.toContain("connect ECONNREFUSED");
+    expect(buildETicketsPdf).not.toHaveBeenCalled();
   });
 });
 
@@ -280,7 +307,6 @@ describe("GET /api/compras/[code]/factura (US-36)", () => {
 
     const response = await callInvoice();
 
-    expect(response.status).toBe(404);
-    expect(await response.json()).toEqual({ error: "Comprobante no disponible" });
+    await expectJsonError(response, 404, "Comprobante no disponible");
   });
 });
