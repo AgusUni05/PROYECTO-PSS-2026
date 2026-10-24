@@ -301,3 +301,19 @@ export async function getBookingComprobantes(
   });
   return booking ? toPurchaseComprobantes(booking) : null;
 }
+
+/**
+ * US-35/US-36: comprobantes de una reserva que pertenece al comprador indicado.
+ * El `buyerId` sale siempre de la sesión server-side, nunca del cliente.
+ * `null` si el código no existe o pertenece a otra cuenta.
+ */
+export async function getBookingComprobantesForBuyer(
+  code: string,
+  buyerId: string,
+): Promise<PurchaseComprobantes | null> {
+  const booking = await prisma.booking.findFirst({
+    where: { code, buyerId },
+    include: BOOKING_FOR_COMPROBANTES_INCLUDE,
+  });
+  return booking ? toPurchaseComprobantes(booking) : null;
+}

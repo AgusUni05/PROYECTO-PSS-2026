@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 import { prismaMock } from "@/tests/prisma-mock";
-import { getBookingComprobantes, getBookingForPayment, isHoldExpired } from "./queries";
+import {
+  getBookingComprobantes,
+  getBookingComprobantesForBuyer,
+  getBookingForPayment,
+  isHoldExpired,
+} from "./queries";
 
 function bookingRow(overrides: Record<string, unknown> = {}) {
   return {
@@ -248,5 +253,47 @@ describe("getBookingComprobantes (US-23/US-24)", () => {
     prismaMock.booking.findUnique.mockResolvedValue(null);
 
     expect(await getBookingComprobantes("NADA0000")).toBeNull();
+  });
+});
+
+describe("getBookingComprobantesForBuyer (US-35/US-36)", () => {
+  it("consulta por código y comprador con el include de comprobantes", async () => {
+    prismaMock.booking.findFirst.mockResolvedValue(comprobantesRow() as never);
+
+    const result = await getBookingComprobantesForBuyer("DEMO0001", "USR_OWNER");
+
+    expect(prismaMock.booking.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { code: "DEMO0001", buyerId: "USR_OWNER" },
+        include: expect.objectContaining({
+          flight: expect.any(Object),
+          tickets: expect.any(Object),
+          invoice: expect.any(Object),
+          emails: expect.any(Object),
+          payments: expect.any(Object),
+        }),
+      }),
+    );
+    expect(prismaMock.booking.findUnique).not.toHaveBeenCalled();
+    expect(result).toMatchObject({
+      code: "DEMO0001",
+      status: "CONFIRMED",
+      totalAmount: "90000",
+      invoice: { number: 1 },
+      transactionId: "TX-ABCDEF123456",
+    });
+    expect(result?.tickets.map((ticket) => ticket.flight.code)).toEqual([
+      "VU-DEMO-02",
+      "VU-DEMO-02",
+    ]);
+  });
+
+  it("devuelve null cuando la reserva no existe o es de otra cuenta", async () => {
+    prismaMock.booking.findFirst.mockResolvedValue(null);
+
+    expect(await getBookingComprobantesForBuyer("DEMO0001", "USR_OTHER")).toBeNull();
+    expect(prismaMock.booking.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({ where: { code: "DEMO0001", buyerId: "USR_OTHER" } }),
+    );
   });
 });
