@@ -72,9 +72,9 @@ export function FlightSearchForm({ airports, defaultValues }: Props) {
             type="button"
             onClick={swapAirports}
             aria-label="Invertir origen y destino"
-            className="absolute top-0 left-1/2 z-10 grid size-[38px] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border border-border bg-card text-primary transition-[transform,box-shadow,border-color] duration-500 hover:-translate-x-1/2 hover:-translate-y-1/2 hover:rotate-180 hover:border-primary hover:shadow-[0_8px_20px_-8px_rgba(85,48,224,0.6)] sm:top-1/2 sm:left-[-19px] sm:translate-x-0 sm:-translate-y-1/2 sm:hover:-translate-y-1/2"
+            className="absolute top-0 left-1/2 z-10 grid size-[38px] -translate-x-1/2 -translate-y-1/2 cursor-pointer place-items-center rounded-full border border-border bg-card text-primary shadow-sm transition-[transform,box-shadow,border-color,background-color] duration-300 hover:rotate-180 hover:border-primary hover:bg-muted hover:shadow-[0_8px_20px_-8px_rgba(85,48,224,0.6)] focus-visible:border-primary focus-visible:ring-3 focus-visible:ring-primary/40 sm:top-1/2 sm:left-[-19px] sm:translate-x-0 sm:-translate-y-1/2"
           >
-            <ArrowLeftRight className="size-4" />
+            <ArrowLeftRight className="size-4 transition-transform duration-300" />
           </button>
           <Label htmlFor="destino" className="gap-1.5 text-[11px] font-bold tracking-[0.09em] text-muted-foreground uppercase">
             <MapPin className="size-3.5 text-primary" />

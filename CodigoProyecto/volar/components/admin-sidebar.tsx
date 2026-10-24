@@ -32,7 +32,7 @@ export function AdminSidebar({ firstName, lastName }: Props) {
           type="button"
           onClick={() => setOpen(true)}
           aria-label="Abrir menú de administración"
-          className="grid size-9 place-items-center rounded-lg text-tower-foreground transition-colors hover:bg-white/10"
+          className="grid size-9 cursor-pointer place-items-center rounded-lg text-tower-foreground transition-colors hover:bg-white/10"
         >
           <Menu className="size-5" />
         </button>
@@ -56,7 +56,7 @@ export function AdminSidebar({ firstName, lastName }: Props) {
           type="button"
           onClick={() => setOpen(false)}
           aria-label="Cerrar menú"
-          className="ml-auto grid size-8 place-items-center rounded-lg text-tower-muted transition-colors hover:bg-white/10 hover:text-white lg:hidden"
+          className="ml-auto grid size-8 cursor-pointer place-items-center rounded-lg text-tower-muted transition-colors hover:bg-white/10 hover:text-white lg:hidden"
         >
           <X className="size-4" />
         </button>

@@ -23,13 +23,13 @@ export async function SiteHeader() {
           <div className="flex items-center gap-3">
             <Link
               href="/sign-up"
-              className="inline-flex h-[42px] items-center gap-2 rounded-full bg-primary px-[18px] text-sm font-semibold text-white transition-colors hover:bg-primary/90"
+              className="inline-flex h-[42px] cursor-pointer items-center gap-2 rounded-full bg-primary px-[18px] text-sm font-semibold text-white transition-colors hover:bg-[color-mix(in_oklch,var(--primary),var(--foreground)_16%)]"
             >
               Registrarse
             </Link>
             <Link
               href="/sign-in"
-              className="inline-flex h-[42px] items-center gap-2 rounded-full border border-white/28 px-[18px] text-sm font-semibold text-white transition-colors hover:border-white/50 hover:bg-white/10"
+              className="inline-flex h-[42px] cursor-pointer items-center gap-2 rounded-full border border-white/28 px-[18px] text-sm font-semibold text-white transition-colors hover:border-white/50 hover:bg-white/10"
             >
               Iniciar sesión
             </Link>
