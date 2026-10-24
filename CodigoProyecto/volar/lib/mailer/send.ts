@@ -57,7 +57,18 @@ export async function sendContingencyEmail(
     select: { accessToken: true },
   });
 
-  if (tokens.length === 0) return "SKIPPED";
+  if (tokens.length === 0) {
+    // La contingencia ya fue resuelta (o no tiene tokens accionables). Dejar
+    // la fila en PENDING haría que cada `mail:send` la revisara para siempre.
+    await prisma.emailNotification.update({
+      where: { id: notification.id },
+      data: {
+        status: "FAILED",
+        lastError: "La contingencia ya no tiene acciones pendientes para este comprador.",
+      },
+    });
+    return "SKIPPED";
+  }
 
   const flightCode =
     change.flight?.code ??

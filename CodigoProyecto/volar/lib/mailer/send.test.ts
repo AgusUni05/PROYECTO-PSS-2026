@@ -156,7 +156,7 @@ describe("sendContingencyEmail", () => {
     });
   });
 
-  it("no envía nada si no quedan tokens pendientes (email sin acciones)", async () => {
+  it("marca la fila como terminal si no quedan tokens pendientes (contingencia ya resuelta)", async () => {
     prismaMock.ticketContingency.findMany.mockResolvedValue([] as never);
     const createTransport = nodemailer.createTransport as ReturnType<typeof vi.fn>;
     createTransport.mockClear();
@@ -170,7 +170,13 @@ describe("sendContingencyEmail", () => {
     expect(outcome).toBe("SKIPPED");
     expect(createTransport).not.toHaveBeenCalled();
     expect(sendMail).not.toHaveBeenCalled();
-    expect(prismaMock.emailNotification.update).not.toHaveBeenCalled();
+    expect(prismaMock.emailNotification.update).toHaveBeenCalledWith({
+      where: { id: notification.id },
+      data: {
+        status: "FAILED",
+        lastError: "La contingencia ya no tiene acciones pendientes para este comprador.",
+      },
+    });
   });
 
   it("no consulta tokens ni envía cuando la notificación no tiene bookingId", async () => {

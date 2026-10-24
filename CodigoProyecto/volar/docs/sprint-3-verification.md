@@ -10,7 +10,7 @@ datos personales.
 | Historia | Criterio de aceptación |
 | --- | --- |
 | **US-24** | Al aprobarse un pago, la confirmación de compra se envía realmente al correo del comprador con los e-tickets y la factura adjuntos en PDF. El envío es best-effort: si falla, la compra sigue confirmada y la fila queda en el outbox para reintentarse con `pnpm mail:send`. |
-| **US-25** | Un cambio de horario o una cancelación con pasajes emitidos registra `FlightChange`, una `TicketContingency` por pasaje con token único y una `EmailNotification` `PENDING` por comprador, con asunto y cuerpo acordes al tipo. El email enlaza a la ruta real `/contingencia/{token}`. Las notificaciones de contingencia (`FLIGHT_CANCELLATION`, `FLIGHT_SCHEDULE_CHANGE`) se despachan **manualmente** con `pnpm mail:send`; un envío exitoso pasa a `SENT`, un fallo a `FAILED`, y una fila sin cambio de vuelo, sin tokens `PENDING` o sin `bookingId` no se envía. |
+| **US-25** | Un cambio de horario o una cancelación con pasajes emitidos registra `FlightChange`, una `TicketContingency` por pasaje con token único y una `EmailNotification` `PENDING` por comprador, con asunto y cuerpo acordes al tipo. El email enlaza a la ruta real `/contingencia/{token}`. El outbox (`FLIGHT_CANCELLATION`, `FLIGHT_SCHEDULE_CHANGE`) se despacha automáticamente al guardar la acción administrativa y `pnpm mail:send` queda como reintento; un envío exitoso pasa a `SENT`, un fallo a `FAILED`, y una fila sin cambio de vuelo o sin `bookingId` no se envía. Si la contingencia ya fue resuelta, se marca terminal con `lastError` para no quedar `PENDING` para siempre. |
 | **US-26** | El pasajero resuelve la contingencia desde el enlace con token: reprogramación sin cargo a un vuelo futuro de la misma ruta y clase (con asiento y e-ticket nuevos) o reembolso simulado por el importe del pasaje, ambos con confirmación previa. La operación es atómica e idempotente, exige que el pasaje siga `ISSUED`, resuelve todos los tokens `PENDING` del mismo ticket y libera el cupo correspondiente una sola vez. |
 | **US-35** | "Mis Compras" muestra próximos vuelos e historial del usuario de la sesión, con alertas de contingencias pendientes. Un usuario nunca ve compras de otro y la vista no genera scroll horizontal en mobile. |
 | **US-36** | El comprador puede descargar e-tickets y factura fiscal en PDF generados al momento. Las rutas exigen sesión, verifican titularidad, responden `409` para compras no confirmadas y cada e-ticket usa el vuelo actual del pasaje. Solo se emiten pasajes `ISSUED`; los reembolsados no aparecen en el PDF ni en los conteos. La factura no cambia. |
@@ -114,7 +114,7 @@ git diff --check
 Resultado esperado: suite de Vitest completamente verde, ESLint sin errores ni
 warnings, TypeScript sin errores, build de Next.js exitoso y `git diff --check`
 sin salida. Al cierre de la revisión final del Sprint 3 la suite reportó
-**41 archivos / 452 tests** en verde; el número puede crecer sin que esto
+**42 archivos / 458 tests** en verde; el número puede crecer sin que esto
 invalide el documento.
 
 Los tests corren con `tests/prisma-mock.ts`, que sustituye Prisma por un
@@ -184,9 +184,10 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
 - **Dispatchers probados a nivel unitario.** `dispatchPendingContingencyEmails`
   y `dispatchPendingPurchaseEmails` tienen cobertura de conteos y errores, pero
   no se ejecutaron contra una base real dentro de la suite.
-- **Despacho manual para reintentos.** La confirmación de compra se intenta
-  enviar al aprobar el pago; si falla, `pnpm mail:send` procesa tanto
-  contingencias como confirmaciones de compra `PENDING`. Las
+- **Despacho automático con reintento manual.** La confirmación de compra se
+  intenta enviar al aprobar el pago y el outbox de contingencias se intenta
+  enviar al guardar el cambio o la cancelación. Si algo falla, `pnpm mail:send`
+  procesa tanto contingencias como confirmaciones de compra pendientes. Las
   `REBOOKING_CONFIRMATION` que crea US-26 **no se envían en Sprint 3**: no
   tienen plantilla propia y no deben reutilizar la de contingencia. El dominio
   las registra en estado terminal `FAILED` con un `lastError` no secreto, para

@@ -98,14 +98,15 @@ reales. Nunca se commitea `.env`.
 | `pnpm test:watch` | Vitest en modo watch. |
 | `pnpm make-admin <email>` | Promueve un usuario existente al rol `ADMIN`. |
 | `pnpm seed:demo [--clean]` | Crea o elimina datos demo para probar el flujo de pago. |
-| `pnpm mail:send` | Despacha manualmente las notificaciones `PENDING` de contingencia y de compra. |
+| `pnpm mail:send` | Reintenta las notificaciones `PENDING` de contingencia y de compra. |
 
 `make-admin`, `seed:demo` y `mail:send` dependen de `tsx`, que es una
 devDependency: instalar con `pnpm install` completo, no con `pnpm install --prod`.
-`mail:send` es una tarea **manual** (o invocada por un cron externo). La
-confirmación de compra sí se intenta enviar inmediatamente después de aprobar
-el pago; si ese intento falla, la fila queda en el outbox y `mail:send` la
-reintenta junto con las contingencias pendientes.
+El envío principal es automático: la confirmación de compra sale al aprobar el
+pago y las contingencias salen al guardar un cambio de horario o una
+cancelación con pasajes emitidos. Ambos son best-effort; si SMTP falla, la
+operación administrativa o la compra no se revierte y la fila queda en el
+outbox. `mail:send` es el reintento manual (o invocado por un cron externo).
 
 ## Email y SMTP
 
@@ -115,9 +116,13 @@ transacción que registra el cambio de vuelo (US-25) o la emisión de la compra
 no revierta una operación ya confirmada.
 
 Al aprobarse un pago, la confirmación de compra se envía de inmediato (best
-effort) con los e-tickets y la factura adjuntos en PDF. Si el envío falla o
+effort) con los e-tickets y la factura adjuntos en PDF. Al guardar un cambio de
+horario o una cancelación con pasajes emitidos, el outbox de contingencias se
+despacha en el mismo request de la acción administrativa. Si el envío falla o
 SMTP no está configurado, la fila queda `PENDING`/`FAILED` y puede reintentarse
-con `pnpm mail:send`.
+con `pnpm mail:send`. Si la contingencia ya fue resuelta antes del envío, la
+fila se marca terminal con un `lastError` explicativo para no reintentarla
+indefinidamente.
 
 Variables obligatorias: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` y
 `MAIL_FROM`. `SMTP_SECURE` es opcional (TLS implícito en el puerto 465;
