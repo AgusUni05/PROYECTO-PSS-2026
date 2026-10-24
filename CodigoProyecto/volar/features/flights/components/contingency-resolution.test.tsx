@@ -60,7 +60,7 @@ describe("ContingencyResolution", () => {
     expect(html).not.toContain("Solicitar reembolso");
   });
 
-  it("muestra resumen, advertencia de irrevocabilidad y botones deshabilitados para un token pendiente", () => {
+  it("muestra resumen, advertencia de irrevocabilidad, reprogramación deshabilitada y reembolso habilitado para un token pendiente", () => {
     const html = renderToString(<ContingencyResolution view={pendingView} />);
 
     expect(html).toContain("Tu vuelo fue cancelado");
@@ -77,9 +77,10 @@ describe("ContingencyResolution", () => {
 
     expect(html).toContain("Reprogramar");
     expect(html).toContain("Reembolso");
+    expect(html).toContain("Solicitar reembolso");
     expect(html).toContain("Una vez que elijas");
 
-    // Botones deshabilitados como placeholders (Tasks 7/8).
+    // Reprogramar sigue siendo placeholder (Task 8); reembolso ya está habilitado (Task 7).
     expect(html).toMatch(/disabled/);
   });
 });

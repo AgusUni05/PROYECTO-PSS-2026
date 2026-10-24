@@ -1,11 +1,14 @@
 "use client";
 
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CalendarSync, Wallet } from "lucide-react";
 import { SEAT_CLASS_LABELS } from "@/features/flight-search/class-options";
 import { formatCurrency, formatLongDate, formatTime } from "@/features/flights/format";
 import type { ContingencyResolutionView } from "@/features/flights/contingency-queries";
+import { resolveRefundAction } from "@/features/flights/contingency-actions";
 
 export function ContingencyNotFound() {
   return (
@@ -67,7 +70,7 @@ export function ContingencyResolution({ view }: { view: NonNullable<ContingencyR
 
       <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
         <RebookCard />
-        <RefundCard amount={view.ticket.unitPrice} />
+        <RefundCard token={view.token} amount={view.ticket.unitPrice} />
       </div>
 
       <p className="mt-6 flex items-start gap-2 text-xs text-muted-foreground">
@@ -141,7 +144,25 @@ function RebookCard() {
   );
 }
 
-function RefundCard({ amount }: { amount: number }) {
+function RefundCard({ token, amount }: { token: string; amount: number }) {
+  const [isPending, startTransition] = useTransition();
+  const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
+
+  function handleRefund() {
+    startTransition(async () => {
+      const result = await resolveRefundAction(token);
+
+      if (!result.ok) {
+        setFeedback({ type: "error", message: result.error ?? "No se pudo procesar el reembolso." });
+        toast.error(result.error ?? "No se pudo procesar el reembolso.");
+        return;
+      }
+
+      setFeedback({ type: "success", message: "Reembolso registrado correctamente." });
+      toast.success("Reembolso registrado correctamente.");
+    });
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -156,8 +177,16 @@ function RefundCard({ amount }: { amount: number }) {
           <span className="text-[28px] font-extrabold tracking-[-0.03em]">{formatCurrency(amount)}</span>
           <p className="text-xs text-muted-foreground">Total a reembolsar</p>
         </div>
-        <Button variant="outline" className="w-full" disabled>
-          Solicitar reembolso
+        {feedback?.type === "error" && (
+          <p className="mb-3 text-center text-xs text-destructive">{feedback.message}</p>
+        )}
+        <Button
+          variant="outline"
+          className="w-full"
+          disabled={isPending}
+          onClick={handleRefund}
+        >
+          {isPending ? "Procesando…" : "Solicitar reembolso"}
         </Button>
       </CardContent>
     </Card>
