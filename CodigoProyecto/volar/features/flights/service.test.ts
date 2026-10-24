@@ -446,10 +446,15 @@ describe("updateFlight — modificación puntual (US-05)", () => {
   });
 
   it("cambia el horario y registra el FlightChange cuando hay ventas (US-05/RF-10)", async () => {
-    prismaMock.flight.findUnique.mockResolvedValue(baseFlight as never);
+    prismaMock.flight.findUnique.mockResolvedValue({
+      ...baseFlight,
+      tickets: [{ id: "PAS_1", booking: { id: "RES_1", contactEmail: "a@x.com" } }],
+    } as never);
     prismaMock.flight.findFirst.mockResolvedValue(null);
     prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
     prismaMock.flightChange.create.mockResolvedValue({} as never);
+    prismaMock.ticketContingency.createMany.mockResolvedValue({ count: 1 } as never);
+    prismaMock.emailNotification.createMany.mockResolvedValue({ count: 1 } as never);
 
     const result = await updateFlight(
       "VUE_1",
@@ -470,6 +475,8 @@ describe("updateFlight — modificación puntual (US-05)", () => {
       new Date(Date.UTC(flightDate.getUTCFullYear(), flightDate.getUTCMonth(), flightDate.getUTCDate(), 10, 30)),
     );
     expect(arg.data.createdById).toBe("USU_admin");
+    expect(prismaMock.ticketContingency.createMany).toHaveBeenCalledTimes(1);
+    expect(prismaMock.emailNotification.createMany).toHaveBeenCalledTimes(1);
   });
 
   it("no registra FlightChange si cambia el horario pero no hay ventas", async () => {
@@ -489,6 +496,51 @@ describe("updateFlight — modificación puntual (US-05)", () => {
 
     expect(result.ok).toBe(true);
     expect(prismaMock.flightChange.create).not.toHaveBeenCalled();
+  });
+
+  it("crea contingencias y emails de cambio de horario cuando hay pasajes emitidos", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue({
+      ...baseFlight,
+      tickets: [
+        { id: "PAS_1", booking: { id: "RES_1", contactEmail: "a@x.com" } },
+        { id: "PAS_2", booking: { id: "RES_2", contactEmail: "b@x.com" } },
+      ],
+    } as never);
+    prismaMock.flight.findFirst.mockResolvedValue(null);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+    prismaMock.flightChange.create.mockResolvedValue({} as never);
+    prismaMock.ticketContingency.createMany.mockResolvedValue({ count: 2 } as never);
+    prismaMock.emailNotification.createMany.mockResolvedValue({ count: 2 } as never);
+
+    const result = await updateFlight(
+      "VUE_1",
+      { ...values, departureTime: "09:00", arrivalTime: "10:30" },
+      "USU_admin",
+    );
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.flightChange.create).toHaveBeenCalledTimes(1);
+    expect(prismaMock.ticketContingency.createMany).toHaveBeenCalledTimes(1);
+    expect(prismaMock.emailNotification.createMany).toHaveBeenCalledTimes(1);
+
+    const changeArg = prismaMock.flightChange.create.mock.calls[0][0];
+    expect(changeArg.data.type).toBe("SCHEDULE_CHANGE");
+
+    const contingencyArg = prismaMock.ticketContingency.createMany.mock.calls[0][0] as unknown as {
+      data: { ticketId: string; accessToken: string }[];
+    };
+    expect(contingencyArg.data).toHaveLength(2);
+    expect(contingencyArg.data.map((d) => d.ticketId)).toEqual(["PAS_1", "PAS_2"]);
+    expect(new Set(contingencyArg.data.map((d) => d.accessToken)).size).toBe(2);
+
+    const emailArg = prismaMock.emailNotification.createMany.mock.calls[0][0] as unknown as {
+      data: { type: string; status: string; subject: string; recipientEmail: string }[];
+    };
+    expect(emailArg.data).toHaveLength(2);
+    expect(emailArg.data[0].type).toBe("FLIGHT_SCHEDULE_CHANGE");
+    expect(emailArg.data.every((e) => e.status === "PENDING")).toBe(true);
+    expect(emailArg.data.every((e) => e.subject.includes("Cambio de horario"))).toBe(true);
+    expect(emailArg.data.map((e) => e.recipientEmail).sort()).toEqual(["a@x.com", "b@x.com"]);
   });
 
   it("no registra FlightChange al cambiar solo el avión sin tocar el horario", async () => {

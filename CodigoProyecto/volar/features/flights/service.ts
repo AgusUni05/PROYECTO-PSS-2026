@@ -1,4 +1,3 @@
-import { randomUUID } from "node:crypto";
 import { prisma } from "@/lib/prisma";
 import { newId } from "@/lib/id";
 import type { ActionResult } from "@/lib/action-result";
@@ -16,6 +15,7 @@ import {
   windowsOverlap,
   type FlightWindow,
 } from "./generation";
+import { buildContingencyOutbox, emailNotificationInput } from "./contingency";
 
 function formatDate(date: Date): string {
   return date.toISOString().slice(0, 10);
@@ -197,7 +197,13 @@ export async function updateFlight(
 ): Promise<ActionResult<{ id: string }>> {
   const flight = await prisma.flight.findUnique({
     where: { id },
-    include: { airplane: { select: { identifier: true, economySeats: true, firstClassSeats: true } } },
+    include: {
+      airplane: { select: { identifier: true, economySeats: true, firstClassSeats: true } },
+      tickets: {
+        where: { status: "ISSUED" },
+        select: { id: true, booking: { select: { id: true, contactEmail: true } } },
+      },
+    },
   });
   if (!flight) return { ok: false, error: "El vuelo no existe." };
   if (flight.status === "CANCELLED") {
@@ -276,17 +282,18 @@ export async function updateFlight(
     }
   }
 
-  const hasSales = flight.economyOccupied > 0 || flight.firstClassOccupied > 0;
-  // US-05/RF-10: si había ventas y cambia el horario, se registra el cambio de
-  // contingencia con los valores anteriores y nuevos.
-  const registerChange = scheduleChanged && hasSales;
+  const affectedTickets = flight.tickets ?? [];
+  // US-05/RF-10: si hay pasajes emitidos y cambia el horario, se registra el
+  // cambio de contingencia y el outbox de notificación.
+  const registerChange = scheduleChanged && affectedTickets.length > 0;
 
   try {
     await prisma.$transaction(async (tx) => {
       if (registerChange) {
+        const flightChangeId = newId("FlightChange");
         await tx.flightChange.create({
           data: {
-            id: newId("FlightChange"),
+            id: flightChangeId,
             flightId: flight.id,
             type: "SCHEDULE_CHANGE",
             previousDepartureAt: flight.departureAt,
@@ -296,6 +303,24 @@ export async function updateFlight(
             createdById: updatedById,
           },
         });
+
+        const { contingencies, emails } = buildContingencyOutbox({
+          flightChangeId,
+          type: "SCHEDULE_CHANGE",
+          flightCode: flight.code,
+          tickets: affectedTickets,
+          previousDepartureAt: flight.departureAt,
+          previousArrivalAt: flight.arrivalAt,
+          newDepartureAt: newWindow.departureAt,
+          newArrivalAt: newWindow.arrivalAt,
+        });
+
+        if (contingencies.length > 0) {
+          await tx.ticketContingency.createMany({ data: contingencies });
+        }
+        if (emails.length > 0) {
+          await tx.emailNotification.createMany({ data: emails.map(emailNotificationInput) });
+        }
       }
 
       const { count } = await tx.flight.updateMany({
@@ -328,59 +353,6 @@ export async function updateFlight(
   return { ok: true, data: { id } };
 }
 
-type AffectedTicket = {
-  id: string;
-  booking: { id: string; contactEmail: string };
-};
-
-/**
- * US-06/RF-10: arma el "outbox" de la contingencia a partir de los pasajes ya
- * emitidos de un vuelo: una TicketContingency por pasaje (con su accessToken
- * para que el pasajero elija reprogramación o reembolso, US-26) y una
- * EmailNotification por comprador (deduplicado). No envía nada: el envío real
- * es US-25, que procesará los registros PENDING.
- */
-function contingencyRecords(
-  flightChangeId: string,
-  flightCode: string,
-  tickets: AffectedTicket[],
-): {
-  contingencies: { id: string; flightChangeId: string; ticketId: string; accessToken: string }[];
-  emails: {
-    id: string;
-    type: "FLIGHT_CANCELLATION";
-    recipientEmail: string;
-    subject: string;
-    bookingId: string;
-    flightChangeId: string;
-    status: "PENDING";
-  }[];
-} {
-  const contingencies = tickets.map((ticket) => ({
-    id: newId("TicketContingency"),
-    flightChangeId,
-    ticketId: ticket.id,
-    accessToken: randomUUID(),
-  }));
-
-  const recipients = new Map<string, string>();
-  for (const ticket of tickets) {
-    recipients.set(ticket.booking.id, ticket.booking.contactEmail);
-  }
-
-  const emails = [...recipients].map(([bookingId, recipientEmail]) => ({
-    id: newId("EmailNotification"),
-    type: "FLIGHT_CANCELLATION" as const,
-    recipientEmail,
-    subject: `Cancelación del vuelo ${flightCode}`,
-    bookingId,
-    flightChangeId,
-    status: "PENDING" as const,
-  }));
-
-  return { contingencies, emails };
-}
-
 /**
  * US-06: cancela un vuelo puntual. Solo vuelos programados que todavía no
  * partieron. El vuelo no se elimina: pasa a estado CANCELLED (así deja de
@@ -411,11 +383,15 @@ export async function cancelFlight(
 
   const reason = CANCELLATION_REASON_LABELS[data.reason];
   const flightChangeId = newId("FlightChange");
-  const { contingencies, emails } = contingencyRecords(
+  const { contingencies, emails } = buildContingencyOutbox({
     flightChangeId,
-    flight.code,
-    flight.tickets,
-  );
+    type: "CANCELLATION",
+    flightCode: flight.code,
+    tickets: flight.tickets,
+    previousDepartureAt: flight.departureAt,
+    previousArrivalAt: flight.arrivalAt,
+  });
+  const emailInputs = emails.map(emailNotificationInput);
 
   try {
     await prisma.$transaction(async (tx) => {
@@ -436,8 +412,8 @@ export async function cancelFlight(
       if (contingencies.length > 0) {
         await tx.ticketContingency.createMany({ data: contingencies });
       }
-      if (emails.length > 0) {
-        await tx.emailNotification.createMany({ data: emails });
+      if (emailInputs.length > 0) {
+        await tx.emailNotification.createMany({ data: emailInputs });
       }
 
       const { count } = await tx.flight.updateMany({
@@ -496,7 +472,16 @@ export async function cancelFlightsByRoute(
 
   const planned = flights.map((flight) => {
     const changeId = newId("FlightChange");
-    return { flight, changeId, ...contingencyRecords(changeId, flight.code, flight.tickets) };
+    const { contingencies, emails } = buildContingencyOutbox({
+      flightChangeId: changeId,
+      type: "CANCELLATION",
+      flightCode: flight.code,
+      tickets: flight.tickets,
+      previousDepartureAt: flight.departureAt,
+      previousArrivalAt: flight.arrivalAt,
+    });
+    const emailInputs = emails.map(emailNotificationInput);
+    return { flight, changeId, contingencies, emails: emailInputs };
   });
 
   const contingencies = planned.flatMap((p) => p.contingencies);
