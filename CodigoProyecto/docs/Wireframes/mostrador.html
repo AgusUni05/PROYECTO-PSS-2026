@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-32, 33, 34: Operaciones de Mostrador en Aeropuerto</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .wf-tab-bar {
+      display: flex;
+      gap: 4px;
+      border-bottom: 2px solid var(--wf-black);
+      margin-bottom: 20px;
+    }
+    .wf-tab-btn {
+      padding: 10px 18px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      background-color: var(--wf-gray-lighter);
+      border: 1px solid var(--wf-gray-mid);
+      border-bottom: none;
+      border-radius: var(--wf-radius) var(--wf-radius) 0 0;
+      cursor: pointer;
+    }
+    .wf-tab-btn.active {
+      background-color: var(--wf-black);
+      color: var(--wf-white);
+      border-color: var(--wf-black);
+    }
+    .wf-tab-content {
+      display: block;
+    }
+    .wf-tab-content.hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Terminal de Mostrador</div>
+      <div class="wf-user-session">
+        <span>Terminal: <strong>AEP-M04 (Aeroparque Mostrador 4)</strong> | Operador: <strong>Carlos Gómez</strong> (Empleado de Mostrador)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Cerrar Turno</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="mostrador.html" class="wf-nav-link active">Operaciones Mostrador <span class="wf-badge-us">US-32/33/34</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero <span class="wf-badge-us">US-08..14</span></a>
+      <a href="reserva_pasajes.html" class="wf-nav-link">Reserva Online <span class="wf-badge-us">US-15..19</span></a>
+      <a href="mis_compras.html" class="wf-nav-link">Mis Compras <span class="wf-badge-us">US-35/36</span></a>
+      <a href="contingencia_pasajero.html" class="wf-nav-link">Contingencias <span class="wf-badge-us">US-25/26</span></a>
+      <a href="reportes_admin.html" class="wf-nav-link">Admin: Reportes <span class="wf-badge-us">US-22/27</span></a>
+      <a href="autenticacion_usuarios.html" class="wf-nav-link">Seguridad y Roles <span class="wf-badge-us">US-28..30</span></a>
+      <a href="gestion_personal.html" class="wf-nav-link">Admin: Personal <span class="wf-badge-us">US-31</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Atención Presencial en Aeropuerto > <strong>Terminal de Mostrador</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Terminal Operativa de Mostrador (Check-in & Ventas)</h1>
+        <p class="wf-subtitle">Búsqueda rápida de vuelos (US-32), venta y cobro presencial (US-33) y consulta de reservas existentes (US-34).</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-32: Búsqueda Mostrador</span>
+        <span class="wf-badge-us">US-33: Venta Presencial</span>
+        <span class="wf-badge-us">US-34: Consulta Reservas</span>
+      </div>
+    </div>
+
+    <!-- Reglas Operativas de Mostrador -->
+    <div class="wf-alert">
+      <div>
+        <strong>Reglas de la Terminal de Mostrador (RF-13):</strong><br>
+        • <strong>US-32:</strong> Reutiliza la lógica del buscador de vuelos integrada para atención cara a cara.<br>
+        • <strong>US-33:</strong> Permite emitir de 1 a 9 pasajes de una sola clase para pasajeros que compran en efectivo o tarjeta física en aeropuerto, asociando la venta a la terminal de mostrador.<br>
+        • <strong>US-34:</strong> Consulta reservas por DNI, apellido o código. <strong>Protección de Privacidad (RNF-08):</strong> Muestra itinerario y pasajes pero oculta estrictamente datos bancarios y números de tarjetas.
+      </div>
+    </div>
+
+    <!-- PESTAÑAS OPERATIVAS DEL MOSTRADOR -->
+    <div class="wf-tab-bar">
+      <button class="wf-tab-btn active" id="tab-btn-1" type="button" onclick="switchTab(1)">
+        1. Búsqueda de Vuelos Mostrador (US-32)
+      </button>
+      <button class="wf-tab-btn" id="tab-btn-2" type="button" onclick="switchTab(2)">
+        2. Registro de Venta Presencial (US-33)
+      </button>
+      <button class="wf-tab-btn" id="tab-btn-3" type="button" onclick="switchTab(3)">
+        3. Consulta de Reservas por Pasajero (US-34)
+      </button>
+    </div>
+
+    <!-- =========================================================================
+         PESTAÑA 1: BÚSQUEDA DE VUELOS DESDE MOSTRADOR (US-32)
+         ========================================================================= -->
+    <div class="wf-tab-content" id="tab-content-1">
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Buscador Rápido de Mostrador] Asistencia al Pasajero en Tránsito (US-32)</h2>
+          <span class="wf-tag wf-tag-active">Terminal AEP-M04</span>
+        </div>
+
+        <form action="#" method="GET" onsubmit="event.preventDefault();">
+          <div class="wf-grid-4">
+            <div class="wf-form-group">
+              <label class="wf-label" for="most-origen">Origen <span class="required">(*)</span></label>
+              <select id="most-origen" class="wf-select">
+                <option value="AEP" selected>AEP - Buenos Aires (Aeroparque)</option>
+                <option value="EZE">EZE - Ezeiza</option>
+                <option value="COR">COR - Córdoba</option>
+                <option value="MDZ">MDZ - Mendoza</option>
+              </select>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="most-destino">Destino <span class="required">(*)</span></label>
+              <select id="most-destino" class="wf-select">
+                <option value="COR" selected>COR - Córdoba (Pajas Blancas)</option>
+                <option value="MDZ">MDZ - Mendoza</option>
+                <option value="EZE">EZE - Ezeiza</option>
+              </select>
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="most-fecha">Fecha de Vuelo <span class="required">(*)</span></label>
+              <input type="date" id="most-fecha" class="wf-input" value="2026-10-02">
+            </div>
+
+            <div class="wf-form-group" style="align-self: flex-end; margin-bottom: 16px;">
+              <button class="wf-btn wf-btn-primary" style="width: 100%;" type="button">
+                Consultar Vuelos Inmediatos (US-32)
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Resultados de Vuelos Disponibles para Mostrador -->
+        <h3 style="font-size: 1rem; font-weight: 800; margin: 20px 0 10px; border-top: 1px solid var(--wf-gray-light); padding-top: 14px;">
+          Opciones Disponibles para Ofrecer al Pasajero (Fecha: 02/10/2026):
+        </h3>
+
+        <div class="wf-table-responsive">
+          <table class="wf-table">
+            <thead>
+              <tr>
+                <th>Vuelo</th>
+                <th>Horarios</th>
+                <th>Aeronave</th>
+                <th>Cupo Economy</th>
+                <th>Tarifa Eco</th>
+                <th>Cupo Primera</th>
+                <th>Tarifa 1ra</th>
+                <th style="text-align: right;">Acción de Venta</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>VU-20261002-01</strong></td>
+                <td>08:30 &rarr; 10:00 (1h 30m)</td>
+                <td>Boeing 737-800</td>
+                <td><strong>142</strong> disp.</td>
+                <td>$ 45.000</td>
+                <td><strong>12</strong> disp.</td>
+                <td>$ 95.000</td>
+                <td style="text-align: right;">
+                  <button class="wf-btn wf-btn-primary wf-btn-sm" type="button" onclick="iniciarVentaEnMostrador('VU-20261002-01', 'Economy', 45000)">
+                    Vender en Mostrador (US-33) &rarr;
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><strong>VU-20261002-02</strong></td>
+                <td>17:45 &rarr; 19:15 (1h 30m)</td>
+                <td>Airbus A320</td>
+                <td><strong>5</strong> disp.</td>
+                <td>$ 48.000</td>
+                <td><span class="wf-tag wf-tag-inactive">Agotado</span></td>
+                <td><strike>$ 98.000</strike></td>
+                <td style="text-align: right;">
+                  <button class="wf-btn wf-btn-primary wf-btn-sm" type="button" onclick="iniciarVentaEnMostrador('VU-20261002-02', 'Economy', 48000)">
+                    Vender en Mostrador &rarr;
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- =========================================================================
+         PESTAÑA 2: REGISTRO DE VENTA PRESENCIAL EN MOSTRADOR (US-33)
+         ========================================================================= -->
+    <div class="wf-tab-content hidden" id="tab-content-2">
+      <div class="wf-grid-2" style="grid-template-columns: 1.5fr 1.1fr; align-items: start;">
+        
+        <!-- Formulario de Emisión Presencial -->
+        <section class="wf-card">
+          <div class="wf-card-header">
+            <h2 class="wf-card-title">Registro de Venta Presencial de Pasajes (US-33)</h2>
+            <span class="wf-tag wf-tag-active">Emisión de Caja Mostrador</span>
+          </div>
+
+          <form action="#" method="POST" onsubmit="event.preventDefault(); simularEmisionPresencial();">
+            
+            <!-- Bloque Vuelo Seleccionado -->
+            <div style="background-color: var(--wf-gray-lighter); border: 1px solid var(--wf-gray-mid); padding: 12px; border-radius: var(--wf-radius); margin-bottom: 16px;">
+              <strong>Vuelo Seleccionado:</strong> VU-20261002-01 (AEP &rarr; COR) &bull; 02/10/2026 &bull; Salida: 08:30 hs
+            </div>
+
+            <!-- Cantidad y Clase (Reglas 1 a 9 y una sola clase US-33) -->
+            <div class="wf-grid-2">
+              <div class="wf-form-group">
+                <label class="wf-label">Cantidad de Pasajes <span class="required">(*) (1 a 9 pasajes)</span></label>
+                <select id="pres-cantidad" class="wf-select" onchange="actualizarCalculoPresencial()">
+                  <option value="1">1 Pasaje</option>
+                  <option value="2" selected>2 Pasajes</option>
+                  <option value="3">3 Pasajes</option>
+                  <option value="4">4 Pasajes</option>
+                  <option value="5">5 Pasajes</option>
+                </select>
+              </div>
+
+              <div class="wf-form-group">
+                <label class="wf-label">Clase Única del Grupo <span class="required">(*)</span></label>
+                <select id="pres-clase" class="wf-select" onchange="actualizarCalculoPresencial()">
+                  <option value="eco" selected>Clase Economy ($ 45.000 / pasaje)</option>
+                  <option value="primera">Primera Clase ($ 95.000 / pasaje)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Datos de Pasajeros Presenciales -->
+            <h3 style="font-size: 0.95rem; font-weight: 800; margin: 16px 0 10px; border-bottom: 1px solid var(--wf-gray-light); padding-bottom: 4px;">
+              Carga de Datos de Viajeros (Presencial)
+            </h3>
+
+            <!-- Pasajero 1 -->
+            <div class="wf-passenger-card">
+              <span class="wf-passenger-badge">Pasajero 1 (Titular que compra en mostrador)</span>
+              <div class="wf-grid-3">
+                <div class="wf-form-group">
+                  <label class="wf-label">Nombre <span class="required">(*)</span></label>
+                  <input type="text" class="wf-input" value="Esteban" id="pres-p1-nom">
+                </div>
+                <div class="wf-form-group">
+                  <label class="wf-label">Apellido <span class="required">(*)</span></label>
+                  <input type="text" class="wf-input" value="Ríos" id="pres-p1-ape">
+                </div>
+                <div class="wf-form-group">
+                  <label class="wf-label">DNI / Pasaporte <span class="required">(*)</span></label>
+                  <input type="text" class="wf-input" value="29881234" id="pres-p1-dni">
+                </div>
+              </div>
+            </div>
+
+            <!-- Pasajero 2 -->
+            <div class="wf-passenger-card">
+              <span class="wf-passenger-badge">Pasajero 2 (Acompañante)</span>
+              <div class="wf-grid-3">
+                <div class="wf-form-group">
+                  <label class="wf-label">Nombre <span class="required">(*)</span></label>
+                  <input type="text" class="wf-input" value="Laura" id="pres-p2-nom">
+                </div>
+                <div class="wf-form-group">
+                  <label class="wf-label">Apellido <span class="required">(*)</span></label>
+                  <input type="text" class="wf-input" value="Ríos" id="pres-p2-ape">
+                </div>
+                <div class="wf-form-group">
+                  <label class="wf-label">DNI / Pasaporte <span class="required">(*)</span></label>
+                  <input type="text" class="wf-input" value="31990456" id="pres-p2-dni">
+                </div>
+              </div>
+            </div>
+
+            <!-- Medio de Pago en Mostrador -->
+            <div class="wf-form-group" style="margin-top: 14px;">
+              <label class="wf-label">Cobro en Mostrador <span class="required">(*)</span></label>
+              <div class="wf-checkbox-group">
+                <label class="wf-checkbox-label"><input type="radio" name="pago_most" value="efectivo" checked> Efectivo en Caja</label>
+                <label class="wf-checkbox-label"><input type="radio" name="pago_most" value="pos"> POS Tarjeta Física (Terminal)</label>
+              </div>
+            </div>
+
+            <div class="wf-btn-group" style="margin-top: 18px;">
+              <button class="wf-btn wf-btn-primary wf-btn-lg" style="width: 100%;" type="submit">
+                Confirmar Cobro y Emitir Pasajes (US-33) &rarr;
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Resumen de Emisión y Factura en Mostrador -->
+        <section class="wf-summary-card">
+          <div class="wf-card-header" style="border-bottom: 2px solid var(--wf-black);">
+            <h3 class="wf-card-title">Comprobante de Caja Mostrador</h3>
+            <span class="wf-tag wf-tag-active">Terminal AEP-M04</span>
+          </div>
+
+          <div class="wf-summary-row">
+            <span>Operador Responsable:</span>
+            <strong>Carlos Gómez</strong>
+          </div>
+          <div class="wf-summary-row">
+            <span>Vuelo Asignado:</span>
+            <span>VU-20261002-01</span>
+          </div>
+          <div class="wf-summary-row">
+            <span>Cantidad / Clase:</span>
+            <span id="txt-calc-detalle">2 Pasajes &times; $45.000 (Economy)</span>
+          </div>
+
+          <div class="wf-summary-total">
+            <span>TOTAL COBRADO:</span>
+            <span id="txt-calc-total">$ 90.000,00 ARS</span>
+          </div>
+
+          <div class="wf-annotation" style="margin-top: 14px;">
+            <strong>Trazabilidad (US-33):</strong> La venta se registra bajo el identificador de la terminal `AEP-M04` e impacta en tiempo real en los reportes de ocupación y caja.
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 16px;">
+            <button class="wf-btn wf-btn-secondary" type="button" onclick="alert('Imprimiendo 2 tarjetas de embarque en impresora térmica de mostrador...');">
+              🖨️ Imprimir Tickets Físicos
+            </button>
+            <button class="wf-btn wf-btn-outline" type="button" onclick="alert('Imprimiendo Factura de Venta B...');">
+              🖨️ Imprimir Factura Fiscal
+            </button>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- =========================================================================
+         PESTAÑA 3: CONSULTA DE RESERVAS EXISTENTES EN MOSTRADOR (US-34)
+         ========================================================================= -->
+    <div class="wf-tab-content hidden" id="tab-content-3">
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Atención Presencial] Consulta de Reservas de Pasajeros (US-34)</h2>
+          <span class="wf-tag wf-tag-active">Búsqueda Rápida</span>
+        </div>
+
+        <!-- Filtros de Búsqueda por Pasajero (DNI, Apellido o Código US-34) -->
+        <form action="#" method="GET" onsubmit="event.preventDefault(); simularBusquedaReserva();">
+          <div class="wf-grid-3">
+            <div class="wf-form-group">
+              <label class="wf-label" for="busq-criterio">Buscar por DNI, Apellido o Código de Reserva <span class="required">(*)</span></label>
+              <input type="text" id="busq-criterio" class="wf-input" placeholder="Ej: 32456789, Pérez o RES-202610-ARG77" value="32456789">
+            </div>
+
+            <div class="wf-form-group">
+              <label class="wf-label" for="busq-tipo">Tipo de Parámetro</label>
+              <select id="busq-tipo" class="wf-select">
+                <option value="dni" selected>Documento de Identidad (DNI/Pasaporte)</option>
+                <option value="apellido">Apellido del Pasajero</option>
+                <option value="codigo">Código Alfanumérico de Reserva</option>
+              </select>
+            </div>
+
+            <div class="wf-form-group" style="align-self: flex-end; margin-bottom: 16px;">
+              <button class="wf-btn wf-btn-primary" style="width: 100%;" type="submit">
+                Buscar Reserva (US-34) &rarr;
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- BANNER DE PROTECCIÓN DE DATOS BANCARIOS (CRITERIO RNF-08 / US-34) -->
+        <div class="wf-alert" style="border: 2px solid var(--wf-black); background-color: var(--wf-gray-lighter); margin: 18px 0;">
+          <div>
+            <strong>🔒 Privacidad y Seguridad Bancaria (Criterio US-34 / RNF-08):</strong><br>
+            El empleado de mostrador visualiza el itinerario, los e-tickets, los asientos asignados y el estado del pago; sin embargo, <strong>el sistema bloquea y oculta estrictamente números de tarjetas y datos financieros sensibles</strong>.
+          </div>
+        </div>
+
+        <!-- RESULTADO DE LA RESERVA LOCALIZADA -->
+        <div id="resultado-reserva-mostrador" style="border: 2px solid var(--wf-black); border-radius: var(--wf-radius); padding: 18px; background-color: var(--wf-white);">
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--wf-gray-mid); padding-bottom: 10px; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <span style="font-weight: 800; font-size: 1.15rem;">Reserva: RES-202610-ARG77</span>
+              <div style="font-size: 0.85rem; color: var(--wf-gray-dark);">
+                Titular: <strong>Juan Carlos Pérez</strong> &bull; DNI: <strong>32.456.789</strong> &bull; Fecha de compra: 07/10/2026
+              </div>
+            </div>
+            <div class="wf-btn-group">
+              <span class="wf-tag wf-tag-active">Estado: Pagada / Confirmada</span>
+              <span class="wf-tag wf-tag-inactive">Canal: Web Online</span>
+            </div>
+          </div>
+
+          <!-- Detalle del Vuelo -->
+          <div class="wf-grid-3" style="gap: 12px; margin-bottom: 16px;">
+            <div style="border: 1px solid var(--wf-gray-light); padding: 10px; border-radius: var(--wf-radius);">
+              <strong>Vuelo & Ruta:</strong><br>
+              VU-20261002-01 (AEP &rarr; COR)<br>
+              <small>Aeronave: Boeing 737-800</small>
+            </div>
+            <div style="border: 1px solid var(--wf-gray-light); padding: 10px; border-radius: var(--wf-radius);">
+              <strong>Horarios:</strong><br>
+              02/10/2026 &bull; Salida: 08:30 hs &bull; Llegada: 10:00 hs<br>
+              <small>Embarque por Puerta 4 (AEP)</small>
+            </div>
+            <div style="border: 1px solid var(--wf-gray-light); padding: 10px; border-radius: var(--wf-radius);">
+              <strong>Información de Pago (US-34 / RNF-08):</strong><br>
+              Importe Total: <strong>$ 135.000,00 ARS</strong><br>
+              Medio de pago: <em>[Protegido por RNF-08 - Oculto para Mostrador]</em>
+            </div>
+          </div>
+
+          <!-- Pasajeros y Asientos -->
+          <h4 style="font-size: 0.95rem; font-weight: 800; margin-bottom: 8px;">Pasajeros y Asientos Emitidos:</h4>
+          <table class="wf-table" style="margin-bottom: 16px;">
+            <thead>
+              <tr>
+                <th>Pasajero</th>
+                <th>DNI / Pasaporte</th>
+                <th>Clase</th>
+                <th>Asiento Asignado</th>
+                <th>Estado del Pasaje</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>PÉREZ, JUAN CARLOS</strong></td>
+                <td>32.456.789</td>
+                <td>Economy</td>
+                <td><strong>14A</strong></td>
+                <td><span class="wf-tag wf-tag-active">Emitido</span></td>
+              </tr>
+              <tr>
+                <td><strong>GONZÁLEZ, MARÍA ELENA</strong></td>
+                <td>34.123.987</td>
+                <td>Economy</td>
+                <td><strong>14B</strong></td>
+                <td><span class="wf-tag wf-tag-active">Emitido</span></td>
+              </tr>
+              <tr>
+                <td><strong>PÉREZ, LUCAS</strong></td>
+                <td>38.990.112</td>
+                <td>Economy</td>
+                <td><strong>14C</strong></td>
+                <td><span class="wf-tag wf-tag-active">Emitido</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Acciones Operativas de Mostrador -->
+          <div class="wf-btn-group" style="justify-content: flex-end; gap: 10px; flex-wrap: wrap;">
+            <button class="wf-btn wf-btn-outline" type="button" onclick="alert('Reimprimiendo pases de abordar para los 3 pasajeros...');">
+              🖨️ Reimprimir Tarjetas de Embarque
+            </button>
+            <button class="wf-btn wf-btn-secondary" type="button" onclick="alert('Abriendo selector de cambio de asiento operativo...');">
+              Cambiar Asientos en Cabina
+            </button>
+            <a href="contingencia_pasajero.html" class="wf-btn wf-btn-primary">
+              Ver Gestión de Contingencias (US-25/26) &rarr;
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+  </main>
+
+  <script>
+    function switchTab(tabNumber) {
+      for (let i = 1; i <= 3; i++) {
+        const btn = document.getElementById('tab-btn-' + i);
+        const content = document.getElementById('tab-content-' + i);
+        if (i === tabNumber) {
+          btn.classList.add('active');
+          content.classList.remove('hidden');
+        } else {
+          btn.classList.remove('active');
+          content.classList.add('hidden');
+        }
+      }
+    }
+
+    function iniciarVentaEnMostrador(vueloId, clase, tarifa) {
+      switchTab(2);
+      alert(`Iniciando venta presencial para el vuelo ${vueloId} (${clase}). Se ha precargado en la pestaña de Venta Presencial.`);
+    }
+
+    function actualizarCalculoPresencial() {
+      const cant = parseInt(document.getElementById('pres-cantidad').value);
+      const clase = document.getElementById('pres-clase').value;
+      const tarifa = clase === 'eco' ? 45000 : 95000;
+      const total = cant * tarifa;
+      document.getElementById('txt-calc-detalle').textContent = `${cant} Pasajes × $${tarifa.toLocaleString('es-AR')} (${clase === 'eco' ? 'Economy' : 'Primera'})`;
+      document.getElementById('txt-calc-total').textContent = `$ ${total.toLocaleString('es-AR')},00 ARS`;
+    }
+
+    function simularEmisionPresencial() {
+      alert("¡Venta Presencial Confirmada (US-33)!\nCobro registrado en Caja Mostrador AEP-M04. Se emitieron 2 pasajes y la Factura Fiscal B.");
+    }
+
+    function simularBusquedaReserva() {
+      alert("Búsqueda completada (US-34): Se localizó la reserva RES-202610-ARG77 con 3 pasajes confirmados.");
+    }
+  </script>
+
+</body>
+</html>

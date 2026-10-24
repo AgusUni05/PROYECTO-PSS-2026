@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-39 (Opcional): Cambio o Cancelación a Pedido del Pasajero</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[AERO-LÍNEAS] - Portal de Pasajeros</div>
+      <div class="wf-user-session">
+        <span>Sesión activa: <strong>juan.perez@email.com</strong> (Pasajero Autenticado)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Mi Cuenta / Salir</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="index_opcionales.html" class="wf-nav-link">Índice Opcionales <span class="wf-badge-us">US-37..43</span></a>
+      <a href="mis_compras.html" class="wf-nav-link">Mis Compras <span class="wf-badge-us">US-35/36</span></a>
+      <a href="seleccion_asiento.html" class="wf-nav-link">1. Elegir Asientos <span class="wf-badge-us">US-37</span></a>
+      <a href="equipaje_adicional.html" class="wf-nav-link">2. Equipaje Bodega <span class="wf-badge-us">US-41</span></a>
+      <a href="checkin_online.html" class="wf-nav-link">3. Check-in y Embarque <span class="wf-badge-us">US-38</span></a>
+      <a href="cambio_cancelacion_pasajero.html" class="wf-nav-link active">Cambio/Cancelación <span class="wf-badge-us">US-39</span></a>
+      <a href="catalogo_maestro.html" class="wf-nav-link">Catálogo Maestro <span class="wf-badge-us">US-40</span></a>
+      <a href="busqueda_flexible.html" class="wf-nav-link">Fechas Flexibles <span class="wf-badge-us">US-42</span></a>
+      <a href="auditoria_vuelos.html" class="wf-nav-link">Auditoría Vuelos <span class="wf-badge-us">US-43</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Portal Web &gt; Mis Compras &gt; Reserva RES-202610-ARG77 &gt; <strong>Cambio de Fecha o Cancelación Voluntaria</strong></div>
+
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Cambio de Fecha o Cancelación Voluntaria a Pedido del Pasajero</h1>
+        <p class="wf-subtitle">Autogestión de cambio de itinerario o baja voluntaria de reserva aplicando la política de penalidades comercial vigente.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-39 (Opcional) | RFO-03</span>
+        <span class="wf-tag wf-tag-active">Política Comercial Activa</span>
+      </div>
+    </div>
+
+    <!-- Regla de Negocio US-39 / RFO-03 -->
+    <div class="wf-alert">
+      <div>
+        <strong>Reglas de Negocio para Cambios o Cancelaciones Voluntarias (US-39 / RFO-03):</strong><br>
+        • A diferencia de las contingencias operativas originadas por la aerolínea (US-25/26, que son gratuitas), las solicitudes iniciadas a pedido del pasajero se rigen por la <strong>Política de Penalidades Comerciales</strong>.<br>
+        • <strong>Cambio Voluntario de Fecha:</strong> Aplica un cargo administrativo por penalidad de cambio más la diferencia tarifaria si el nuevo vuelo posee una tarifa mayor.<br>
+        • <strong>Cancelación Voluntaria:</strong> Anula los e-tickets emitidos, libera inmediatamente el cupo de asientos y reintegra el importe abonado descontando el porcentaje de penalidad comercial según la anticipación al vuelo.
+      </div>
+    </div>
+
+    <!-- SECCIÓN 1: TABLA DE POLÍTICA DE PENALIDADES COMERCIALES Y RESUMEN DE RESERVA -->
+    <div class="wf-grid-2" style="grid-template-columns: 1.1fr 1.3fr; align-items: stretch;">
+
+      <!-- Resumen de la Reserva Seleccionada -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">Reserva Activa a Gestionar</h2>
+          <span class="wf-tag wf-tag-active">RES-202610-ARG77</span>
+        </div>
+
+        <div style="font-size: 0.88rem; line-height: 1.6; margin-bottom: 14px;">
+          <div><strong>Vuelo Actual:</strong> VU-20261002-01 (AEP &rarr; COR)</div>
+          <div><strong>Fecha y Hora de Salida:</strong> Viernes 02/10/2026 &bull; 08:30 hs</div>
+          <div><strong>Clase y Pasajeros:</strong> 3 Pasajes en Clase Economy</div>
+          <div><strong>Pasajeros:</strong> Juan Carlos Pérez, María Elena González, Lucas Pérez</div>
+          <div><strong>Anticipación Actual al Vuelo:</strong> Más de 48 hs previas (Tramo 1)</div>
+        </div>
+
+        <div class="wf-summary-card" style="padding: 12px; margin-bottom: 0;">
+          <div class="wf-summary-row">
+            <span>Tarifa Unitaria Original:</span>
+            <span>$ 45.000,00 &times; 3</span>
+          </div>
+          <div class="wf-summary-total" style="margin-top: 6px; padding-top: 6px; font-size: 1.1rem;">
+            <span>IMPORTE TOTAL ABONADO:</span>
+            <span>$ 135.000,00 ARS</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Escala de Penalidades Comerciales (Criterio US-39) -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h2 class="wf-card-title">[Cuadro Tarifario] Política de Penalidades Comerciales (RFO-03)</h2>
+          <span class="wf-tag wf-tag-inactive">Tarifa Economy</span>
+        </div>
+
+        <div class="wf-table-responsive">
+          <table class="wf-table">
+            <thead>
+              <tr>
+                <th>Anticipación respecto al Vuelo</th>
+                <th>Penalidad por Cambio</th>
+                <th>Penalidad por Cancelación</th>
+                <th>Estado Actual</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="background-color: var(--wf-gray-lighter); font-weight: 700;">
+                <td><strong>Más de 48 horas antes</strong></td>
+                <td>15% + Dif. Tarifaria</td>
+                <td>20% de retención (80% reintegro)</td>
+                <td><span class="wf-tag wf-tag-active">Tramo Aplicable ✓</span></td>
+              </tr>
+              <tr>
+                <td>Entre 24 hs y 48 hs antes</td>
+                <td>25% + Dif. Tarifaria</td>
+                <td>35% de retención (65% reintegro)</td>
+                <td><span class="wf-tag wf-tag-inactive">No aplica</span></td>
+              </tr>
+              <tr>
+                <td>Menos de 24 hs (Previo al cierre)</td>
+                <td>35% + Dif. Tarifaria</td>
+                <td>50% de retención (50% reintegro)</td>
+                <td><span class="wf-tag wf-tag-inactive">No aplica</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="wf-annotation" style="margin-top: 12px; margin-bottom: 0;">
+          <strong>Cálculo Automático US-39:</strong> El sistema determina automáticamente el tramo de penalidad según la fecha/hora de la solicitud y el horario programado del vuelo.
+        </div>
+      </section>
+    </div>
+
+    <!-- SECCIÓN 2: AUTOGESTIÓN DEL PASAJERO (CAMBIO DE FECHA O CANCELACIÓN VOLUNTARIA) -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 14px 0 14px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      Seleccione la Operación Voluntaria a Solicitar (US-39)
+    </h2>
+
+    <div class="wf-grid-2" style="align-items: stretch;">
+
+      <!-- OPCIÓN A: CAMBIO VOLUNTARIO DE FECHA / VUELO (US-39) -->
+      <article class="wf-card" style="border: 2px solid var(--wf-black); display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div class="wf-card-header">
+            <h3 class="wf-card-title">Opción A: Solicitar Cambio de Fecha</h3>
+            <span class="wf-tag wf-tag-active">Penalidad 15% + Diferencia</span>
+          </div>
+
+          <p style="font-size: 0.85rem; margin-bottom: 14px;">
+            Modifique la fecha de su viaje para los 3 pasajeros dentro de la misma ruta (<strong>AEP &rarr; COR</strong>), abonando el cargo administrativo y la diferencia tarifaria si existiera.
+          </p>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="nuevo-vuelo-voluntario">Seleccionar Nueva Fecha y Vuelo Disponible <span class="required">(*)</span></label>
+            <select id="nuevo-vuelo-voluntario" class="wf-select" onchange="recalcularCambioVoluntario()">
+              <option value="48000" data-vuelo="VU-20261009-01 (Viernes 09/10/2026 - 08:30 hs)" selected>
+                VU-20261009-01 - Vie 09/10/2026 08:30 hs | Tarifa Eco: $ 48.000/pasaje (32 cupos)
+              </option>
+              <option value="45000" data-vuelo="VU-20261011-01 (Domingo 11/10/2026 - 08:30 hs)">
+                VU-20261011-01 - Dom 11/10/2026 08:30 hs | Tarifa Eco: $ 45.000/pasaje (85 cupos)
+              </option>
+              <option value="52000" data-vuelo="VU-20261016-01 (Viernes 16/10/2026 - 08:30 hs)">
+                VU-20261016-01 - Vie 16/10/2026 08:30 hs | Tarifa Eco: $ 52.000/pasaje (110 cupos)
+              </option>
+            </select>
+          </div>
+
+          <!-- Liquidación de Penalidad por Cambio -->
+          <div class="wf-summary-card" style="padding: 14px; margin-bottom: 14px;">
+            <div style="font-weight: 800; font-size: 0.85rem; margin-bottom: 8px; border-bottom: 1px solid var(--wf-black); padding-bottom: 4px;">
+              Desglose por Cambio Voluntario (3 Pasajes):
+            </div>
+            <div class="wf-summary-row">
+              <span>Crédito por pasajes originales ($45.000 &times; 3):</span>
+              <span>$ 135.000,00</span>
+            </div>
+            <div class="wf-summary-row">
+              <span>Costo del nuevo vuelo seleccionado:</span>
+              <span id="chg-nuevo-costo">$ 144.000,00</span>
+            </div>
+            <div class="wf-summary-row">
+              <span>Diferencia Tarifaria a cubrir:</span>
+              <strong id="chg-dif-tarifa">+ $ 9.000,00</strong>
+            </div>
+            <div class="wf-summary-row">
+              <span>Penalidad Comercial por Cambio (15% s/base):</span>
+              <strong>+ $ 20.250,00</strong>
+            </div>
+            <div class="wf-summary-total" style="font-size: 1.05rem;">
+              <span>ADICIONAL A ABONAR:</span>
+              <span id="chg-total-pagar">$ 29.250,00 ARS</span>
+            </div>
+          </div>
+
+          <div class="wf-annotation">
+            <strong>Criterio US-39:</strong> Al confirmar el pago de la penalidad y diferencia, se liberan los asientos del vuelo original y se emiten los nuevos e-tickets y factura complementaria.
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <button class="wf-btn wf-btn-primary" style="width: 100%;" type="button" onclick="document.getElementById('modal-cambio-voluntario').scrollIntoView({behavior: 'smooth'});">
+            Solicitar Cambio de Fecha y Abonar Cargo &rarr;
+          </button>
+        </div>
+      </article>
+
+      <!-- OPCIÓN B: CANCELACIÓN VOLUNTARIA A PEDIDO DEL PASAJERO (US-39) -->
+      <article class="wf-card" style="border: 2px solid var(--wf-black); display: flex; flex-direction: column; justify-content: space-between;">
+        <div>
+          <div class="wf-card-header">
+            <h3 class="wf-card-title">Opción B: Cancelar Pasaje con Penalidad</h3>
+            <span class="wf-tag wf-tag-inactive">Retención Comercial 20%</span>
+          </div>
+
+          <p style="font-size: 0.85rem; margin-bottom: 14px;">
+            Anule de forma voluntaria su reserva completa y solicite la devolución del saldo remanente tras aplicar la retención dispuesta por la política comercial.
+          </p>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="motivo-baja-pax">Motivo de la Solicitud del Pasajero</label>
+            <select id="motivo-baja-pax" class="wf-select">
+              <option value="personal" selected>Imprevisto personal o laboral (Desistimiento voluntario)</option>
+              <option value="agenda">Cambio de fechas de vacaciones / estadía</option>
+              <option value="salud">Razones médicas del grupo familiar</option>
+            </select>
+          </div>
+
+          <!-- Liquidación de Reembolso con Penalidad -->
+          <div class="wf-summary-card" style="padding: 14px; margin-bottom: 14px;">
+            <div style="font-weight: 800; font-size: 0.85rem; margin-bottom: 8px; border-bottom: 1px solid var(--wf-black); padding-bottom: 4px;">
+              Liquidación de Reembolso con Penalidad Comercial:
+            </div>
+            <div class="wf-summary-row">
+              <span>Importe Original Abonado (3 pasajes):</span>
+              <span>$ 135.000,00</span>
+            </div>
+            <div class="wf-summary-row">
+              <span>Retención por Penalidad Comercial (20%):</span>
+              <strong>- $ 27.000,00</strong>
+            </div>
+            <div class="wf-summary-row">
+              <span>Medio de Acreditación:</span>
+              <span>Visa Crédito (•••• 4242)</span>
+            </div>
+            <div class="wf-summary-total" style="font-size: 1.05rem;">
+              <span>MONTO NETO A REEMBOLSAR (80%):</span>
+              <span>$ 108.000,00 ARS</span>
+            </div>
+          </div>
+
+          <div class="wf-annotation">
+            <strong>Criterio US-39:</strong> La reserva pasa a estado <em>Cancelada por Pasajero</em>, se liberan los 3 cupos en el vuelo <code>VU-20261002-01</code> y se emite la Nota de Crédito correspondiente.
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <button class="wf-btn wf-btn-danger" style="width: 100%; background-color: var(--wf-black); color: var(--wf-white); text-decoration: none;" type="button" onclick="document.getElementById('modal-cancelacion-voluntaria').scrollIntoView({behavior: 'smooth'});">
+            Solicitar Cancelación Voluntaria (Reintegro $ 108.000) &rarr;
+          </button>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- MODAL SIMULADO 1: CONFIRMACIÓN DE CAMBIO VOLUNTARIO DE FECHA (US-39) -->
+    <div class="wf-modal-overlay" id="modal-cambio-voluntario">
+      <div class="wf-modal-box" style="max-width: 640px;">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">[Confirmación US-39] Confirmar Cambio Voluntario de Fecha</h3>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">&times;</button>
+        </div>
+
+        <p style="margin-bottom: 12px; font-size: 0.92rem;">
+          ¿Confirma el cambio voluntario de la reserva <strong>RES-202610-ARG77</strong> (3 pasajeros) hacia el vuelo <strong id="modal-chg-vuelo">VU-20261009-01 (Viernes 09/10/2026 - 08:30 hs)</strong>?
+        </p>
+
+        <div class="wf-alert" style="background-color: var(--wf-gray-lighter); border: 1px solid var(--wf-black);">
+          <div>
+            <strong>Aplicación de Política Comercial (RFO-03):</strong><br>
+            • Cargo por penalidad comercial (15%): <strong>$ 20.250,00</strong><br>
+            • Diferencia tarifaria de pasajes: <strong id="modal-chg-dif">$ 9.000,00</strong><br>
+            • <strong>Total a debitar en Tarjeta Visa •••• 4242:</strong> <strong id="modal-chg-total">$ 29.250,00 ARS</strong>
+          </div>
+        </div>
+
+        <label class="wf-checkbox-label" style="margin-bottom: 14px; display: flex;">
+          <input type="checkbox" checked> Acepto los términos de la política de penalidades comercial para cambios voluntarios (US-39).
+        </label>
+
+        <div class="wf-btn-group" style="justify-content: flex-end;">
+          <button class="wf-btn wf-btn-outline" type="button">Volver</button>
+          <button class="wf-btn wf-btn-primary" type="button" onclick="alert('¡Cambio Voluntario Confirmado (US-39)!\nSe debitaron $29.250,00 ARS en concepto de penalidad y diferencia tarifaria. Se emitieron los nuevos e-tickets para el 09/10/2026.');">
+            Pagar Penalidad y Emitir Nuevos Pasajes
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL SIMULADO 2: CONFIRMACIÓN DE CANCELACIÓN VOLUNTARIA (US-39) -->
+    <div class="wf-modal-overlay" id="modal-cancelacion-voluntaria">
+      <div class="wf-modal-box" style="max-width: 640px; border: 3px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">[Confirmación US-39] Confirmar Cancelación Voluntaria con Penalidad</h3>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">&times;</button>
+        </div>
+
+        <p style="margin-bottom: 12px; font-size: 0.92rem;">
+          Está a punto de cancelar a su exclusivo pedido los 3 pasajes de la reserva <strong>RES-202610-ARG77</strong> para el vuelo <strong>VU-20261002-01 (02/10/2026)</strong>.
+        </p>
+
+        <div class="wf-alert" style="background-color: var(--wf-gray-lighter); border: 2px solid var(--wf-black);">
+          <div>
+            <strong>Resumen de Retención por Penalidad Comercial (US-39 / RFO-03):</strong><br>
+            • Total abonado originalmente: <strong>$ 135.000,00 ARS</strong><br>
+            • Retención por penalidad de cancelación voluntaria (20%): <strong>- $ 27.000,00 ARS</strong><br>
+            • <strong>Importe Neto a Reintegrar en Tarjeta •••• 4242:</strong> <strong>$ 108.000,00 ARS</strong><br>
+            • Los 3 asientos (14A, 14B, 14C) serán liberados inmediatamente para la venta.
+          </div>
+        </div>
+
+        <label class="wf-checkbox-label" style="margin-bottom: 14px; display: flex;">
+          <input type="checkbox" checked> Comprendo que la cancelación voluntaria es irreversible y aplica una retención del 20% ($ 27.000).
+        </label>
+
+        <div class="wf-btn-group" style="justify-content: flex-end;">
+          <button class="wf-btn wf-btn-outline" type="button">Conservar mi Reserva</button>
+          <button class="wf-btn wf-btn-danger" style="background-color: var(--wf-black); color: var(--wf-white); text-decoration: none;" type="button" onclick="alert('¡Cancelación Voluntaria Procesada (US-39)!\nSe liberaron los 3 cupos del vuelo VU-20261002-01 y se ordenó el reembolso neto de $108.000,00 ARS (aplicando $27.000 de penalidad comercial).');">
+            Confirmar Cancelación y Reembolso Neto ($ 108.000)
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function recalcularCambioVoluntario() {
+      const select = document.getElementById('nuevo-vuelo-voluntario');
+      const tarifaUnitaria = parseInt(select.value, 10);
+      const option = select.options[select.selectedIndex];
+      const vueloTexto = option.getAttribute('data-vuelo');
+
+      const costoOriginal = 135000;
+      const nuevoCosto = tarifaUnitaria * 3;
+      const difTarifa = Math.max(0, nuevoCosto - costoOriginal);
+      const penalidad = 20250; // 15% de $135.000
+      const totalAdicional = difTarifa + penalidad;
+
+      document.getElementById('chg-nuevo-costo').textContent = `$ ${nuevoCosto.toLocaleString('es-AR')},00`;
+      document.getElementById('chg-dif-tarifa').textContent = `+ $ ${difTarifa.toLocaleString('es-AR')},00`;
+      document.getElementById('chg-total-pagar').textContent = `$ ${totalAdicional.toLocaleString('es-AR')},00 ARS`;
+
+      document.getElementById('modal-chg-vuelo').textContent = vueloTexto;
+      document.getElementById('modal-chg-dif').textContent = `$ ${difTarifa.toLocaleString('es-AR')},00`;
+      document.getElementById('modal-chg-total').textContent = `$ ${totalAdicional.toLocaleString('es-AR')},00 ARS`;
+    }
+  </script>
+
+</body>
+</html>

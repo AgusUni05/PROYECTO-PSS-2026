@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-40 (Opcional): Catálogo Maestro de Aeropuertos y Flota con Autocompletado</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos en escala de grises para sugerencias de autocompletado (US-40) */
+    .wf-autocomplete-box {
+      border: 2px solid var(--wf-black);
+      background-color: var(--wf-white);
+      border-radius: var(--wf-radius);
+      margin-top: 4px;
+      overflow: hidden;
+    }
+    .wf-autocomplete-header {
+      background-color: var(--wf-black);
+      color: var(--wf-white);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .wf-autocomplete-item {
+      padding: 8px 10px;
+      font-size: 0.82rem;
+      border-bottom: 1px solid var(--wf-gray-light);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .wf-autocomplete-item:last-child {
+      border-bottom: none;
+    }
+    .wf-autocomplete-item:hover,
+    .wf-autocomplete-item.active {
+      background-color: var(--wf-gray-lighter);
+      font-weight: 700;
+    }
+    .wf-autofill-preview {
+      border: 2px dashed var(--wf-black);
+      background-color: var(--wf-gray-lighter);
+      padding: 12px;
+      border-radius: var(--wf-radius);
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Panel Administración</div>
+      <div class="wf-user-session">
+        <span>Usuario: <strong>admin@vuelos.com</strong> (Administrador)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Cerrar Sesión</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="index_opcionales.html" class="wf-nav-link">Índice Opcionales <span class="wf-badge-us">US-37..43</span></a>
+      <a href="aeropuertos.html" class="wf-nav-link">Aeropuertos <span class="wf-badge-us">US-01</span></a>
+      <a href="aviones.html" class="wf-nav-link">Aviones <span class="wf-badge-us">US-02</span></a>
+      <a href="trayectos.html" class="wf-nav-link">Trayectos <span class="wf-badge-us">US-03</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Gestión Vuelos <span class="wf-badge-us">US-04..12</span></a>
+      <a href="catalogo_maestro.html" class="wf-nav-link active">Catálogo Maestro <span class="wf-badge-us">US-40</span></a>
+      <a href="auditoria_vuelos.html" class="wf-nav-link">Auditoría Vuelos <span class="wf-badge-us">US-43</span></a>
+      <a href="seleccion_asiento.html" class="wf-nav-link">1. Elegir Asientos <span class="wf-badge-us">US-37</span></a>
+      <a href="equipaje_adicional.html" class="wf-nav-link">2. Equipaje Bodega <span class="wf-badge-us">US-41</span></a>
+      <a href="checkin_online.html" class="wf-nav-link">3. Check-in y Embarque <span class="wf-badge-us">US-38</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Administración &gt; Catálogo Maestro &gt; <strong>Consola de Catálogo Maestro y Autocompletado Operativo (US-40)</strong></div>
+
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Catálogo Maestro de Aeropuertos y Flota con Autocompletado</h1>
+        <p class="wf-subtitle">Administración centralizada desde catálogo con autocompletado de aeropuertos y capacidad de aeronaves al definir trayectos y vuelos reales.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-40 (Opcional) | RFO-04</span>
+        <a href="aeropuertos.html" class="wf-btn wf-btn-outline wf-btn-sm">ABML Aeropuertos (US-01)</a>
+        <a href="aviones.html" class="wf-btn wf-btn-outline wf-btn-sm">ABML Aviones (US-02)</a>
+      </div>
+    </div>
+
+    <!-- Regla de Negocio US-40 / RFO-04 -->
+    <div class="wf-alert">
+      <div>
+        <strong>Criterio de Aceptación US-40 (RFO-04 - Opcional):</strong><br>
+        • <strong>Sin Ingreso Manual en Trayectos y Vuelos:</strong> El administrador no ingresa códigos, ciudades ni capacidades a mano.<br>
+        • <strong>Autocompletado de Aeropuertos:</strong> Al definir un trayecto, el buscador predictivo autocompleta código IATA, nombre oficial, ciudad y valida que origen y destino sean distintos.<br>
+        • <strong>Autocompletado de Capacidad de Aeronaves:</strong> Al programar fechas reales de vuelo y elegir una aeronave del catálogo, el sistema precarga automáticamente los asientos de <em>Clase Economy</em>, <em>Primera Clase</em> y <em>Capacidad Total</em>.
+      </div>
+    </div>
+
+    <!-- SECCIÓN 1: SIMULADOR INTERACTIVO DE AUTOCOMPLETADO EN TRAYECTOS Y FECHAS REALES (CRITERIO US-40) -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 20px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      1. Asistente de Autocompletado al Definir Trayectos y Fechas Reales (US-40)
+    </h2>
+
+    <div class="wf-grid-2" style="align-items: start;">
+
+      <!-- PANEL IZQUIERDO: AUTOCOMPLETADO DE AEROPUERTOS AL DEFINIR TRAYECTO -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">[A] Autocompletado de Aeropuertos en Trayectos</h3>
+          <span class="wf-tag wf-tag-active">Catálogo Sincronizado</span>
+        </div>
+
+        <p class="wf-subtitle" style="margin-bottom: 12px;">
+          Escriba o seleccione un aeropuerto del catálogo maestro para autocompletar instantáneamente sus metadatos operativos:
+        </p>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="input-auto-origen">Buscar Aeropuerto de Origen (Autocompletado IATA / Ciudad) <span class="required">(*)</span></label>
+          <input type="text" id="input-auto-origen" class="wf-input" value="AEP - Aeroparque Jorge Newbery (Buenos Aires)" placeholder="Escriba código IATA o ciudad (Ej: AEP, EZE, COR, MDZ)...">
+
+          <!-- Lista Desplegable de Sugerencias del Catálogo Maestro -->
+          <div class="wf-autocomplete-box">
+            <div class="wf-autocomplete-header">Sugerencias del Catálogo Maestro de Aeropuertos (Haga clic para autocompletar)</div>
+            <div class="wf-autocomplete-item active" onclick="autocompletarAeropuerto('AEP', 'Aeroparque Jorge Newbery', 'Buenos Aires (CABA)', 'Terminal Nacional A', '01:30 hs (650 km a COR)')">
+              <span><strong>AEP</strong> — Aeroparque Jorge Newbery</span>
+              <span class="wf-badge-us">Buenos Aires</span>
+            </div>
+            <div class="wf-autocomplete-item" onclick="autocompletarAeropuerto('EZE', 'Ministro Pistarini (Ezeiza)', 'Buenos Aires (Ezeiza)', 'Terminal C Cabotaje', '01:40 hs (685 km a COR)')">
+              <span><strong>EZE</strong> — Ministro Pistarini (Ezeiza)</span>
+              <span class="wf-badge-us">Buenos Aires</span>
+            </div>
+            <div class="wf-autocomplete-item" onclick="autocompletarAeropuerto('MDZ', 'Gdor. Francisco Gabrielli (El Plumerillo)', 'Mendoza', 'Terminal Principal', '01:15 hs (465 km a COR)')">
+              <span><strong>MDZ</strong> — Gdor. Francisco Gabrielli</span>
+              <span class="wf-badge-us">Mendoza</span>
+            </div>
+            <div class="wf-autocomplete-item" onclick="autocompletarAeropuerto('BRC', 'Tte. Luis Candelaria', 'San Carlos de Bariloche', 'Terminal Única', '02:10 hs (1.180 km a COR)')">
+              <span><strong>BRC</strong> — Tte. Luis Candelaria</span>
+              <span class="wf-badge-us">Bariloche</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campos Autocompletados en Modo Lectura (Sin ingreso manual) -->
+        <div class="wf-autofill-preview">
+          <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px;">
+            ✓ Datos Autocompletados desde Catálogo Maestro (Sin Tipeo Manual):
+          </div>
+          <div class="wf-grid-2" style="gap: 10px;">
+            <div>
+              <label class="wf-label" style="font-size: 0.75rem;">Código IATA Oficial</label>
+              <input type="text" id="auto-iata" class="wf-input" value="AEP" readonly disabled>
+            </div>
+            <div>
+              <label class="wf-label" style="font-size: 0.75rem;">Ciudad / Jurisdicción</label>
+              <input type="text" id="auto-ciudad" class="wf-input" value="Buenos Aires (CABA)" readonly disabled>
+            </div>
+            <div>
+              <label class="wf-label" style="font-size: 0.75rem;">Nombre de Terminal</label>
+              <input type="text" id="auto-nombre" class="wf-input" value="Aeroparque Jorge Newbery" readonly disabled>
+            </div>
+            <div>
+              <label class="wf-label" style="font-size: 0.75rem;">Duración Sugerida a Destino (COR)</label>
+              <input type="text" id="auto-duracion" class="wf-input" value="01:30 hs (650 km a COR)" readonly disabled>
+            </div>
+          </div>
+        </div>
+
+        <div class="wf-btn-group" style="margin-top: 14px;">
+          <a href="trayectos.html" class="wf-btn wf-btn-primary" style="width: 100%;">
+            Usar Aeropuertos Autocompletados en Nuevo Trayecto (US-03) &rarr;
+          </a>
+        </div>
+      </section>
+
+      <!-- PANEL DERECHO: AUTOCOMPLETADO DE CAPACIDAD DE AERONAVES EN VUELOS REALES -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">[B] Autocompletado de Capacidad al Programar Vuelos</h3>
+          <span class="wf-tag wf-tag-active">Precarga Automática</span>
+        </div>
+
+        <p class="wf-subtitle" style="margin-bottom: 12px;">
+          Seleccione la aeronave del catálogo y la fecha real de operación para autocompletar la capacidad de asientos por clase:
+        </p>
+
+        <div class="wf-grid-2">
+          <div class="wf-form-group">
+            <label class="wf-label" for="select-auto-avion">Aeronave del Catálogo de Flota <span class="required">(*)</span></label>
+            <select id="select-auto-avion" class="wf-select" onchange="autocompletarCapacidadFlota()">
+              <option value="LV-ARG01" data-modelo="Boeing 737-800" data-eco="150" data-pri="16" data-conf="3-3 Eco / 2-2 Primera" selected>
+                LV-ARG01 — Boeing 737-800
+              </option>
+              <option value="LV-ARG02" data-modelo="Airbus A320" data-eco="160" data-pri="12" data-conf="3-3 Eco / 2-2 Primera">
+                LV-ARG02 — Airbus A320
+              </option>
+              <option value="LV-ARG03" data-modelo="Embraer 190" data-eco="88" data-pri="8" data-conf="2-2 Eco / 1-2 Primera">
+                LV-ARG03 — Embraer 190
+              </option>
+              <option value="LV-MNT99" data-modelo="Boeing 737-700" data-eco="120" data-pri="0" data-conf="3-3 Clase Única Economy">
+                LV-MNT99 — Boeing 737-700
+              </option>
+            </select>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="auto-fecha-real">Fecha Real del Vuelo <span class="required">(*)</span></label>
+            <input type="date" id="auto-fecha-real" class="wf-input" value="2026-10-02">
+          </div>
+        </div>
+
+        <!-- Bloque de Capacidades Autocompletadas automáticamente -->
+        <div class="wf-autofill-preview">
+          <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px;">
+            ✓ Capacidad de Cabina Autocompletada desde Catálogo (US-40):
+          </div>
+
+          <div class="wf-grid-3" style="gap: 10px; margin-bottom: 10px;">
+            <div style="background: var(--wf-white); border: 1px solid var(--wf-black); padding: 10px; text-align: center; border-radius: var(--wf-radius);">
+              <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Cupo Economy</div>
+              <div style="font-size: 1.4rem; font-weight: 800; font-family: var(--wf-font-mono);" id="auto-cap-eco">150</div>
+              <small style="font-size: 0.7rem; color: var(--wf-gray-dark);">Asientos precargados</small>
+            </div>
+            <div style="background: var(--wf-white); border: 1px solid var(--wf-black); padding: 10px; text-align: center; border-radius: var(--wf-radius);">
+              <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Cupo Primera</div>
+              <div style="font-size: 1.4rem; font-weight: 800; font-family: var(--wf-font-mono);" id="auto-cap-pri">16</div>
+              <small style="font-size: 0.7rem; color: var(--wf-gray-dark);">Asientos precargados</small>
+            </div>
+            <div style="background: var(--wf-black); color: var(--wf-white); border: 1px solid var(--wf-black); padding: 10px; text-align: center; border-radius: var(--wf-radius);">
+              <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">Capacidad Total</div>
+              <div style="font-size: 1.4rem; font-weight: 800; font-family: var(--wf-font-mono);" id="auto-cap-total">166</div>
+              <small style="font-size: 0.7rem;">Cálculo Automático</small>
+            </div>
+          </div>
+
+          <div class="wf-grid-2" style="gap: 10px;">
+            <div>
+              <label class="wf-label" style="font-size: 0.75rem;">Modelo de Aeronave</label>
+              <input type="text" id="auto-modelo-avion" class="wf-input" value="Boeing 737-800" readonly disabled>
+            </div>
+            <div>
+              <label class="wf-label" style="font-size: 0.75rem;">Distribución de Cabina</label>
+              <input type="text" id="auto-dist-avion" class="wf-input" value="3-3 Eco / 2-2 Primera" readonly disabled>
+            </div>
+          </div>
+        </div>
+
+        <div class="wf-btn-group" style="margin-top: 14px;">
+          <a href="vuelos_admin.html" class="wf-btn wf-btn-primary" style="width: 100%;">
+            Aplicar Capacidad Autocompletada en Programación de Vuelo (US-04) &rarr;
+          </a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- SECCIÓN 2: CONSOLA UNIFICADA DEL CATÁLOGO MAESTRO (AEROPUERTOS + FLOTA) -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 28px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      2. Base de Datos del Catálogo Maestro Activo (Fuente de Autocompletado RFO-04)
+    </h2>
+
+    <div class="wf-grid-2" style="align-items: start;">
+
+      <!-- Tabla Maestro de Aeropuertos -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Catálogo Maestro de Aeropuertos (5 Activos)</h3>
+          <a href="aeropuertos.html" class="wf-btn wf-btn-outline wf-btn-sm">Gestionar ABML &rarr;</a>
+        </div>
+
+        <div class="wf-table-responsive">
+          <table class="wf-table">
+            <thead>
+              <tr>
+                <th>IATA</th>
+                <th>Nombre Oficial</th>
+                <th>Ciudad</th>
+                <th>Autocompletado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>AEP</strong></td>
+                <td>Aeroparque Jorge Newbery</td>
+                <td>Buenos Aires</td>
+                <td><span class="wf-tag wf-tag-active">Habilitado ✓</span></td>
+              </tr>
+              <tr>
+                <td><strong>EZE</strong></td>
+                <td>Ministro Pistarini (Ezeiza)</td>
+                <td>Buenos Aires</td>
+                <td><span class="wf-tag wf-tag-active">Habilitado ✓</span></td>
+              </tr>
+              <tr>
+                <td><strong>COR</strong></td>
+                <td>Ing. Ambrosio Taravella</td>
+                <td>Córdoba</td>
+                <td><span class="wf-tag wf-tag-active">Habilitado ✓</span></td>
+              </tr>
+              <tr>
+                <td><strong>MDZ</strong></td>
+                <td>Gdor. Francisco Gabrielli</td>
+                <td>Mendoza</td>
+                <td><span class="wf-tag wf-tag-active">Habilitado ✓</span></td>
+              </tr>
+              <tr>
+                <td><strong>BRC</strong></td>
+                <td>Tte. Luis Candelaria</td>
+                <td>Bariloche</td>
+                <td><span class="wf-tag wf-tag-active">Habilitado ✓</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Tabla Maestro de Flota -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Catálogo Maestro de Flota (4 Aeronaves)</h3>
+          <a href="aviones.html" class="wf-btn wf-btn-outline wf-btn-sm">Gestionar ABML &rarr;</a>
+        </div>
+
+        <div class="wf-table-responsive">
+          <table class="wf-table">
+            <thead>
+              <tr>
+                <th>Matrícula</th>
+                <th>Modelo</th>
+                <th>Eco / 1ra</th>
+                <th>Total</th>
+                <th>Autocompletado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>LV-ARG01</strong></td>
+                <td>Boeing 737-800</td>
+                <td>150 / 16</td>
+                <td><strong>166</strong></td>
+                <td><span class="wf-tag wf-tag-active">Habilitado ✓</span></td>
+              </tr>
+              <tr>
+                <td><strong>LV-ARG02</strong></td>
+                <td>Airbus A320</td>
+                <td>160 / 12</td>
+                <td><strong>172</strong></td>
+                <td><span class="wf-tag wf-tag-active">Habilitado ✓</span></td>
+              </tr>
+              <tr>
+                <td><strong>LV-ARG03</strong></td>
+                <td>Embraer 190</td>
+                <td>88 / 8</td>
+                <td><strong>96</strong></td>
+                <td><span class="wf-tag wf-tag-active">Habilitado ✓</span></td>
+              </tr>
+              <tr>
+                <td><strong>LV-MNT99</strong></td>
+                <td>Boeing 737-700</td>
+                <td>120 / 0</td>
+                <td><strong>120</strong></td>
+                <td><span class="wf-tag wf-tag-active">Habilitado ✓</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <script>
+    function autocompletarAeropuerto(iata, nombre, ciudad, terminal, duracion) {
+      document.getElementById('input-auto-origen').value = `${iata} - ${nombre} (${ciudad})`;
+      document.getElementById('auto-iata').value = iata;
+      document.getElementById('auto-ciudad').value = ciudad;
+      document.getElementById('auto-nombre').value = nombre;
+      document.getElementById('auto-duracion').value = duracion;
+
+      const items = document.querySelectorAll('.wf-autocomplete-item');
+      items.forEach(item => {
+        if (item.textContent.includes(iata)) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+    }
+
+    function autocompletarCapacidadFlota() {
+      const sel = document.getElementById('select-auto-avion');
+      const opt = sel.options[sel.selectedIndex];
+      const modelo = opt.getAttribute('data-modelo');
+      const eco = parseInt(opt.getAttribute('data-eco'), 10);
+      const pri = parseInt(opt.getAttribute('data-pri'), 10);
+      const conf = opt.getAttribute('data-conf');
+
+      document.getElementById('auto-cap-eco').textContent = eco;
+      document.getElementById('auto-cap-pri').textContent = pri;
+      document.getElementById('auto-cap-total').textContent = eco + pri;
+      document.getElementById('auto-modelo-avion').value = modelo;
+      document.getElementById('auto-dist-avion').value = conf;
+    }
+  </script>
+
+</body>
+</html>

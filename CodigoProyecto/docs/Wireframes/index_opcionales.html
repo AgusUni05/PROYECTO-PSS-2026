@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Índice de Wireframes Opcionales (Sprint 3: US-37 a US-43) - Sistema de Gestión de Vuelos</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Wireframes Opcionales Sprint 3</div>
+      <div class="wf-user-session">
+        <span>Sprint 3: <strong>User Stories Opcionales (US-37 a US-43 | RFO-01 a RFO-07)</strong></span>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Índice General (US 1..36)</a>
+      <a href="index_opcionales.html" class="wf-nav-link active">Índice Opcionales <span class="wf-badge-us">US-37..43</span></a>
+      <a href="seleccion_asiento.html" class="wf-nav-link">1. Elegir Asientos <span class="wf-badge-us">US-37</span></a>
+      <a href="equipaje_adicional.html" class="wf-nav-link">2. Equipaje Bodega <span class="wf-badge-us">US-41</span></a>
+      <a href="checkin_online.html" class="wf-nav-link">3. Check-in y Embarque <span class="wf-badge-us">US-38</span></a>
+      <a href="cambio_cancelacion_pasajero.html" class="wf-nav-link">Cambio/Cancelación <span class="wf-badge-us">US-39</span></a>
+      <a href="catalogo_maestro.html" class="wf-nav-link">Catálogo Maestro <span class="wf-badge-us">US-40</span></a>
+      <a href="busqueda_flexible.html" class="wf-nav-link">Fechas Flexibles <span class="wf-badge-us">US-42</span></a>
+      <a href="auditoria_vuelos.html" class="wf-nav-link">Auditoría Vuelos <span class="wf-badge-us">US-43</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Title Box -->
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Índice de Wireframes de User Stories Opcionales (Sprint 3)</h1>
+        <p class="wf-subtitle">
+          Distribución de pantallas, flujos y botones en estricta escala de grises para los requerimientos funcionales opcionales:
+          <strong>US-37 a US-43 (RFO-01 a RFO-07)</strong>.
+        </p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-tag wf-tag-active">7 User Stories Opcionales Mapeadas</span>
+      </div>
+    </div>
+
+    <!-- MÓDULO OPCIONAL 1: FLUJO SECUENCIAL DE CHECK-IN (1° ELEGIR ASIENTOS -> 2° AGREGAR O NO EQUIPAJE -> 3° CHECK-IN Y TARJETA DE EMBARQUE) -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 24px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      1. Flujo de Check-In Online: 1° Elegir Asientos (US-37) &rarr; 2° Agregar o No Equipaje (US-41) &rarr; 3° Check-In y Tarjetas de Embarque (US-38)
+    </h2>
+
+    <!-- Barra Visual del Flujo de 3 Pasos -->
+    <div class="wf-steps-bar" style="margin-bottom: 16px;">
+      <div class="wf-step-item active">Paso 1: Selección de Asientos en Mapa de Cabina (US-37)</div>
+      <div class="wf-step-item completed">Paso 2: Agregar o No Equipaje con Cargo (US-41)</div>
+      <div class="wf-step-item completed">Paso 3: Realizar Check-In y Tarjetas de Embarque (US-38)</div>
+    </div>
+
+    <div class="wf-grid-3">
+
+      <!-- PASO 1: US-37 -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Paso 1: Elegir Asientos en Cabina</h3>
+          <span class="wf-badge-us">US-37 | RFO-01</span>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Inicio del flujo: mapa interactivo de asientos filtrado por la clase comprada y bloqueo del asiento para otros compradores antes de pasar a equipaje.
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[10C..16F Mapa Interactivo]`, `[Reubicar Juntos]`, `[Confirmar Asientos y Continuar a Equipaje (Paso 2 - US-41) →]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="seleccion_asiento.html" class="wf-btn wf-btn-primary" style="width: 100%;">1. Abrir Selección de Asientos (US-37) &rarr;</a>
+        </div>
+      </section>
+
+      <!-- PASO 2: US-41 -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Paso 2: Agregar o No Equipaje</h3>
+          <span class="wf-badge-us">US-41 | RFO-05</span>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Segundo paso: opción de agregar valijas en bodega (con adición al total y desglose en factura) o continuar sin equipaje adicional ($ 0) hacia el Check-In.
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Opción A: Agregar Valijas]`, `[Opción B: Sin Equipaje ($ 0)]`, `[Abonar Equipaje y Continuar al Check-In (Paso 3) →]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="equipaje_adicional.html" class="wf-btn wf-btn-primary" style="width: 100%;">2. Abrir Gestión de Equipaje (US-41) &rarr;</a>
+        </div>
+      </section>
+
+      <!-- PASO 3: US-38 -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Paso 3: Check-in y Boarding Pass</h3>
+          <span class="wf-badge-us">US-38 | RFO-02</span>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Paso final: revisión de asientos y equipaje dentro de la ventana de 24 hs previas al vuelo, confirmación del Check-In y descarga de tarjetas de embarque.
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Confirmar Check-In Online y Generar Tarjetas (US-38)]`, `[Descargar Tarjeta PDF]`, `[Descargar Todas (3 PDF)]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="checkin_online.html" class="wf-btn wf-btn-primary" style="width: 100%;">3. Abrir Check-In y Embarque (US-38) &rarr;</a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- MÓDULO OPCIONAL 2: AUTOGESTIÓN COMERCIAL Y BÚSQUEDA FLEXIBLE DEL PASAJERO (US-39, US-42) -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 30px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      2. Autogestión Voluntaria del Pasajero y Búsqueda Flexible (US-39, US-42)
+    </h2>
+    <div class="wf-grid-2">
+
+      <!-- US-39 -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Cambio o Cancelación a Pedido del Pasajero</h3>
+          <span class="wf-badge-us">US-39 | RFO-03</span>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Solicitud voluntaria de cambio de fecha o cancelación de pasaje desde el portal del cliente aplicando la política de penalidades comercial vigente.
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Solicitar Cambio de Fecha y Abonar Cargo]`, `[Solicitar Cancelación Voluntaria (Reintegro 80%)]`, `[Confirmar Cancelación]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="cambio_cancelacion_pasajero.html" class="wf-btn wf-btn-primary" style="width: 100%;">Abrir Wireframe US-39 &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-42 -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Búsqueda Flexible por Fechas Cercanas (&plusmn;3 Días)</h3>
+          <span class="wf-badge-us">US-42 | RFO-06</span>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Grilla comparativa de alternativas de vuelos y precios en un rango de &plusmn;3 días previos y posteriores cuando no se encuentren vuelos en la fecha exacta.
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Buscar con Rango ±3 Días]`, Celdas interactivas `[-3 Días .. +3 Días]`, `[Seleccionar Economy →]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="busqueda_flexible.html" class="wf-btn wf-btn-primary" style="width: 100%;">Abrir Wireframe US-42 &rarr;</a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- MÓDULO OPCIONAL 3: ADMINISTRACIÓN AVANZADA, CATÁLOGO MAESTRO Y AUDITORÍA (US-40, US-43) -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 30px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      3. Administración: Catálogo Maestro con Autocompletado y Auditoría Inmutable (US-40, US-43)
+    </h2>
+    <div class="wf-grid-2">
+
+      <!-- US-40 -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Catálogo Maestro de Aeropuertos y Flota</h3>
+          <span class="wf-badge-us">US-40 | RFO-04</span>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Administración desde catálogo con autocompletado de aeropuertos y precarga automática de capacidad de aeronaves al definir trayectos y fechas reales.
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> Sugerencias de autocompletado `[AEP / EZE / COR / MDZ / BRC]`, `[Usar Aeropuertos Autocompletados]`, `[Aplicar Capacidad Autocompletada]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="catalogo_maestro.html" class="wf-btn wf-btn-primary" style="width: 100%;">Abrir Wireframe US-40 &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-43 -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Auditoría e Historial de Cambios sobre Vuelos</h3>
+          <span class="wf-badge-us">US-43 | RFO-07</span>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Registro inmutable de eventos indicando usuario administrador, fecha, hora exacta y valores modificados (antes vs. después) para explicar cambios ante reclamos.
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Consultar Historial de Auditoría]`, `[Ver Detalle]`, `[Emitir Acta de Auditoría para Reclamo (PDF)]`, `[Exportar Log CSV]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="auditoria_vuelos.html" class="wf-btn wf-btn-primary" style="width: 100%;">Abrir Wireframe US-43 &rarr;</a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Regla de Estilo Global -->
+    <div class="wf-alert" style="margin-top: 24px;">
+      <div>
+        <strong>Norma de Diseño Wireframe:</strong> Interfaz de baja fidelidad en escala de grises rigurosa (reutilizando <code>styles.css</code> sin modificar ninguno de los archivos originales), cubriendo el 100% de las User Stories Opcionales del Sprint 3.
+      </div>
+    </div>
+  </main>
+
+</body>
+</html>

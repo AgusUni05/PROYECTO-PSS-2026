@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-42 (Opcional): Búsqueda Flexible por Fechas Cercanas (±3 Días)</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos en estricta escala de grises para la Grilla de Fechas Cercanas ±3 días (US-42) */
+    .wf-flex-grid-7 {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin: 16px 0;
+    }
+    @media (max-width: 950px) {
+      .wf-flex-grid-7 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .wf-day-cell {
+      border: 1px solid var(--wf-gray-mid);
+      border-radius: var(--wf-radius);
+      padding: 12px 8px;
+      text-align: center;
+      background-color: var(--wf-white);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 128px;
+      transition: all 0.1s ease;
+    }
+    .wf-day-cell:hover:not(.no-flights) {
+      border-color: var(--wf-black);
+      background-color: var(--wf-gray-lighter);
+    }
+    .wf-day-cell.selected {
+      border: 3px solid var(--wf-black);
+      background-color: var(--wf-black);
+      color: var(--wf-white);
+    }
+    .wf-day-cell.selected .wf-day-offset,
+    .wf-day-cell.selected .wf-day-sub {
+      color: var(--wf-gray-lighter);
+    }
+    .wf-day-cell.exact-empty {
+      border: 2px dashed var(--wf-black);
+      background-color: #f0f0f0;
+    }
+    .wf-day-cell.no-flights {
+      background-color: var(--wf-gray-lighter);
+      border-style: dotted;
+      color: var(--wf-gray-mid);
+      cursor: not-allowed;
+    }
+    .wf-day-offset {
+      font-family: var(--wf-font-mono);
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--wf-gray-dark);
+    }
+    .wf-day-date {
+      font-size: 0.9rem;
+      font-weight: 800;
+      margin: 4px 0;
+    }
+    .wf-day-price {
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-family: var(--wf-font-mono);
+      margin: 4px 0;
+    }
+    .wf-day-sub {
+      font-size: 0.7rem;
+      color: var(--wf-gray-dark);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[AERO-LÍNEAS] - Portal de Pasajeros</div>
+      <div class="wf-user-session">
+        <span>Sesión activa: <strong>juan.perez@email.com</strong> (Pasajero)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Mi Cuenta / Salir</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="index_opcionales.html" class="wf-nav-link">Índice Opcionales <span class="wf-badge-us">US-37..43</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Buscador Base <span class="wf-badge-us">US-08..14</span></a>
+      <a href="seleccion_asiento.html" class="wf-nav-link">1. Elegir Asientos <span class="wf-badge-us">US-37</span></a>
+      <a href="equipaje_adicional.html" class="wf-nav-link">2. Equipaje Bodega <span class="wf-badge-us">US-41</span></a>
+      <a href="checkin_online.html" class="wf-nav-link">3. Check-in y Embarque <span class="wf-badge-us">US-38</span></a>
+      <a href="cambio_cancelacion_pasajero.html" class="wf-nav-link">Cambio/Cancelación <span class="wf-badge-us">US-39</span></a>
+      <a href="catalogo_maestro.html" class="wf-nav-link">Catálogo Maestro <span class="wf-badge-us">US-40</span></a>
+      <a href="busqueda_flexible.html" class="wf-nav-link active">Fechas Flexibles <span class="wf-badge-us">US-42</span></a>
+      <a href="auditoria_vuelos.html" class="wf-nav-link">Auditoría Vuelos <span class="wf-badge-us">US-43</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Portal Web &gt; Buscador de Vuelos &gt; <strong>Búsqueda Flexible por Fechas Cercanas (&plusmn;3 Días)</strong></div>
+
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Búsqueda Flexible y Comparador por Fechas Cercanas (&plusmn;3 Días)</h1>
+        <p class="wf-subtitle">Visualización de opciones y precios de los días previos y posteriores a la fecha buscada cuando no hay vuelos en la fecha exacta.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-42 (Opcional) | RFO-06</span>
+        <span class="wf-tag wf-tag-active">Rango: &plusmn;3 Días</span>
+      </div>
+    </div>
+
+    <!-- Regla de Negocio US-42 / RFO-06 -->
+    <div class="wf-alert">
+      <div>
+        <strong>Criterios de Aceptación US-42 (RFO-06 - Opcional):</strong><br>
+        • <strong>Grilla de Alternativas en Rango de &plusmn;3 Días:</strong> Cuando no se encuentren vuelos disponibles en la fecha exacta consultada (o cuando el pasajero active la comparación flexible), el sistema despliega una grilla comparativa abarcando desde <strong>3 días antes (-3) hasta 3 días después (+3)</strong>.<br>
+        • <strong>Comparación de Opciones y Tarifas:</strong> Muestra para cada día la tarifa más baja disponible y la cantidad de cupos para decidir antes de comprar.
+      </div>
+    </div>
+
+    <!-- SECCIÓN 1: PARÁMETROS DE BÚSQUEDA CON FECHA EXACTA SIN VUELOS -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Buscador con Fechas Flexibles] Consulta de Ruta y Fecha Base (US-42)</h2>
+        <label class="wf-checkbox-label" style="font-weight: 700;">
+          <input type="checkbox" checked> Mostrar grilla comparativa &plusmn;3 días (RFO-06)
+        </label>
+      </div>
+
+      <form action="#" method="GET" onsubmit="return false;">
+        <div class="wf-grid-4">
+          <div class="wf-form-group">
+            <label class="wf-label" for="flex-origen">Origen <span class="required">(*)</span></label>
+            <select id="flex-origen" class="wf-select">
+              <option value="AEP" selected>AEP - Buenos Aires (Aeroparque)</option>
+              <option value="EZE">EZE - Ezeiza</option>
+              <option value="COR">COR - Córdoba</option>
+            </select>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="flex-destino">Destino <span class="required">(*)</span></label>
+            <select id="flex-destino" class="wf-select">
+              <option value="COR" selected>COR - Córdoba (Pajas Blancas)</option>
+              <option value="MDZ">MDZ - Mendoza</option>
+              <option value="AEP">AEP - Buenos Aires</option>
+            </select>
+          </div>
+
+          <div class="wf-form-group">
+            <label class="wf-label" for="flex-fecha">Fecha Exacta Buscada <span class="required">(*)</span></label>
+            <input type="date" id="flex-fecha" class="wf-input" value="2026-10-01">
+            <span class="wf-help-text">Jueves 01/10/2026 (Día sin frecuencia en TR-001).</span>
+          </div>
+
+          <div class="wf-form-group" style="align-self: flex-end; margin-bottom: 22px;">
+            <button class="wf-btn wf-btn-primary" style="width: 100%;" type="button">
+              Buscar con Rango &plusmn;3 Días &rarr;
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <!-- SECCIÓN 2: GRILLA INTERACTIVA DE ALTERNATIVAS EN RANGO DE ±3 DÍAS (CRITERIO US-42) -->
+    <section class="wf-card" style="border: 2px solid var(--wf-black);">
+      <div class="wf-card-header">
+        <div>
+          <h2 class="wf-card-title">[Grilla de Alternativas &plusmn;3 Días] Comparador de Fechas Cercanas (28/09 al 04/10)</h2>
+          <p class="wf-subtitle">Haga clic en cualquiera de los días previos o posteriores con vuelos disponibles para inspeccionar sus horarios y precios.</p>
+        </div>
+        <span class="wf-tag wf-tag-active">Ventana: 7 Días (-3 a +3)</span>
+      </div>
+
+      <!-- Aviso de Fecha Exacta sin Vuelos -->
+      <div class="wf-alert" style="background-color: var(--wf-gray-lighter); border: 2px dashed var(--wf-black);">
+        <div>
+          <strong>ℹ️ Sin vuelos en la fecha exacta solicitada (Jueves 01/10/2026):</strong><br>
+          El trayecto <strong>AEP &rarr; COR (TR-001)</strong> opera los días Lunes, Miércoles, Viernes y Domingos. Se despliega automáticamente la grilla de <strong>&plusmn;3 días</strong> con <strong>4 fechas cercanas disponibles</strong>.
+        </div>
+      </div>
+
+      <!-- GRILLA DE 7 COLUMNAS: -3, -2, -1, 0 (Exacta), +1, +2, +3 -->
+      <div class="wf-flex-grid-7">
+
+        <!-- -3 Días: Lunes 28/09 -->
+        <div class="wf-day-cell" id="cell-m3" onclick="seleccionarDiaFlexible('m3', 'Lunes 28/09/2026 (-3 días)', 'VU-20260928-01', 42000, 90000, 64)">
+          <div class="wf-day-offset">-3 Días</div>
+          <div class="wf-day-date">Lun 28/09</div>
+          <div class="wf-day-price">$ 42.000</div>
+          <div class="wf-day-sub">1 vuelo &bull; 64 cupos</div>
+        </div>
+
+        <!-- -2 Días: Martes 29/09 (Sin vuelos) -->
+        <div class="wf-day-cell no-flights" title="Sin frecuencia programada los martes">
+          <div class="wf-day-offset">-2 Días</div>
+          <div class="wf-day-date">Mar 29/09</div>
+          <div class="wf-day-price">—</div>
+          <div class="wf-day-sub">Sin vuelos</div>
+        </div>
+
+        <!-- -1 Día: Miércoles 30/09 -->
+        <div class="wf-day-cell" id="cell-m1" onclick="seleccionarDiaFlexible('m1', 'Miércoles 30/09/2026 (-1 día)', 'VU-20260930-01', 45000, 95000, 92)">
+          <div class="wf-day-offset">-1 Día</div>
+          <div class="wf-day-date">Mié 30/09</div>
+          <div class="wf-day-price">$ 45.000</div>
+          <div class="wf-day-sub">1 vuelo &bull; 92 cupos</div>
+        </div>
+
+        <!-- FECHA EXACTA BUSCADA: Jueves 01/10 (Sin vuelos -> Dispara US-42) -->
+        <div class="wf-day-cell exact-empty" title="Fecha exacta buscada sin vuelos programados">
+          <div class="wf-day-offset" style="color: var(--wf-black);">★ Fecha Buscada</div>
+          <div class="wf-day-date">Jue 01/10</div>
+          <div style="font-size: 0.75rem; font-weight: 800; border: 1px solid var(--wf-black); padding: 2px 4px; margin: 4px 0;">
+            SIN VUELOS
+          </div>
+          <div class="wf-day-sub">Ver &plusmn;3 días</div>
+        </div>
+
+        <!-- +1 Día: Viernes 02/10 (Seleccionado por defecto) -->
+        <div class="wf-day-cell selected" id="cell-p1" onclick="seleccionarDiaFlexible('p1', 'Viernes 02/10/2026 (+1 día)', 'VU-20261002-01', 45000, 95000, 142)">
+          <div class="wf-day-offset">+1 Día (Seleccionado)</div>
+          <div class="wf-day-date">Vie 02/10</div>
+          <div class="wf-day-price">$ 45.000</div>
+          <div class="wf-day-sub">2 vuelos &bull; 147 cupos</div>
+        </div>
+
+        <!-- +2 Días: Sábado 03/10 (Sin vuelos) -->
+        <div class="wf-day-cell no-flights" title="Sin frecuencia programada los sábados">
+          <div class="wf-day-offset">+2 Días</div>
+          <div class="wf-day-date">Sáb 03/10</div>
+          <div class="wf-day-price">—</div>
+          <div class="wf-day-sub">Sin vuelos</div>
+        </div>
+
+        <!-- +3 Días: Domingo 04/10 (Mejor tarifa) -->
+        <div class="wf-day-cell" id="cell-p3" onclick="seleccionarDiaFlexible('p3', 'Domingo 04/10/2026 (+3 días)', 'VU-20261004-01', 41000, 89000, 150)">
+          <div class="wf-day-offset">+3 Días ★ Menor Precio</div>
+          <div class="wf-day-date">Dom 04/10</div>
+          <div class="wf-day-price">$ 41.000</div>
+          <div class="wf-day-sub">1 vuelo &bull; 150 cupos</div>
+        </div>
+
+      </div>
+
+      <!-- Tabla Comparativa Completa de Precios del Rango ±3 Días -->
+      <h3 style="font-size: 1rem; font-weight: 800; margin: 20px 0 10px; border-top: 1px solid var(--wf-gray-light); padding-top: 14px;">
+        Matriz Comparativa de Opciones y Tarifas en el Rango &plusmn;3 Días:
+      </h3>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>Desplazamiento</th>
+              <th>Fecha de Vuelo</th>
+              <th>Código Vuelo</th>
+              <th>Horario Salida / Llegada</th>
+              <th>Tarifa Economy</th>
+              <th>Tarifa Primera Clase</th>
+              <th>Cupos Disponibles</th>
+              <th style="text-align: right;">Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="wf-badge-us">-3 días</span></td>
+              <td>Lunes 28/09/2026</td>
+              <td><strong>VU-20260928-01</strong></td>
+              <td>08:30 &rarr; 10:00 hs</td>
+              <td><strong>$ 42.000</strong></td>
+              <td>$ 90.000</td>
+              <td>64 asientos libres</td>
+              <td style="text-align: right;">
+                <a href="reserva_pasajes.html" class="wf-btn wf-btn-outline wf-btn-sm">Elegir 28/09 &rarr;</a>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="wf-badge-us">-1 día</span></td>
+              <td>Miércoles 30/09/2026</td>
+              <td><strong>VU-20260930-01</strong></td>
+              <td>08:30 &rarr; 10:00 hs</td>
+              <td><strong>$ 45.000</strong></td>
+              <td>$ 95.000</td>
+              <td>92 asientos libres</td>
+              <td style="text-align: right;">
+                <a href="reserva_pasajes.html" class="wf-btn wf-btn-outline wf-btn-sm">Elegir 30/09 &rarr;</a>
+              </td>
+            </tr>
+            <tr style="background-color: #f2f2f2;">
+              <td><span class="wf-badge-us">0 (Exacta)</span></td>
+              <td>Jueves 01/10/2026</td>
+              <td><em>— Sin operaciones —</em></td>
+              <td>—</td>
+              <td>—</td>
+              <td>—</td>
+              <td><span class="wf-tag wf-tag-inactive">Sin vuelos en fecha exacta</span></td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-secondary wf-btn-sm disabled" disabled>No disponible</button>
+              </td>
+            </tr>
+            <tr style="background-color: var(--wf-gray-lighter); font-weight: 700;">
+              <td><span class="wf-badge-us">+1 día</span></td>
+              <td><strong>Viernes 02/10/2026</strong></td>
+              <td><strong>VU-20261002-01</strong></td>
+              <td>08:30 &rarr; 10:00 hs</td>
+              <td><strong>$ 45.000</strong></td>
+              <td>$ 95.000</td>
+              <td>142 Eco / 12 1ra</td>
+              <td style="text-align: right;">
+                <a href="reserva_pasajes.html" class="wf-btn wf-btn-primary wf-btn-sm">Reservar 02/10 &rarr;</a>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="wf-badge-us">+3 días</span></td>
+              <td>Domingo 04/10/2026</td>
+              <td><strong>VU-20261004-01</strong></td>
+              <td>08:30 &rarr; 10:00 hs</td>
+              <td><strong>$ 41.000</strong> <span class="wf-tag wf-tag-active">Menor Tarifa</span></td>
+              <td>$ 89.000</td>
+              <td>150 Eco / 16 1ra</td>
+              <td style="text-align: right;">
+                <a href="reserva_pasajes.html" class="wf-btn wf-btn-outline wf-btn-sm">Elegir 04/10 &rarr;</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: DETALLE DE VUELO DEL DÍA CERCANO SELECCIONADO -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">Detalle de Alternativa Seleccionada: <span id="det-dia-titulo">Viernes 02/10/2026 (+1 día)</span></h2>
+        <span class="wf-tag wf-tag-active" id="det-vuelo-id">VU-20261002-01</span>
+      </div>
+
+      <article class="wf-flight-card" style="margin-bottom: 0;">
+        <div class="wf-flight-main">
+          <div>
+            <div style="font-size: 0.85rem; color: var(--wf-gray-dark); margin-bottom: 8px;">
+              Alternativa cercana sugerida por <strong>US-42 (RFO-06)</strong> &bull; Aeronave: Boeing 737-800
+            </div>
+            <div class="wf-flight-route">
+              <div>
+                <div class="wf-flight-time">08:30</div>
+                <div class="wf-flight-airport">AEP (Buenos Aires)</div>
+              </div>
+              <div class="wf-flight-arrow">
+                <div class="wf-flight-duration">1h 30m directo</div>
+                &rarr;
+              </div>
+              <div>
+                <div class="wf-flight-time">10:00</div>
+                <div class="wf-flight-airport">COR (Córdoba)</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="wf-class-box">
+            <div class="wf-class-title">Clase Economy</div>
+            <div class="wf-class-price" id="det-precio-eco">$ 45.000</div>
+            <div class="wf-class-seats">Cupos libres: <strong id="det-cupos-eco">142</strong></div>
+            <a href="reserva_pasajes.html" class="wf-btn wf-btn-primary" style="width: 100%;">
+              Seleccionar Economy &rarr;
+            </a>
+          </div>
+
+          <div class="wf-class-box">
+            <div class="wf-class-title">Primera Clase</div>
+            <div class="wf-class-price" id="det-precio-pri">$ 95.000</div>
+            <div class="wf-class-seats">Cupos libres: <strong>12</strong></div>
+            <a href="reserva_pasajes.html" class="wf-btn wf-btn-outline" style="width: 100%;">
+              Seleccionar Primera &rarr;
+            </a>
+          </div>
+        </div>
+      </article>
+    </section>
+
+  </main>
+
+  <script>
+    function seleccionarDiaFlexible(cellKey, diaTitulo, vueloId, precioEco, precioPri, cuposEco) {
+      ['m3', 'm1', 'p1', 'p3'].forEach(k => {
+        const el = document.getElementById('cell-' + k);
+        if (el) {
+          if (k === cellKey) {
+            el.classList.add('selected');
+          } else {
+            el.classList.remove('selected');
+          }
+        }
+      });
+
+      document.getElementById('det-dia-titulo').textContent = diaTitulo;
+      document.getElementById('det-vuelo-id').textContent = vueloId;
+      document.getElementById('det-precio-eco').textContent = `$ ${precioEco.toLocaleString('es-AR')}`;
+      document.getElementById('det-precio-pri').textContent = `$ ${precioPri.toLocaleString('es-AR')}`;
+      document.getElementById('det-cupos-eco').textContent = cuposEco;
+    }
+  </script>
+
+</body>
+</html>

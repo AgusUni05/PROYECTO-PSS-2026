@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - Paso 1 Check-In (US-37 Opcional): Selección de Asiento en Mapa de Cabina</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos específicos en estricta escala de grises para el Mapa de Cabina (US-37) */
+    .wf-cabin-wrapper {
+      border: 2px solid var(--wf-black);
+      border-radius: 28px 28px 6px 6px;
+      background-color: var(--wf-white);
+      padding: 20px 16px;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+    .wf-cabin-cockpit {
+      text-align: center;
+      border-bottom: 2px dashed var(--wf-gray-mid);
+      padding-bottom: 10px;
+      margin-bottom: 14px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--wf-dark);
+    }
+    .wf-cabin-section-header {
+      background-color: var(--wf-gray-lighter);
+      border: 1px solid var(--wf-black);
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      text-align: center;
+      margin: 12px 0 8px 0;
+      border-radius: var(--wf-radius);
+    }
+    .wf-seat-row {
+      display: grid;
+      grid-template-columns: 34px repeat(3, 1fr) 36px repeat(3, 1fr) 34px;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .wf-seat-row.first-class-row {
+      grid-template-columns: 34px repeat(2, 1fr) 50px repeat(2, 1fr) 34px;
+    }
+    .wf-row-num {
+      font-family: var(--wf-font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-align: center;
+      color: var(--wf-gray-dark);
+    }
+    .wf-aisle {
+      text-align: center;
+      font-size: 0.68rem;
+      font-family: var(--wf-font-mono);
+      color: var(--wf-gray-mid);
+      user-select: none;
+    }
+    .wf-seat-btn {
+      height: 36px;
+      border: 1px solid var(--wf-black);
+      border-radius: 5px 5px 2px 2px;
+      background-color: var(--wf-white);
+      color: var(--wf-black);
+      font-family: var(--wf-font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.1s ease;
+    }
+    .wf-seat-btn:hover:not(:disabled) {
+      background-color: var(--wf-gray-lighter);
+      outline: 2px solid var(--wf-black);
+    }
+    .wf-seat-btn.selected {
+      background-color: var(--wf-black);
+      color: var(--wf-white);
+      border: 2px solid var(--wf-black);
+      font-weight: 800;
+    }
+    .wf-seat-btn.occupied {
+      background-color: var(--wf-gray-lighter);
+      color: var(--wf-gray-mid);
+      border: 1px dashed var(--wf-gray-mid);
+      cursor: not-allowed;
+      text-decoration: line-through;
+    }
+    .wf-seat-btn.locked-class {
+      background-color: #ededed;
+      color: var(--wf-gray-mid);
+      border: 1px dotted var(--wf-gray-mid);
+      cursor: not-allowed;
+    }
+    .wf-legend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+      font-size: 0.8rem;
+    }
+    .wf-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--wf-gray-light);
+      padding: 6px 8px;
+      border-radius: var(--wf-radius);
+      background-color: var(--wf-white);
+    }
+    .wf-legend-swatch {
+      width: 26px;
+      height: 24px;
+      border-radius: 3px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--wf-font-mono);
+      font-size: 0.7rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .wf-pax-selector-card {
+      border: 1px solid var(--wf-gray-mid);
+      border-radius: var(--wf-radius);
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      background-color: var(--wf-white);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .wf-pax-selector-card.active {
+      border: 2px solid var(--wf-black);
+      background-color: var(--wf-gray-lighter);
+    }
+    .wf-step-link {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[AERO-LÍNEAS] - Portal de Pasajeros</div>
+      <div class="wf-user-session">
+        <span>Sesión activa: <strong>juan.perez@email.com</strong> (Pasajero Autenticado)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Mi Cuenta / Salir</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="index_opcionales.html" class="wf-nav-link">Índice Opcionales <span class="wf-badge-us">US-37..43</span></a>
+      <a href="mis_compras.html" class="wf-nav-link">Mis Compras <span class="wf-badge-us">US-35/36</span></a>
+      <a href="seleccion_asiento.html" class="wf-nav-link active">1. Elegir Asientos <span class="wf-badge-us">US-37</span></a>
+      <a href="equipaje_adicional.html" class="wf-nav-link">2. Equipaje Bodega <span class="wf-badge-us">US-41</span></a>
+      <a href="checkin_online.html" class="wf-nav-link">3. Check-in y Embarque <span class="wf-badge-us">US-38</span></a>
+      <a href="cambio_cancelacion_pasajero.html" class="wf-nav-link">Cambio/Cancelación <span class="wf-badge-us">US-39</span></a>
+      <a href="catalogo_maestro.html" class="wf-nav-link">Catálogo Maestro <span class="wf-badge-us">US-40</span></a>
+      <a href="busqueda_flexible.html" class="wf-nav-link">Fechas Flexibles <span class="wf-badge-us">US-42</span></a>
+      <a href="auditoria_vuelos.html" class="wf-nav-link">Auditoría Vuelos <span class="wf-badge-us">US-43</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Portal Web &gt; Mis Compras &gt; Proceso de Check-In (RES-202610-ARG77) &gt; <strong>Paso 1: Elegir Asientos en Mapa de Cabina</strong></div>
+
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Paso 1: Selección de Asiento en Mapa de Cabina</h1>
+        <p class="wf-subtitle">Primer paso del proceso de Check-In: elija su ubicación en el mapa interactivo de cabina antes de configurar su equipaje y emitir las tarjetas de embarque.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-37 (Opcional) | RFO-01</span>
+        <span class="wf-tag wf-tag-active">Paso 1 de 3 &bull; Clase: ECONOMY</span>
+      </div>
+    </div>
+
+    <!-- Indicador de Progreso Secuencial del Flujo de Check-In: 1. Asientos -> 2. Equipaje -> 3. Check-in y Boarding Pass -->
+    <div class="wf-steps-bar">
+      <div class="wf-step-item active">
+        1. Elegir Asientos en Mapa de Cabina (US-37) [Actual]
+      </div>
+      <div class="wf-step-item">
+        <a href="equipaje_adicional.html" class="wf-step-link">2. Agregar o No Equipaje en Bodega (US-41) &rarr;</a>
+      </div>
+      <div class="wf-step-item">
+        <a href="checkin_online.html" class="wf-step-link">3. Confirmar Check-In y Tarjetas de Embarque (US-38) &rarr;</a>
+      </div>
+    </div>
+
+    <!-- Reglas de Negocio US-37 / RFO-01 -->
+    <div class="wf-alert">
+      <div>
+        <strong>Flujo de Check-In (Paso 1 de 3) y Criterios de Aceptación US-37 (RFO-01):</strong><br>
+        • <strong>Orden del Flujo:</strong> 1° Seleccionar asientos en el mapa de cabina (<strong>US-37</strong>) &rarr; 2° Agregar o no equipaje despachado en bodega (<strong>US-41</strong>) &rarr; 3° Confirmar el Check-In online y descargar las tarjetas de embarque (<strong>US-38</strong>).<br>
+        • <strong>Filtro por Clase Comprada:</strong> El mapa habilita exclusivamente las filas de la clase adquirida (<strong>Clase Economy: Filas 10 a 30</strong>) y bloquea Primera Clase.<br>
+        • <strong>Bloqueo del Asiento:</strong> Los asientos elegidos quedan bloqueados inmediatamente para que otros compradores no puedan seleccionarlos.
+      </div>
+    </div>
+
+    <!-- Layout Principal: Mapa de Cabina (Izquierda) y Panel de Control de Pasajeros (Derecha) -->
+    <div class="wf-grid-2" style="grid-template-columns: 1.25fr 1.15fr; align-items: start;">
+
+      <!-- COLUMNA IZQUIERDA: MAPA INTERACTIVO DE LA CABINA -->
+      <section class="wf-card">
+        <div class="wf-card-header">
+          <div>
+            <h2 class="wf-card-title">[Mapa de Cabina] Aeronave Boeing 737-800 (LV-ARG01)</h2>
+            <span style="font-size: 0.8rem; color: var(--wf-gray-dark);">Vuelo VU-20261002-01 (AEP &rarr; COR) &bull; Viernes 02/10/2026 08:30 hs</span>
+          </div>
+          <span class="wf-tag wf-tag-active">Vista Filtrada: Economy</span>
+        </div>
+
+        <!-- Leyenda de Estados de Asiento -->
+        <div class="wf-legend-grid">
+          <div class="wf-legend-item">
+            <span class="wf-legend-swatch" style="border: 1px solid var(--wf-black); background: var(--wf-white);">12A</span>
+            <span><strong>Disponible</strong> (Clase Comprada)</span>
+          </div>
+          <div class="wf-legend-item">
+            <span class="wf-legend-swatch" style="border: 2px solid var(--wf-black); background: var(--wf-black); color: var(--wf-white);">14A</span>
+            <span><strong>Seleccionado</strong> (Su reserva)</span>
+          </div>
+          <div class="wf-legend-item">
+            <span class="wf-legend-swatch" style="border: 1px dashed var(--wf-gray-mid); background: var(--wf-gray-lighter); color: var(--wf-gray-mid); text-decoration: line-through;">11B</span>
+            <span><strong>Ocupado / Bloqueado</strong> (Otro comprador)</span>
+          </div>
+          <div class="wf-legend-item">
+            <span class="wf-legend-swatch" style="border: 1px dotted var(--wf-gray-mid); background: #ededed; color: var(--wf-gray-mid);">🔒</span>
+            <span><strong>Otra Clase</strong> (Filtrado por US-37)</span>
+          </div>
+        </div>
+
+        <!-- Esquema Físico de Cabina -->
+        <div class="wf-cabin-wrapper">
+          <div class="wf-cabin-cockpit">
+            ▲ Cabina de Mando / Frente del Avión (LV-ARG01) ▲
+          </div>
+
+          <!-- SECCIÓN PRIMERA CLASE: BLOQUEADA POR FILTRO DE CLASE COMPRADA (US-37) -->
+          <div class="wf-cabin-section-header" style="border-style: dashed; color: var(--wf-gray-dark);">
+            🔒 Primera Clase (Filas 1 a 4) — Bloqueada (Pasaje adquirido en Economy)
+          </div>
+
+          <div class="wf-seat-row first-class-row">
+            <div class="wf-row-num">F1</div>
+            <button type="button" class="wf-seat-btn locked-class" disabled title="Criterio US-37: Filtrado por clase comprada (Requiere boleto Primera Clase)">🔒 1A</button>
+            <button type="button" class="wf-seat-btn locked-class" disabled title="Criterio US-37: Filtrado por clase comprada">🔒 1C</button>
+            <div class="wf-aisle">PASILLO</div>
+            <button type="button" class="wf-seat-btn locked-class" disabled title="Criterio US-37: Filtrado por clase comprada">🔒 1D</button>
+            <button type="button" class="wf-seat-btn locked-class" disabled title="Criterio US-37: Filtrado por clase comprada">🔒 1F</button>
+            <div class="wf-row-num">F1</div>
+          </div>
+
+          <div class="wf-seat-row first-class-row">
+            <div class="wf-row-num">F2</div>
+            <button type="button" class="wf-seat-btn locked-class" disabled title="Criterio US-37: Filtrado por clase comprada">🔒 2A</button>
+            <button type="button" class="wf-seat-btn locked-class" disabled title="Criterio US-37: Filtrado por clase comprada">🔒 2C</button>
+            <div class="wf-aisle">PASILLO</div>
+            <button type="button" class="wf-seat-btn locked-class" disabled title="Criterio US-37: Filtrado por clase comprada">🔒 2D</button>
+            <button type="button" class="wf-seat-btn locked-class" disabled title="Criterio US-37: Filtrado por clase comprada">🔒 2F</button>
+            <div class="wf-row-num">F2</div>
+          </div>
+
+          <!-- DIVISOR DE CABINA -->
+          <div class="wf-cabin-section-header" style="border: 2px solid var(--wf-black); background-color: var(--wf-black); color: var(--wf-white);">
+            ✓ Cabina Clase Economy Habilitada (Configuración 3-3: Ventanilla / Centro / Pasillo)
+          </div>
+
+          <!-- Encabezado de Columnas A B C - D E F -->
+          <div class="wf-seat-row" style="margin-bottom: 4px;">
+            <div class="wf-row-num">Fila</div>
+            <div class="wf-row-num">A (Vent)</div>
+            <div class="wf-row-num">B (Cent)</div>
+            <div class="wf-row-num">C (Pas)</div>
+            <div class="wf-aisle">|</div>
+            <div class="wf-row-num">D (Pas)</div>
+            <div class="wf-row-num">E (Cent)</div>
+            <div class="wf-row-num">F (Vent)</div>
+            <div class="wf-row-num">Fila</div>
+          </div>
+
+          <!-- Contenedor de Filas Economy Generadas / Interactivas -->
+          <div id="economy-seat-grid">
+            <!-- Fila 10 -->
+            <div class="wf-seat-row">
+              <div class="wf-row-num">10</div>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">10A</button>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">10B</button>
+              <button type="button" class="wf-seat-btn" data-seat="10C" onclick="selectSeat('10C')">10C</button>
+              <div class="wf-aisle">||</div>
+              <button type="button" class="wf-seat-btn" data-seat="10D" onclick="selectSeat('10D')">10D</button>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">10E</button>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">10F</button>
+              <div class="wf-row-num">10</div>
+            </div>
+
+            <!-- Fila 11 -->
+            <div class="wf-seat-row">
+              <div class="wf-row-num">11</div>
+              <button type="button" class="wf-seat-btn" data-seat="11A" onclick="selectSeat('11A')">11A</button>
+              <button type="button" class="wf-seat-btn" data-seat="11B" onclick="selectSeat('11B')">11B</button>
+              <button type="button" class="wf-seat-btn" data-seat="11C" onclick="selectSeat('11C')">11C</button>
+              <div class="wf-aisle">||</div>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">11D</button>
+              <button type="button" class="wf-seat-btn" data-seat="11E" onclick="selectSeat('11E')">11E</button>
+              <button type="button" class="wf-seat-btn" data-seat="11F" onclick="selectSeat('11F')">11F</button>
+              <div class="wf-row-num">11</div>
+            </div>
+
+            <!-- Fila 12 (Salida de Emergencia) -->
+            <div style="text-align: center; font-size: 0.7rem; font-weight: 700; color: var(--wf-gray-dark); border-top: 1px dashed var(--wf-gray-mid); border-bottom: 1px dashed var(--wf-gray-mid); padding: 2px 0; margin: 6px 0;">
+              &laquo; SALIDA DE EMERGENCIA SOBRE PLANO DE ALAS &raquo;
+            </div>
+
+            <div class="wf-seat-row">
+              <div class="wf-row-num">12</div>
+              <button type="button" class="wf-seat-btn" data-seat="12A" onclick="selectSeat('12A')">12A</button>
+              <button type="button" class="wf-seat-btn" data-seat="12B" onclick="selectSeat('12B')">12B</button>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">12C</button>
+              <div class="wf-aisle">||</div>
+              <button type="button" class="wf-seat-btn" data-seat="12D" onclick="selectSeat('12D')">12D</button>
+              <button type="button" class="wf-seat-btn" data-seat="12E" onclick="selectSeat('12E')">12E</button>
+              <button type="button" class="wf-seat-btn" data-seat="12F" onclick="selectSeat('12F')">12F</button>
+              <div class="wf-row-num">12</div>
+            </div>
+
+            <!-- Fila 13 -->
+            <div class="wf-seat-row">
+              <div class="wf-row-num">13</div>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">13A</button>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">13B</button>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">13C</button>
+              <div class="wf-aisle">||</div>
+              <button type="button" class="wf-seat-btn" data-seat="13D" onclick="selectSeat('13D')">13D</button>
+              <button type="button" class="wf-seat-btn" data-seat="13E" onclick="selectSeat('13E')">13E</button>
+              <button type="button" class="wf-seat-btn" data-seat="13F" onclick="selectSeat('13F')">13F</button>
+              <div class="wf-row-num">13</div>
+            </div>
+
+            <!-- Fila 14 (Seleccionados por defecto para los 3 pasajeros de RES-202610-ARG77) -->
+            <div class="wf-seat-row">
+              <div class="wf-row-num"><strong>14</strong></div>
+              <button type="button" class="wf-seat-btn selected" data-seat="14A" onclick="selectSeat('14A')">14A</button>
+              <button type="button" class="wf-seat-btn selected" data-seat="14B" onclick="selectSeat('14B')">14B</button>
+              <button type="button" class="wf-seat-btn selected" data-seat="14C" onclick="selectSeat('14C')">14C</button>
+              <div class="wf-aisle">||</div>
+              <button type="button" class="wf-seat-btn" data-seat="14D" onclick="selectSeat('14D')">14D</button>
+              <button type="button" class="wf-seat-btn" data-seat="14E" onclick="selectSeat('14E')">14E</button>
+              <button type="button" class="wf-seat-btn" data-seat="14F" onclick="selectSeat('14F')">14F</button>
+              <div class="wf-row-num"><strong>14</strong></div>
+            </div>
+
+            <!-- Fila 15 -->
+            <div class="wf-seat-row">
+              <div class="wf-row-num">15</div>
+              <button type="button" class="wf-seat-btn" data-seat="15A" onclick="selectSeat('15A')">15A</button>
+              <button type="button" class="wf-seat-btn" data-seat="15B" onclick="selectSeat('15B')">15B</button>
+              <button type="button" class="wf-seat-btn" data-seat="15C" onclick="selectSeat('15C')">15C</button>
+              <div class="wf-aisle">||</div>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">15D</button>
+              <button type="button" class="wf-seat-btn occupied" disabled title="Bloqueado: Asiento ocupado por otro comprador">15E</button>
+              <button type="button" class="wf-seat-btn" data-seat="15F" onclick="selectSeat('15F')">15F</button>
+              <div class="wf-row-num">15</div>
+            </div>
+
+            <!-- Fila 16 -->
+            <div class="wf-seat-row">
+              <div class="wf-row-num">16</div>
+              <button type="button" class="wf-seat-btn" data-seat="16A" onclick="selectSeat('16A')">16A</button>
+              <button type="button" class="wf-seat-btn" data-seat="16B" onclick="selectSeat('16B')">16B</button>
+              <button type="button" class="wf-seat-btn" data-seat="16C" onclick="selectSeat('16C')">16C</button>
+              <div class="wf-aisle">||</div>
+              <button type="button" class="wf-seat-btn" data-seat="16D" onclick="selectSeat('16D')">16D</button>
+              <button type="button" class="wf-seat-btn" data-seat="16E" onclick="selectSeat('16E')">16E</button>
+              <button type="button" class="wf-seat-btn" data-seat="16F" onclick="selectSeat('16F')">16F</button>
+              <div class="wf-row-num">16</div>
+            </div>
+          </div>
+
+          <div style="text-align: center; font-size: 0.75rem; color: var(--wf-gray-dark); border-top: 2px dashed var(--wf-gray-mid); padding-top: 8px; margin-top: 10px;">
+            ▼ Continúa Cabina Economy (Filas 17 a 30) &bull; Sanitarios Traseros ▼
+          </div>
+        </div>
+      </section>
+
+      <!-- COLUMNA DERECHA: ASIGNACIÓN POR PASAJERO Y AVANCE AL PASO 2 (EQUIPAJE) -->
+      <div>
+
+        <!-- Panel de Selección de Pasajero Activo -->
+        <section class="wf-card">
+          <div class="wf-card-header">
+            <h2 class="wf-card-title">1. Asignación de Asientos por Pasajero (RES-202610-ARG77)</h2>
+            <span class="wf-tag wf-tag-active">3 Pasajeros</span>
+          </div>
+
+          <p class="wf-subtitle" style="margin-bottom: 12px;">
+            Seleccione un pasajero de la lista y haga clic en un asiento libre del mapa de cabina para elegir dónde se sienta:
+          </p>
+
+          <!-- Pasajero 1 -->
+          <div class="wf-pax-selector-card active" id="pax-card-0" onclick="setActivePassenger(0)">
+            <div>
+              <div style="font-weight: 800; font-size: 0.9rem;">1. PÉREZ, JUAN CARLOS (Titular)</div>
+              <div style="font-size: 0.78rem; color: var(--wf-gray-dark);">DNI 32.456.789 &bull; Boleto Clase Economy</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.7rem; display: block; text-transform: uppercase;">Asiento:</span>
+              <span class="wf-tag wf-tag-active" id="pax-seat-badge-0" style="font-size: 0.95rem; font-family: var(--wf-font-mono);">14A</span>
+            </div>
+          </div>
+
+          <!-- Pasajero 2 -->
+          <div class="wf-pax-selector-card" id="pax-card-1" onclick="setActivePassenger(1)">
+            <div>
+              <div style="font-weight: 800; font-size: 0.9rem;">2. GONZÁLEZ, MARÍA ELENA</div>
+              <div style="font-size: 0.78rem; color: var(--wf-gray-dark);">DNI 34.123.987 &bull; Boleto Clase Economy</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.7rem; display: block; text-transform: uppercase;">Asiento:</span>
+              <span class="wf-tag wf-tag-active" id="pax-seat-badge-1" style="font-size: 0.95rem; font-family: var(--wf-font-mono);">14B</span>
+            </div>
+          </div>
+
+          <!-- Pasajero 3 -->
+          <div class="wf-pax-selector-card" id="pax-card-2" onclick="setActivePassenger(2)">
+            <div>
+              <div style="font-weight: 800; font-size: 0.9rem;">3. PÉREZ, LUCAS</div>
+              <div style="font-size: 0.78rem; color: var(--wf-gray-dark);">DNI 38.990.112 &bull; Boleto Clase Economy</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="font-size: 0.7rem; display: block; text-transform: uppercase;">Asiento:</span>
+              <span class="wf-tag wf-tag-active" id="pax-seat-badge-2" style="font-size: 0.95rem; font-family: var(--wf-font-mono);">14C</span>
+            </div>
+          </div>
+
+          <div class="wf-btn-group" style="margin-top: 12px; justify-content: space-between;">
+            <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="autoAssignContiguous()">
+              ↻ Reubicar Juntos en Fila Libre (16A-16C)
+            </button>
+            <button class="wf-btn wf-btn-secondary wf-btn-sm" type="button" onclick="resetDefaultSeats()">
+              Restaurar 14A-14C
+            </button>
+          </div>
+        </section>
+
+        <!-- Panel de Estado de Bloqueo y Avance al Paso 2 (Agregar o No Equipaje US-41) -->
+        <section class="wf-summary-card">
+          <div class="wf-card-header" style="border-bottom: 2px solid var(--wf-black);">
+            <h3 class="wf-card-title">2. Bloqueo de Asientos y Siguiente Paso</h3>
+            <span class="wf-tag wf-tag-active">Paso 1 &rarr; Paso 2</span>
+          </div>
+
+          <div class="wf-summary-row">
+            <span>Vuelo / Aeronave:</span>
+            <strong>VU-20261002-01 (B737-800)</strong>
+          </div>
+          <div class="wf-summary-row">
+            <span>Filtro de Cabina Aplicado:</span>
+            <strong>Solo Clase Economy (RFO-01)</strong>
+          </div>
+          <div class="wf-summary-row">
+            <span>Asientos Bloqueados por su Grupo:</span>
+            <strong id="summary-seats-list">14A, 14B, 14C</strong>
+          </div>
+          <div class="wf-summary-row">
+            <span>Siguiente Paso del Flujo:</span>
+            <strong>Paso 2: Agregar o No Equipaje (US-41)</strong>
+          </div>
+
+          <div class="wf-annotation" style="margin-top: 12px; background-color: var(--wf-white);">
+            <strong>🔒 Bloqueo Concurrente (Criterio US-37):</strong><br>
+            Al confirmar sus asientos (<span id="lock-seats-text"><strong>14A, 14B y 14C</strong></span>), estos quedan bloqueados para otros compradores y usted avanza al <strong>Paso 2 (Selección opcional de equipaje en bodega - US-41)</strong> antes de emitir sus tarjetas de embarque.
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
+            <a href="equipaje_adicional.html" class="wf-btn wf-btn-primary wf-btn-lg" style="width: 100%; text-align: center;" onclick="confirmarSeleccionAsientos()">
+              Confirmar Asientos y Continuar a Equipaje (Paso 2 - US-41) &rarr;
+            </a>
+            <a href="mis_compras.html" class="wf-btn wf-btn-outline wf-btn-sm" style="width: 100%; text-align: center;">
+              &larr; Volver a Mis Compras
+            </a>
+          </div>
+        </section>
+
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    let activePaxIndex = 0;
+    const passengerSeats = ['14A', '14B', '14C'];
+
+    function setActivePassenger(index) {
+      activePaxIndex = index;
+      for (let i = 0; i < 3; i++) {
+        const card = document.getElementById('pax-card-' + i);
+        if (i === index) {
+          card.classList.add('active');
+        } else {
+          card.classList.remove('active');
+        }
+      }
+    }
+
+    function selectSeat(seatCode) {
+      const existingOwner = passengerSeats.indexOf(seatCode);
+      if (existingOwner !== -1 && existingOwner !== activePaxIndex) {
+        alert(`El asiento ${seatCode} ya está asignado al Pasajero ${existingOwner + 1} de su mismo grupo.`);
+        return;
+      }
+
+      passengerSeats[activePaxIndex] = seatCode;
+      renderSeatMap();
+      setActivePassenger((activePaxIndex + 1) % 3);
+    }
+
+    function renderSeatMap() {
+      const buttons = document.querySelectorAll('#economy-seat-grid .wf-seat-btn[data-seat]');
+      buttons.forEach(btn => {
+        const code = btn.getAttribute('data-seat');
+        if (passengerSeats.includes(code)) {
+          btn.classList.add('selected');
+        } else {
+          btn.classList.remove('selected');
+        }
+      });
+
+      for (let i = 0; i < 3; i++) {
+        document.getElementById('pax-seat-badge-' + i).textContent = passengerSeats[i];
+      }
+
+      const listStr = passengerSeats.join(', ');
+      document.getElementById('summary-seats-list').textContent = listStr;
+      document.getElementById('lock-seats-text').innerHTML = `<strong>${listStr}</strong>`;
+    }
+
+    function autoAssignContiguous() {
+      passengerSeats[0] = '16A';
+      passengerSeats[1] = '16B';
+      passengerSeats[2] = '16C';
+      renderSeatMap();
+    }
+
+    function resetDefaultSeats() {
+      passengerSeats[0] = '14A';
+      passengerSeats[1] = '14B';
+      passengerSeats[2] = '14C';
+      renderSeatMap();
+    }
+
+    function confirmarSeleccionAsientos() {
+      alert(`¡Paso 1 completado (US-37)!\nAsientos ${passengerSeats.join(', ')} confirmados y bloqueados en cabina para su grupo.\n\nAvanzando al Paso 2: Agregar o No Equipaje en Bodega (US-41).`);
+    }
+  </script>
+
+</body>
+</html>

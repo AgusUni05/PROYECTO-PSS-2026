@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - Paso 2 Check-In (US-41 Opcional): Agregar o No Equipaje con Cargo</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .wf-step-link {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+    .wf-mode-card {
+      border: 2px solid var(--wf-gray-mid);
+      border-radius: var(--wf-radius);
+      padding: 14px;
+      background-color: var(--wf-white);
+      cursor: pointer;
+      transition: all 0.1s ease;
+    }
+    .wf-mode-card.active {
+      border: 2px solid var(--wf-black);
+      background-color: var(--wf-gray-lighter);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[AERO-LÍNEAS] - Portal de Pasajeros</div>
+      <div class="wf-user-session">
+        <span>Sesión activa: <strong>juan.perez@email.com</strong> (Pasajero Autenticado)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Mi Cuenta / Salir</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="index_opcionales.html" class="wf-nav-link">Índice Opcionales <span class="wf-badge-us">US-37..43</span></a>
+      <a href="mis_compras.html" class="wf-nav-link">Mis Compras <span class="wf-badge-us">US-35/36</span></a>
+      <a href="seleccion_asiento.html" class="wf-nav-link">1. Elegir Asientos <span class="wf-badge-us">US-37</span></a>
+      <a href="equipaje_adicional.html" class="wf-nav-link active">2. Equipaje Bodega <span class="wf-badge-us">US-41</span></a>
+      <a href="checkin_online.html" class="wf-nav-link">3. Check-in y Embarque <span class="wf-badge-us">US-38</span></a>
+      <a href="cambio_cancelacion_pasajero.html" class="wf-nav-link">Cambio/Cancelación <span class="wf-badge-us">US-39</span></a>
+      <a href="catalogo_maestro.html" class="wf-nav-link">Catálogo Maestro <span class="wf-badge-us">US-40</span></a>
+      <a href="busqueda_flexible.html" class="wf-nav-link">Fechas Flexibles <span class="wf-badge-us">US-42</span></a>
+      <a href="auditoria_vuelos.html" class="wf-nav-link">Auditoría Vuelos <span class="wf-badge-us">US-43</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Portal Web &gt; Mis Compras &gt; Proceso de Check-In (RES-202610-ARG77) &gt; <strong>Paso 2: Agregar o No Equipaje en Bodega</strong></div>
+
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Paso 2: Gestión de Equipaje Despachado con Cargo (Opcional)</h1>
+        <p class="wf-subtitle">Luego de elegir sus asientos (14A, 14B, 14C), decida si desea agregar valijas en bodega con cargo o continuar sin equipaje adicional hacia el Check-In y Tarjetas de Embarque.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-41 (Opcional) | RFO-05</span>
+        <span class="wf-tag wf-tag-active">Paso 2 de 3 &bull; Reserva: RES-202610-ARG77</span>
+      </div>
+    </div>
+
+    <!-- Indicador de Progreso Secuencial del Flujo de Check-In: 1. Asientos ✓ -> 2. Equipaje [Actual] -> 3. Check-in y Boarding Pass -->
+    <div class="wf-steps-bar">
+      <div class="wf-step-item completed">
+        <a href="seleccion_asiento.html" class="wf-step-link">1. Asientos Elegidos: 14A, 14B, 14C (US-37) ✓</a>
+      </div>
+      <div class="wf-step-item active">
+        2. Agregar o No Equipaje en Bodega (US-41) [Actual]
+      </div>
+      <div class="wf-step-item">
+        <a href="checkin_online.html" class="wf-step-link">3. Realizar Check-In y Tarjetas de Embarque (US-38) &rarr;</a>
+      </div>
+    </div>
+
+    <!-- Regla de Negocio US-41 / RFO-05 -->
+    <div class="wf-alert">
+      <div>
+        <strong>Flujo de Check-In (Paso 2 de 3) y Criterios de Aceptación US-41 (RFO-05):</strong><br>
+        • <strong>Decisión del Pasajero (Agregar o No Equipaje):</strong> Tras haber seleccionado los asientos en cabina (Paso 1), el pasajero puede optar por <strong>agregar valijas adicionales en bodega</strong> o <strong>continuar sin equipaje adicional ($ 0)</strong> directamente al Paso 3 (Check-In y emisión de tarjetas de embarque).<br>
+        • <strong>Adición al Total y Desglose en Factura:</strong> Si suma valijas despachadas (15 kg o 23 kg), el importe se adiciona al total y se desglosa detalladamente en la Factura Electrónica.
+      </div>
+    </div>
+
+    <!-- SELECTOR DE MODALIDAD: AGREGAR EQUIPAJE EN BODEGA VS. NO AGREGAR EQUIPAJE -->
+    <section class="wf-card" style="border: 2px solid var(--wf-black);">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">1. ¿Desea agregar equipaje despachado en bodega para este vuelo? (US-41)</h2>
+        <span class="wf-tag wf-tag-active">Asientos Confirmados: 14A, 14B, 14C</span>
+      </div>
+
+      <div class="wf-grid-2">
+        <!-- Opción 1: Sí, agregar valijas en bodega con cargo -->
+        <div class="wf-mode-card active" id="mode-con-equipaje" onclick="seleccionarModoEquipaje(true)">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="font-size: 0.95rem;">
+              <input type="radio" name="modo_equipaje" id="rad-con-bag" checked> Opción A: Sí, agregar valijas en bodega (Con Cargo)
+            </strong>
+            <span class="wf-tag wf-tag-active">US-41 Activo</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--wf-gray-dark);">
+            Seleccione cuántas piezas de 15 kg ($ 18.000) o 23 kg ($ 25.000) desea despachar por pasajero. Se sumará al total y se detallará en su factura antes de emitir las tarjetas de embarque.
+          </p>
+        </div>
+
+        <!-- Opción 2: No agregar equipaje adicional (Continuar directo al Check-In) -->
+        <div class="wf-mode-card" id="mode-sin-equipaje" onclick="seleccionarModoEquipaje(false)">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <strong style="font-size: 0.95rem;">
+              <input type="radio" name="modo_equipaje" id="rad-sin-bag"> Opción B: No agregar equipaje en bodega ($ 0 Adicional)
+            </strong>
+            <span class="wf-tag wf-tag-inactive">Solo Mano / Cabina</span>
+          </div>
+          <p style="font-size: 0.82rem; color: var(--wf-gray-dark);">
+            Viajar únicamente con el equipaje de mano incluido sin cargo (1 bolso personal + 1 carry-on de 10 kg) y avanzar directamente a realizar el Check-In y descargar las tarjetas de embarque.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Layout Principal: Selección por Pasajero (Izquierda) y Resumen de Total + Avance a Check-In (Derecha) -->
+    <div class="wf-grid-2" style="grid-template-columns: 1.55fr 1.15fr; align-items: start;">
+
+      <!-- COLUMNA IZQUIERDA: SELECCIÓN DE EQUIPAJE EN BODEGA POR PASAJERO -->
+      <div id="panel-seleccion-valijas">
+
+        <!-- Cuadro de Franquicia y Tarifas de Bodega -->
+        <section class="wf-card">
+          <div class="wf-card-header">
+            <h2 class="wf-card-title">2. Tarifario de Equipaje para Vuelo VU-20261002-01 (AEP &rarr; COR)</h2>
+            <span class="wf-tag wf-tag-inactive">Valores por Tramo</span>
+          </div>
+
+          <div class="wf-grid-3">
+            <div style="border: 1px solid var(--wf-gray-mid); padding: 12px; border-radius: var(--wf-radius); background-color: var(--wf-gray-lighter);">
+              <div style="font-weight: 800; font-size: 0.85rem;">🎒 Equipaje en Cabina</div>
+              <div style="font-size: 1.1rem; font-weight: 800; margin: 4px 0;">SIN CARGO ($ 0)</div>
+              <div style="font-size: 0.75rem; color: var(--wf-gray-dark);">1 bolso de mano (8 kg) + 1 carry-on (10 kg) incluidos en su tarifa.</div>
+            </div>
+
+            <div style="border: 2px solid var(--wf-black); padding: 12px; border-radius: var(--wf-radius);">
+              <div style="font-weight: 800; font-size: 0.85rem;">🧳 Valija Bodega 15 kg</div>
+              <div style="font-size: 1.1rem; font-weight: 800; margin: 4px 0;">$ 18.000 ARS <small>/ pieza</small></div>
+              <div style="font-size: 0.75rem; color: var(--wf-gray-dark);">Despachada en bodega (Dimensiones máx: 158 cm lineales).</div>
+            </div>
+
+            <div style="border: 2px solid var(--wf-black); padding: 12px; border-radius: var(--wf-radius);">
+              <div style="font-weight: 800; font-size: 0.85rem;">🧳 Valija Bodega 23 kg</div>
+              <div style="font-size: 1.1rem; font-weight: 800; margin: 4px 0;">$ 25.000 ARS <small>/ pieza</small></div>
+              <div style="font-size: 0.75rem; color: var(--wf-gray-dark);">Valija estándar en bodega (Hasta 23 kg por pieza despachada).</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Selección Individual por Pasajero -->
+        <section class="wf-card">
+          <div class="wf-card-header">
+            <h2 class="wf-card-title">3. Selección de Valijas en Bodega por Pasajero (US-41)</h2>
+            <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="seleccionarModoEquipaje(false)">
+              Dejar Todo en 0 (Sin Bodega)
+            </button>
+          </div>
+
+          <!-- PASAJERO 1 -->
+          <div class="wf-passenger-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span class="wf-passenger-badge" style="margin-bottom: 0;">Pasajero 1: PÉREZ, JUAN CARLOS (Asiento 14A — Elegido en Paso 1)</span>
+              <strong id="sub-pax-1" style="font-size: 0.9rem;">Subtotal Bodega: $ 43.000</strong>
+            </div>
+
+            <div class="wf-grid-2">
+              <div class="wf-form-group" style="margin-bottom: 0;">
+                <label class="wf-label" for="p1-bag-15">Valijas en Bodega de 15 kg ($ 18.000 c/u)</label>
+                <select id="p1-bag-15" class="wf-select" onchange="recalcularEquipaje()">
+                  <option value="0">0 valijas de 15 kg ($ 0)</option>
+                  <option value="1" selected>1 valija de 15 kg (+ $ 18.000)</option>
+                  <option value="2">2 valijas de 15 kg (+ $ 36.000)</option>
+                </select>
+              </div>
+
+              <div class="wf-form-group" style="margin-bottom: 0;">
+                <label class="wf-label" for="p1-bag-23">Valijas en Bodega de 23 kg ($ 25.000 c/u)</label>
+                <select id="p1-bag-23" class="wf-select" onchange="recalcularEquipaje()">
+                  <option value="0">0 valijas de 23 kg ($ 0)</option>
+                  <option value="1" selected>1 valija de 23 kg (+ $ 25.000)</option>
+                  <option value="2">2 valijas de 23 kg (+ $ 50.000)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- PASAJERO 2 -->
+          <div class="wf-passenger-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span class="wf-passenger-badge" style="margin-bottom: 0;">Pasajero 2: GONZÁLEZ, MARÍA ELENA (Asiento 14B — Elegido en Paso 1)</span>
+              <strong id="sub-pax-2" style="font-size: 0.9rem;">Subtotal Bodega: $ 25.000</strong>
+            </div>
+
+            <div class="wf-grid-2">
+              <div class="wf-form-group" style="margin-bottom: 0;">
+                <label class="wf-label" for="p2-bag-15">Valijas en Bodega de 15 kg ($ 18.000 c/u)</label>
+                <select id="p2-bag-15" class="wf-select" onchange="recalcularEquipaje()">
+                  <option value="0" selected>0 valijas de 15 kg ($ 0)</option>
+                  <option value="1">1 valija de 15 kg (+ $ 18.000)</option>
+                  <option value="2">2 valijas de 15 kg (+ $ 36.000)</option>
+                </select>
+              </div>
+
+              <div class="wf-form-group" style="margin-bottom: 0;">
+                <label class="wf-label" for="p2-bag-23">Valijas en Bodega de 23 kg ($ 25.000 c/u)</label>
+                <select id="p2-bag-23" class="wf-select" onchange="recalcularEquipaje()">
+                  <option value="0">0 valijas de 23 kg ($ 0)</option>
+                  <option value="1" selected>1 valija de 23 kg (+ $ 25.000)</option>
+                  <option value="2">2 valijas de 23 kg (+ $ 50.000)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- PASAJERO 3 -->
+          <div class="wf-passenger-card" style="margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <span class="wf-passenger-badge" style="margin-bottom: 0;">Pasajero 3: PÉREZ, LUCAS (Asiento 14C — Elegido en Paso 1)</span>
+              <strong id="sub-pax-3" style="font-size: 0.9rem;">Subtotal Bodega: $ 0</strong>
+            </div>
+
+            <div class="wf-grid-2">
+              <div class="wf-form-group" style="margin-bottom: 0;">
+                <label class="wf-label" for="p3-bag-15">Valijas en Bodega de 15 kg ($ 18.000 c/u)</label>
+                <select id="p3-bag-15" class="wf-select" onchange="recalcularEquipaje()">
+                  <option value="0" selected>0 valijas de 15 kg ($ 0)</option>
+                  <option value="1">1 valija de 15 kg (+ $ 18.000)</option>
+                  <option value="2">2 valijas de 15 kg (+ $ 36.000)</option>
+                </select>
+              </div>
+
+              <div class="wf-form-group" style="margin-bottom: 0;">
+                <label class="wf-label" for="p3-bag-23">Valijas en Bodega de 23 kg ($ 25.000 c/u)</label>
+                <select id="p3-bag-23" class="wf-select" onchange="recalcularEquipaje()">
+                  <option value="0" selected>0 valijas de 23 kg ($ 0)</option>
+                  <option value="1">1 valija de 23 kg (+ $ 25.000)</option>
+                  <option value="2">2 valijas de 23 kg (+ $ 50.000)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- COLUMNA DERECHA: ADICIÓN AL TOTAL Y AVANCE AL PASO 3 (CHECK-IN Y TARJETAS DE EMBARQUE) -->
+      <div>
+        <section class="wf-summary-card">
+          <div class="wf-card-header" style="border-bottom: 2px solid var(--wf-black);">
+            <h2 class="wf-card-title">Resumen de Compra y Avance al Check-In</h2>
+            <span class="wf-tag wf-tag-active">Paso 2 &rarr; Paso 3</span>
+          </div>
+
+          <div class="wf-summary-row">
+            <span>Paso 1 (Asientos Elegidos US-37):</span>
+            <strong>14A, 14B, 14C ✓</strong>
+          </div>
+          <div class="wf-summary-row">
+            <span>Pasajes Base (3 &times; Economy):</span>
+            <span>$ 135.000,00</span>
+          </div>
+          <div class="wf-summary-row">
+            <span>Equipaje de Mano en Cabina:</span>
+            <span>$ 0,00 (Incluido)</span>
+          </div>
+
+          <div style="border-top: 1px dashed var(--wf-black); margin: 10px 0; padding-top: 10px;">
+            <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px;">
+              Adicionales de Bodega Seleccionados (US-41):
+            </div>
+            <div class="wf-summary-row">
+              <span id="lbl-cant-15">Valijas Bodega 15 kg (&times; 1):</span>
+              <strong id="val-tot-15">+ $ 18.000,00</strong>
+            </div>
+            <div class="wf-summary-row">
+              <span id="lbl-cant-23">Valijas Bodega 23 kg (&times; 2):</span>
+              <strong id="val-tot-23">+ $ 50.000,00</strong>
+            </div>
+          </div>
+
+          <div class="wf-summary-row" style="background-color: var(--wf-white); padding: 8px; border: 1px solid var(--wf-black); border-radius: var(--wf-radius);">
+            <strong>CARGO ADICIONAL POR EQUIPAJE:</strong>
+            <strong id="val-cargo-bodega">$ 68.000,00 ARS</strong>
+          </div>
+
+          <div class="wf-summary-total">
+            <span>NUEVO TOTAL DE COMPRA:</span>
+            <span id="val-gran-total">$ 203.000,00 ARS</span>
+          </div>
+
+          <div class="wf-form-group" id="bloque-medio-pago-bag" style="margin-top: 14px;">
+            <label class="wf-label" for="medio-pago-bag">Medio de Pago para Cargo de Bodega</label>
+            <select id="medio-pago-bag" class="wf-select">
+              <option value="visa" selected>Tarjeta Visa Crédito (•••• 4242) - 1 pago</option>
+              <option value="master">Otra Tarjeta de Crédito / Débito</option>
+            </select>
+          </div>
+
+          <!-- BOTONES DE AVANCE AL PASO 3 (REALIZAR EL CHECK-IN CON LAS TARJETAS DE EMBARQUE) -->
+          <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
+            <a href="checkin_online.html" class="wf-btn wf-btn-primary wf-btn-lg" id="btn-principal-step2" style="width: 100%; text-align: center;" onclick="confirmarPasoEquipaje()">
+              Abonar Equipaje y Continuar al Check-In (Paso 3 - US-38) &rarr;
+            </a>
+
+            <a href="checkin_online.html" class="wf-btn wf-btn-secondary" style="width: 100%; text-align: center;" onclick="alert('Avanzando al Paso 3 sin equipaje adicional en bodega ($ 0). Ahora podrá confirmar su Check-In y descargar las tarjetas de embarque.');">
+              Omitir Equipaje en Bodega ($ 0) e Ir al Check-In (Paso 3) &rarr;
+            </a>
+
+            <a href="seleccion_asiento.html" class="wf-btn wf-btn-outline wf-btn-sm" style="width: 100%; text-align: center;">
+              &larr; Volver al Paso 1: Modificar Asientos en Mapa de Cabina (US-37)
+            </a>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+    <!-- SECCIÓN 4: DESGLOSE EN LA FACTURA ELECTRÓNICA (CRITERIO DE ACEPTACIÓN US-41) -->
+    <section class="wf-card" style="border: 2px solid var(--wf-black); margin-top: 10px;" id="factura-desglose-equipaje">
+      <div class="wf-card-header" style="background-color: var(--wf-gray-lighter); margin: -20px -20px 20px -20px; padding: 12px 16px;">
+        <div>
+          <h2 class="wf-card-title" style="font-size: 1.2rem;">4. Vista Previa de Factura con Desglose de Equipaje en Bodega (Criterio US-41)</h2>
+          <span style="font-size: 0.8rem; color: var(--wf-gray-dark);">N° Factura: 0001-00045921-EMD &bull; Fecha: 01/10/2026 &bull; Titular: Juan Carlos Pérez (DNI 32.456.789)</span>
+        </div>
+        <span class="wf-tag wf-tag-active">Desglose en Factura (RFO-05)</span>
+      </div>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>Código Concepto</th>
+              <th>Descripción Detallada del Concepto Facturado (Desglose US-41)</th>
+              <th>Cantidad</th>
+              <th>Valor Unitario</th>
+              <th style="text-align: right;">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>TKT-CAB-ECO</code></td>
+              <td>Pasaje Aéreo de Cabotaje (AEP &rarr; COR) - Vuelo VU-20261002-01 - Clase Economy (Asientos 14A, 14B, 14C)</td>
+              <td>3 pasajes</td>
+              <td>$ 45.000,00</td>
+              <td style="text-align: right;"><strong>$ 135.000,00</strong></td>
+            </tr>
+            <tr style="background-color: #fafafa;">
+              <td><code>EMD-BAG-15KG</code></td>
+              <td><strong>[Adicional Equipaje US-41]</strong> Servicio de Equipaje Despachado en Bodega hasta 15 kg</td>
+              <td id="inv-cant-15">1 pieza</td>
+              <td>$ 18.000,00</td>
+              <td style="text-align: right;"><strong id="inv-sub-15">$ 18.000,00</strong></td>
+            </tr>
+            <tr style="background-color: #fafafa;">
+              <td><code>EMD-BAG-23KG</code></td>
+              <td><strong>[Adicional Equipaje US-41]</strong> Servicio de Equipaje Despachado en Bodega hasta 23 kg</td>
+              <td id="inv-cant-23">2 piezas</td>
+              <td>$ 25.000,00</td>
+              <td style="text-align: right;"><strong id="inv-sub-23">$ 50.000,00</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 2px solid var(--wf-black); padding-top: 14px; margin-top: 14px; flex-wrap: wrap; gap: 12px;">
+        <div style="font-size: 0.82rem; color: var(--wf-gray-dark);">
+          CAE N°: 74928192884410 &bull; Comprobante EMD de Equipaje vinculado a Reserva <strong>RES-202610-ARG77</strong>
+        </div>
+        <div style="font-size: 1.25rem; font-weight: 800;">
+          TOTAL GENERAL FACTURADO: <span id="inv-total-gral">$ 203.000,00 ARS</span>
+        </div>
+      </div>
+
+      <div class="wf-btn-group" style="justify-content: flex-end; margin-top: 16px; flex-wrap: wrap;">
+        <button class="wf-btn wf-btn-outline" type="button" onclick="alert('Descargando Factura Electrónica Tipo B en PDF con el desglose de pasajes + valijas en bodega...');">
+          🧾 Descargar Factura con Desglose de Equipaje (PDF)
+        </button>
+        <a href="checkin_online.html" class="wf-btn wf-btn-primary">
+          Continuar al Paso 3: Realizar Check-In y Emitir Tarjetas de Embarque (US-38) &rarr;
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function seleccionarModoEquipaje(conEquipaje) {
+      const cardCon = document.getElementById('mode-con-equipaje');
+      const cardSin = document.getElementById('mode-sin-equipaje');
+      const radCon = document.getElementById('rad-con-bag');
+      const radSin = document.getElementById('rad-sin-bag');
+
+      if (conEquipaje) {
+        cardCon.classList.add('active');
+        cardSin.classList.remove('active');
+        radCon.checked = true;
+        document.getElementById('p1-bag-15').value = '1';
+        document.getElementById('p1-bag-23').value = '1';
+        document.getElementById('p2-bag-15').value = '0';
+        document.getElementById('p2-bag-23').value = '1';
+        document.getElementById('p3-bag-15').value = '0';
+        document.getElementById('p3-bag-23').value = '0';
+      } else {
+        cardSin.classList.add('active');
+        cardCon.classList.remove('active');
+        radSin.checked = true;
+        document.getElementById('p1-bag-15').value = '0';
+        document.getElementById('p1-bag-23').value = '0';
+        document.getElementById('p2-bag-15').value = '0';
+        document.getElementById('p2-bag-23').value = '0';
+        document.getElementById('p3-bag-15').value = '0';
+        document.getElementById('p3-bag-23').value = '0';
+      }
+      recalcularEquipaje();
+    }
+
+    function recalcularEquipaje() {
+      const p1_15 = parseInt(document.getElementById('p1-bag-15').value, 10);
+      const p1_23 = parseInt(document.getElementById('p1-bag-23').value, 10);
+      const p2_15 = parseInt(document.getElementById('p2-bag-15').value, 10);
+      const p2_23 = parseInt(document.getElementById('p2-bag-23').value, 10);
+      const p3_15 = parseInt(document.getElementById('p3-bag-15').value, 10);
+      const p3_23 = parseInt(document.getElementById('p3-bag-23').value, 10);
+
+      const sub1 = p1_15 * 18000 + p1_23 * 25000;
+      const sub2 = p2_15 * 18000 + p2_23 * 25000;
+      const sub3 = p3_15 * 18000 + p3_23 * 25000;
+
+      document.getElementById('sub-pax-1').textContent = `Subtotal Bodega: $ ${sub1.toLocaleString('es-AR')}`;
+      document.getElementById('sub-pax-2').textContent = `Subtotal Bodega: $ ${sub2.toLocaleString('es-AR')}`;
+      document.getElementById('sub-pax-3').textContent = `Subtotal Bodega: $ ${sub3.toLocaleString('es-AR')}`;
+
+      const cant15 = p1_15 + p2_15 + p3_15;
+      const cant23 = p1_23 + p2_23 + p3_23;
+
+      const tot15 = cant15 * 18000;
+      const tot23 = cant23 * 25000;
+      const cargoBodega = tot15 + tot23;
+      const granTotal = 135000 + cargoBodega;
+
+      document.getElementById('lbl-cant-15').textContent = `Valijas Bodega 15 kg (× ${cant15}):`;
+      document.getElementById('val-tot-15').textContent = `+ $ ${tot15.toLocaleString('es-AR')},00`;
+      document.getElementById('lbl-cant-23').textContent = `Valijas Bodega 23 kg (× ${cant23}):`;
+      document.getElementById('val-tot-23').textContent = `+ $ ${tot23.toLocaleString('es-AR')},00`;
+      document.getElementById('val-cargo-bodega').textContent = `$ ${cargoBodega.toLocaleString('es-AR')},00 ARS`;
+      document.getElementById('val-gran-total').textContent = `$ ${granTotal.toLocaleString('es-AR')},00 ARS`;
+
+      document.getElementById('inv-cant-15').textContent = `${cant15} pieza(s)`;
+      document.getElementById('inv-sub-15').textContent = `$ ${tot15.toLocaleString('es-AR')},00`;
+      document.getElementById('inv-cant-23').textContent = `${cant23} pieza(s)`;
+      document.getElementById('inv-sub-23').textContent = `$ ${tot23.toLocaleString('es-AR')},00`;
+      document.getElementById('inv-total-gral').textContent = `$ ${granTotal.toLocaleString('es-AR')},00 ARS`;
+
+      const btnPrincipal = document.getElementById('btn-principal-step2');
+      const bloquePago = document.getElementById('bloque-medio-pago-bag');
+      if (cargoBodega === 0) {
+        btnPrincipal.textContent = 'Continuar sin Equipaje Adicional ($ 0) al Check-In (Paso 3 - US-38) →';
+        bloquePago.style.display = 'none';
+      } else {
+        btnPrincipal.textContent = `Abonar Equipaje ($ ${cargoBodega.toLocaleString('es-AR')}) y Continuar al Check-In (Paso 3 - US-38) →`;
+        bloquePago.style.display = 'block';
+      }
+    }
+
+    function confirmarPasoEquipaje() {
+      const cargo = document.getElementById('val-cargo-bodega').textContent;
+      const total = document.getElementById('val-gran-total').textContent;
+      alert(`¡Paso 2 completado (US-41)!\n\n• Cargo de equipaje en bodega: ${cargo}\n• Total general acumulado: ${total}\n\nAvanzando al Paso 3: Confirmar Check-In Online y Descargar Tarjetas de Embarque (US-38).`);
+    }
+  </script>
+
+</body>
+</html>
