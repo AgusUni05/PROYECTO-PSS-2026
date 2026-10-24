@@ -453,11 +453,13 @@ describe("processPayment (US-20/US-21/US-22)", () => {
     ]);
     expect(prismaMock.invoice.create).toHaveBeenCalledTimes(1);
 
-    // US-24: envío simulado de los comprobantes al correo del comprador.
+    // US-24: la confirmación queda en el outbox para enviarse fuera de la transacción.
     expect(prismaMock.emailNotification.create.mock.calls[0][0].data).toMatchObject({
       type: "PURCHASE_CONFIRMATION",
       recipientEmail: "demo@volar.test",
-      status: "SENT",
+      status: "PENDING",
+      attempts: 0,
+      sentAt: null,
     });
   });
 

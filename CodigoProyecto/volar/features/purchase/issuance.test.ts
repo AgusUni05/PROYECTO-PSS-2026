@@ -107,12 +107,13 @@ describe("issueComprobantes (US-23/US-24)", () => {
       description: expect.stringContaining("Pasaje Economy VU-DEMO-01 - Demo, María"),
     });
 
-    // US-24: envío simulado al correo del comprador.
+    // US-24: la confirmación queda en el outbox para enviarse fuera de la transacción.
     expect(prismaMock.emailNotification.create.mock.calls[0][0].data).toMatchObject({
       type: "PURCHASE_CONFIRMATION",
       recipientEmail: "demo@volar.test",
-      status: "SENT",
-      sentAt: new Date("2026-10-07T12:00:00Z"),
+      status: "PENDING",
+      attempts: 0,
+      sentAt: null,
     });
   });
 

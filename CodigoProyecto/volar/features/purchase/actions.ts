@@ -2,6 +2,8 @@
 
 import { getCurrentUser } from "@/lib/auth";
 import { idSchema } from "@/lib/id";
+import { prisma } from "@/lib/prisma";
+import { sendPurchaseConfirmationEmail } from "@/lib/mailer/purchase";
 import type { ActionResult } from "@/lib/action-result";
 import {
   confirmPurchaseSchema,
@@ -88,6 +90,32 @@ export async function processPaymentAction(
   }
 
   const result = await purchaseService.processPayment(parsedCode.data, parsed.data, user.id);
-  if (result.ok) revalidatePath(PAYMENT_PATH);
+
+  if (result.ok) {
+    revalidatePath(PAYMENT_PATH);
+
+    // El pago ya está confirmado: el correo es best-effort y nunca debe
+    // convertir una compra exitosa en un error para el pasajero. Si falla,
+    // la fila queda PENDING/FAILED y `pnpm mail:send` puede reintentarla.
+    if (result.data.status === "APPROVED") {
+      try {
+        const notification = await prisma.emailNotification.findFirst({
+          where: {
+            type: "PURCHASE_CONFIRMATION",
+            status: "PENDING",
+            booking: { code: result.data.bookingCode },
+          },
+          orderBy: { createdAt: "desc" },
+        });
+
+        if (notification) {
+          await sendPurchaseConfirmationEmail(notification, result.data.bookingCode);
+        }
+      } catch (error) {
+        console.error("No se pudo enviar la confirmación de compra:", error);
+      }
+    }
+  }
+
   return result;
 }

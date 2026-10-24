@@ -1,13 +1,22 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { prismaMock } from "@/tests/prisma-mock";
 import { sendContingencyEmail } from "./send";
-import { dispatchPendingContingencyEmails } from "./dispatch";
+import { sendPurchaseConfirmationEmail } from "./purchase";
+import {
+  dispatchPendingContingencyEmails,
+  dispatchPendingPurchaseEmails,
+} from "./dispatch";
 
 vi.mock("./send", () => ({
   sendContingencyEmail: vi.fn(),
 }));
 
+vi.mock("./purchase", () => ({
+  sendPurchaseConfirmationEmail: vi.fn(),
+}));
+
 const sendMock = vi.mocked(sendContingencyEmail);
+const sendPurchaseMock = vi.mocked(sendPurchaseConfirmationEmail);
 
 const flightChange = {
   id: "CVU_1",
@@ -46,6 +55,7 @@ const BASE_URL = "https://volar.example.com";
 describe("dispatchPendingContingencyEmails", () => {
   beforeEach(() => {
     sendMock.mockReset();
+    sendPurchaseMock.mockReset();
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
@@ -126,5 +136,88 @@ describe("dispatchPendingContingencyEmails", () => {
     expect(summary).toEqual({ processed: 1, sent: 0, failed: 1, skipped: 0 });
     expect(sendMock).not.toHaveBeenCalled();
     expect(prismaMock.emailNotification.update).not.toHaveBeenCalled();
+  });
+});
+
+describe("dispatchPendingPurchaseEmails", () => {
+  beforeEach(() => {
+    sendMock.mockReset();
+    sendPurchaseMock.mockReset();
+    vi.spyOn(console, "error").mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  function purchaseNotification(id: string, overrides: Record<string, unknown> = {}) {
+    return {
+      id,
+      type: "PURCHASE_CONFIRMATION",
+      recipientEmail: "buyer@example.com",
+      subject: "Tus pasajes y factura - reserva DEMO0001",
+      bookingId: "RES_1",
+      flightChangeId: null,
+      status: "PENDING",
+      attempts: 0,
+      lastError: null,
+      sentAt: null,
+      createdAt: new Date("2026-10-24T12:00:00.000Z"),
+      booking: { code: "DEMO0001" },
+      ...overrides,
+    };
+  }
+
+  it("consulta solo confirmaciones de compra PENDING con el código de reserva", async () => {
+    prismaMock.emailNotification.findMany.mockResolvedValue([]);
+
+    const summary = await dispatchPendingPurchaseEmails();
+
+    expect(summary).toEqual({ processed: 0, sent: 0, failed: 0, skipped: 0 });
+    expect(prismaMock.emailNotification.findMany).toHaveBeenCalledWith({
+      where: {
+        status: { in: ["PENDING", "FAILED"] },
+        attempts: { lt: 5 },
+        type: "PURCHASE_CONFIRMATION",
+      },
+      include: { booking: { select: { code: true } } },
+      orderBy: { createdAt: "asc" },
+    });
+  });
+
+  it("envía la confirmación y cuenta SENT", async () => {
+    const notification = purchaseNotification("EML_BUY_1");
+    prismaMock.emailNotification.findMany.mockResolvedValue([notification] as never);
+    sendPurchaseMock.mockResolvedValue("SENT");
+
+    const summary = await dispatchPendingPurchaseEmails();
+
+    expect(summary).toEqual({ processed: 1, sent: 1, failed: 0, skipped: 0 });
+    expect(sendPurchaseMock).toHaveBeenCalledWith(notification, "DEMO0001");
+  });
+
+  it("cuenta fallos, omisiones y errores del emisor sin abortar el lote", async () => {
+    const failed = purchaseNotification("EML_FAILED");
+    const skipped = purchaseNotification("EML_SKIPPED");
+    const thrown = purchaseNotification("EML_THROWN", { id: "EML_THROWN" });
+    prismaMock.emailNotification.findMany.mockResolvedValue([failed, skipped, thrown] as never);
+    sendPurchaseMock
+      .mockResolvedValueOnce("FAILED")
+      .mockResolvedValueOnce("SKIPPED")
+      .mockRejectedValueOnce(new Error("SMTP caído"));
+
+    const summary = await dispatchPendingPurchaseEmails();
+
+    expect(summary).toEqual({ processed: 3, sent: 0, failed: 2, skipped: 1 });
+  });
+
+  it("cuenta como fallida una confirmación sin reserva asociada", async () => {
+    const orphan = purchaseNotification("EML_ORPHAN", { bookingId: null, booking: null });
+    prismaMock.emailNotification.findMany.mockResolvedValue([orphan] as never);
+
+    const summary = await dispatchPendingPurchaseEmails();
+
+    expect(summary).toEqual({ processed: 1, sent: 0, failed: 1, skipped: 0 });
+    expect(sendPurchaseMock).not.toHaveBeenCalled();
   });
 });

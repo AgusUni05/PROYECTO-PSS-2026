@@ -124,14 +124,17 @@ export async function issueComprobantes(
     },
   });
 
-  await sendPurchaseEmail(tx, booking, now);
+  await sendPurchaseEmail(tx, booking);
 }
 
-/** US-24/RNF-02: envío simulado de los comprobantes al correo del comprador. */
+/**
+ * US-24/RNF-02: deja la confirmación de compra en el outbox. El envío real
+ * (con los PDFs adjuntos) ocurre fuera de esta transacción, justo después de
+ * aprobar el pago, o al reintentar con `pnpm mail:send`.
+ */
 async function sendPurchaseEmail(
   tx: Prisma.TransactionClient,
   booking: BookingToIssue,
-  now: Date,
 ): Promise<void> {
   await tx.emailNotification.create({
     data: {
@@ -140,9 +143,9 @@ async function sendPurchaseEmail(
       recipientEmail: booking.contactEmail,
       subject: `Tus pasajes y factura - reserva ${booking.code}`,
       bookingId: booking.id,
-      status: "SENT",
-      attempts: 1,
-      sentAt: now,
+      status: "PENDING",
+      attempts: 0,
+      sentAt: null,
     },
   });
 }

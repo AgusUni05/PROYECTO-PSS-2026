@@ -98,19 +98,26 @@ reales. Nunca se commitea `.env`.
 | `pnpm test:watch` | Vitest en modo watch. |
 | `pnpm make-admin <email>` | Promueve un usuario existente al rol `ADMIN`. |
 | `pnpm seed:demo [--clean]` | Crea o elimina datos demo para probar el flujo de pago. |
-| `pnpm mail:send` | Despacha manualmente las notificaciones de contingencia `PENDING`. |
+| `pnpm mail:send` | Despacha manualmente las notificaciones `PENDING` de contingencia y de compra. |
 
 `make-admin`, `seed:demo` y `mail:send` dependen de `tsx`, que es una
 devDependency: instalar con `pnpm install` completo, no con `pnpm install --prod`.
-`mail:send` es una tarea **manual** (o invocada por un cron externo); la
-aplicación no envía emails en segundo plano por sí sola.
+`mail:send` es una tarea **manual** (o invocada por un cron externo). La
+confirmación de compra sí se intenta enviar inmediatamente después de aprobar
+el pago; si ese intento falla, la fila queda en el outbox y `mail:send` la
+reintenta junto con las contingencias pendientes.
 
 ## Email y SMTP
 
 Las notificaciones se persisten en `EmailNotification` dentro de la misma
-transacción que registra el cambio de vuelo (US-25). El envío es un paso
-posterior y separado, para que una caída de SMTP no revierta una operación ya
-confirmada.
+transacción que registra el cambio de vuelo (US-25) o la emisión de la compra
+(US-24). El envío es un paso posterior y separado, para que una caída de SMTP
+no revierta una operación ya confirmada.
+
+Al aprobarse un pago, la confirmación de compra se envía de inmediato (best
+effort) con los e-tickets y la factura adjuntos en PDF. Si el envío falla o
+SMTP no está configurado, la fila queda `PENDING`/`FAILED` y puede reintentarse
+con `pnpm mail:send`.
 
 Variables obligatorias: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` y
 `MAIL_FROM`. `SMTP_SECURE` es opcional (TLS implícito en el puerto 465;
@@ -126,13 +133,15 @@ Despachar la cola:
 $env:APP_URL="https://tu-dominio"; pnpm mail:send
 ```
 
-Solo se despachan las filas `FLIGHT_CANCELLATION` y `FLIGHT_SCHEDULE_CHANGE`
-en estado `PENDING`; otros tipos (por ejemplo `REBOOKING_CONFIRMATION`) no se
-envían con este comando. Cada email incluye un enlace absoluto por pasaje con
-la forma `/contingencia/{token}`, que es la ruta real de la pantalla pública.
-Si una notificación ya no tiene tokens `PENDING`, se omite en lugar de enviar
-un email sin acciones; si no tiene `bookingId`, también se omite para no
-consultar tokens de otras reservas.
+Solo se despachan las filas `FLIGHT_CANCELLATION`, `FLIGHT_SCHEDULE_CHANGE` y
+`PURCHASE_CONFIRMATION` en estado `PENDING`; otros tipos (por ejemplo
+`REBOOKING_CONFIRMATION`) no se envían con este comando. Cada email de
+contingencia incluye un enlace absoluto por pasaje con la forma
+`/contingencia/{token}`, que es la ruta real de la pantalla pública. Las
+confirmaciones de compra adjuntan los e-tickets y, si existe, la factura en
+PDF. Si una notificación de contingencia ya no tiene tokens `PENDING`, se omite
+en lugar de enviar un email sin acciones; si no tiene `bookingId`, también se
+omite para no consultar tokens de otras reservas.
 
 El comando imprime un resumen (`procesados`, `enviados`, `fallidos`,
 `omitidos`) y no imprime cuerpos de email ni credenciales. Las filas enviadas
@@ -144,10 +153,11 @@ por email en Sprint 3**: no existe una plantilla propia y no deben reutilizar la
 de contingencia. Por eso se registran directamente en estado terminal `FAILED`
 con un `lastError` no secreto, en lugar de quedar `PENDING` para siempre.
 
-**Sin configuración SMTP cada fila de contingencia queda en `PENDING`**:
-`createMailerTransport()` lanza antes de actualizar la base, por lo que se
-puede completar la configuración y reintentar el mismo comando sin perder
-notificaciones.
+**Sin configuración SMTP, cada fila de contingencia o compra queda en
+`PENDING`**: `createMailerTransport()` lanza antes de actualizar la base, por lo
+que se puede completar la configuración y reintentar el mismo comando sin
+perder notificaciones. Las confirmaciones de compra en `FAILED` se reintentan
+con `mail:send` hasta 5 intentos.
 
 Para desarrollo se recomienda un sandbox (por ejemplo Mailtrap) o un proveedor
 con "app password"; no usar credenciales reales en el repositorio.
@@ -170,7 +180,8 @@ hay llamada externa, se genera un `gatewayRefundId` y se registra el `Refund`.
 
 Los e-tickets y la factura se generan **en cada descarga** a partir de los datos
 actuales de la base con `pdf-lib`. No se almacenan archivos PDF ni rutas en
-disco.
+disco. Esos mismos PDFs se generan al enviar la confirmación de compra y se
+adjuntan al correo; no se persisten como archivos.
 
 - `GET /api/compras/{codigo}/etickets`
 - `GET /api/compras/{codigo}/factura`

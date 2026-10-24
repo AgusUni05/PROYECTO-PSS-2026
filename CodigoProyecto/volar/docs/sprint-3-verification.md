@@ -9,6 +9,7 @@ datos personales.
 
 | Historia | Criterio de aceptación |
 | --- | --- |
+| **US-24** | Al aprobarse un pago, la confirmación de compra se envía realmente al correo del comprador con los e-tickets y la factura adjuntos en PDF. El envío es best-effort: si falla, la compra sigue confirmada y la fila queda en el outbox para reintentarse con `pnpm mail:send`. |
 | **US-25** | Un cambio de horario o una cancelación con pasajes emitidos registra `FlightChange`, una `TicketContingency` por pasaje con token único y una `EmailNotification` `PENDING` por comprador, con asunto y cuerpo acordes al tipo. El email enlaza a la ruta real `/contingencia/{token}`. Las notificaciones de contingencia (`FLIGHT_CANCELLATION`, `FLIGHT_SCHEDULE_CHANGE`) se despachan **manualmente** con `pnpm mail:send`; un envío exitoso pasa a `SENT`, un fallo a `FAILED`, y una fila sin cambio de vuelo, sin tokens `PENDING` o sin `bookingId` no se envía. |
 | **US-26** | El pasajero resuelve la contingencia desde el enlace con token: reprogramación sin cargo a un vuelo futuro de la misma ruta y clase (con asiento y e-ticket nuevos) o reembolso simulado por el importe del pasaje, ambos con confirmación previa. La operación es atómica e idempotente, exige que el pasaje siga `ISSUED`, resuelve todos los tokens `PENDING` del mismo ticket y libera el cupo correspondiente una sola vez. |
 | **US-35** | "Mis Compras" muestra próximos vuelos e historial del usuario de la sesión, con alertas de contingencias pendientes. Un usuario nunca ve compras de otro y la vista no genera scroll horizontal en mobile. |
@@ -16,6 +17,14 @@ datos personales.
 | **UX** | Botón de intercambio de aeropuertos con hover/foco visibles, alertas de contingencia accionables, layout responsive de Mis Compras y descargas ocultas con explicación cuando la compra no está confirmada. |
 
 ## Matriz de evidencia
+
+### US-24 — Confirmación de compra por email
+
+| Evidencia | Archivo |
+| --- | --- |
+| El pago deja la confirmación en el outbox (`PENDING`, `attempts: 0`, sin `sentAt`) dentro de la transacción. | `features/purchase/issuance.test.ts`, `features/purchase/service.test.ts` |
+| Envío real con adjuntos de e-tickets y factura, actualización a `SENT`/`FAILED` y omisión de filas ajenas. | `lib/mailer/purchase.test.ts` |
+| Envío inmediato best-effort después de aprobar el pago y reintento manual. | `features/purchase/actions.ts`, `lib/mailer/dispatch.test.ts` |
 
 ### US-25 — Notificaciones de contingencia
 
@@ -105,7 +114,7 @@ git diff --check
 Resultado esperado: suite de Vitest completamente verde, ESLint sin errores ni
 warnings, TypeScript sin errores, build de Next.js exitoso y `git diff --check`
 sin salida. Al cierre de la revisión final del Sprint 3 la suite reportó
-**40 archivos / 439 tests** en verde; el número puede crecer sin que esto
+**41 archivos / 452 tests** en verde; el número puede crecer sin que esto
 invalide el documento.
 
 Los tests corren con `tests/prisma-mock.ts`, que sustituye Prisma por un
@@ -124,12 +133,17 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
       pasajes emitidos. Verificar en la base: un `FlightChange` `CANCELLATION`,
       una `TicketContingency` por pasaje y una `EmailNotification` `PENDING` por
       comprador. La compra afectada muestra la alerta en Mis Compras.
+- [ ] **Confirmación de compra.** Aprobar un pago de prueba y verificar que
+      llega un correo al `contactEmail` de la reserva con los e-tickets y la
+      factura adjuntos. Si SMTP falla, la compra debe seguir `CONFIRMED` y la
+      fila `PURCHASE_CONFIRMATION` debe quedar `PENDING`/`FAILED`; un
+      `pnpm mail:send` posterior debe enviarla.
 - [ ] **Despacho manual con SMTP sandbox.** Completar `SMTP_HOST`, `SMTP_PORT`,
       `SMTP_USER`, `SMTP_PASSWORD` y `MAIL_FROM` con el sandbox, ejecutar
-      `$env:APP_URL="http://localhost:3000"; pnpm mail:send` y confirmar el
-      resumen y la recepción en el sandbox. Repetir el comando: las filas ya
-      enviadas no vuelven a salir. No hay worker ni cron en la aplicación: el
-      comando se ejecuta a mano.
+      `$env:APP_URL="http://localhost:3000"; pnpm mail:send` y confirmar las dos
+      líneas del resumen (contingencias y compras) y la recepción en el
+      sandbox. Repetir el comando: las filas ya enviadas no vuelven a salir. No
+      hay worker ni cron en la aplicación: el comando se ejecuta a mano.
 - [ ] **Enlace de contingencia.** Abrir el enlace recibido
       (`/contingencia/{token}`), que debe ser un segmento de ruta y no un
       `?token=`. El token da acceso sin sesión; un token inválido muestra el
@@ -167,12 +181,12 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
   cubiertos por la suite automatizada.
 - **SMTP simulado en tests.** `nodemailer` está mockeado; la entrega real solo
   se comprueba con el checklist manual y un sandbox.
-- **Dispatcher probado a nivel unitario.** `dispatchPendingContingencyEmails`
-  tiene cobertura de conteos y errores, pero no se ejecutó contra una base real
-  dentro de la suite.
-- **Despacho manual y acotado a contingencias.** `pnpm mail:send` se ejecuta a
-  mano (o desde un cron externo) y consulta únicamente filas `PENDING` de tipo
-  `FLIGHT_CANCELLATION` o `FLIGHT_SCHEDULE_CHANGE`. Las
+- **Dispatchers probados a nivel unitario.** `dispatchPendingContingencyEmails`
+  y `dispatchPendingPurchaseEmails` tienen cobertura de conteos y errores, pero
+  no se ejecutaron contra una base real dentro de la suite.
+- **Despacho manual para reintentos.** La confirmación de compra se intenta
+  enviar al aprobar el pago; si falla, `pnpm mail:send` procesa tanto
+  contingencias como confirmaciones de compra `PENDING`. Las
   `REBOOKING_CONFIRMATION` que crea US-26 **no se envían en Sprint 3**: no
   tienen plantilla propia y no deben reutilizar la de contingencia. El dominio
   las registra en estado terminal `FAILED` con un `lastError` no secreto, para
@@ -192,8 +206,9 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
   actualizar la base). Corregir la configuración y reintentar `pnpm mail:send`
   es seguro: solo se envían las pendientes.
 - Un fallo de envío con el transporte ya creado marca la fila `FAILED`,
-  incrementa `attempts` y guarda `lastError`; esas filas no se reintentan
-  automáticamente y requieren revisión.
+  incrementa `attempts` y guarda `lastError`. Las confirmaciones de compra
+  `FAILED` se reintentan con `pnpm mail:send` hasta 5 intentos; las
+  contingencias `FAILED` requieren revisión manual.
 - Los PDF se generan en cada request desde la base; no hay almacenamiento ni
   limpieza de archivos.
 - `pnpm seed:demo --clean` elimina solo los datos demo con IDs `SEED*`.

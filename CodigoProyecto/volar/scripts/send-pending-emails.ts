@@ -12,14 +12,21 @@
  */
 import "dotenv/config";
 import { prisma } from "../lib/prisma";
-import { dispatchPendingContingencyEmails } from "../lib/mailer/dispatch";
+import {
+  dispatchPendingContingencyEmails,
+  dispatchPendingPurchaseEmails,
+} from "../lib/mailer/dispatch";
 
 async function main() {
   const appUrl = process.env.APP_URL || "http://localhost:3000";
-  const summary = await dispatchPendingContingencyEmails(appUrl);
+  const contingencySummary = await dispatchPendingContingencyEmails(appUrl);
+  const purchaseSummary = await dispatchPendingPurchaseEmails();
 
   console.log(
-    `Emails de contingencia: ${summary.processed} procesados, ${summary.sent} enviados, ${summary.failed} fallidos, ${summary.skipped} omitidos.`,
+    `Emails de contingencia: ${contingencySummary.processed} procesados, ${contingencySummary.sent} enviados, ${contingencySummary.failed} fallidos, ${contingencySummary.skipped} omitidos.`,
+  );
+  console.log(
+    `Emails de compra: ${purchaseSummary.processed} procesados, ${purchaseSummary.sent} enviados, ${purchaseSummary.failed} fallidos, ${purchaseSummary.skipped} omitidos.`,
   );
 }
 
