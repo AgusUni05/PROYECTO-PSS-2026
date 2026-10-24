@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - Paso 3 Check-In (US-38 Opcional): Confirmar Check-In Online y Tarjeta de Embarque</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos adicionales en escala de grises para la Tarjeta de Embarque (US-38) */
+    .wf-boarding-pass {
+      border: 2px solid var(--wf-black);
+      border-radius: var(--wf-radius);
+      background-color: var(--wf-white);
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 2.2fr 1fr;
+      overflow: hidden;
+    }
+    @media (max-width: 800px) {
+      .wf-boarding-pass {
+        grid-template-columns: 1fr;
+      }
+    }
+    .wf-bp-main {
+      padding: 16px 20px;
+      border-right: 2px dashed var(--wf-black);
+    }
+    .wf-bp-stub {
+      padding: 16px;
+      background-color: var(--wf-gray-lighter);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .wf-bp-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--wf-gray-light);
+    }
+    .wf-bp-meta-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: var(--wf-gray-dark);
+      font-weight: 700;
+    }
+    .wf-bp-meta-val {
+      font-size: 1rem;
+      font-weight: 800;
+      font-family: var(--wf-font-mono);
+      color: var(--wf-black);
+    }
+    .wf-qr-box {
+      width: 72px;
+      height: 72px;
+      border: 2px solid var(--wf-black);
+      background:
+        repeating-linear-gradient(0deg, #111 0 4px, #fff 4px 8px),
+        repeating-linear-gradient(90deg, #111 0 4px, #fff 4px 8px);
+      background-blend-mode: difference;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--wf-font-mono);
+      font-size: 0.65rem;
+      font-weight: 800;
+      background-color: var(--wf-white);
+    }
+    .wf-step-link {
+      color: inherit;
+      text-decoration: none;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[AERO-LÍNEAS] - Portal de Pasajeros</div>
+      <div class="wf-user-session">
+        <span>Sesión activa: <strong>juan.perez@email.com</strong> (Pasajero Autenticado)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Mi Cuenta / Salir</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="index_opcionales.html" class="wf-nav-link">Índice Opcionales <span class="wf-badge-us">US-37..43</span></a>
+      <a href="mis_compras.html" class="wf-nav-link">Mis Compras <span class="wf-badge-us">US-35/36</span></a>
+      <a href="seleccion_asiento.html" class="wf-nav-link">1. Elegir Asientos <span class="wf-badge-us">US-37</span></a>
+      <a href="equipaje_adicional.html" class="wf-nav-link">2. Equipaje Bodega <span class="wf-badge-us">US-41</span></a>
+      <a href="checkin_online.html" class="wf-nav-link active">3. Check-in y Embarque <span class="wf-badge-us">US-38</span></a>
+      <a href="cambio_cancelacion_pasajero.html" class="wf-nav-link">Cambio/Cancelación <span class="wf-badge-us">US-39</span></a>
+      <a href="catalogo_maestro.html" class="wf-nav-link">Catálogo Maestro <span class="wf-badge-us">US-40</span></a>
+      <a href="busqueda_flexible.html" class="wf-nav-link">Fechas Flexibles <span class="wf-badge-us">US-42</span></a>
+      <a href="auditoria_vuelos.html" class="wf-nav-link">Auditoría Vuelos <span class="wf-badge-us">US-43</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Portal Web &gt; Mis Compras &gt; Proceso de Check-In (RES-202610-ARG77) &gt; <strong>Paso 3: Realizar Check-In y Tarjeta de Embarque</strong></div>
+
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Paso 3: Confirmación de Check-in Online y Tarjeta de Embarque</h1>
+        <p class="wf-subtitle">Paso final del flujo: una vez elegidos los asientos (Paso 1) y configurado o no el equipaje (Paso 2), confirme el Check-In dentro de las 24 hs previas al vuelo y descargue sus tarjetas de embarque.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-38 (Opcional) | RFO-02</span>
+        <span class="wf-tag wf-tag-active">Paso 3 de 3 &bull; Ventana 24 hs Activa</span>
+      </div>
+    </div>
+
+    <!-- Indicador de Progreso Secuencial del Flujo de Check-In: 1. Asientos ✓ -> 2. Equipaje ✓ -> 3. Check-in y Boarding Pass [Actual] -->
+    <div class="wf-steps-bar">
+      <div class="wf-step-item completed">
+        <a href="seleccion_asiento.html" class="wf-step-link">1. Asientos Elegidos: 14A, 14B, 14C (US-37) ✓</a>
+      </div>
+      <div class="wf-step-item completed">
+        <a href="equipaje_adicional.html" class="wf-step-link">2. Equipaje Configurado (Con/Sin Bodega - US-41) ✓</a>
+      </div>
+      <div class="wf-step-item active">
+        3. Realizar Check-In y Tarjetas de Embarque (US-38) [Actual]
+      </div>
+    </div>
+
+    <!-- Regla de Negocio US-38 / RFO-02 -->
+    <div class="wf-alert">
+      <div>
+        <strong>Flujo Completo (Paso 3 de 3) y Reglas del Check-in Online (US-38 / RFO-02):</strong><br>
+        • <strong>Secuencia Completada:</strong> 1° Selección de asientos en mapa de cabina (<strong>US-37</strong>) &rarr; 2° Elección de agregar o no equipaje en bodega (<strong>US-41</strong>) &rarr; 3° Confirmación del Check-In y emisión de tarjetas de embarque (<strong>US-38</strong>).<br>
+        • <strong>Ventana Temporal de 24 Horas:</strong> El proceso solo se habilita dentro de las <strong>24 horas previas a la hora programada del vuelo</strong>.<br>
+        • <strong>Emisión de Boarding Pass:</strong> Al confirmar el Check-In se generan las tarjetas de embarque individuales en PDF para evitar la fila en el aeropuerto.
+      </div>
+    </div>
+
+    <!-- SECCIÓN 1: RESUMEN DE CONFIGURACIÓN PREVIA (PASO 1 ASIENTOS + PASO 2 EQUIPAJE) Y CONFIRMACIÓN FINAL DE CHECK-IN -->
+    <section class="wf-card" style="border: 2px solid var(--wf-black);">
+      <div class="wf-card-header">
+        <div>
+          <h2 class="wf-card-title">1. Revisión Final de Pasajeros, Asientos (Paso 1) y Equipaje (Paso 2) antes de Emitir Embarque</h2>
+          <span style="font-size: 0.8rem; color: var(--wf-gray-dark);">Vuelo VU-20261002-01 (AEP &rarr; COR) &bull; Salida: 02/10/2026 08:30 hs (Faltan 18 hs 15 min — Dentro de ventana 24 hs ✓)</span>
+        </div>
+        <span class="wf-tag wf-tag-active">Reserva: RES-202610-ARG77</span>
+      </div>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>Incluir</th>
+              <th>Pasajero</th>
+              <th>Documento</th>
+              <th>Clase</th>
+              <th>Paso 1: Asiento Elegido (US-37)</th>
+              <th>Paso 2: Equipaje en Bodega (US-41)</th>
+              <th>Estado para Check-In</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" checked aria-label="Seleccionar Pasajero 1"></td>
+              <td><strong>PÉREZ, JUAN CARLOS</strong></td>
+              <td>DNI 32.456.789</td>
+              <td>Economy</td>
+              <td>
+                <strong>14A</strong> (Ventanilla)
+                <a href="seleccion_asiento.html" style="font-size: 0.75rem; color: var(--wf-black); margin-left: 4px;">[Editar Paso 1]</a>
+              </td>
+              <td>
+                2 valijas bodega (1&times;15kg + 1&times;23kg)
+                <a href="equipaje_adicional.html" style="font-size: 0.75rem; color: var(--wf-black); margin-left: 4px;">[Editar Paso 2]</a>
+              </td>
+              <td><span class="wf-tag wf-tag-active">Listo para Emitir ✓</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" checked aria-label="Seleccionar Pasajero 2"></td>
+              <td><strong>GONZÁLEZ, MARÍA ELENA</strong></td>
+              <td>DNI 34.123.987</td>
+              <td>Economy</td>
+              <td>
+                <strong>14B</strong> (Centro)
+                <a href="seleccion_asiento.html" style="font-size: 0.75rem; color: var(--wf-black); margin-left: 4px;">[Editar Paso 1]</a>
+              </td>
+              <td>
+                1 valija bodega (1&times;23kg)
+                <a href="equipaje_adicional.html" style="font-size: 0.75rem; color: var(--wf-black); margin-left: 4px;">[Editar Paso 2]</a>
+              </td>
+              <td><span class="wf-tag wf-tag-active">Listo para Emitir ✓</span></td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" checked aria-label="Seleccionar Pasajero 3"></td>
+              <td><strong>PÉREZ, LUCAS</strong></td>
+              <td>DNI 38.990.112</td>
+              <td>Economy</td>
+              <td>
+                <strong>14C</strong> (Pasillo)
+                <a href="seleccion_asiento.html" style="font-size: 0.75rem; color: var(--wf-black); margin-left: 4px;">[Editar Paso 1]</a>
+              </td>
+              <td>
+                Sin equipaje adicional en bodega ($ 0)
+                <a href="equipaje_adicional.html" style="font-size: 0.75rem; color: var(--wf-black); margin-left: 4px;">[Editar Paso 2]</a>
+              </td>
+              <td><span class="wf-tag wf-tag-active">Listo para Emitir ✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div style="margin-top: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-top: 1px solid var(--wf-gray-light); padding-top: 14px;">
+        <div class="wf-btn-group">
+          <a href="equipaje_adicional.html" class="wf-btn wf-btn-outline wf-btn-sm">
+            &larr; Volver al Paso 2: Equipaje (US-41)
+          </a>
+          <a href="seleccion_asiento.html" class="wf-btn wf-btn-outline wf-btn-sm">
+            &larr; Volver al Paso 1: Asientos (US-37)
+          </a>
+        </div>
+
+        <label class="wf-checkbox-label">
+          <input type="checkbox" checked> Declaro que los pasajeros no transportan mercancías peligrosas ni objetos prohibidos.
+        </label>
+
+        <button class="wf-btn wf-btn-primary wf-btn-lg" type="button" onclick="confirmarCheckinFinal()">
+          ✓ Confirmar Check-In Online y Generar Tarjetas de Embarque (US-38)
+        </button>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 2: TARJETAS DE EMBARQUE EMITIDAS Y DESCARGA (CRITERIO US-38) -->
+    <section class="wf-card" id="seccion-tarjetas-embarque" style="border: 2px solid var(--wf-black);">
+      <div class="wf-card-header" style="background-color: var(--wf-gray-lighter); margin: -20px -20px 20px -20px; padding: 12px 16px;">
+        <div>
+          <h2 class="wf-card-title" style="font-size: 1.2rem;">2. Tarjetas de Embarque Digitales Generadas (Boarding Passes - US-38)</h2>
+          <span style="font-size: 0.8rem; color: var(--wf-gray-dark);">¡Check-In completado! Descargue sus tarjetas de embarque en PDF para dirigirse directamente a preembarque o despacho rápido de valijas.</span>
+        </div>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-primary wf-btn-sm" type="button" onclick="alert('Descargando archivo PDF unificado con las 3 Tarjetas de Embarque...');">
+            📄 Descargar Todas las Tarjetas (3 PDF)
+          </button>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="alert('Enviando las 3 Tarjetas de Embarque a juan.perez@email.com...');">
+            ✉️ Enviar por Email
+          </button>
+        </div>
+      </div>
+
+      <!-- TARJETA DE EMBARQUE 1 -->
+      <article class="wf-boarding-pass">
+        <div class="wf-bp-main">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div>
+              <span class="wf-tag wf-tag-active">BOARDING PASS #1</span>
+              <strong style="margin-left: 8px; font-size: 1.05rem;">PÉREZ / JUAN CARLOS</strong>
+              <span style="font-size: 0.8rem; color: var(--wf-gray-dark); margin-left: 6px;">(DNI 32.456.789)</span>
+            </div>
+            <span style="font-family: var(--wf-font-mono); font-size: 0.8rem; font-weight: 700;">RES: RES-202610-ARG77</span>
+          </div>
+
+          <div class="wf-flight-route">
+            <div>
+              <div class="wf-flight-time">AEP 08:30</div>
+              <div class="wf-flight-airport">Buenos Aires (Aeroparque)</div>
+            </div>
+            <div class="wf-flight-arrow">
+              <div class="wf-flight-duration">Vuelo VU-20261002-01</div>
+              &rarr;
+            </div>
+            <div>
+              <div class="wf-flight-time">COR 10:00</div>
+              <div class="wf-flight-airport">Córdoba (Pajas Blancas)</div>
+            </div>
+          </div>
+
+          <div class="wf-bp-meta-grid">
+            <div>
+              <div class="wf-bp-meta-label">Fecha Vuelo</div>
+              <div class="wf-bp-meta-val">02/10/2026</div>
+            </div>
+            <div>
+              <div class="wf-bp-meta-label">Hora Embarque</div>
+              <div class="wf-bp-meta-val">07:50 HS</div>
+            </div>
+            <div>
+              <div class="wf-bp-meta-label">Puerta / Gate</div>
+              <div class="wf-bp-meta-val">PUERTA 04</div>
+            </div>
+            <div>
+              <div class="wf-bp-meta-label">Asiento (Paso 1)</div>
+              <div class="wf-bp-meta-val" style="font-size: 1.2rem; text-decoration: underline;">14A (Vent.)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wf-bp-stub">
+          <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">Clase Economy</div>
+              <div style="font-size: 0.8rem;">Secuencia: <strong>SEQ-018</strong></div>
+              <div style="font-size: 0.8rem;">Grupo: <strong>ZONA 2</strong></div>
+              <div style="font-size: 0.75rem; color: var(--wf-gray-dark);">Bodega (Paso 2): 2 valijas</div>
+            </div>
+            <div class="wf-qr-box" title="Código QR de Embarque">QR-018</div>
+          </div>
+
+          <div class="wf-barcode" style="height: 26px; margin-top: 8px;"></div>
+
+          <div style="margin-top: 8px; display: flex; gap: 6px;">
+            <button class="wf-btn wf-btn-primary wf-btn-sm" style="width: 100%;" type="button" onclick="alert('Descargando Tarjeta de Embarque PDF de Juan Carlos Pérez (Asiento 14A)...');">
+              📄 Descargar Tarjeta PDF
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- TARJETA DE EMBARQUE 2 -->
+      <article class="wf-boarding-pass">
+        <div class="wf-bp-main">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div>
+              <span class="wf-tag wf-tag-active">BOARDING PASS #2</span>
+              <strong style="margin-left: 8px; font-size: 1.05rem;">GONZÁLEZ / MARÍA ELENA</strong>
+              <span style="font-size: 0.8rem; color: var(--wf-gray-dark); margin-left: 6px;">(DNI 34.123.987)</span>
+            </div>
+            <span style="font-family: var(--wf-font-mono); font-size: 0.8rem; font-weight: 700;">RES: RES-202610-ARG77</span>
+          </div>
+
+          <div class="wf-flight-route">
+            <div>
+              <div class="wf-flight-time">AEP 08:30</div>
+              <div class="wf-flight-airport">Buenos Aires (Aeroparque)</div>
+            </div>
+            <div class="wf-flight-arrow">
+              <div class="wf-flight-duration">Vuelo VU-20261002-01</div>
+              &rarr;
+            </div>
+            <div>
+              <div class="wf-flight-time">COR 10:00</div>
+              <div class="wf-flight-airport">Córdoba (Pajas Blancas)</div>
+            </div>
+          </div>
+
+          <div class="wf-bp-meta-grid">
+            <div>
+              <div class="wf-bp-meta-label">Fecha Vuelo</div>
+              <div class="wf-bp-meta-val">02/10/2026</div>
+            </div>
+            <div>
+              <div class="wf-bp-meta-label">Hora Embarque</div>
+              <div class="wf-bp-meta-val">07:50 HS</div>
+            </div>
+            <div>
+              <div class="wf-bp-meta-label">Puerta / Gate</div>
+              <div class="wf-bp-meta-val">PUERTA 04</div>
+            </div>
+            <div>
+              <div class="wf-bp-meta-label">Asiento (Paso 1)</div>
+              <div class="wf-bp-meta-val" style="font-size: 1.2rem; text-decoration: underline;">14B (Cent.)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wf-bp-stub">
+          <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">Clase Economy</div>
+              <div style="font-size: 0.8rem;">Secuencia: <strong>SEQ-019</strong></div>
+              <div style="font-size: 0.8rem;">Grupo: <strong>ZONA 2</strong></div>
+              <div style="font-size: 0.75rem; color: var(--wf-gray-dark);">Bodega (Paso 2): 1 valija</div>
+            </div>
+            <div class="wf-qr-box" title="Código QR de Embarque">QR-019</div>
+          </div>
+
+          <div class="wf-barcode" style="height: 26px; margin-top: 8px;"></div>
+
+          <div style="margin-top: 8px; display: flex; gap: 6px;">
+            <button class="wf-btn wf-btn-primary wf-btn-sm" style="width: 100%;" type="button" onclick="alert('Descargando Tarjeta de Embarque PDF de María Elena González (Asiento 14B)...');">
+              📄 Descargar Tarjeta PDF
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- TARJETA DE EMBARQUE 3 -->
+      <article class="wf-boarding-pass" style="margin-bottom: 0;">
+        <div class="wf-bp-main">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <div>
+              <span class="wf-tag wf-tag-active">BOARDING PASS #3</span>
+              <strong style="margin-left: 8px; font-size: 1.05rem;">PÉREZ / LUCAS</strong>
+              <span style="font-size: 0.8rem; color: var(--wf-gray-dark); margin-left: 6px;">(DNI 38.990.112)</span>
+            </div>
+            <span style="font-family: var(--wf-font-mono); font-size: 0.8rem; font-weight: 700;">RES: RES-202610-ARG77</span>
+          </div>
+
+          <div class="wf-flight-route">
+            <div>
+              <div class="wf-flight-time">AEP 08:30</div>
+              <div class="wf-flight-airport">Buenos Aires (Aeroparque)</div>
+            </div>
+            <div class="wf-flight-arrow">
+              <div class="wf-flight-duration">Vuelo VU-20261002-01</div>
+              &rarr;
+            </div>
+            <div>
+              <div class="wf-flight-time">COR 10:00</div>
+              <div class="wf-flight-airport">Córdoba (Pajas Blancas)</div>
+            </div>
+          </div>
+
+          <div class="wf-bp-meta-grid">
+            <div>
+              <div class="wf-bp-meta-label">Fecha Vuelo</div>
+              <div class="wf-bp-meta-val">02/10/2026</div>
+            </div>
+            <div>
+              <div class="wf-bp-meta-label">Hora Embarque</div>
+              <div class="wf-bp-meta-val">07:50 HS</div>
+            </div>
+            <div>
+              <div class="wf-bp-meta-label">Puerta / Gate</div>
+              <div class="wf-bp-meta-val">PUERTA 04</div>
+            </div>
+            <div>
+              <div class="wf-bp-meta-label">Asiento (Paso 1)</div>
+              <div class="wf-bp-meta-val" style="font-size: 1.2rem; text-decoration: underline;">14C (Pas.)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="wf-bp-stub">
+          <div style="display: flex; justify-content: space-between; align-items: start; gap: 10px;">
+            <div>
+              <div style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">Clase Economy</div>
+              <div style="font-size: 0.8rem;">Secuencia: <strong>SEQ-020</strong></div>
+              <div style="font-size: 0.8rem;">Grupo: <strong>ZONA 2</strong></div>
+              <div style="font-size: 0.75rem; color: var(--wf-gray-dark);">Bodega (Paso 2): Sin bodega</div>
+            </div>
+            <div class="wf-qr-box" title="Código QR de Embarque">QR-020</div>
+          </div>
+
+          <div class="wf-barcode" style="height: 26px; margin-top: 8px;"></div>
+
+          <div style="margin-top: 8px; display: flex; gap: 6px;">
+            <button class="wf-btn wf-btn-primary wf-btn-sm" style="width: 100%;" type="button" onclick="alert('Descargando Tarjeta de Embarque PDF de Lucas Pérez (Asiento 14C)...');">
+              📄 Descargar Tarjeta PDF
+            </button>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- SECCIÓN 3: SIMULACIÓN DE VALIDACIÓN DE VENTANA TEMPORAL (CRITERIO US-38: BLOQUEO SI FALTAN > 24 HS) -->
+    <section class="wf-card" style="border: 2px dashed var(--wf-gray-mid); background-color: #fafafa; margin-top: 24px;">
+      <div class="wf-card-header">
+        <h3 class="wf-card-title">[Validación Criterio US-38] Ejemplo de Reserva Fuera de la Ventana Temporal (&gt; 24 Horas antes del Vuelo)</h3>
+        <span class="wf-tag wf-tag-inactive">⏳ CHECK-IN CERRADO</span>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <div style="font-size: 0.88rem; line-height: 1.6;">
+          <div><strong>Reserva Futura:</strong> RES-202610-MDZ88 &bull; <strong>Vuelo:</strong> VU-20261015-01 (AEP &rarr; MDZ)</div>
+          <div><strong>Salida Programada:</strong> Jueves 15/10/2026 - 11:00 hs (Faltan <strong>13 días y 02 horas</strong>)</div>
+          <div style="color: var(--wf-gray-dark);">
+            <strong>Regla US-38 (RFO-02):</strong> El flujo de Check-In (1. Elegir Asientos &rarr; 2. Equipaje &rarr; 3. Tarjeta de Embarque) se habilitará automáticamente el <strong>14/10/2026 a las 11:00 hs</strong> (24 horas antes del vuelo).
+          </div>
+        </div>
+        <div>
+          <button class="wf-btn wf-btn-secondary disabled" disabled title="Criterio US-38: Habilitación exclusiva dentro de las 24 horas previas al vuelo">
+            🔒 Check-in No Habilitado (Abre 24 hs antes del vuelo)
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function confirmarCheckinFinal() {
+      alert("¡Check-In Online Confirmado Exitosamente (Paso 3 - US-38)!\n\n• Paso 1: Asientos 14A, 14B y 14C confirmados.\n• Paso 2: Equipaje registrado.\n• Paso 3: Se han emitido las 3 Tarjetas de Embarque listas para descargar en PDF.");
+      document.getElementById('seccion-tarjetas-embarque').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>

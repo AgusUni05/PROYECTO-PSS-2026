@@ -22,13 +22,15 @@
       <a href="aviones.html" class="wf-nav-link">Aviones <span class="wf-badge-us">US-02</span></a>
       <a href="trayectos.html" class="wf-nav-link">Trayectos <span class="wf-badge-us">US-03</span></a>
       <a href="vuelos_admin.html" class="wf-nav-link">Gestión Vuelos <span class="wf-badge-us">US-04..12</span></a>
-      <a href="busqueda_pasajero.html" class="wf-nav-link">Portal Pasajero <span class="wf-badge-us">US-08..14</span></a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Buscador <span class="wf-badge-us">US-08..14</span></a>
       <a href="reserva_pasajes.html" class="wf-nav-link">Reserva <span class="wf-badge-us">US-15..19</span></a>
-      <a href="pago_comprobantes.html" class="wf-nav-link">Pagos y Facturas <span class="wf-badge-us">US-20..24</span></a>
+      <a href="pago_comprobantes.html" class="wf-nav-link">Pagos <span class="wf-badge-us">US-20..24</span></a>
+      <a href="mis_compras.html" class="wf-nav-link">Mis Compras <span class="wf-badge-us">US-35/36</span></a>
       <a href="contingencia_pasajero.html" class="wf-nav-link">Contingencias <span class="wf-badge-us">US-25/26</span></a>
-      <a href="reportes_admin.html" class="wf-nav-link">Admin: Reportes <span class="wf-badge-us">US-22/27</span></a>
-      <a href="autenticacion_usuarios.html" class="wf-nav-link">Seguridad y Roles <span class="wf-badge-us">US-28..30</span></a>
-      <a href="gestion_personal.html" class="wf-nav-link">Admin: Personal <span class="wf-badge-us">US-31</span></a>
+      <a href="mostrador.html" class="wf-nav-link">Mostrador <span class="wf-badge-us">US-32..34</span></a>
+      <a href="reportes_admin.html" class="wf-nav-link">Reportes <span class="wf-badge-us">US-22/27</span></a>
+      <a href="autenticacion_usuarios.html" class="wf-nav-link">Seguridad <span class="wf-badge-us">US-28..30</span></a>
+      <a href="gestion_personal.html" class="wf-nav-link">Personal <span class="wf-badge-us">US-31</span></a>
     </nav>
   </header>
 
@@ -38,12 +40,12 @@
       <div>
         <h1 class="wf-page-title">Índice General de Wireframes Web (Sprint 0)</h1>
         <p class="wf-subtitle">
-          Distribución de pantallas, flujos y botones para las User Stories:
-          <strong>US 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 y 31</strong>.
+          Distribución de pantallas, flujos y botones en estricta escala de grises. Cobertura completa de User Stories:
+          <strong>US 1 a 36</strong>.
         </p>
       </div>
       <div class="wf-btn-group">
-        <span class="wf-tag wf-tag-active">31 User Stories Cubiertas</span>
+        <span class="wf-tag wf-tag-active">36 User Stories Mapeadas</span>
       </div>
     </div>
 
@@ -216,71 +218,122 @@
       </section>
     </div>
 
-    <!-- MÓDULO 4: CONTINGENCIAS, REPORTES, SEGURIDAD Y PERSONAL -->
+    <!-- MÓDULO 4: ATENCIÓN EN MOSTRADOR, MIS COMPRAS Y CONTINGENCIAS (US 25, 26, 32, 33, 34, 35, 36) -->
     <h2 style="font-size: 1.25rem; font-weight: 800; margin: 30px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
-      4. Contingencias, Reportes y Seguridad / Perfiles
+      4. Operaciones de Mostrador, Cuenta del Pasajero y Contingencias
     </h2>
     <div class="wf-grid-3">
-      <!-- US-25, 26 -->
-      <section class="wf-card">
+      
+      <!-- US-32, 33, 34 -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
         <div class="wf-card-header">
-          <h3 class="wf-card-title">Contingencias Pasajero</h3>
+          <h3 class="wf-card-title">Terminal de Mostrador</h3>
+          <div>
+            <span class="wf-badge-us">US-32</span>
+            <span class="wf-badge-us">US-33</span>
+            <span class="wf-badge-us">US-34</span>
+          </div>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Búsqueda rápida en aeropuerto (**US-32**), venta y cobro presencial en caja/POS (**US-33**) y consulta de reservas por DNI con datos bancarios protegidos (**US-34 / RNF-08**).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Vender en Mostrador →]`, `[Confirmar Cobro y Emitir Pasajes]`, `[Buscar Reserva]`, `[Reimprimir Tarjetas de Embarque]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="mostrador.html" class="wf-btn wf-btn-primary" style="width: 100%;">Operaciones Mostrador (US-32..34) &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-35, 36 -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Mis Compras y Descargas</h3>
+          <div>
+            <span class="wf-badge-us">US-35</span>
+            <span class="wf-badge-us">US-36</span>
+          </div>
+        </div>
+        <p class="wf-subtitle" style="margin-bottom: 10px;">
+          Historial de viajes pasados y futuros asociados a la cuenta (**US-35**) y descarga directa en PDF de e-tickets y factura fiscal optimizada para móviles (**US-36 / RNF-06**).
+        </p>
+        <div class="wf-annotation">
+          <strong>Botones:</strong> `[Descargar E-Tickets (PDF)]`, `[Descargar Factura Fiscal B (PDF)]`, `[Gestionar Contingencia →]`, `[Reenviar Email]`.
+        </div>
+        <div style="margin-top: 14px;">
+          <a href="mis_compras.html" class="wf-btn wf-btn-primary" style="width: 100%;">Mis Compras (US-35/36) &rarr;</a>
+        </div>
+      </section>
+
+      <!-- US-25, 26 -->
+      <section class="wf-card" style="border: 2px solid var(--wf-black);">
+        <div class="wf-card-header">
+          <h3 class="wf-card-title">Centro de Contingencias</h3>
           <div>
             <span class="wf-badge-us">US-25</span>
             <span class="wf-badge-us">US-26</span>
           </div>
         </div>
         <p class="wf-subtitle" style="margin-bottom: 10px;">
-          Notificación por correo de reprogramación o cancelación (**US-25**) y panel de autogestión para elegir entre reprogramación de vuelo gratuita o reembolso del 100% (**US-26**).
+          Aviso oficial por email ante reprogramación o cancelación (**US-25 / RF-10**) y resolución autónoma: reprogramación gratuita de vuelo o reembolso del 100% (**US-26**).
         </p>
         <div class="wf-annotation">
-          <strong>Botones:</strong> `[Confirmar Reprogramación Gratuita]`, `[Solicitar Reembolso del 100%]`, `[Emitir Nuevos Pasajes]`.
+          <strong>Botones:</strong> `[Confirmar Reprogramación Gratuita →]`, `[Solicitar Reembolso del 100%]`, `[Aceptar y Emitir Nuevos Pasajes]`.
         </div>
         <div style="margin-top: 14px;">
           <a href="contingencia_pasajero.html" class="wf-btn wf-btn-primary" style="width: 100%;">Contingencias (US-25/26) &rarr;</a>
         </div>
       </section>
 
+    </div>
+
+    <!-- MÓDULO 5: REPORTES, SEGURIDAD Y PERSONAL (US 22, 27, 28, 29, 30, 31) -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 30px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      5. Inteligencia de Negocio, Auditoría, Seguridad y Personal
+    </h2>
+    <div class="wf-grid-2">
+      
       <!-- US-22, 27 -->
       <section class="wf-card">
         <div class="wf-card-header">
-          <h3 class="wf-card-title">Reportes y Auditoría Pagos</h3>
+          <h3 class="wf-card-title">Reportes de Ocupación y Auditoría de Pagos</h3>
           <div>
             <span class="wf-badge-us">US-22</span>
             <span class="wf-badge-us">US-27</span>
           </div>
         </div>
         <p class="wf-subtitle" style="margin-bottom: 10px;">
-          Registro transaccional de pagos aprobados y rechazados (**US-22**) y reporte gerencial de ocupación por vuelo, clase y fechas con métricas de ingresos (**US-27**).
+          Persistencia de transacciones aprobadas y rechazadas (**US-22**) y reporte ejecutivo de ocupación por vuelo, clase y fechas con métricas de recaudación (**US-27 / RF-11**).
         </p>
         <div class="wf-annotation">
-          <strong>Botones:</strong> `[Generar Métricas y Reporte]`, `[Exportar a Excel / CSV]`, `[Exportar Libro de Transacciones]`, `[Ver Log Pasarela]`.
+          <strong>Botones:</strong> `[Generar Métricas y Reporte (US-27)]`, `[Exportar a Excel / CSV]`, `[Filtrar Transacciones]`, `[Ver Log Pasarela]`.
         </div>
         <div style="margin-top: 14px;">
-          <a href="reportes_admin.html" class="wf-btn wf-btn-primary" style="width: 100%;">Reportes Admin (US-22/27) &rarr;</a>
+          <a href="reportes_admin.html" class="wf-btn wf-btn-primary" style="width: 100%;">Abrir Reportes de Ocupación (US-22/27) &rarr;</a>
         </div>
       </section>
 
       <!-- US-28, 29, 30, 31 -->
       <section class="wf-card">
         <div class="wf-card-header">
-          <h3 class="wf-card-title">Seguridad, Roles y Personal</h3>
+          <h3 class="wf-card-title">Seguridad, Roles y Cuentas de Personal</h3>
           <div>
             <span class="wf-badge-us">US-28..30</span>
             <span class="wf-badge-us">US-31</span>
           </div>
         </div>
         <p class="wf-subtitle" style="margin-bottom: 10px;">
-          Registro con hashing (**US-28**), login/cierre seguro (**US-29**), control por rol y bloqueo HTTP 403 (**US-30**), y ABM de cuentas de personal conservando trazabilidad (**US-31**).
+          Registro con hashing (**US-28**), login/cierre de sesión seguro (**US-29**), control de acceso con simulador de roles y bloqueo HTTP 403 (**US-30**) y gestión de personal con trazabilidad histórica (**US-31**).
         </p>
         <div class="wf-annotation">
-          <strong>Botones:</strong> `[Iniciar Sesión]`, `[Crear Cuenta Pasajero]`, `[+ Nueva Cuenta Personal]`, `[Deshabilitar Cuenta (US-31)]`.
+          <strong>Botones:</strong> `[Iniciar Sesión]`, `[Crear Cuenta Pasajero]`, `[Simular Vistas por Rol]`, `[Probar HTTP 403]`, `[+ Nueva Cuenta Personal]`.
         </div>
         <div class="wf-btn-group" style="margin-top: 14px; gap: 8px;">
-          <a href="autenticacion_usuarios.html" class="wf-btn wf-btn-primary wf-btn-sm" style="flex: 1; text-align: center;">Roles (US-28..30)</a>
-          <a href="gestion_personal.html" class="wf-btn wf-btn-outline wf-btn-sm" style="flex: 1; text-align: center;">Personal (US-31)</a>
+          <a href="autenticacion_usuarios.html" class="wf-btn wf-btn-primary wf-btn-sm" style="flex: 1; text-align: center;">Seguridad y Roles (US-28..30)</a>
+          <a href="gestion_personal.html" class="wf-btn wf-btn-outline wf-btn-sm" style="flex: 1; text-align: center;">Cuentas de Personal (US-31)</a>
         </div>
       </section>
+
     </div>
 
     <!-- Regla de Estilo Global -->

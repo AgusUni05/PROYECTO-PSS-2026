@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-43 (Opcional): Auditoría e Historial Inmutable de Cambios sobre Vuelos</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Estilos en estricta escala de grises para comparación de valores modificados (Diff de Auditoría US-43) */
+    .wf-audit-diff {
+      font-family: var(--wf-font-mono);
+      font-size: 0.76rem;
+      line-height: 1.5;
+      background-color: var(--wf-gray-lighter);
+      border: 1px solid var(--wf-gray-mid);
+      padding: 6px 8px;
+      border-radius: var(--wf-radius);
+    }
+    .wf-diff-old {
+      text-decoration: line-through;
+      color: var(--wf-gray-dark);
+      display: block;
+    }
+    .wf-diff-new {
+      font-weight: 800;
+      color: var(--wf-black);
+      display: block;
+    }
+    .wf-immutable-seal {
+      font-family: var(--wf-font-mono);
+      font-size: 0.72rem;
+      background-color: var(--wf-black);
+      color: var(--wf-white);
+      padding: 3px 8px;
+      border-radius: 2px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[SISTEMA AÉREO] - Panel Administración</div>
+      <div class="wf-user-session">
+        <span>Usuario: <strong>admin@vuelos.com</strong> (Administrador)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Cerrar Sesión</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="index_opcionales.html" class="wf-nav-link">Índice Opcionales <span class="wf-badge-us">US-37..43</span></a>
+      <a href="vuelos_admin.html" class="wf-nav-link">Gestión Vuelos <span class="wf-badge-us">US-04..12</span></a>
+      <a href="reportes_admin.html" class="wf-nav-link">Reportes <span class="wf-badge-us">US-22/27</span></a>
+      <a href="catalogo_maestro.html" class="wf-nav-link">Catálogo Maestro <span class="wf-badge-us">US-40</span></a>
+      <a href="auditoria_vuelos.html" class="wf-nav-link active">Auditoría Vuelos <span class="wf-badge-us">US-43</span></a>
+      <a href="seleccion_asiento.html" class="wf-nav-link">1. Elegir Asientos <span class="wf-badge-us">US-37</span></a>
+      <a href="equipaje_adicional.html" class="wf-nav-link">2. Equipaje Bodega <span class="wf-badge-us">US-41</span></a>
+      <a href="checkin_online.html" class="wf-nav-link">3. Check-in y Embarque <span class="wf-badge-us">US-38</span></a>
+      <a href="cambio_cancelacion_pasajero.html" class="wf-nav-link">Cambio/Cancelación <span class="wf-badge-us">US-39</span></a>
+      <a href="busqueda_flexible.html" class="wf-nav-link">Fechas Flexibles <span class="wf-badge-us">US-42</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Administración &gt; Seguridad y Operaciones &gt; <strong>Auditoría e Historial Inmutable de Cambios sobre Vuelos</strong></div>
+
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Auditoría e Historial de Cambios sobre Vuelos</h1>
+        <p class="wf-subtitle">Consulta del registro inmutable de quién creó, modificó o canceló cada vuelo, con fecha, hora y valores modificados ante reclamos.</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-43 (Opcional) | RFO-07</span>
+        <span class="wf-immutable-seal">🔒 REGISTRO INMUTABLE (APPEND-ONLY)</span>
+      </div>
+    </div>
+
+    <!-- Regla de Negocio US-43 / RFO-07 -->
+    <div class="wf-alert">
+      <div>
+        <strong>Criterio de Aceptación US-43 (RFO-07 - Opcional):</strong><br>
+        • <strong>Registro Inmutable de Eventos:</strong> Cada alta, modificación puntual de horario/aeronave, ajuste tarifario o cancelación de un vuelo genera una entrada de auditoría indeleble (sin botones de edición ni eliminación física).<br>
+        • <strong>Atributos Obligatorios:</strong> Registra <em>Usuario Responsable</em>, <em>Fecha</em>, <em>Hora exacta (con segundos)</em>, <em>Acción ejecutada</em> y el detalle exacto de los <em>Valores Anteriores vs. Valores Modificados</em> para respaldar explicaciones ante reclamos de pasajeros.
+      </div>
+    </div>
+
+    <!-- SECCIÓN 1: FILTROS DE AUDITORÍA PARA ATENCIÓN DE RECLAMOS (US-43) -->
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h2 class="wf-card-title">[Buscador de Auditoría] Filtros de Trazabilidad de Vuelos (US-43)</h2>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="filtrarEventos('todos')">Restablecer Filtros</button>
+      </div>
+
+      <div class="wf-grid-4">
+        <div class="wf-form-group">
+          <label class="wf-label" for="aud-vuelo">Filtrar por Código de Vuelo</label>
+          <select id="aud-vuelo" class="wf-select" onchange="filtrarPorSelect()">
+            <option value="todos" selected>Todos los vuelos auditados</option>
+            <option value="VU-20261002-01">VU-20261002-01 (AEP &rarr; COR)</option>
+            <option value="VU-20260928-01">VU-20260928-01 (COR &rarr; AEP - Cancelado)</option>
+          </select>
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="aud-accion">Tipo de Operación Auditada</label>
+          <select id="aud-accion" class="wf-select" onchange="filtrarPorSelect()">
+            <option value="todos" selected>Todas las acciones (Alta, Modif., Baja)</option>
+            <option value="CREACION">Creación / Alta en Calendario</option>
+            <option value="MODIFICACION">Modificación de Horario / Avión / Tarifa</option>
+            <option value="CANCELACION">Cancelación de Vuelo</option>
+          </select>
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="aud-usuario">Usuario Responsable</label>
+          <select id="aud-usuario" class="wf-select">
+            <option value="todos" selected>Todos los administradores</option>
+            <option value="vrossi">vrossi@aerolineas.com (Verónica Rossi)</option>
+            <option value="admin">admin@vuelos.com (Admin Central)</option>
+          </select>
+        </div>
+
+        <div class="wf-form-group">
+          <label class="wf-label" for="aud-fecha">Rango de Fecha del Evento</label>
+          <input type="date" id="aud-fecha" class="wf-input" value="2026-10-07">
+        </div>
+      </div>
+
+      <div class="wf-btn-group" style="justify-content: space-between; flex-wrap: wrap;">
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-primary" type="button" onclick="filtrarPorSelect()">Consultar Historial de Auditoría (US-43)</button>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="filtrarEventos('VU-20261002-01')">Ver Trazabilidad Completa de VU-20261002-01</button>
+        </div>
+        <div class="wf-btn-group">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm" type="button" onclick="alert('Exportando Certificado Oficial de Auditoría en PDF para adjuntar al expediente de reclamo...');">
+            📄 Emitir Acta de Auditoría para Reclamo (PDF)
+          </button>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="alert('Descargando registro inmutable en formato CSV firmado...');">
+            Exportar Log CSV
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- INDICADORES RÁPIDOS DE EVENTOS AUDITADOS -->
+    <div class="wf-stat-grid">
+      <div class="wf-stat-box">
+        <div class="wf-stat-label">Eventos Inmutables</div>
+        <div class="wf-stat-number">124</div>
+        <small style="color: var(--wf-gray-dark); font-size: 0.75rem;">0 registros alterados o borrados</small>
+      </div>
+      <div class="wf-stat-box">
+        <div class="wf-stat-label">Altas de Vuelos (US-04)</div>
+        <div class="wf-stat-number">96</div>
+        <small style="color: var(--wf-gray-dark); font-size: 0.75rem;">Creaciones por lote y puntuales</small>
+      </div>
+      <div class="wf-stat-box">
+        <div class="wf-stat-label">Modificaciones (US-05/12)</div>
+        <div class="wf-stat-number">21</div>
+        <small style="color: var(--wf-gray-dark); font-size: 0.75rem;">Cambios de horario, avión o tarifa</small>
+      </div>
+      <div class="wf-stat-box">
+        <div class="wf-stat-label">Cancelaciones (US-06)</div>
+        <div class="wf-stat-number">7</div>
+        <small style="color: var(--wf-gray-dark); font-size: 0.75rem;">Con disparo auditado de RF-10</small>
+      </div>
+    </div>
+
+    <!-- SECCIÓN 2: TABLA DEL REGISTRO INMUTABLE DE EVENTOS (CRITERIO US-43) -->
+    <section class="wf-card" style="border: 2px solid var(--wf-black);">
+      <div class="wf-card-header">
+        <div>
+          <h2 class="wf-card-title">[Bitácora Inmutable] Historial Cronológico de Eventos sobre Vuelos (US-43)</h2>
+          <p class="wf-subtitle">Vista de solo lectura estricta: ningún evento puede ser editado ni eliminado por ningún rol del sistema.</p>
+        </div>
+        <span class="wf-tag wf-tag-active" id="badge-conteo-aud">Mostrando 5 eventos</span>
+      </div>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table" id="tabla-auditoria">
+          <thead>
+            <tr>
+              <th>ID Evento</th>
+              <th>Fecha y Hora (Timestamp)</th>
+              <th>Usuario Responsable</th>
+              <th>Vuelo Afectado</th>
+              <th>Tipo de Evento</th>
+              <th>Valores Modificados (Antes &rarr; Después)</th>
+              <th>Motivo / Impacto</th>
+              <th style="text-align: right;">Inspección</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Evento 1: Modificación de Horario -->
+            <tr data-vuelo="VU-20261002-01" data-tipo="MODIFICACION">
+              <td><code>AUD-2026-00894</code></td>
+              <td>
+                <strong>07/10/2026</strong><br>
+                <span style="font-family: var(--wf-font-mono); font-size: 0.78rem;">16:42:19.402 UTC-3</span>
+              </td>
+              <td>
+                <strong>Verónica Rossi</strong><br>
+                <small>vrossi@aerolineas.com (Admin)</small>
+              </td>
+              <td><strong>VU-20261002-01</strong><br><small>AEP &rarr; COR</small></td>
+              <td><span class="wf-tag wf-tag-active">MODIFICACIÓN HORARIO</span></td>
+              <td>
+                <div class="wf-audit-diff">
+                  <span class="wf-diff-old">Antes: Salida 08:30 | Llegada 10:00</span>
+                  <span class="wf-diff-new">Nuevo: Salida 09:15 | Llegada 10:45</span>
+                </div>
+              </td>
+              <td>Demora operativa en cabecera AEP.<br><small>✓ 12 emails RF-10 enviados.</small></td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="verDetalleEvento('AUD-2026-00894', 'VU-20261002-01', 'vrossi@aerolineas.com (Verónica Rossi)', '07/10/2026 16:42:19', 'MODIFICACIÓN PUNTUAL DE HORARIO (US-05)', 'hora_salida: 08:30 -> 09:15 | hora_llegada: 10:00 -> 10:45', 'Reprogramación de slot de despegue en Aeroparque. Se notificó automáticamente por correo a los 12 compradores.')">
+                  Ver Detalle
+                </button>
+              </td>
+            </tr>
+
+            <!-- Evento 2: Modificación de Tarifas -->
+            <tr data-vuelo="VU-20261002-01" data-tipo="MODIFICACION">
+              <td><code>AUD-2026-00891</code></td>
+              <td>
+                <strong>07/10/2026</strong><br>
+                <span style="font-family: var(--wf-font-mono); font-size: 0.78rem;">15:10:04.118 UTC-3</span>
+              </td>
+              <td>
+                <strong>Admin Central</strong><br>
+                <small>admin@vuelos.com (Admin)</small>
+              </td>
+              <td><strong>VU-20261002-01</strong><br><small>AEP &rarr; COR</small></td>
+              <td><span class="wf-tag wf-tag-inactive">CAMBIO DE TARIFAS</span></td>
+              <td>
+                <div class="wf-audit-diff">
+                  <span class="wf-diff-old">Antes: Eco $45.000 | 1ra $95.000</span>
+                  <span class="wf-diff-new">Nuevo: Eco $52.000 | 1ra $105.000</span>
+                </div>
+              </td>
+              <td>Actualización tarifaria comercial (US-12).<br><small>No afecta pasajes ya emitidos.</small></td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="verDetalleEvento('AUD-2026-00891', 'VU-20261002-01', 'admin@vuelos.com (Admin Central)', '07/10/2026 15:10:04', 'MODIFICACIÓN DE TARIFAS VIGENTES (US-12)', 'tarifa_economy: $45.000 -> $52.000 | tarifa_primera: $95.000 -> $105.000', 'Ajuste de tarifa para futuras compras. Los 12 pasajes emitidos previamente conservaron el precio de $45.000.')">
+                  Ver Detalle
+                </button>
+              </td>
+            </tr>
+
+            <!-- Evento 3: Cancelación de Vuelo -->
+            <tr data-vuelo="VU-20260928-01" data-tipo="CANCELACION" style="background-color: #f9f9f9;">
+              <td><code>AUD-2026-00855</code></td>
+              <td>
+                <strong>26/09/2026</strong><br>
+                <span style="font-family: var(--wf-font-mono); font-size: 0.78rem;">11:05:48.901 UTC-3</span>
+              </td>
+              <td>
+                <strong>Verónica Rossi</strong><br>
+                <small>vrossi@aerolineas.com (Admin)</small>
+              </td>
+              <td><strong>VU-20260928-01</strong><br><small>COR &rarr; AEP</small></td>
+              <td><span class="wf-tag wf-tag-inactive" style="border: 2px solid var(--wf-black); font-weight: 800;">CANCELACIÓN VUELO</span></td>
+              <td>
+                <div class="wf-audit-diff">
+                  <span class="wf-diff-old">Antes: Estado PROGRAMADO (Activa venta)</span>
+                  <span class="wf-diff-new">Nuevo: Estado CANCELADO (Baja lógica)</span>
+                </div>
+              </td>
+              <td>Mantenimiento imprevisto aeronave LV-ARG02.<br><small>✓ Contingencia RF-10 disparada.</small></td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="verDetalleEvento('AUD-2026-00855', 'VU-20260928-01', 'vrossi@aerolineas.com (Verónica Rossi)', '26/09/2026 11:05:48', 'CANCELACIÓN OPERATIVA DE VUELO (US-06)', 'estado: PROGRAMADO -> CANCELADO | venta_habilitada: true -> false', 'Mantenimiento técnico no programado en Airbus A320 (LV-ARG02). Se enviaron notificaciones de reprogramación/reembolso (US-25/26).')">
+                  Ver Detalle
+                </button>
+              </td>
+            </tr>
+
+            <!-- Evento 4: Reasignación de Aeronave -->
+            <tr data-vuelo="VU-20261002-01" data-tipo="MODIFICACION">
+              <td><code>AUD-2026-00812</code></td>
+              <td>
+                <strong>20/09/2026</strong><br>
+                <span style="font-family: var(--wf-font-mono); font-size: 0.78rem;">09:30:00.210 UTC-3</span>
+              </td>
+              <td>
+                <strong>Admin Central</strong><br>
+                <small>admin@vuelos.com (Admin)</small>
+              </td>
+              <td><strong>VU-20261002-01</strong><br><small>AEP &rarr; COR</small></td>
+              <td><span class="wf-tag wf-tag-inactive">CAMBIO AERONAVE</span></td>
+              <td>
+                <div class="wf-audit-diff">
+                  <span class="wf-diff-old">Antes: LV-ARG03 (88 Eco / 8 1ra)</span>
+                  <span class="wf-diff-new">Nuevo: LV-ARG01 (150 Eco / 16 1ra)</span>
+                </div>
+              </td>
+              <td>Ampliación de capacidad por alta demanda (US-05/09).</td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="verDetalleEvento('AUD-2026-00812', 'VU-20261002-01', 'admin@vuelos.com (Admin Central)', '20/09/2026 09:30:00', 'REASIGNACIÓN DE AERONAVE Y CAPACIDAD (US-05)', 'avion_id: LV-ARG03 -> LV-ARG01 | cap_eco: 88 -> 150 | cap_primera: 8 -> 16', 'Reemplazo de Embraer 190 por Boeing 737-800 respetando pasajes vendidos previos.')">
+                  Ver Detalle
+                </button>
+              </td>
+            </tr>
+
+            <!-- Evento 5: Creación Inicial del Vuelo -->
+            <tr data-vuelo="VU-20261002-01" data-tipo="CREACION">
+              <td><code>AUD-2026-00701</code></td>
+              <td>
+                <strong>01/09/2026</strong><br>
+                <span style="font-family: var(--wf-font-mono); font-size: 0.78rem;">08:00:12.005 UTC-3</span>
+              </td>
+              <td>
+                <strong>Admin Central</strong><br>
+                <small>admin@vuelos.com (Admin)</small>
+              </td>
+              <td><strong>VU-20261002-01</strong><br><small>AEP &rarr; COR</small></td>
+              <td><span class="wf-tag wf-tag-active">CREACIÓN VUELO</span></td>
+              <td>
+                <div class="wf-audit-diff">
+                  <span class="wf-diff-old">Antes: [Sin registro previo]</span>
+                  <span class="wf-diff-new">Nuevo: Alta desde Trayecto TR-001 (02/10 08:30)</span>
+                </div>
+              </td>
+              <td>Generación de calendario Octubre 2026 (US-04/07).</td>
+              <td style="text-align: right;">
+                <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="verDetalleEvento('AUD-2026-00701', 'VU-20261002-01', 'admin@vuelos.com (Admin Central)', '01/09/2026 08:00:12', 'ALTA INICIAL DE VUELO EN CALENDARIO (US-04)', 'estado: null -> PROGRAMADO | fecha: 2026-10-02 | salida: 08:30 | llegada: 10:00', 'Creación original del vuelo dentro del período comercial 01/10/2026 - 31/10/2026.')">
+                  Ver Detalle
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: FICHA DE INSPECCIÓN DETALLADA PARA RESPUESTA ANTE UN RECLAMO (US-43) -->
+    <section class="wf-card" id="ficha-inspeccion-reclamo" style="border: 2px dashed var(--wf-black);">
+      <div class="wf-card-header">
+        <div>
+          <h3 class="wf-card-title">[Respaldo ante Reclamos] Inspección Forense del Evento Seleccionado</h3>
+          <span style="font-size: 0.8rem; color: var(--wf-gray-dark);">Información certificada de solo lectura para explicar el cambio al pasajero o ente regulador.</span>
+        </div>
+        <span class="wf-immutable-seal" id="insp-id">Evento: AUD-2026-00894</span>
+      </div>
+
+      <div class="wf-grid-2">
+        <div style="border: 1px solid var(--wf-gray-mid); padding: 14px; border-radius: var(--wf-radius); background-color: var(--wf-white);">
+          <div style="font-size: 0.85rem; line-height: 1.7;">
+            <div><strong>Vuelo Auditado:</strong> <span id="insp-vuelo">VU-20261002-01</span></div>
+            <div><strong>Operador Responsable:</strong> <span id="insp-usuario">vrossi@aerolineas.com (Verónica Rossi)</span></div>
+            <div><strong>Fecha y Hora Exacta:</strong> <span id="insp-fecha">07/10/2026 16:42:19</span></div>
+            <div><strong>Acción Registrada:</strong> <span id="insp-accion">MODIFICACIÓN PUNTUAL DE HORARIO (US-05)</span></div>
+            <div><strong>Hash de Integridad (SHA-256):</strong> <code>9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08</code></div>
+          </div>
+        </div>
+
+        <div style="border: 1px solid var(--wf-gray-mid); padding: 14px; border-radius: var(--wf-radius); background-color: var(--wf-gray-lighter);">
+          <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; margin-bottom: 6px;">
+            Detalle de Valores Modificados y Justificación:
+          </div>
+          <div style="font-family: var(--wf-font-mono); font-size: 0.82rem; background: var(--wf-white); padding: 8px; border: 1px solid var(--wf-black); margin-bottom: 8px;" id="insp-diff">
+            hora_salida: 08:30 -&gt; 09:15 | hora_llegada: 10:00 -&gt; 10:45
+          </div>
+          <div style="font-size: 0.82rem;" id="insp-motivo">
+            <strong>Explicación para el Reclamo:</strong> Reprogramación de slot de despegue en Aeroparque. Se notificó automáticamente por correo a los 12 compradores.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    function filtrarEventos(vueloFiltro) {
+      document.getElementById('aud-vuelo').value = vueloFiltro;
+      document.getElementById('aud-accion').value = 'todos';
+      filtrarPorSelect();
+    }
+
+    function filtrarPorSelect() {
+      const vuelo = document.getElementById('aud-vuelo').value;
+      const accion = document.getElementById('aud-accion').value;
+      const filas = document.querySelectorAll('#tabla-auditoria tbody tr');
+      let visibles = 0;
+
+      filas.forEach(tr => {
+        const trVuelo = tr.getAttribute('data-vuelo');
+        const trTipo = tr.getAttribute('data-tipo');
+        const coincideVuelo = (vuelo === 'todos' || trVuelo === vuelo);
+        const coincideTipo = (accion === 'todos' || trTipo === accion);
+
+        if (coincideVuelo && coincideTipo) {
+          tr.style.display = '';
+          visibles++;
+        } else {
+          tr.style.display = 'none';
+        }
+      });
+
+      document.getElementById('badge-conteo-aud').textContent = `Mostrando ${visibles} evento(s)`;
+    }
+
+    function verDetalleEvento(id, vuelo, usuario, fecha, accion, diff, motivo) {
+      document.getElementById('insp-id').textContent = `Evento: ${id}`;
+      document.getElementById('insp-vuelo').textContent = vuelo;
+      document.getElementById('insp-usuario').textContent = usuario;
+      document.getElementById('insp-fecha').textContent = fecha;
+      document.getElementById('insp-accion').textContent = accion;
+      document.getElementById('insp-diff').textContent = diff;
+      document.getElementById('insp-motivo').innerHTML = `<strong>Explicación para el Reclamo:</strong> ${motivo}`;
+      document.getElementById('ficha-inspeccion-reclamo').scrollIntoView({ behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>

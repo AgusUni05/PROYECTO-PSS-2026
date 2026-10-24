@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe - US-35 y US-36: Mis Compras, Historial y Descarga de Pasajes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header & Navigation -->
+  <header class="wf-header">
+    <div class="wf-header-top">
+      <div class="wf-logo">[AERO-LÍNEAS] - Portal de Pasajeros</div>
+      <div class="wf-user-session">
+        <span>Sesión activa: <strong>juan.perez@email.com</strong> (Pasajero Autenticado)</span>
+        <button class="wf-btn wf-btn-outline wf-btn-sm" type="button">Mi Perfil / Salir</button>
+      </div>
+    </div>
+    <nav class="wf-nav-bar">
+      <a href="index.html" class="wf-nav-link">Inicio / Índice</a>
+      <a href="busqueda_pasajero.html" class="wf-nav-link">Buscar Vuelos <span class="wf-badge-us">US-08..14</span></a>
+      <a href="reserva_pasajes.html" class="wf-nav-link">Reserva Online <span class="wf-badge-us">US-15..19</span></a>
+      <a href="pago_comprobantes.html" class="wf-nav-link">Pagos y Facturas <span class="wf-badge-us">US-20..24</span></a>
+      <a href="mis_compras.html" class="wf-nav-link active">Mis Compras <span class="wf-badge-us">US-35/36</span></a>
+      <a href="contingencia_pasajero.html" class="wf-nav-link">Contingencias <span class="wf-badge-us">US-25/26</span></a>
+      <a href="mostrador.html" class="wf-nav-link">Operaciones Mostrador <span class="wf-badge-us">US-32..34</span></a>
+      <a href="reportes_admin.html" class="wf-nav-link">Admin: Reportes <span class="wf-badge-us">US-22/27</span></a>
+      <a href="autenticacion_usuarios.html" class="wf-nav-link">Seguridad y Roles <span class="wf-badge-us">US-28..30</span></a>
+    </nav>
+  </header>
+
+  <main class="wf-container">
+    <!-- Breadcrumb & Title -->
+    <div class="wf-breadcrumb">Portal Web > Mi Cuenta > <strong>Mis Compras e Historial de Viajes</strong></div>
+    
+    <div class="wf-page-title-box">
+      <div>
+        <h1 class="wf-page-title">Mis Compras y Pasajes Electrónicos</h1>
+        <p class="wf-subtitle">Consulta de compras pasadas y futuras asociadas a la cuenta (US-35) y descarga directa en PDF de e-tickets y facturas (US-36).</p>
+      </div>
+      <div class="wf-btn-group">
+        <span class="wf-badge-us">US-35: Consulta Histórica</span>
+        <span class="wf-badge-us">US-36: Descarga PDF (RNF-06)</span>
+        <a href="busqueda_pasajero.html" class="wf-btn wf-btn-primary">+ Comprar Nuevo Vuelo</a>
+      </div>
+    </div>
+
+    <!-- Reglas de Negocio Destacadas -->
+    <div class="wf-alert">
+      <div>
+        <strong>Reglas del Módulo Mis Compras (RF-14):</strong><br>
+        • <strong>US-35:</strong> El listado muestra exclusivamente las compras pasadas y futuras vinculadas a la sesión activa (`juan.perez@email.com`).<br>
+        • <strong>US-36 / RNF-06:</strong> Descarga directa con un clic de pasajes electrónicos y factura oficial en formato PDF, optimizada para dispositivos móviles.<br>
+        • <strong>Integración con Contingencias (US-25/26):</strong> Los vuelos con cambios operativos muestran una alerta con acceso directo para reprogramar o pedir reembolso.
+      </div>
+    </div>
+
+    <!-- SECCIÓN 1: PRÓXIMOS VIAJES / COMPRAS ACTIVAS (US-35) -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 24px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      1. Próximos Vuelos y Reservas Activas (US-35)
+    </h2>
+
+    <!-- TARJETA DE COMPRA 1: VUELO CONFIRMADO NORMAL -->
+    <article class="wf-card" style="border: 2px solid var(--wf-black); margin-bottom: 20px;">
+      <div class="wf-card-header" style="background-color: var(--wf-gray-lighter); padding: 12px 16px; margin: -20px -20px 16px -20px;">
+        <div>
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Código de Reserva:</span>
+          <span style="font-size: 1.15rem; font-weight: 800; margin-left: 6px;">RES-202610-ARG77</span>
+        </div>
+        <div class="wf-btn-group">
+          <span class="wf-tag wf-tag-active">Vuelo Programado ✓</span>
+          <span class="wf-tag wf-tag-active">Pagado ($ 135.000)</span>
+        </div>
+      </div>
+
+      <div class="wf-flight-main" style="grid-template-columns: 2fr 1.2fr; gap: 20px; align-items: start;">
+        <div>
+          <div style="font-size: 0.85rem; color: var(--wf-gray-dark); margin-bottom: 6px;">
+            Vuelo: <strong>VU-20261002-01</strong> &bull; Aeronave: Boeing 737-800 &bull; Fecha: <strong>Viernes 02 de Octubre de 2026</strong>
+          </div>
+
+          <div class="wf-flight-route">
+            <div>
+              <div class="wf-flight-time">08:30</div>
+              <div class="wf-flight-airport">AEP (Buenos Aires)</div>
+            </div>
+            <div class="wf-flight-arrow">
+              <div class="wf-flight-duration">1h 30m directo</div>
+              &rarr;
+            </div>
+            <div>
+              <div class="wf-flight-time">10:00</div>
+              <div class="wf-flight-airport">COR (Córdoba)</div>
+            </div>
+          </div>
+
+          <div style="margin-top: 14px; font-size: 0.85rem; line-height: 1.6;">
+            <strong>3 Pasajeros en Clase Economy:</strong><br>
+            • PÉREZ, JUAN CARLOS (DNI 32.456.789) - Asiento 14A<br>
+            • GONZÁLEZ, MARÍA ELENA (DNI 34.123.987) - Asiento 14B<br>
+            • PÉREZ, LUCAS (DNI 38.990.112) - Asiento 14C
+          </div>
+        </div>
+
+        <!-- PANEL DE DESCARGAS DIRECTAS (CRITERIO US-36 / RNF-06) -->
+        <div style="border-left: 1px solid var(--wf-gray-light); padding-left: 20px;">
+          <h4 style="font-size: 0.95rem; font-weight: 800; margin-bottom: 10px;">
+            Descarga de Documentación Oficial (US-36):
+          </h4>
+          <p style="font-size: 0.8rem; color: var(--wf-gray-dark); margin-bottom: 12px;">
+            Archivos pre-generados listos para visualización y descarga en navegadores de escritorio y móviles:
+          </p>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <button class="wf-btn wf-btn-primary" type="button" onclick="alert('Descargando archivo PDF con los 3 E-Tickets...');">
+              📄 Descargar E-Tickets (3 Pasajes PDF)
+            </button>
+            <button class="wf-btn wf-btn-outline" type="button" onclick="alert('Descargando Factura Electrónica Tipo B en PDF...');">
+              🧾 Descargar Factura Fiscal B (PDF)
+            </button>
+            <button class="wf-btn wf-btn-secondary wf-btn-sm" type="button" onclick="alert('Comprobantes reenviados a juan.perez@email.com');">
+              ✉️ Reenviar al Correo Electrónico
+            </button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- TARJETA DE COMPRA 2: VUELO CON CONTINGENCIA / CANCELADO (US-25, 26, 35) -->
+    <article class="wf-card" style="border: 2px dashed var(--wf-black); background-color: #fafafa; margin-bottom: 24px;">
+      <div class="wf-card-header" style="background-color: var(--wf-gray-lighter); padding: 12px 16px; margin: -20px -20px 16px -20px;">
+        <div>
+          <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase;">Código de Reserva:</span>
+          <span style="font-size: 1.15rem; font-weight: 800; margin-left: 6px;">RES-202609-COR12</span>
+        </div>
+        <div class="wf-btn-group">
+          <span class="wf-tag wf-tag-inactive" style="border: 2px solid var(--wf-black); font-weight: 800;">
+            ✕ VUELO CANCELADO POR AEROLÍNEA (US-25)
+          </span>
+        </div>
+      </div>
+
+      <div class="wf-alert" style="border: 2px solid var(--wf-black); background-color: var(--wf-white); margin-bottom: 14px;">
+        <div>
+          <strong>⚠️ Atención: Este vuelo ha sido afectado por un cambio operativo (US-25):</strong><br>
+          El vuelo <strong>VU-20260928-01</strong> (COR &rarr; AEP) fue cancelado por mantenimiento de flota. Puede gestionar su reprogramación sin cargo o pedir la restitución del 100% de su dinero.
+        </div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div style="font-size: 0.85rem;">
+          <strong>Ruta:</strong> COR (Córdoba) &rarr; AEP (Buenos Aires) &bull; Fecha original: 28/09/2026 &bull; 1 Pasaje Economy ($ 42.000)
+        </div>
+        <div class="wf-btn-group">
+          <a href="contingencia_pasajero.html" class="wf-btn wf-btn-danger" style="background-color: var(--wf-black); color: var(--wf-white); text-decoration: none;">
+            Gestionar Reprogramación o Reembolso (US-26) &rarr;
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- SECCIÓN 2: HISTORIAL DE COMPRAS PASADAS Y VIAJES REALIZADOS (US-35) -->
+    <h2 style="font-size: 1.25rem; font-weight: 800; margin: 30px 0 12px; border-bottom: 2px solid var(--wf-black); padding-bottom: 6px;">
+      2. Historial de Compras Pasadas (US-35)
+    </h2>
+
+    <section class="wf-card">
+      <div class="wf-card-header">
+        <h3 class="wf-card-title">Registro Histórico de Viajes y Transacciones</h3>
+        <span class="wf-tag wf-tag-active">Total: 2 compras anteriores</span>
+      </div>
+
+      <div class="wf-table-responsive">
+        <table class="wf-table">
+          <thead>
+            <tr>
+              <th>Fecha de Compra</th>
+              <th>Código Reserva</th>
+              <th>Ruta del Viaje</th>
+              <th>Fecha del Vuelo</th>
+              <th>Pasajeros</th>
+              <th>Importe Total</th>
+              <th>Estado del Viaje</th>
+              <th style="text-align: right;">Descarga de Documentación (US-36)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>15/07/2026</td>
+              <td><strong>RES-202607-MDZ44</strong></td>
+              <td>AEP &rarr; MDZ (Mendoza)</td>
+              <td>22/07/2026</td>
+              <td>2 Pasajeros (Eco)</td>
+              <td>$ 76.000,00</td>
+              <td><span class="wf-tag wf-tag-inactive">Viaje Completado</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="alert('Descargando Factura Histórica B...');">
+                    Factura PDF
+                  </button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm" type="button" onclick="alert('Descargando Pasajes Usados...');">
+                    Tickets PDF
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <tr>
+              <td>10/05/2026</td>
+              <td><strong>RES-202605-COR99</strong></td>
+              <td>COR &rarr; AEP (Buenos Aires)</td>
+              <td>18/05/2026</td>
+              <td>1 Pasaje (Primera)</td>
+              <td>$ 85.000,00</td>
+              <td><span class="wf-tag wf-tag-inactive">Viaje Completado</span></td>
+              <td style="text-align: right;">
+                <div class="wf-btn-group" style="justify-content: flex-end;">
+                  <button class="wf-btn wf-btn-outline wf-btn-sm" type="button" onclick="alert('Descargando Factura Histórica B...');">
+                    Factura PDF
+                  </button>
+                  <button class="wf-btn wf-btn-secondary wf-btn-sm" type="button" onclick="alert('Descargando Pasajes Usados...');">
+                    Tickets PDF
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="wf-annotation" style="margin-top: 14px; margin-bottom: 0;">
+        <strong>Disponibilidad Móvil y Descarga (Criterios US-36 y RNF-06):</strong> Todos los pasajes y comprobantes emitidos en el historial permanecen accesibles para descarga continua sin vencimiento desde cualquier navegador web o smartphone.
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>
