@@ -207,18 +207,36 @@ describe("getContingencyByToken", () => {
     });
   });
 
-  it("no expone información de otra contingencia: solo devuelve el token consultado", async () => {
-    prismaMock.ticketContingency.findUnique.mockResolvedValue(makeContingency() as never);
+  it("no expone información de otra contingencia: cada token consulta su propia fila", async () => {
+    // Nota: este proyecto usa Prisma mockeado en unit tests; no hay suite de
+    // integración contra DB real. Simulamos dos filas distintas para verificar
+    // que la función pasa el token correcto al WHERE y devuelve solo la fila
+    // solicitada. En producción el índice único de `accessToken` garantiza la
+    // imposibilidad de cruzar datos entre tokens.
+    prismaMock.ticketContingency.findUnique.mockImplementation(
+      (async (args: { where: { accessToken: string } }) => {
+        const token = args.where.accessToken;
+        if (token === "tok-abc-123") return makeContingency() as never;
+        if (token === "tok-xyz-999") {
+          return { ...makeContingency(), id: "CON_2", accessToken: "tok-xyz-999" } as never;
+        }
+        return null as never;
+      }) as never,
+    );
 
-    const result = await getContingencyByToken("otro-token");
+    const resultA = await getContingencyByToken("tok-abc-123");
+    const resultB = await getContingencyByToken("tok-xyz-999");
 
-    // El mock devuelve siempre CON_1; en producción el WHERE por accessToken único
-    // garantiza que nunca se mezcle con otro token. Verificamos la llamada.
-    expect(prismaMock.ticketContingency.findUnique).toHaveBeenCalledWith({
-      where: { accessToken: "otro-token" },
-      include: expect.any(Object),
-    });
-    expect(result?.status).toBe("PENDING");
+    expect(resultA?.status).toBe("PENDING");
+    expect(resultB?.status).toBe("PENDING");
+    expect(prismaMock.ticketContingency.findUnique).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({ where: { accessToken: "tok-abc-123" } }),
+    );
+    expect(prismaMock.ticketContingency.findUnique).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ where: { accessToken: "tok-xyz-999" } }),
+    );
   });
 
   it("funciona sin sesión de Clerk: el token es el único secreto de acceso", async () => {
