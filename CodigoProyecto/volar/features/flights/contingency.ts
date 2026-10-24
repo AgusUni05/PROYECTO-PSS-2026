@@ -68,7 +68,7 @@ type BuildContingencyOutboxArgs = {
   newArrivalAt?: Date | null;
 };
 
-function formatDateTime(date: Date): string {
+export function formatDateTime(date: Date): string {
   return new Intl.DateTimeFormat("es-AR", {
     day: "2-digit",
     month: "2-digit",
@@ -80,14 +80,14 @@ function formatDateTime(date: Date): string {
   }).format(date);
 }
 
-function buildSubject(type: ContingencyFlightChangeType, flightCode: string): string {
+export function buildSubject(type: ContingencyFlightChangeType, flightCode: string): string {
   if (type === "SCHEDULE_CHANGE") {
     return `Cambio de horario en tu vuelo ${flightCode}`;
   }
   return `Cancelación de tu vuelo ${flightCode}`;
 }
 
-function buildBody(
+export function buildBody(
   type: ContingencyFlightChangeType,
   flightCode: string,
   previousDepartureAt: Date,
