@@ -74,11 +74,13 @@ export async function requireCurrentUser(): Promise<User> {
 }
 
 /**
- * Guardia reutilizable para vistas de pasajeros (US-28). Sin sesión → redirige
- * a sign-in; sin rol PASSENGER → 403.
+ * Guardia reutilizable para vistas de pasajeros (US-28 / US-35). Sin sesión →
+ * redirige a sign-in; sin rol PASSENGER o con la cuenta desactivada → 403.
+ * Es la única fuente del `userId` con el que se consulta el historial de
+ * compras: nunca se acepta desde el cliente.
  */
 export async function requirePassenger(): Promise<User> {
   const user = await requireCurrentUser();
-  if (user.role !== "PASSENGER") forbidden();
+  if (user.role !== "PASSENGER" || !user.isActive) forbidden();
   return user;
 }

@@ -180,9 +180,18 @@ describe("requirePassenger", () => {
     await expect(requirePassenger()).rejects.toThrow("forbidden");
   });
 
-  it("devuelve el usuario cuando es pasajero", async () => {
+  it("devuelve 403 cuando la cuenta del pasajero está deshabilitada", async () => {
     vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
-    const passenger = makeUser({ role: "PASSENGER" });
+    prismaMock.user.findUnique.mockResolvedValue(
+      makeUser({ role: "PASSENGER", isActive: false }),
+    );
+
+    await expect(requirePassenger()).rejects.toThrow("forbidden");
+  });
+
+  it("devuelve el usuario cuando es pasajero activo", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    const passenger = makeUser({ role: "PASSENGER", isActive: true });
     prismaMock.user.findUnique.mockResolvedValue(passenger);
 
     const result = await requirePassenger();
