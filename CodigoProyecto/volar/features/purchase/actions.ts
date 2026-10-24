@@ -87,7 +87,7 @@ export async function processPaymentAction(
     return { ok: false, fieldErrors: parsed.error.flatten().fieldErrors };
   }
 
-  const result = await purchaseService.processPayment(parsedCode.data, parsed.data);
+  const result = await purchaseService.processPayment(parsedCode.data, parsed.data, user.id);
   if (result.ok) revalidatePath(PAYMENT_PATH);
   return result;
 }

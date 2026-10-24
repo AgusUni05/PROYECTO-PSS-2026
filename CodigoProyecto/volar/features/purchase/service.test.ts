@@ -355,6 +355,8 @@ function bookingRow(overrides: Record<string, unknown> = {}) {
     seatClass: "ECONOMY",
     contactName: "Pasajero Demo",
     contactEmail: "demo@volar.test",
+    channel: "WEB",
+    buyerId: null,
     flight: { code: "VU-DEMO-01", economyCapacity: 150, firstClassCapacity: 12 },
     tickets: [
       { id: "PAS_1", firstName: "María", lastName: "Demo", unitPrice: { toString: () => "45000" } },
@@ -457,6 +459,41 @@ describe("processPayment (US-20/US-21/US-22)", () => {
       recipientEmail: "demo@volar.test",
       status: "SENT",
     });
+  });
+
+  it("vincula al comprador que paga si la reserva web no tenía comprador (demo del seed)", async () => {
+    prismaMock.booking.findUnique.mockResolvedValue(bookingRow() as never);
+    prismaMock.booking.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await processPayment("DEMO0001", values, buyer.id);
+
+    expect(result).toMatchObject({ ok: true, data: { status: "APPROVED" } });
+    const data = prismaMock.booking.updateMany.mock.calls[0][0].data as Record<string, unknown>;
+    expect(data).toMatchObject({ status: "CONFIRMED", buyerId: buyer.id });
+  });
+
+  it("no pisa un comprador existente ni vincula una reserva de mostrador", async () => {
+    prismaMock.booking.findUnique.mockResolvedValueOnce(
+      bookingRow({ buyerId: "USU_OTRO" }) as never,
+    );
+    prismaMock.booking.updateMany.mockResolvedValue({ count: 1 });
+
+    await processPayment("DEMO0001", values, buyer.id);
+
+    const withBuyer = prismaMock.booking.updateMany.mock.calls[0][0].data as Record<string, unknown>;
+    expect(withBuyer).toMatchObject({ status: "CONFIRMED" });
+    expect(withBuyer).not.toHaveProperty("buyerId");
+
+    prismaMock.booking.updateMany.mockClear();
+    prismaMock.booking.findUnique.mockResolvedValueOnce(
+      bookingRow({ channel: "COUNTER", buyerId: null }) as never,
+    );
+
+    await processPayment("DEMO0001", values, buyer.id);
+
+    const counter = prismaMock.booking.updateMany.mock.calls[0][0].data as Record<string, unknown>;
+    expect(counter).toMatchObject({ status: "CONFIRMED" });
+    expect(counter).not.toHaveProperty("buyerId");
   });
 
   it("rechaza con último dígito impar, cancela los pasajes y libera el cupo", async () => {
