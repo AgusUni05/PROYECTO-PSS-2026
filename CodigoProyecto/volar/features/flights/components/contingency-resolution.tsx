@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -145,7 +146,9 @@ function RebookCard() {
 }
 
 function RefundCard({ token, amount }: { token: string; amount: number }) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [resolved, setResolved] = useState(false);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   function handleRefund() {
@@ -158,8 +161,11 @@ function RefundCard({ token, amount }: { token: string; amount: number }) {
         return;
       }
 
+      setResolved(true);
       setFeedback({ type: "success", message: "Reembolso registrado correctamente." });
       toast.success("Reembolso registrado correctamente.");
+      // Refresca el Server Component para mostrar la vista resuelta y ocultar el botón.
+      router.refresh();
     });
   }
 
@@ -180,13 +186,16 @@ function RefundCard({ token, amount }: { token: string; amount: number }) {
         {feedback?.type === "error" && (
           <p className="mb-3 text-center text-xs text-destructive">{feedback.message}</p>
         )}
+        {feedback?.type === "success" && (
+          <p className="mb-3 text-center text-xs text-green-600">{feedback.message}</p>
+        )}
         <Button
           variant="outline"
           className="w-full"
-          disabled={isPending}
+          disabled={isPending || resolved}
           onClick={handleRefund}
         >
-          {isPending ? "Procesando…" : "Solicitar reembolso"}
+          {resolved ? "Reembolso registrado" : isPending ? "Procesando…" : "Solicitar reembolso"}
         </Button>
       </CardContent>
     </Card>

@@ -26,7 +26,7 @@ export type RefundResolutionResult =
   | { type: "notFound" }
   | { type: "conflict" };
 
-type ResolveRefundDeps = {
+export type ResolveRefundContext = {
   gateway?: RefundGateway;
 };
 
@@ -45,9 +45,9 @@ type ResolveRefundDeps = {
  */
 export async function resolveRefund(
   accessToken: string,
-  deps: ResolveRefundDeps = {},
+  userContext: ResolveRefundContext = {},
 ): Promise<RefundResolutionResult> {
-  const gateway = deps.gateway ?? volarPayRefundGateway;
+  const gateway = userContext.gateway ?? volarPayRefundGateway;
 
   return prisma.$transaction(async (tx) => {
     const now = new Date();

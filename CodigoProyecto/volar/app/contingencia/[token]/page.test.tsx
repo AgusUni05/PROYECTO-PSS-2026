@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
 import { renderToString } from "react-dom/server";
 
+vi.mock("next/navigation", () => ({
+  useRouter: vi.fn(() => ({ refresh: vi.fn() })),
+}));
+
 vi.mock("@/features/flights/contingency-queries", () => ({
   getContingencyByToken: vi.fn(),
 }));
@@ -62,7 +66,7 @@ describe("ContingenciaPage", () => {
     expect(html).not.toContain("Reprogramar");
   });
 
-  it("muestra resumen, advertencia y botones deshabilitados para un token pendiente", async () => {
+  it("muestra resumen, advertencia, reprogramación deshabilitada y reembolso habilitado para un token pendiente", async () => {
     vi.mocked(getContingencyByToken).mockResolvedValue(pendingView);
 
     const element = await ContingenciaPage({ params: Promise.resolve({ token: "tok-abc-123" }) });
@@ -72,6 +76,7 @@ describe("ContingenciaPage", () => {
     expect(html).toContain("Pérez");
     expect(html).toContain("Reprogramar");
     expect(html).toContain("Reembolso");
+    expect(html).toContain("Solicitar reembolso");
     expect(html).toContain("Una vez que elijas");
     expect(html).toMatch(/disabled/);
   });

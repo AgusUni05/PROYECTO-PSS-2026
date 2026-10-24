@@ -312,6 +312,12 @@ describe("resolveRefund", () => {
   });
 
   it("dos solicitudes concurrentes no generan dos reembolsos", async () => {
+    // Nota: este proyecto no tiene suite de integración contra DB real; el
+    // test mockea la secuencia en que la primera solicitud reserva la fila
+    // (updateMany count=1) y la segunda la encuentra ya resuelta
+    // (updateMany count=0). En producción el aislamiento real lo garantiza el
+    // bloqueo de fila de PostgreSQL adquirido por el updateMany condicional
+    // dentro de prisma.$transaction.
     const resolvedAt = new Date("2026-09-26T14:00:00.000Z");
     const gateway = fakeGateway("GW-RACE");
 

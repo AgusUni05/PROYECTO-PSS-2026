@@ -11,32 +11,36 @@ export async function resolveRefundAction(
     return { ok: false, error: "El enlace no es válido." };
   }
 
-  const result = await resolveRefund(accessToken);
+  try {
+    const result = await resolveRefund(accessToken, {});
 
-  switch (result.type) {
-    case "ok": {
-      revalidatePath(`/contingencia/${accessToken}`);
-      return {
-        ok: true,
-        data: {
-          refundId: result.refundId,
-          amount: result.amount,
-          gatewayRefundId: result.gatewayRefundId,
-        },
-      };
+    switch (result.type) {
+      case "ok": {
+        revalidatePath(`/contingencia/${accessToken}`);
+        return {
+          ok: true,
+          data: {
+            refundId: result.refundId,
+            amount: result.amount,
+            gatewayRefundId: result.gatewayRefundId,
+          },
+        };
+      }
+      case "alreadyResolved": {
+        revalidatePath(`/contingencia/${accessToken}`);
+        return { ok: false, error: "Esta contingencia ya fue resuelta." };
+      }
+      case "notFound": {
+        return { ok: false, error: "El enlace no es válido o expiró." };
+      }
+      case "conflict": {
+        return { ok: false, error: "No se pudo procesar el reembolso. Volvé a intentarlo." };
+      }
+      default: {
+        return { ok: false, error: "No se pudo procesar el reembolso." };
+      }
     }
-    case "alreadyResolved": {
-      revalidatePath(`/contingencia/${accessToken}`);
-      return { ok: false, error: "Esta contingencia ya fue resuelta." };
-    }
-    case "notFound": {
-      return { ok: false, error: "El enlace no es válido o expiró." };
-    }
-    case "conflict": {
-      return { ok: false, error: "No se pudo procesar el reembolso. Volvé a intentarlo." };
-    }
-    default: {
-      return { ok: false, error: "No se pudo procesar el reembolso." };
-    }
+  } catch {
+    return { ok: false, error: "No se pudo procesar el reembolso." };
   }
 }
