@@ -783,4 +783,19 @@ describe("cancelFlightsByRoute (US-06/RF-10)", () => {
     expect(result.ok).toBe(false);
     if (!result.ok) expect(result.error).toBeDefined();
   });
+
+  it("no pisa cancelaciones concurrentes parciales: si se actualizan menos vuelos de los esperados, informa el error", async () => {
+    prismaMock.route.findUnique.mockResolvedValue({ id: "TRA_1" } as never);
+    prismaMock.flight.findMany.mockResolvedValue([
+      futureFlight("VUE_1", "VU-1"),
+      futureFlight("VUE_2", "VU-2"),
+    ] as never);
+    prismaMock.flightChange.createMany.mockResolvedValue({ count: 2 } as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await cancelFlightsByRoute({ routeId: "TRA_1", reason: "operativo" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.error).toBeDefined();
+  });
 });

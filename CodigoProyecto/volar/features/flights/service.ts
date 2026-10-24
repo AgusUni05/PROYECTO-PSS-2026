@@ -519,7 +519,7 @@ export async function cancelFlightsByRoute(
           updatedById: cancelledById,
         },
       });
-      if (count === 0) throw new Error("FLIGHT_CHANGED");
+      if (count !== flights.length) throw new Error("FLIGHT_CHANGED");
     });
   } catch {
     return {

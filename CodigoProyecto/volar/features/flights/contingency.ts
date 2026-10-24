@@ -113,14 +113,6 @@ function buildBody(
   ].join("\n");
 }
 
-function generateUniqueAccessTokens(count: number): string[] {
-  const tokens = new Set<string>();
-  while (tokens.size < count) {
-    tokens.add(randomUUID());
-  }
-  return [...tokens];
-}
-
 /**
  * US-06 / US-25: arma el "outbox" de una contingencia a partir de los pasajes
  * ya emitidos de un vuelo.
@@ -147,7 +139,6 @@ export function buildContingencyOutbox({
     seen.add(ticket.id);
     return true;
   });
-  const accessTokens = generateUniqueAccessTokens(uniqueTickets.length);
 
   const emailType: ContingencyEmailType =
     type === "SCHEDULE_CHANGE" ? "FLIGHT_SCHEDULE_CHANGE" : "FLIGHT_CANCELLATION";
@@ -161,11 +152,11 @@ export function buildContingencyOutbox({
     newArrivalAt,
   );
 
-  const contingencies = uniqueTickets.map((ticket, index) => ({
+  const contingencies = uniqueTickets.map((ticket) => ({
     id: newId("TicketContingency"),
     flightChangeId,
     ticketId: ticket.id,
-    accessToken: accessTokens[index]!,
+    accessToken: randomUUID(),
   }));
 
   const emailsByBooking = new Map<string, ContingencyOutboxEmail>();
