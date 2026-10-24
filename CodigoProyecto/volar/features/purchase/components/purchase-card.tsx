@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { formatCurrency } from "@/features/flights/format";
 import type {
   PendingPurchaseContingency,
@@ -8,6 +8,7 @@ import type {
   PurchaseHistoryTicket,
 } from "@/features/purchase/history";
 import type { TicketStatus } from "@/generated/prisma/enums";
+import { PurchaseDownloadActions } from "./purchase-download-actions";
 import { PurchaseStatus } from "./purchase-status";
 import { groupTicketsByFlight, PurchaseSummary } from "./purchase-summary";
 
@@ -76,35 +77,6 @@ function ContingencyAlert({
 }
 
 /**
- * US-35: placeholders visuales de descarga. US-36 (e-tickets y factura en PDF)
- * se cablea en Task 13, por eso los botones quedan deshabilitados y no hay
- * rutas de descarga todavía.
- */
-export function PurchaseDownloadActions({ entry }: { entry: PurchaseHistoryEntry }) {
-  const ticketCount = entry.tickets.length;
-  const ticketsLabel = ticketCount === 1 ? "1 pasaje PDF" : `${ticketCount} pasajes PDF`;
-
-  return (
-    <div className="min-w-0">
-      <div className="flex flex-wrap items-center gap-2">
-        <Button type="button" size="sm" disabled>
-          {`Descargar E-Tickets (${ticketsLabel})`}
-        </Button>
-        <Button type="button" variant="outline" size="sm" disabled>
-          Descargar Factura Fiscal B (PDF)
-        </Button>
-      </div>
-      <p className="mt-2 text-xs text-muted-foreground">
-        La descarga estará disponible al habilitarse US-36.
-      </p>
-      {entry.invoice === null && (
-        <p className="text-xs text-muted-foreground">La factura fiscal todavía no está disponible.</p>
-      )}
-    </div>
-  );
-}
-
-/**
  * US-35: tarjeta de una compra próxima o activa. Agrupa por vuelo vigente de
  * cada pasaje (pueden diferir por una reprogramación de US-26).
  */
@@ -163,7 +135,11 @@ export function PurchaseCard({ entry }: { entry: PurchaseHistoryEntry }) {
       </div>
 
       <div className="mt-4 border-t border-border pt-3">
-        <PurchaseDownloadActions entry={entry} />
+        <PurchaseDownloadActions
+          code={entry.code}
+          ticketCount={entry.tickets.length}
+          hasInvoice={entry.invoice !== null}
+        />
       </div>
     </article>
   );

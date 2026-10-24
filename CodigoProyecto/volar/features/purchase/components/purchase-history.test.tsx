@@ -188,16 +188,28 @@ describe("PurchaseHistoryView", () => {
     expect(html).toContain("Todavía no tenés compras pasadas.");
   });
 
-  it("renderiza las descargas deshabilitadas como placeholder", () => {
+  it("muestra las descargas como links internos a las rutas autorizadas", () => {
     const html = render({ upcoming: [upcomingEntry], past: [pastEntry] });
 
-    expect(html).toMatch(
-      /<button[^>]*disabled[^>]*>Descargar E-Tickets \(1 pasaje PDF\)<\/button>/,
-    );
-    expect(html).toMatch(
-      /<button[^>]*disabled[^>]*>Descargar Factura Fiscal B \(PDF\)<\/button>/,
-    );
-    expect(html).toContain("La descarga estará disponible al habilitarse US-36.");
+    expect(html).toContain('href="/api/compras/VOL-ABC123/etickets"');
+    expect(html).toContain('href="/api/compras/VOL-ABC123/factura"');
+    expect(html).toContain('href="/api/compras/VOL-PAS456/etickets"');
+    expect(html).toContain('href="/api/compras/VOL-PAS456/factura"');
+    expect(html).toContain("Descargar E-Tickets (1 pasaje PDF)");
+    expect(html).toContain("Descargar Factura Fiscal B (PDF)");
+    expect(html).not.toContain("<button");
+    expect(html).not.toContain("US-36");
+  });
+
+  it("avisa cuando la compra no tiene comprobantes disponibles", () => {
+    const html = render({
+      upcoming: [{ ...upcomingEntry, tickets: [], invoice: null }],
+      past: [],
+    });
+
+    expect(html).toContain("Los comprobantes de esta compra no están disponibles.");
+    expect(html).not.toContain("/api/compras/VOL-ABC123/etickets");
+    expect(html).not.toContain("/api/compras/VOL-ABC123/factura");
   });
 
   it("muestra una alerta por cada contingencia pendiente de una compra pasada", () => {

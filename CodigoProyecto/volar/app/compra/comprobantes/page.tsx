@@ -13,6 +13,7 @@ import {
   type PurchaseComprobantes,
 } from "@/features/purchase/queries";
 import { PurchaseShell, Unavailable } from "@/features/purchase/components/purchase-shell";
+import { PurchaseDownloadActions } from "@/features/purchase/components/purchase-download-actions";
 
 export const metadata: Metadata = {
   title: "Comprobantes de la compra — VolAR",
@@ -86,6 +87,20 @@ export default async function ComprobantesPage({
       </section>
 
       <InvoiceSection booking={booking} />
+
+      <section className="min-w-0 space-y-2">
+        <h2 className="border-b border-border pb-2 text-[15px] font-extrabold">
+          Documentación de la compra
+        </h2>
+        <p className="text-sm text-muted-foreground">
+          Descargá los e-tickets y la factura en PDF.
+        </p>
+        <PurchaseDownloadActions
+          code={booking.code}
+          ticketCount={booking.tickets.length}
+          hasInvoice={booking.invoice !== null}
+        />
+      </section>
 
       <div className="flex justify-end">
         <Link href="/" className={buttonVariants()}>

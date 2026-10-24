@@ -2,11 +2,8 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/features/flights/format";
 import type { PurchaseHistory, PurchaseHistoryEntry } from "@/features/purchase/history";
-import {
-  PurchaseCard,
-  PurchaseContingencyAlerts,
-  PurchaseDownloadActions,
-} from "./purchase-card";
+import { PurchaseCard, PurchaseContingencyAlerts } from "./purchase-card";
+import { PurchaseDownloadActions } from "./purchase-download-actions";
 import { PurchaseStatus } from "./purchase-status";
 import { groupTicketsByFlight } from "./purchase-summary";
 
@@ -118,7 +115,11 @@ function PurchaseHistoryRow({ entry }: { entry: PurchaseHistoryEntry }) {
       <PurchaseContingencyAlerts entry={entry} />
 
       <div className="mt-3 border-t border-border pt-3">
-        <PurchaseDownloadActions entry={entry} />
+        <PurchaseDownloadActions
+          code={entry.code}
+          ticketCount={entry.tickets.length}
+          hasInvoice={entry.invoice !== null}
+        />
       </div>
     </div>
   );
