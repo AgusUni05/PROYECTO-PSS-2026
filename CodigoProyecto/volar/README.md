@@ -97,11 +97,14 @@ reales. Nunca se commitea `.env`.
 | `pnpm test` | Suite completa de Vitest. |
 | `pnpm test:watch` | Vitest en modo watch. |
 | `pnpm make-admin <email>` | Promueve un usuario existente al rol `ADMIN`. |
-| `pnpm seed:demo [--clean]` | Crea o elimina datos demo para probar el flujo de pago. |
+| `pnpm seed:demo [--clean]` | Crea o elimina datos demo para explorar la aplicación. |
 | `pnpm mail:send` | Reintenta las notificaciones `PENDING` de contingencia y de compra. |
 
 `make-admin`, `seed:demo` y `mail:send` dependen de `tsx`, que es una
 devDependency: instalar con `pnpm install` completo, no con `pnpm install --prod`.
+La reserva `DEMO0001` del seed no tiene titular autenticado y, por seguridad, no
+se puede pagar desde una sesión cualquiera; para probar el pago, iniciar una
+compra desde la cuenta autenticada.
 El envío principal es automático: la confirmación de compra sale al aprobar el
 pago y las contingencias salen al guardar un cambio de horario o una
 cancelación con pasajes emitidos. Ambos son best-effort; si SMTP falla, la

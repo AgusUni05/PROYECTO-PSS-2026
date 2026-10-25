@@ -481,9 +481,8 @@ export async function processPayment(
         },
       });
 
-      // Una reserva web sin comprador (p. ej. la demo del seed) se vincula al
-      // usuario que paga en la misma escritura que la confirma. Nunca se pisa
-      // un comprador existente ni se vincula una venta de mostrador.
+      // Revalida titular, canal, estado y vencimiento en el punto de escritura;
+      // un cambio concurrente no puede confirmar ni rechazar otra reserva.
       const { count } = await tx.booking.updateMany({
         where: {
           id: booking.id,
