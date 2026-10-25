@@ -6,7 +6,7 @@ export function PhotoBackdrop() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none fixed inset-0 -z-10 bg-cover"
+      className="pointer-events-none fixed top-0 left-0 -z-10 h-screen w-screen bg-cover"
       style={{
         backgroundImage:
           "linear-gradient(color-mix(in srgb, var(--background) 86%, transparent), color-mix(in srgb, var(--background) 86%, transparent)), url('/backgrounds/volar-tarmac-dusk.jpg')",
