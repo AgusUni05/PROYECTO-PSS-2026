@@ -105,7 +105,7 @@ function makePurchase(overrides: Partial<PurchaseComprobantes> = {}): PurchaseCo
       totalAmount: "90000",
       issuedAt,
       items: [
-        { description: "Pasaje Economy VU-DEMO-01", quantity: 1, unitPrice: "45000", amount: "45000" },
+        { id: "ITEM_1", description: "Pasaje Economy VU-DEMO-01", quantity: 1, unitPrice: "45000", amount: "45000" },
       ],
     },
     email: { recipientEmail: "demo@volar.test", status: "SENT", sentAt: issuedAt },

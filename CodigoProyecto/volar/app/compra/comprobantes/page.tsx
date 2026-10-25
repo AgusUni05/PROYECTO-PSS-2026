@@ -243,8 +243,8 @@ function InvoiceSection({ booking }: { booking: PurchaseComprobantes }) {
           </tr>
         </thead>
         <tbody>
-          {invoice.items.map((item, index) => (
-            <tr key={index} className="border-b border-border/60 last:border-0">
+          {invoice.items.map((item) => (
+            <tr key={item.id} className="border-b border-border/60 last:border-0">
               <td className="py-2 pr-3">{item.description}</td>
               <td className="py-2 pr-3 text-right">{item.quantity}</td>
               <td className="py-2 pr-3 text-right">{formatCurrency(item.unitPrice)}</td>

@@ -3,18 +3,8 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { ConfirmActionDialog } from "@/components/confirm-action-dialog";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
 import { deactivateAirportAction } from "../actions";
 
 type Props = {
@@ -55,25 +45,18 @@ export function DeactivateAirportButton({ id, label, blockedReason }: Props) {
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger render={<Button variant="destructive" size="sm" />}>
-        Dar de Baja
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Dar de baja {label}</AlertDialogTitle>
-          <AlertDialogDescription>
-            El aeropuerto dejará de estar disponible para elegir como origen o destino de nuevos
-            trayectos. Esta acción se puede revertir editándolo más adelante.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" disabled={isPending} onClick={handleConfirm}>
-            {isPending ? "Dando de baja…" : "Confirmar Baja"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ConfirmActionDialog
+      open={open}
+      onOpenChange={setOpen}
+      triggerLabel="Dar de Baja"
+      triggerSize="sm"
+      title={`Dar de baja ${label}`}
+      description="El aeropuerto dejará de estar disponible para elegir como origen o destino de nuevos trayectos. Esta acción se puede revertir editándolo más adelante."
+      confirmLabel="Confirmar Baja"
+      actionVariant="destructive"
+      pendingLabel="Dando de baja…"
+      isPending={isPending}
+      onConfirm={handleConfirm}
+    />
   );
 }

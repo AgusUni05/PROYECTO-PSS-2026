@@ -9,8 +9,8 @@ import { PassengersForm } from "@/features/purchase/components/passengers-form";
 import {
   PurchaseShell,
   Unavailable,
-  resultsHref,
 } from "@/features/purchase/components/purchase-shell";
+import { resultsHref } from "@/features/purchase/components/purchase-shell.utils";
 import { SEAT_CLASS_LABELS } from "@/features/flight-search/class-options";
 import { formatCurrency, formatLongDate, formatTime } from "@/features/flights/format";
 

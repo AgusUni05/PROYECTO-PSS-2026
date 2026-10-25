@@ -1,6 +1,6 @@
 import { ListNavigationProvider, ListResults } from "@/components/list-navigation";
 import { TableSkeleton } from "@/components/table-skeleton";
-import { Info } from "lucide-react";
+import { AdminRuleNotice } from "@/components/admin-rule-notice";
 import { requireAdmin } from "@/lib/auth";
 import { StaffForm } from "@/features/staff/components/staff-form";
 import { StaffFilters } from "@/features/staff/components/staff-filters";
@@ -37,19 +37,11 @@ export default async function PersonalPage({
         </div>
       </div>
 
-      <div className="flex items-start gap-3.5 rounded-2xl bg-secondary p-4 text-[#2E1A8F]">
-        <span className="grid size-[34px] flex-none place-items-center rounded-[10px] bg-card text-primary">
-          <Info className="size-[18px]" />
-        </span>
-        <div>
-          <b className="block text-[13.5px]">Regla integrada</b>
-          <p className="m-0 text-[13.5px] leading-[1.55] text-[#3D3470]">
-            Exclusivo para administradores. Una cuenta deshabilitada no puede iniciar sesión, pero
-            no se borra: se conserva la trazabilidad de todas sus operaciones. No podés
-            deshabilitar ni cambiar el rol de tu propia cuenta.
-          </p>
-        </div>
-      </div>
+      <AdminRuleNotice>
+        Exclusivo para administradores. Una cuenta deshabilitada no puede iniciar sesión, pero no se
+        borra: se conserva la trazabilidad de todas sus operaciones. No podés deshabilitar ni cambiar
+        el rol de tu propia cuenta.
+      </AdminRuleNotice>
 
       <ListNavigationProvider>
         <div className="grid gap-6 lg:grid-cols-2">

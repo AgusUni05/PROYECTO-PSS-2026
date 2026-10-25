@@ -9,7 +9,7 @@ import type {
 } from "@/features/purchase/history";
 import { formatCurrency, formatLongDate } from "@/features/flights/format";
 import { PurchaseHistoryView } from "./purchase-history";
-import { groupTicketsByFlight } from "./purchase-summary";
+import { groupTicketsByFlight } from "./purchase-summary.utils";
 
 const nextFlight: PurchaseHistoryFlight = {
   id: "VUE_PROX",

@@ -9,6 +9,7 @@ import type {
 } from "@/generated/prisma/enums";
 
 export type BookingPassenger = {
+  id: string;
   firstName: string;
   lastName: string;
   documentType: DocumentType;
@@ -53,7 +54,13 @@ const BOOKING_FOR_PAYMENT_INCLUDE = {
   },
   tickets: {
     orderBy: { createdAt: "asc" },
-    select: { firstName: true, lastName: true, documentType: true, documentNumber: true },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      documentType: true,
+      documentNumber: true,
+    },
   },
 } as const;
 
@@ -140,7 +147,13 @@ export type ComprobanteInvoice = {
   customerEmail: string;
   totalAmount: string;
   issuedAt: Date;
-  items: { description: string; quantity: number; unitPrice: string; amount: string }[];
+  items: {
+    id: string;
+    description: string;
+    quantity: number;
+    unitPrice: string;
+    amount: string;
+  }[];
 };
 
 export type PurchaseComprobantes = {
@@ -208,7 +221,7 @@ const BOOKING_FOR_COMPROBANTES_INCLUDE = {
       issuedAt: true,
       items: {
         orderBy: { id: "asc" },
-        select: { description: true, quantity: true, unitPrice: true, amount: true },
+        select: { id: true, description: true, quantity: true, unitPrice: true, amount: true },
       },
     },
   },
@@ -276,6 +289,7 @@ function toPurchaseComprobantes(booking: ComprobantesRow): PurchaseComprobantes 
           totalAmount: invoice.totalAmount.toString(),
           issuedAt: invoice.issuedAt,
           items: invoice.items.map((item) => ({
+            id: item.id,
             description: item.description,
             quantity: item.quantity,
             unitPrice: item.unitPrice.toString(),

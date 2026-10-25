@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { renderToString } from "react-dom/server";
-import { PurchaseDownloadActions, purchaseDocumentUrl } from "./purchase-download-actions";
+import { PurchaseDownloadActions } from "./purchase-download-actions";
+import { purchaseDocumentUrl } from "./purchase-download-actions.utils";
 
 function render(props: {
   code: string;

@@ -25,13 +25,14 @@ export default async function VuelosPage({
   searchParams,
 }: {
   searchParams: Promise<SearchParams>;
-}) {
+  }) {
   const sp = await searchParams;
-  const airports = await listActiveAirports();
-
   const hasQuery = sp.origen !== undefined || sp.destino !== undefined || sp.fecha !== undefined;
   const parsed = hasQuery ? flightSearchSchema.safeParse(sp) : null;
-  const flights = parsed?.success ? await searchFlights(parsed.data) : null;
+  const [airports, flights] = await Promise.all([
+    listActiveAirports(),
+    parsed?.success ? searchFlights(parsed.data) : Promise.resolve(null),
+  ]);
 
   const formDefaults = {
     origen: typeof sp.origen === "string" ? sp.origen : "",

@@ -3,17 +3,7 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { ConfirmActionDialog } from "@/components/confirm-action-dialog";
 import { deactivateStaffAction, reactivateStaffAction } from "../actions";
 
 type Props = {
@@ -59,25 +49,23 @@ export function StaffStatusButton({ id, label, isActive }: Props) {
   }
 
   return (
-    <AlertDialog open={open} onOpenChange={setOpen}>
-      <AlertDialogTrigger render={<Button variant="destructive" size="sm" />}>
-        Deshabilitar
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Deshabilitar la cuenta de {label}</AlertDialogTitle>
-          <AlertDialogDescription>
-            La cuenta no podrá iniciar sesión a partir de ahora. No se borra: sus operaciones
-            registradas se conservan (trazabilidad) y se puede reactivar más adelante.
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" disabled={isPending} onClick={handleDeactivate}>
-            {isPending ? "Deshabilitando…" : "Confirmar"}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+    <ConfirmActionDialog
+      open={open}
+      onOpenChange={setOpen}
+      triggerLabel="Deshabilitar"
+      triggerSize="sm"
+      title={`Deshabilitar la cuenta de ${label}`}
+      description={
+        <>
+          La cuenta no podrá iniciar sesión a partir de ahora. No se borra: sus operaciones
+          registradas se conservan (trazabilidad) y se puede reactivar más adelante.
+        </>
+      }
+      confirmLabel="Confirmar"
+      actionVariant="destructive"
+      pendingLabel="Deshabilitando…"
+      isPending={isPending}
+      onConfirm={handleDeactivate}
+    />
   );
 }

@@ -1,6 +1,6 @@
 import { ListNavigationProvider, ListResults } from "@/components/list-navigation";
 import { TableSkeleton } from "@/components/table-skeleton";
-import { Info } from "lucide-react";
+import { AdminRuleNotice } from "@/components/admin-rule-notice";
 import { AdminEditDialog } from "@/components/admin-edit-dialog";
 import { AirportForm } from "@/features/airports/components/airport-form";
 import { AirportFilters } from "@/features/airports/components/airport-filters";
@@ -45,18 +45,10 @@ export default async function AeropuertosPage({
         </p>
       </div>
 
-      <div className="flex items-start gap-3.5 rounded-2xl bg-secondary p-4 text-[#2E1A8F]">
-        <span className="grid size-[34px] flex-none place-items-center rounded-[10px] bg-card text-primary">
-          <Info className="size-[18px]" />
-        </span>
-        <div>
-          <b className="block text-[13.5px]">Regla integrada</b>
-          <p className="m-0 text-[13.5px] leading-[1.55] text-[#3D3470]">
-            El código IATA/ICAO es único y obligatorio. No se puede dar de baja un aeropuerto con
-            vuelos futuros programados.
-          </p>
-        </div>
-      </div>
+      <AdminRuleNotice>
+        El código IATA/ICAO es único y obligatorio. No se puede dar de baja un aeropuerto con vuelos
+        futuros programados.
+      </AdminRuleNotice>
 
       <ListNavigationProvider>
         <div className="grid gap-6 lg:grid-cols-2">

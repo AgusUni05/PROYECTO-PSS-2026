@@ -235,7 +235,7 @@ export async function getBookingHold(id: string, buyerId: string): Promise<Booki
       },
       tickets: {
         orderBy: { createdAt: "asc" },
-        select: { firstName: true, lastName: true, documentType: true, documentNumber: true },
+        select: { id: true, firstName: true, lastName: true, documentType: true, documentNumber: true },
       },
     },
   });

@@ -1,18 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
-
-export type PurchaseDocumentKind = "etickets" | "invoice";
-
-/**
- * US-36: URL interna del comprobante. El código de reserva solo se codifica
- * para que viaje seguro como segmento de ruta; la autorización y la generación
- * del PDF quedan del lado del servidor.
- */
-export function purchaseDocumentUrl(code: string, kind: PurchaseDocumentKind): string {
-  const encodedCode = encodeURIComponent(code);
-  return kind === "etickets"
-    ? `/api/compras/${encodedCode}/etickets`
-    : `/api/compras/${encodedCode}/factura`;
-}
+import { purchaseDocumentUrl } from "./purchase-download-actions.utils";
 
 // 44 px de alto mínimo para el touch target y ancho completo en mobile.
 const LINK_CLASS = "min-h-11 w-full justify-center sm:w-auto";

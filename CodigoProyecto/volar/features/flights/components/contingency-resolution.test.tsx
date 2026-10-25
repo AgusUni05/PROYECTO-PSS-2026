@@ -12,12 +12,14 @@ vi.mock("@/features/flights/contingency-actions", () => ({
 
 import { resolveRebookingAction } from "@/features/flights/contingency-actions";
 import {
-  buildRebookingConfirmation,
-  buildRefundConfirmation,
   ContingencyNotFound,
   ContingencyResolution,
-  submitRebooking,
 } from "./contingency-resolution";
+import {
+  buildRebookingConfirmation,
+  buildRefundConfirmation,
+  submitRebooking,
+} from "./contingency-resolution.utils";
 
 const pendingView = {
   status: "PENDING" as const,

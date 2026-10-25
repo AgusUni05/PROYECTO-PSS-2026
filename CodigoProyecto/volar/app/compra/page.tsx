@@ -13,8 +13,8 @@ import { formatCurrency, formatLongDate, formatTime } from "@/features/flights/f
 import {
   PurchaseShell,
   Unavailable,
-  resultsHref,
 } from "@/features/purchase/components/purchase-shell";
+import { resultsHref } from "@/features/purchase/components/purchase-shell.utils";
 
 export const metadata: Metadata = {
   title: "Iniciar compra — VolAR",

@@ -68,16 +68,18 @@ type BuildContingencyOutboxArgs = {
   newArrivalAt?: Date | null;
 };
 
+const CONTINGENCY_DATE_FORMATTER = new Intl.DateTimeFormat("es-AR", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  hour12: false,
+  timeZone: "UTC",
+});
+
 export function formatDateTime(date: Date): string {
-  return new Intl.DateTimeFormat("es-AR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: "UTC",
-  }).format(date);
+  return CONTINGENCY_DATE_FORMATTER.format(date);
 }
 
 export function buildSubject(type: ContingencyFlightChangeType, flightCode: string): string {

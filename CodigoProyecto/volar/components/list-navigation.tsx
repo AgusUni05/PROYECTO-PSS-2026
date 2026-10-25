@@ -45,7 +45,7 @@ export function useListNavigation(): ListNavigation {
 /** Zona de resultados: muestra el skeleton mientras carga una navegación del listado. */
 export function ListResults({ skeleton, children }: { skeleton: ReactNode; children: ReactNode }) {
   const { isPending } = useListNavigation();
-  return isPending ? skeleton : children;
+  return <>{isPending ? skeleton : children}</>;
 }
 
 /** Link que navega dentro del listado (sin recarga) manteniendo el href real. */
@@ -76,7 +76,7 @@ export function ListNavLink({
 }
 
 /** Href del listado a partir del formulario de filtros: omite campos vacíos y vuelve a la página 1. */
-export function buildListHref(basePath: string, form: HTMLFormElement): string {
+function buildListHref(basePath: string, form: HTMLFormElement): string {
   const params = new URLSearchParams();
   new FormData(form).forEach((value, key) => {
     if (typeof value === "string" && value.trim() !== "") params.set(key, value.trim());

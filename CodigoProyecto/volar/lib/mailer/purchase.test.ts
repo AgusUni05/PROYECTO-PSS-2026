@@ -85,6 +85,7 @@ const purchase: PurchaseComprobantes = {
     issuedAt: new Date("2026-10-24T12:00:00.000Z"),
     items: [
       {
+        id: "ITEM_1",
         description: "Pasaje Economy",
         quantity: 1,
         unitPrice: "45000",

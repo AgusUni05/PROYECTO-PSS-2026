@@ -17,8 +17,8 @@ import { CountdownTimer } from "@/features/purchase/components/countdown-timer";
 import {
   PurchaseShell,
   Unavailable,
-  resultsHref,
 } from "@/features/purchase/components/purchase-shell";
+import { resultsHref } from "@/features/purchase/components/purchase-shell.utils";
 
 export const metadata: Metadata = {
   title: "Pago de la compra — VolAR",
@@ -170,8 +170,8 @@ function PaymentSummary({ booking }: { booking: BookingForPayment }) {
       </div>
 
       <ul className="list-none space-y-1 rounded-xl bg-muted px-3 py-2 text-[13px]">
-        {booking.passengers.map((passenger, i) => (
-          <li key={i} className="flex justify-between gap-3">
+        {booking.passengers.map((passenger) => (
+          <li key={passenger.id} className="flex justify-between gap-3">
             <span>
               {passenger.lastName}, {passenger.firstName}
             </span>

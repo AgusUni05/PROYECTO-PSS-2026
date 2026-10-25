@@ -78,12 +78,14 @@ function purchaseFixture(
       issuedAt: ISSUED_AT,
       items: [
         {
+          id: "ITEM_1",
           description: "Pasaje Economy VU-REPROGRAMADO - Demo, Maria",
           quantity: 1,
           unitPrice: "45000",
           amount: "45000",
         },
         {
+          id: "ITEM_2",
           description: "Pasaje Economy VU-REPROGRAMADO - Demo, Juan",
           quantity: 1,
           unitPrice: "45000",

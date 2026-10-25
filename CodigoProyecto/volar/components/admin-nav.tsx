@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
-export const ADMIN_NAV_ITEMS = [
+const ADMIN_NAV_ITEMS = [
   { href: "/admin/aeropuertos", label: "Aeropuertos" },
   { href: "/admin/aviones", label: "Aviones" },
   { href: "/admin/trayectos", label: "Trayectos" },

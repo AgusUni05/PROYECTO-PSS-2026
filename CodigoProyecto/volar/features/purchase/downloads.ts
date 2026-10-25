@@ -3,6 +3,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { getBookingComprobantesForBuyer } from "./queries";
 import type { PurchaseComprobantes } from "./queries";
 import { bookingCodeSchema } from "./schema";
+import type { PurchaseDocumentKind } from "./document-types";
 import {
   buildETicketsFilename,
   buildETicketsPdf,
@@ -13,8 +14,6 @@ import {
 // US-36: descarga autenticada de los comprobantes. Los PDF se generan en cada
 // request desde la base; nunca se aceptan bytes, rutas ni identidades del
 // cliente. La titularidad sale únicamente de la sesión (getCurrentUser).
-
-export type PurchaseDocumentKind = "etickets" | "invoice";
 
 export type PurchaseDownloadAccess =
   | { ok: true; purchase: PurchaseComprobantes }

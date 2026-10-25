@@ -5,7 +5,7 @@ import type { PurchaseHistory, PurchaseHistoryEntry } from "@/features/purchase/
 import { PurchaseCard, PurchaseContingencyAlerts } from "./purchase-card";
 import { PurchaseDownloadActions } from "./purchase-download-actions";
 import { PurchaseStatus } from "./purchase-status";
-import { groupTicketsByFlight } from "./purchase-summary";
+import { groupTicketsByFlight } from "./purchase-summary.utils";
 
 /**
  * US-35: "Mis Compras". Dos bloques: próximos vuelos / reservas activas y el

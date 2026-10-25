@@ -32,9 +32,27 @@ function bookingRow(overrides: Record<string, unknown> = {}) {
       airplane: { model: "Airbus A320 (demo)" },
     },
     tickets: [
-      { firstName: "María", lastName: "Demo", documentType: "DNI", documentNumber: "30000001" },
-      { firstName: "Juan", lastName: "Demo", documentType: "DNI", documentNumber: "30000002" },
-      { firstName: "Ana", lastName: "Demo", documentType: "DNI", documentNumber: "30000003" },
+      {
+        id: "TICKET_1",
+        firstName: "María",
+        lastName: "Demo",
+        documentType: "DNI",
+        documentNumber: "30000001",
+      },
+      {
+        id: "TICKET_2",
+        firstName: "Juan",
+        lastName: "Demo",
+        documentType: "DNI",
+        documentNumber: "30000002",
+      },
+      {
+        id: "TICKET_3",
+        firstName: "Ana",
+        lastName: "Demo",
+        documentType: "DNI",
+        documentNumber: "30000003",
+      },
     ],
     ...overrides,
   };
@@ -49,6 +67,11 @@ describe("getBookingForPayment (US-20)", () => {
     expect(prismaMock.booking.findFirst).toHaveBeenCalledWith(
       expect.objectContaining({
         where: { code: "DEMO0001", buyerId: "USU_COMPRADOR", channel: "WEB" },
+        include: expect.objectContaining({
+          tickets: expect.objectContaining({
+            select: expect.objectContaining({ id: true }),
+          }),
+        }),
       }),
     );
     expect(result).toMatchObject({
@@ -64,9 +87,9 @@ describe("getBookingForPayment (US-20)", () => {
         destination: { code: "DEM2", city: "Destino Demo" },
       },
       passengers: [
-        { firstName: "María", documentNumber: "30000001" },
-        { firstName: "Juan", documentNumber: "30000002" },
-        { firstName: "Ana", documentNumber: "30000003" },
+        { id: "TICKET_1", firstName: "María", documentNumber: "30000001" },
+        { id: "TICKET_2", firstName: "Juan", documentNumber: "30000002" },
+        { id: "TICKET_3", firstName: "Ana", documentNumber: "30000003" },
       ],
     });
   });
@@ -169,12 +192,14 @@ function comprobantesRow(overrides: Record<string, unknown> = {}) {
       issuedAt,
       items: [
         {
+          id: "ITEM_1",
           description: "Pasaje Economy VU-DEMO-01 - Demo, María",
           quantity: 1,
           unitPrice: { toString: () => "45000" },
           amount: { toString: () => "45000" },
         },
         {
+          id: "ITEM_2",
           description: "Pasaje Economy VU-DEMO-01 - Demo, Juan",
           quantity: 1,
           unitPrice: { toString: () => "45000" },
@@ -229,8 +254,8 @@ describe("getBookingComprobantes (US-23/US-24)", () => {
         number: 1,
         totalAmount: "90000",
         items: [
-          { quantity: 1, unitPrice: "45000", amount: "45000" },
-          { quantity: 1, unitPrice: "45000", amount: "45000" },
+          { id: "ITEM_1", quantity: 1, unitPrice: "45000", amount: "45000" },
+          { id: "ITEM_2", quantity: 1, unitPrice: "45000", amount: "45000" },
         ],
       },
       email: { status: "SENT", recipientEmail: "demo@volar.test" },
@@ -238,6 +263,7 @@ describe("getBookingComprobantes (US-23/US-24)", () => {
     });
     // I3: el estado del pasaje viaja en el DTO para filtrar e-tickets válidos.
     expect(result?.tickets.map((ticket) => ticket.status)).toEqual(["ISSUED", "ISSUED"]);
+    expect(result?.invoice?.items.map((item) => item.id)).toEqual(["ITEM_1", "ITEM_2"]);
   });
 
   it("mapea el vuelo de cada pasaje desde el ticket y no desde la reserva", async () => {

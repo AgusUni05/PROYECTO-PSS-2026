@@ -1,37 +1,7 @@
 import type { SeatClass } from "@/generated/prisma/enums";
 import { SEAT_CLASS_LABELS } from "@/features/flight-search/class-options";
 import { formatLongDate, formatTime } from "@/features/flights/format";
-import type {
-  PurchaseHistoryFlight,
-  PurchaseHistoryTicket,
-} from "@/features/purchase/history";
-
-export type PurchaseFlightGroup = {
-  flight: PurchaseHistoryFlight;
-  tickets: PurchaseHistoryTicket[];
-};
-
-/**
- * US-35: agrupa los pasajes por vuelo vigente. Después de una reprogramación
- * (US-26) cada pasaje puede viajar en un vuelo distinto, así que nunca se
- * asume un vuelo único por compra. Se preserva el orden de aparición.
- */
-export function groupTicketsByFlight(tickets: PurchaseHistoryTicket[]): PurchaseFlightGroup[] {
-  const groups: PurchaseFlightGroup[] = [];
-  const positionByFlight = new Map<string, number>();
-
-  for (const ticket of tickets) {
-    const position = positionByFlight.get(ticket.flight.id);
-    if (position === undefined) {
-      positionByFlight.set(ticket.flight.id, groups.length);
-      groups.push({ flight: ticket.flight, tickets: [ticket] });
-    } else {
-      groups[position].tickets.push(ticket);
-    }
-  }
-
-  return groups;
-}
+import type { PurchaseHistoryFlight } from "@/features/purchase/history";
 
 /**
  * US-35: resumen de un vuelo de la compra. Sin acciones: los botones viven en

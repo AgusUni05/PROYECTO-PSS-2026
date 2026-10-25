@@ -10,7 +10,8 @@ import type {
 import type { TicketStatus } from "@/generated/prisma/enums";
 import { PurchaseDownloadActions } from "./purchase-download-actions";
 import { PurchaseStatus } from "./purchase-status";
-import { groupTicketsByFlight, PurchaseSummary } from "./purchase-summary";
+import { groupTicketsByFlight } from "./purchase-summary.utils";
+import { PurchaseSummary } from "./purchase-summary";
 
 const TICKET_STATUS_LABELS: Record<TicketStatus, string> = {
   PENDING: "Pendiente de emisión",
