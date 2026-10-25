@@ -4,16 +4,13 @@ import { redirect } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { buttonVariants } from "@/components/ui/button";
 import { getCurrentUser } from "@/lib/auth";
-import { SEAT_CLASS_LABELS } from "@/features/flight-search/class-options";
-import { formatCurrency, formatDate, formatTime } from "@/features/flights/format";
+import { formatDate, formatTime } from "@/features/flights/format";
 import { bookingCodeSchema } from "@/features/purchase/schema";
-import {
-  getBookingComprobantesForBuyer,
-  type ComprobanteTicket,
-  type PurchaseComprobantes,
-} from "@/features/purchase/queries";
+import { getBookingComprobantesForBuyer, type PurchaseComprobantes } from "@/features/purchase/queries";
 import { PurchaseShell, Unavailable } from "@/features/purchase/components/purchase-shell";
 import { PurchaseDownloadActions } from "@/features/purchase/components/purchase-download-actions";
+import { ETicketCard } from "@/features/purchase/components/e-ticket-card";
+import { InvoiceSection } from "@/features/purchase/components/invoice-section";
 
 export const metadata: Metadata = {
   title: "Comprobantes de la compra — VolAR",
@@ -161,113 +158,3 @@ function EmailNotice({ booking }: { booking: PurchaseComprobantes }) {
   );
 }
 
-function ETicketCard({ ticket, index }: { ticket: ComprobanteTicket; index: number }) {
-  // US-26: el pasaje puede volar en un vuelo distinto al original de la reserva.
-  const { flight } = ticket;
-
-  return (
-    <article className="rounded-2xl border border-border bg-card p-4">
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <span className="text-[13px] font-extrabold">E-TICKET #{index + 1}</span>
-          <div className="text-xs text-muted-foreground">Vuelo: {flight.code}</div>
-        </div>
-        <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold">
-          {SEAT_CLASS_LABELS[ticket.seatClass]}
-        </span>
-      </div>
-
-      <dl className="mt-3 space-y-1 text-[13px]">
-        <TicketRow label="Pasajero">
-          <b>
-            {ticket.lastName}, {ticket.firstName}
-          </b>
-        </TicketRow>
-        <TicketRow label="Documento">
-          {ticket.documentType === "DNI" ? "DNI" : "Pasaporte"} {ticket.documentNumber}
-        </TicketRow>
-        <TicketRow label="Ruta">
-          <b>
-            {flight.origin.code} → {flight.destination.code}
-          </b>
-        </TicketRow>
-        <TicketRow label="Fecha">
-          {formatDate(flight.date)} · {formatTime(flight.departureAt)} hs
-        </TicketRow>
-        <TicketRow label="Asiento">
-          <b>{ticket.seat ?? "—"}</b>
-        </TicketRow>
-      </dl>
-
-      <p className="mt-3 border-t border-dashed border-border pt-2 font-mono text-xs text-muted-foreground">
-        {ticket.number ?? ""}
-      </p>
-    </article>
-  );
-}
-
-function TicketRow({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex justify-between gap-2">
-      <dt className="text-muted-foreground">{label}</dt>
-      <dd className="text-right">{children}</dd>
-    </div>
-  );
-}
-
-function InvoiceSection({ booking }: { booking: PurchaseComprobantes }) {
-  const invoice = booking.invoice;
-  if (!invoice) return null;
-
-  return (
-    <section className="rounded-2xl border border-border bg-muted/40 p-4">
-      <div className="flex flex-wrap items-start justify-between gap-3 border-b-2 border-foreground pb-2">
-        <div>
-          <h3 className="text-[15px] font-extrabold">FACTURA ELECTRÓNICA</h3>
-          <p className="text-xs text-muted-foreground">
-            N° {invoiceNumber(invoice.number)} · Fecha: {formatDate(invoice.issuedAt)}
-          </p>
-        </div>
-        <p className="text-xs">
-          Titular: <b>{invoice.customerName}</b>
-        </p>
-      </div>
-
-      <table className="mt-3 w-full border-collapse bg-card text-[13px]">
-        <thead>
-          <tr className="border-b border-border text-left text-xs text-muted-foreground">
-            <th className="py-2 pr-3 font-semibold">Concepto</th>
-            <th className="py-2 pr-3 text-right font-semibold">Cant.</th>
-            <th className="py-2 pr-3 text-right font-semibold">Tarifa</th>
-            <th className="py-2 text-right font-semibold">Subtotal</th>
-          </tr>
-        </thead>
-        <tbody>
-          {invoice.items.map((item) => (
-            <tr key={item.id} className="border-b border-border/60 last:border-0">
-              <td className="py-2 pr-3">{item.description}</td>
-              <td className="py-2 pr-3 text-right">{item.quantity}</td>
-              <td className="py-2 pr-3 text-right">{formatCurrency(item.unitPrice)}</td>
-              <td className="py-2 text-right">{formatCurrency(item.amount)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-        {booking.transactionId && (
-          <p className="text-xs text-muted-foreground">
-            Transacción pasarela: {booking.transactionId}
-          </p>
-        )}
-        <p className="text-[15px] font-extrabold">
-          TOTAL ABONADO: {formatCurrency(invoice.totalAmount)}
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function invoiceNumber(number: number): string {
-  return `0001-${String(number).padStart(8, "0")}`;
-}
