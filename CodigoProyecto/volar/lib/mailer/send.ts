@@ -3,10 +3,16 @@ import { ContingencyResolution } from "@/generated/prisma/enums";
 import type { EmailNotificationModel } from "@/generated/prisma/models/EmailNotification";
 import type { FlightChangeModel } from "@/generated/prisma/models/FlightChange";
 import { createMailerTransport } from "./index";
-import { buildContingencyEmailContent } from "./templates";
+import { buildContingencyEmailContent, type ContingencyAirport } from "./templates";
 
-type FlightChangeWithFlightCode = FlightChangeModel & {
-  flight?: { code: string } | null;
+type FlightChangeWithRoute = FlightChangeModel & {
+  flight?: {
+    code: string;
+    route?: {
+      origin: ContingencyAirport;
+      destination: ContingencyAirport;
+    };
+  } | null;
 };
 
 /**
@@ -27,7 +33,7 @@ export function buildContingencyActionUrl(
 
 export async function sendContingencyEmail(
   notification: EmailNotificationModel,
-  change: FlightChangeWithFlightCode,
+  change: FlightChangeWithRoute,
   actionUrl: string,
 ): Promise<"SENT" | "FAILED" | "SKIPPED"> {
   if (notification.status !== "PENDING") return "SKIPPED";
@@ -79,6 +85,37 @@ export async function sendContingencyEmail(
     throw new Error("No se encontró el vuelo asociado al cambio.");
   }
 
+  const route =
+    change.flight?.route ??
+    (
+      await prisma.flight.findUnique({
+        where: { id: change.flightId },
+        include: {
+          route: {
+            select: {
+              origin: { select: { code: true, city: true } },
+              destination: { select: { code: true, city: true } },
+            },
+          },
+        },
+      })
+    )?.route;
+
+  if (!route) {
+    throw new Error("No se encontró la ruta del vuelo asociado al cambio.");
+  }
+
+  const booking = await prisma.booking.findUnique({
+    where: { id: notification.bookingId },
+    select: { seatClass: true, buyerId: true, channel: true },
+  });
+
+  if (!booking) {
+    throw new Error("No se encontró la reserva asociada a la notificación.");
+  }
+
+  const isCounterSale = booking.channel === "COUNTER" || !booking.buyerId;
+
   const actionLinks = tokens.map((token) => ({
     accessToken: token.accessToken,
     url: buildContingencyActionUrl(actionUrl, token.accessToken),
@@ -87,11 +124,15 @@ export async function sendContingencyEmail(
   const { text, html } = buildContingencyEmailContent(
     change.type,
     flightCode,
+    route.origin,
+    route.destination,
+    booking.seatClass,
     change.previousDepartureAt,
     change.previousArrivalAt,
     change.newDepartureAt,
     change.newArrivalAt,
     actionLinks,
+    isCounterSale,
   );
 
   const transport = createMailerTransport();

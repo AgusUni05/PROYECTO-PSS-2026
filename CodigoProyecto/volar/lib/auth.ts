@@ -3,7 +3,7 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import { forbidden, redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import { newId } from "@/lib/id";
-import type { User } from "@/generated/prisma/client";
+import type { User, Booking } from "@/generated/prisma/client";
 
 /**
  * Usuario local (tabla `users`) vinculado a un clerkId. Si es la primera vez
@@ -83,4 +83,32 @@ export async function requirePassenger(): Promise<User> {
   const user = await requireCurrentUser();
   if (user.role !== "PASSENGER" || !user.isActive) forbidden();
   return user;
+}
+
+/**
+ * US-26/US-33: determina si el pasajero autenticado puede actuar sobre una
+ * reserva. Si la compra fue web, el `buyerId` debe coincidir con el usuario
+ * local. Si fue de mostrador (`buyerId` nulo), se acepta cuando el email
+ * verificado de Clerk coincide con el `contactEmail` de la reserva.
+ */
+export async function canPassengerAccessBooking(
+  booking: Pick<Booking, "buyerId" | "contactEmail">,
+): Promise<boolean> {
+  const user = await getCurrentUser();
+  if (!user || user.role !== "PASSENGER" || !user.isActive) {
+    return false;
+  }
+
+  if (booking.buyerId) {
+    return booking.buyerId === user.id;
+  }
+
+  const clerkUser = await currentUser();
+  if (!clerkUser) return false;
+
+  return clerkUser.emailAddresses.some(
+    (email) =>
+      email.emailAddress === booking.contactEmail &&
+      email.verification?.status === "verified",
+  );
 }

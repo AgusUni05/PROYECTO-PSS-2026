@@ -31,24 +31,37 @@ describe("sendContingencyEmail", () => {
 
     prismaMock.emailNotification.update.mockResolvedValue({} as never);
     prismaMock.ticketContingency.findMany.mockResolvedValue([]);
+    prismaMock.booking.findUnique.mockResolvedValue({
+      seatClass: "ECONOMY",
+      buyerId: "BUY_1",
+      channel: "WEB",
+    } as never);
   });
 
   afterEach(() => {
     process.env = originalEnv;
   });
 
-  const scheduleChange: FlightChangeModel & { flight: { code: string } } = {
+  const scheduleChange: FlightChangeModel & {
+    flight: { code: string; route: { origin: { code: string; city: string }; destination: { code: string; city: string } } };
+  } = {
     id: "CVU_1",
     flightId: "VUE_1",
     type: "SCHEDULE_CHANGE",
-    previousDepartureAt: new Date("2026-10-01T08:30:00.000Z"),
-    previousArrivalAt: new Date("2026-10-01T10:00:00.000Z"),
-    newDepartureAt: new Date("2026-10-01T09:00:00.000Z"),
-    newArrivalAt: new Date("2026-10-01T10:30:00.000Z"),
+    previousDepartureAt: new Date("2026-10-01T08:30:00.000-03:00"),
+    previousArrivalAt: new Date("2026-10-01T10:00:00.000-03:00"),
+    newDepartureAt: new Date("2026-10-01T09:00:00.000-03:00"),
+    newArrivalAt: new Date("2026-10-01T10:30:00.000-03:00"),
     reason: null,
     createdById: "USU_1",
     createdAt: new Date(),
-    flight: { code: "VU-20261001-001" },
+    flight: {
+      code: "VU-20261001-001",
+      route: {
+        origin: { code: "AEP", city: "Buenos Aires" },
+        destination: { code: "COR", city: "Córdoba" },
+      },
+    },
   };
 
   const cancellation: FlightChangeModel & { flight: { code: string } } = {
@@ -120,6 +133,11 @@ describe("sendContingencyEmail", () => {
     expect(message.to).toBe("passenger@example.com");
     expect(message.subject).toBe(notification.subject);
     expect(message.text).toMatch(/VU-20261001-001/);
+    expect(message.text).toMatch(/Buenos Aires \(AEP\)/);
+    expect(message.text).toMatch(/Córdoba \(COR\)/);
+    expect(message.text).toMatch(/Economy/);
+    expect(message.text).toMatch(/Horario anterior/);
+    expect(message.text).toMatch(/Nuevo horario/);
     expect(message.text).toMatch(/08:30/);
     expect(message.text).toMatch(/10:00/);
     expect(message.text).toMatch(/09:00/);
@@ -129,6 +147,11 @@ describe("sendContingencyEmail", () => {
     expect(message.text).not.toContain("token=token-abc");
 
     expect(message.html).toMatch(/VU-20261001-001/);
+    expect(message.html).toMatch(/Buenos Aires \(AEP\)/);
+    expect(message.html).toMatch(/Córdoba \(COR\)/);
+    expect(message.html).toMatch(/Economy/);
+    expect(message.html).toMatch(/Horario anterior/);
+    expect(message.html).toMatch(/Nuevo horario/);
     expect(message.html).toMatch(/\/contingencia\/token-abc\b/);
     expect(message.html).toMatch(/\/contingencia\/token-def\b/);
 
@@ -212,6 +235,10 @@ describe("sendContingencyEmail", () => {
 
     const message = sendMail.mock.calls[0][0];
     expect(message.text).toMatch(/fue cancelado/);
+    expect(message.text).toMatch(/Buenos Aires \(AEP\)/);
+    expect(message.text).toMatch(/Córdoba \(COR\)/);
+    expect(message.text).toMatch(/Economy/);
+    expect(message.html).toMatch(/fue cancelado|Tu vuelo fue cancelado/);
     expect(message.html).toMatch(/\/contingencia\/token-xyz\b/);
   });
 

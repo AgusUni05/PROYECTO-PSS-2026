@@ -22,6 +22,7 @@ export type ContingencyResolutionView =
         id: string;
         unitPrice: number;
         seatClass: SeatClass;
+        bookingId: string;
       };
       flight: {
         code: string;
@@ -111,6 +112,7 @@ export async function getContingencyByToken(
       id: ticket.id,
       unitPrice: Number(ticket.unitPrice),
       seatClass: ticket.seatClass,
+      bookingId: ticket.bookingId,
     },
     flight: {
       code: flight.code,

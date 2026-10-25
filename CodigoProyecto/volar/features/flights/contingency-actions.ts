@@ -2,13 +2,48 @@
 
 import { revalidatePath } from "next/cache";
 import type { ActionResult } from "@/lib/action-result";
+import { prisma } from "@/lib/prisma";
+import { canPassengerAccessBooking } from "@/lib/auth";
 import { resolveRebooking, resolveRefund } from "./contingency-resolution";
+
+async function checkContingencyAccess(
+  accessToken: string,
+): Promise<ActionResult<null>> {
+  const contingency = await prisma.ticketContingency.findUnique({
+    where: { accessToken },
+    include: {
+      ticket: {
+        include: {
+          booking: {
+            select: { buyerId: true, contactEmail: true },
+          },
+        },
+      },
+    },
+  });
+
+  if (!contingency) {
+    return { ok: false, error: "El enlace no es válido o expiró." };
+  }
+
+  const allowed = await canPassengerAccessBooking(contingency.ticket.booking);
+  if (!allowed) {
+    return { ok: false, error: "Necesitás iniciar sesión para continuar." };
+  }
+
+  return { ok: true, data: null };
+}
 
 export async function resolveRefundAction(
   accessToken: string,
 ): Promise<ActionResult<{ refundId: string; amount: number; gatewayRefundId: string }>> {
   if (!accessToken || accessToken.trim().length === 0) {
     return { ok: false, error: "El enlace no es válido." };
+  }
+
+  const access = await checkContingencyAccess(accessToken);
+  if (!access.ok) {
+    return access;
   }
 
   try {
@@ -47,8 +82,8 @@ export async function resolveRefundAction(
 
 /**
  * US-26: reprograma el pasaje a un vuelo alternativo elegido en la pantalla
- * pública. Igual que el reembolso, el token es el único secreto de acceso y
- * los errores internos se traducen a mensajes genéricos.
+ * pública. El token sigue siendo el secreto de acceso, pero antes de actuar se
+ * verifica que el pasajero autenticado tenga permiso sobre la reserva.
  */
 export async function resolveRebookingAction(
   accessToken: string,
@@ -60,6 +95,11 @@ export async function resolveRebookingAction(
 
   if (!newFlightId || newFlightId.trim().length === 0) {
     return { ok: false, error: "Elegí un vuelo alternativo." };
+  }
+
+  const access = await checkContingencyAccess(accessToken);
+  if (!access.ok) {
+    return access;
   }
 
   try {
