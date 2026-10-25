@@ -9,7 +9,14 @@ import type { FlightSearchResult } from "../queries";
 
 // US-14: tarjeta de un resultado de búsqueda (busqueda_pasajero.html): horarios,
 // tarifa y cupo por clase, y acceso directo a la compra de cada clase.
-export function FlightResultCard({ flight }: { flight: FlightSearchResult }) {
+export function FlightResultCard({
+  flight,
+  basePath = "/compra",
+}: {
+  flight: FlightSearchResult;
+  /** US-32: la terminal de mostrador reutiliza esta tarjeta apuntando a /mostrador/venta. */
+  basePath?: string;
+}) {
   const departure = formatTime(flight.departureAt);
   const arrival = formatTime(flight.arrivalAt);
   const nextDay =
@@ -54,13 +61,21 @@ export function FlightResultCard({ flight }: { flight: FlightSearchResult }) {
       </div>
 
       {buildClassOptions(flight).map((option) => (
-        <ClassBox key={option.seatClass} flightId={flight.id} option={option} />
+        <ClassBox key={option.seatClass} flightId={flight.id} option={option} basePath={basePath} />
       ))}
     </div>
   );
 }
 
-function ClassBox({ flightId, option }: { flightId: string; option: ClassOption }) {
+function ClassBox({
+  flightId,
+  option,
+  basePath,
+}: {
+  flightId: string;
+  option: ClassOption;
+  basePath: string;
+}) {
   const soldOut = option.status === "sold-out";
 
   return (
@@ -103,7 +118,7 @@ function ClassBox({ flightId, option }: { flightId: string; option: ClassOption 
         </Button>
       ) : (
         <Link
-          href={`/compra?${new URLSearchParams({ vuelo: flightId, clase: option.seatClass })}`}
+          href={`${basePath}?${new URLSearchParams({ vuelo: flightId, clase: option.seatClass })}`}
           className={cn(
             buttonVariants({ variant: option.seatClass === "ECONOMY" ? "default" : "outline" }),
             "mt-auto w-full",

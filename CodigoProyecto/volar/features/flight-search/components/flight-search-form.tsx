@@ -16,13 +16,15 @@ type AirportOption = { id: string; code: string; name: string; city: string };
 type Props = {
   airports: AirportOption[];
   defaultValues?: Partial<FlightSearchValues>;
+  /** US-32: la terminal de mostrador reutiliza este formulario navegando a /mostrador. */
+  basePath?: string;
 };
 
 const EMPTY_VALUES: FlightSearchValues = { origen: "", destino: "", fecha: "" };
 
 // US-13: buscador de vuelos por origen, destino y fecha (busqueda_pasajero.html).
 // Valida con el mismo schema que la página de resultados y navega a /vuelos.
-export function FlightSearchForm({ airports, defaultValues }: Props) {
+export function FlightSearchForm({ airports, defaultValues, basePath = "/vuelos" }: Props) {
   const { navigate } = useListNavigation();
   const form = useForm<FlightSearchValues>({
     resolver: zodResolver(flightSearchSchema),
@@ -34,7 +36,7 @@ export function FlightSearchForm({ airports, defaultValues }: Props) {
   const todayIso = new Date().toISOString().slice(0, 10);
 
   function onSubmit(values: FlightSearchValues) {
-    navigate(`/vuelos?${new URLSearchParams(values).toString()}`);
+    navigate(`${basePath}?${new URLSearchParams(values).toString()}`);
   }
 
   function swapAirports() {
