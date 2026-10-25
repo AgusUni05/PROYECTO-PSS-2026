@@ -11,7 +11,7 @@ import { PhotoBackdrop } from "@/components/photo-backdrop";
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col">
-      <PhotoBackdrop />
+      <PhotoBackdrop src="/backgrounds/volar-tarmac-dusk-full.jpg" position="center 25%" />
       <section className="relative overflow-hidden bg-tower pb-24 text-white sm:pb-28 lg:pb-[132px]">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <SiteHeader />
