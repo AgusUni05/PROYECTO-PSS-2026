@@ -74,8 +74,7 @@ export default async function PagoPage({
         <Card className="gap-4 p-5">
           <h2 className="text-[17px] font-extrabold">Esta reserva ya está pagada</h2>
           <p className="text-[13px] text-muted-foreground">
-            La compra {booking.code} quedó confirmada y ya se emitieron los e-tickets y la factura
-            (US-23/US-24).
+            La compra {booking.code} quedó confirmada y ya se emitieron los e-tickets y la factura.
           </p>
           <Link href={comprobantes} className={buttonVariants()}>
             Ver comprobantes

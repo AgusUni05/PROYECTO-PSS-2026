@@ -31,7 +31,7 @@ export default async function ReportesPage({ searchParams }: { searchParams: Pro
           Métricas de Ocupación por Vuelo, Clase y Fecha
         </h1>
         <p className="text-sm text-muted-foreground">
-          Análisis de carga por vuelo, clase y fechas para decidir frecuencias, tarifas y capacidad (US-27).
+          Análisis de carga por vuelo, clase y fechas para decidir frecuencias, tarifas y capacidad.
         </p>
       </div>
 

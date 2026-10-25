@@ -18,10 +18,10 @@ export default async function MostradorLayout({ children }: { children: React.Re
         </div>
         <nav className="flex gap-2 text-sm font-semibold">
           <Link href="/mostrador" className="rounded-full border border-border px-4 py-2 hover:bg-muted">
-            Búsqueda de Vuelos (US-32)
+            Búsqueda de Vuelos
           </Link>
           <Link href="/mostrador/reservas" className="rounded-full border border-border px-4 py-2 hover:bg-muted">
-            Consultar Reservas (US-34)
+            Consultar Reservas
           </Link>
         </nav>
       </header>

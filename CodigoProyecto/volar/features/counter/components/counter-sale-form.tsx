@@ -78,7 +78,7 @@ export function CounterSaleForm({ flightId, seatClass, fare, maxAvailable }: Pro
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0">
-        <CardTitle>Registro de Venta Presencial (US-33)</CardTitle>
+        <CardTitle>Registro de Venta Presencial</CardTitle>
         <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold">
           {quantity} {quantity === 1 ? "pasaje" : "pasajes"} · {formatCurrency(Number(fare) * quantity)}
         </span>
@@ -179,7 +179,7 @@ export function CounterSaleForm({ flightId, seatClass, fare, maxAvailable }: Pro
           )}
 
           <Button type="submit" size="lg" className="w-full" disabled={busy}>
-            {busy ? "Confirmando cobro…" : "Confirmar Cobro y Emitir Pasajes (US-33)"}
+            {busy ? "Confirmando cobro…" : "Confirmar Cobro y Emitir Pasajes"}
           </Button>
         </form>
       </CardContent>

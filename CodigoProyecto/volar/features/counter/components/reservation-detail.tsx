@@ -15,7 +15,7 @@ export function ReservationDetail({ booking }: { booking: PurchaseComprobantes }
   return (
     <div className="space-y-5">
       <Alert>
-        <AlertTitle>🔒 Privacidad y seguridad bancaria (US-34 / RNF-08)</AlertTitle>
+        <AlertTitle>🔒 Privacidad y seguridad bancaria (RNF-08)</AlertTitle>
         <AlertDescription>
           Esta vista muestra itinerario, e-tickets y estado del pago, pero nunca números de tarjeta ni
           datos financieros sensibles.

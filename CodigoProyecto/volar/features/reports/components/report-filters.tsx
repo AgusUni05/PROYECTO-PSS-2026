@@ -22,7 +22,7 @@ export function ReportFilters({ filters, routes }: Props) {
   return (
     <Card>
       <CardHeader className="flex-row items-center justify-between space-y-0">
-        <CardTitle>Filtros de Reporte (US-27)</CardTitle>
+        <CardTitle>Filtros de Reporte</CardTitle>
         <ListNavLink
           href="/admin/reportes"
           className="text-xs font-medium text-muted-foreground underline underline-offset-2 hover:text-foreground"
@@ -67,7 +67,7 @@ export function ReportFilters({ filters, routes }: Props) {
             </div>
           </div>
           <Button variant="soft" type="submit">
-            {isPending ? "Generando…" : "Generar Métricas y Reporte (US-27)"}
+            {isPending ? "Generando…" : "Generar Métricas y Reporte"}
           </Button>
         </form>
       </CardContent>

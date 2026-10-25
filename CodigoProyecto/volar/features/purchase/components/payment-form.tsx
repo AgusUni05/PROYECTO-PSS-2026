@@ -96,11 +96,8 @@ export function PaymentForm({ bookingCode, total }: PaymentFormProps) {
 
   return (
     <Card>
-      <CardHeader className="flex-row items-center justify-between space-y-0">
+      <CardHeader>
         <CardTitle>Formulario de Pago con Tarjeta</CardTitle>
-        <span className="rounded-full bg-muted px-2.5 py-1 text-xs font-semibold">
-          US-20 / US-21
-        </span>
       </CardHeader>
       <CardContent className="space-y-4">
         <Alert>
@@ -308,7 +305,7 @@ function PaymentResult({ outcome }: { outcome: PaymentOutcome }) {
       </CardHeader>
       <CardContent className="space-y-4">
         <Alert variant="destructive">
-          <AlertTitle>Transacción rechazada (US-21)</AlertTitle>
+          <AlertTitle>Transacción rechazada</AlertTitle>
           <AlertDescription className="space-y-3">
             <p>Motivo: {outcome.rejectionReason}</p>
             <p>La compra no se procesó y se liberó el cupo reservado de inmediato.</p>
@@ -346,14 +343,14 @@ function ApprovedResult({ outcome }: { outcome: PaymentOutcome }) {
       </CardHeader>
       <CardContent className="space-y-4">
         <Alert>
-          <AlertTitle>Transacción aprobada (US-21)</AlertTitle>
+          <AlertTitle>Transacción aprobada</AlertTitle>
           <AlertDescription className="space-y-1">
             <p>
               ID de transacción: <b>{outcome.transactionId}</b>
             </p>
             <p>
               La reserva <b>{outcome.bookingCode}</b> quedó confirmada, el cupo retenido pasó a
-              vendido y se emitieron los e-tickets y la factura (US-23/US-24).
+              vendido y se emitieron los e-tickets y la factura.
             </p>
             <p>Abriendo tus comprobantes…</p>
           </AlertDescription>

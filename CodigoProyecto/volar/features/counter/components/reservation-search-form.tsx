@@ -13,7 +13,7 @@ export function ReservationSearchForm({ defaultValue }: { defaultValue: string }
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Consulta de Reservas de Pasajeros (US-34)</CardTitle>
+        <CardTitle>Consulta de Reservas de Pasajeros</CardTitle>
       </CardHeader>
       <CardContent>
         <form
@@ -29,7 +29,7 @@ export function ReservationSearchForm({ defaultValue }: { defaultValue: string }
             <Input id="criterio" name="criterio" defaultValue={defaultValue} placeholder="Ej: 32456789, Pérez o ABC123" />
           </div>
           <Button type="submit" disabled={isPending}>
-            {isPending ? "Buscando…" : "Buscar Reserva (US-34)"}
+            {isPending ? "Buscando…" : "Buscar Reserva"}
           </Button>
         </form>
       </CardContent>

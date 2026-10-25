@@ -141,7 +141,7 @@ function ConfirmationHeader({ booking }: { booking: PurchaseComprobantes }) {
 function EmailNotice({ booking }: { booking: PurchaseComprobantes }) {
   return (
     <Alert className="rounded-2xl">
-      <AlertTitle>Comprobantes enviados por correo (US-24)</AlertTitle>
+      <AlertTitle>Comprobantes enviados por correo</AlertTitle>
       <AlertDescription className="space-y-1">
         <p>
           Se enviaron los {booking.tickets.length} e-tickets y la factura a{" "}
