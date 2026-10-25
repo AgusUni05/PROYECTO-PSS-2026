@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { SignUp } from "@clerk/nextjs";
 import { PlaneIcon } from "@/components/plane-icon";
+import { LoginBackdrop } from "@/components/login-backdrop";
 
 export default function SignUpPage() {
   return (
-    <div className="flex flex-1 flex-col items-center justify-center gap-8 bg-background px-6 py-16">
+    <div className="flex flex-1 flex-col items-center justify-center gap-8 px-6 py-16">
+      <LoginBackdrop />
       <Link href="/" className="group/logo flex items-center gap-2.5 text-xl font-extrabold tracking-tight text-foreground">
         <span className="grid size-[34px] place-items-center rounded-[10px] bg-primary text-white transition-transform duration-500 group-hover/logo:-rotate-[14deg]">
           <PlaneIcon className="size-[18px]" />
