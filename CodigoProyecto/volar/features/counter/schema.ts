@@ -21,15 +21,14 @@ export const counterSaleSchema = z.object({
   flightId: idSchema("Flight"),
   seatClass: z.enum(SeatClass, { error: "Clase inválida" }),
   metodoPago: z.enum(COUNTER_PAYMENT_METHODS, { error: "Seleccioná el medio de cobro" }),
-  // Opcional: si no se completa, no se envían comprobantes por email (RF-09
-  // sigue cumpliéndose igual para la compra web, donde el email es obligatorio).
+  // Obligatorio (US-33): además de enviar los comprobantes (RF-09), permite
+  // vincular la venta a la cuenta de pasajero existente con ese email.
   contactEmail: z
-    .string()
+    .string({ error: "Ingresá el email del pasajero" })
     .trim()
     .toLowerCase()
-    .optional()
-    .transform((value) => value ?? "")
-    .refine((value) => value === "" || EMAIL_PATTERN.test(value), "Ingresá un email válido"),
+    .min(1, "Ingresá el email del pasajero")
+    .refine((value) => EMAIL_PATTERN.test(value), "Ingresá un email válido"),
   pasajeros: z
     .array(passengerSchema)
     .min(1, "Agregá al menos un pasajero")

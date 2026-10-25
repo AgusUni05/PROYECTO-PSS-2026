@@ -9,7 +9,7 @@ const validPassenger = {
 };
 
 describe("counterSaleSchema (US-33)", () => {
-  it("acepta una venta válida sin email de contacto", () => {
+  it("rechaza una venta sin email de contacto", () => {
     const result = counterSaleSchema.safeParse({
       flightId: "VUE_01JB8Z3K4M5N6P7Q8R9S0T1V2W",
       seatClass: "ECONOMY",
@@ -17,8 +17,7 @@ describe("counterSaleSchema (US-33)", () => {
       pasajeros: [validPassenger],
     });
 
-    expect(result.success).toBe(true);
-    if (result.success) expect(result.data.contactEmail).toBe("");
+    expect(result.success).toBe(false);
   });
 
   it("acepta un email de contacto válido", () => {
@@ -50,6 +49,7 @@ describe("counterSaleSchema (US-33)", () => {
       flightId: "VUE_01JB8Z3K4M5N6P7Q8R9S0T1V2W",
       seatClass: "ECONOMY",
       metodoPago: "CASH",
+      contactEmail: "pasajero@test.com",
       pasajeros: Array.from({ length: 10 }, () => validPassenger),
     });
 
@@ -61,6 +61,7 @@ describe("counterSaleSchema (US-33)", () => {
       flightId: "VUE_01JB8Z3K4M5N6P7Q8R9S0T1V2W",
       seatClass: "ECONOMY",
       metodoPago: "CASH",
+      contactEmail: "pasajero@test.com",
       pasajeros: [],
     });
 

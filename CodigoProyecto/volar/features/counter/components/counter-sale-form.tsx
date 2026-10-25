@@ -147,8 +147,13 @@ export function CounterSaleForm({ flightId, seatClass, fare, maxAvailable }: Pro
           </Button>
 
           <div className="space-y-1.5">
-            <Label htmlFor="contactEmail">Email de contacto (opcional, para enviar comprobantes)</Label>
-            <Input id="contactEmail" type="email" {...form.register("contactEmail")} />
+            <Label htmlFor="contactEmail">
+              Email del pasajero <span className="text-destructive">*</span>
+            </Label>
+            <Input id="contactEmail" type="email" required {...form.register("contactEmail")} />
+            <p className="text-xs text-muted-foreground">
+              Se usa para enviar los comprobantes y, si corresponde, vincular la venta a su cuenta.
+            </p>
             {form.formState.errors.contactEmail && (
               <p className="text-xs text-destructive">{form.formState.errors.contactEmail.message}</p>
             )}

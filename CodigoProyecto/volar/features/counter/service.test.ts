@@ -39,6 +39,7 @@ beforeEach(() => {
     return Promise.all(callback as Promise<unknown>[]);
   });
   prismaMock.ticket.findMany.mockResolvedValue([]);
+  prismaMock.user.findUnique.mockResolvedValue(null);
 });
 
 describe("createCounterSale (US-33)", () => {
@@ -46,7 +47,7 @@ describe("createCounterSale (US-33)", () => {
     prismaMock.flight.findUnique.mockResolvedValue({ ...flight, status: "CANCELLED" } as never);
 
     const result = await createCounterSale(
-      { flightId: flight.id, seatClass: "ECONOMY", metodoPago: "CASH", contactEmail: "", pasajeros: [passenger] },
+      { flightId: flight.id, seatClass: "ECONOMY", metodoPago: "CASH", contactEmail: "pasajero@test.com", pasajeros: [passenger] },
       seller,
     );
 
@@ -61,7 +62,7 @@ describe("createCounterSale (US-33)", () => {
         flightId: flight.id,
         seatClass: "FIRST",
         metodoPago: "CASH",
-        contactEmail: "",
+        contactEmail: "pasajero@test.com",
         // Primera: capacidad 16, ocupado 4 -> disponible 12. Se piden 13.
         pasajeros: Array.from({ length: 13 }, () => passenger),
       },
@@ -82,7 +83,7 @@ describe("createCounterSale (US-33)", () => {
     prismaMock.invoice.create.mockResolvedValue({} as never);
 
     const result = await createCounterSale(
-      { flightId: flight.id, seatClass: "ECONOMY", metodoPago: "POS", contactEmail: "", pasajeros: [passenger] },
+      { flightId: flight.id, seatClass: "ECONOMY", metodoPago: "POS", contactEmail: "pasajero@test.com", pasajeros: [passenger] },
       seller,
     );
 
@@ -97,7 +98,7 @@ describe("createCounterSale (US-33)", () => {
     expect(bookingCall.status).toBe("CONFIRMED");
     expect(bookingCall.channel).toBe("COUNTER");
     expect(bookingCall.sellerId).toBe(seller.id);
-    expect(bookingCall.buyerId).toBeUndefined();
+    expect(bookingCall.buyerId).toBeNull();
     expect(bookingCall.contactName).toBe("Ríos, Esteban");
 
     const paymentCall = prismaMock.payment.create.mock.calls[0][0].data as Record<string, unknown>;
@@ -109,12 +110,56 @@ describe("createCounterSale (US-33)", () => {
     expect(prismaMock.invoice.create).toHaveBeenCalled();
   });
 
+  it("vincula la venta a la cuenta de pasajero existente con el mismo email", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+    prismaMock.booking.create.mockResolvedValue({} as never);
+    prismaMock.ticket.createMany.mockResolvedValue({ count: 1 } as never);
+    prismaMock.payment.create.mockResolvedValue({} as never);
+    prismaMock.ticket.update.mockResolvedValue({} as never);
+    prismaMock.invoice.create.mockResolvedValue({} as never);
+    prismaMock.user.findUnique.mockResolvedValue({ id: "USU_CLIENTE", role: "PASSENGER" } as never);
+
+    const result = await createCounterSale(
+      { flightId: flight.id, seatClass: "ECONOMY", metodoPago: "CASH", contactEmail: "cliente@test.com", pasajeros: [passenger] },
+      seller,
+    );
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
+      where: { email: "cliente@test.com" },
+      select: { id: true, role: true },
+    });
+    const bookingCall = prismaMock.booking.create.mock.calls[0][0].data as Record<string, unknown>;
+    expect(bookingCall.buyerId).toBe("USU_CLIENTE");
+  });
+
+  it("no vincula la venta si el email coincide con una cuenta de personal (no pasajero)", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+    prismaMock.booking.create.mockResolvedValue({} as never);
+    prismaMock.ticket.createMany.mockResolvedValue({ count: 1 } as never);
+    prismaMock.payment.create.mockResolvedValue({} as never);
+    prismaMock.ticket.update.mockResolvedValue({} as never);
+    prismaMock.invoice.create.mockResolvedValue({} as never);
+    prismaMock.user.findUnique.mockResolvedValue({ id: "USU_ADMIN", role: "ADMIN" } as never);
+
+    const result = await createCounterSale(
+      { flightId: flight.id, seatClass: "ECONOMY", metodoPago: "CASH", contactEmail: "admin@test.com", pasajeros: [passenger] },
+      seller,
+    );
+
+    expect(result.ok).toBe(true);
+    const bookingCall = prismaMock.booking.create.mock.calls[0][0].data as Record<string, unknown>;
+    expect(bookingCall.buyerId).toBeNull();
+  });
+
   it("condición de carrera: si el update atómico de cupo no afecta filas, no registra nada", async () => {
     prismaMock.flight.findUnique.mockResolvedValue(flight as never);
     prismaMock.flight.updateMany.mockResolvedValue({ count: 0 });
 
     const result = await createCounterSale(
-      { flightId: flight.id, seatClass: "ECONOMY", metodoPago: "CASH", contactEmail: "", pasajeros: [passenger] },
+      { flightId: flight.id, seatClass: "ECONOMY", metodoPago: "CASH", contactEmail: "pasajero@test.com", pasajeros: [passenger] },
       seller,
     );
 

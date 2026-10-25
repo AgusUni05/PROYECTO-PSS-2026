@@ -71,6 +71,15 @@ export async function createCounterSale(
   const titular = input.pasajeros[0];
   const contactName = `${titular.apellido}, ${titular.nombre}`;
 
+  // Si el email coincide con la cuenta de un pasajero ya registrado, la venta
+  // queda asociada a esa cuenta (buyerId) para que le figure en "Mis Compras"
+  // (US-35), además de quedar registrada bajo la terminal de mostrador.
+  const existingCustomer = await prisma.user.findUnique({
+    where: { email: input.contactEmail },
+    select: { id: true, role: true },
+  });
+  const buyerId = existingCustomer?.role === "PASSENGER" ? existingCustomer.id : null;
+
   try {
     await prisma.$transaction(async (tx) => {
       const { count } =
@@ -98,6 +107,7 @@ export async function createCounterSale(
           holdExpiresAt: now,
           channel: "COUNTER",
           sellerId: seller.id,
+          buyerId,
           contactEmail: input.contactEmail,
           contactName,
           confirmedAt: now,
