@@ -4,12 +4,14 @@ import { FlightSearchForm } from "@/features/flight-search/components/flight-sea
 import { FlightSearchFormSkeleton } from "@/features/flight-search/components/flight-search-skeleton";
 import { listActiveAirports } from "@/features/airports/queries";
 import { PlaneIcon } from "@/components/plane-icon";
+import { PhotoBackdrop } from "@/components/photo-backdrop";
 
 // Sitio público (US-28/US-29): no exige sesión para nada. La acción principal
 // es buscar vuelos (US-13); la cuenta se pide recién al iniciar una compra.
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col bg-background">
+    <div className="flex flex-1 flex-col">
+      <PhotoBackdrop />
       <section className="relative overflow-hidden bg-tower pb-24 text-white sm:pb-28 lg:pb-[132px]">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <SiteHeader />

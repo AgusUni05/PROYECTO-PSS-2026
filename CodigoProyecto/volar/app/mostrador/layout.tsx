@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireCounterAgent } from "@/lib/auth";
+import { PhotoBackdrop } from "@/components/photo-backdrop";
 
 // US-30: solo COUNTER_AGENT entra a la terminal de mostrador.
 export default async function MostradorLayout({ children }: { children: React.ReactNode }) {
@@ -7,6 +8,7 @@ export default async function MostradorLayout({ children }: { children: React.Re
 
   return (
     <div className="mx-auto w-full max-w-6xl flex-1 space-y-6 px-4 py-6 sm:px-6 lg:px-8">
+      <PhotoBackdrop />
       <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border pb-4">
         <div>
           <h1 className="font-heading text-xl font-semibold tracking-tight">Terminal de Mostrador</h1>
