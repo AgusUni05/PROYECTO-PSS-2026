@@ -17,7 +17,14 @@ vi.mock("next/navigation", () => ({
 }));
 
 import { currentUser, auth } from "@clerk/nextjs/server";
-import { isAdmin, syncClerkUser, requireCurrentUser, requirePassenger } from "./auth";
+import {
+  isAdmin,
+  syncClerkUser,
+  requireCurrentUser,
+  requirePassenger,
+  isCounterAgent,
+  requireCounterAgent,
+} from "./auth";
 
 beforeEach(() => {
   vi.mocked(auth).mockReset();
@@ -197,5 +204,62 @@ describe("requirePassenger", () => {
     const result = await requirePassenger();
 
     expect(result).toEqual(passenger);
+  });
+});
+
+// US-30/US-32..34: acceso a la terminal de mostrador diferenciado por rol.
+describe("isCounterAgent", () => {
+  it("es true para un COUNTER_AGENT activo", () => {
+    expect(isCounterAgent(makeUser({ role: "COUNTER_AGENT", isActive: true }))).toBe(true);
+  });
+
+  it("es false para un ADMIN", () => {
+    expect(isCounterAgent(makeUser({ role: "ADMIN" }))).toBe(false);
+  });
+
+  it("es false para un PASSENGER", () => {
+    expect(isCounterAgent(makeUser({ role: "PASSENGER" }))).toBe(false);
+  });
+
+  it("es false para un COUNTER_AGENT deshabilitado", () => {
+    expect(isCounterAgent(makeUser({ role: "COUNTER_AGENT", isActive: false }))).toBe(false);
+  });
+
+  it("es false sin usuario (sin sesión)", () => {
+    expect(isCounterAgent(null)).toBe(false);
+  });
+});
+
+describe("requireCounterAgent", () => {
+  it("redirige a sign-in cuando no hay sesión", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: null } as never);
+
+    await expect(requireCounterAgent()).rejects.toThrow("redirect:/sign-in");
+  });
+
+  it("devuelve 403 cuando el usuario no es empleado de mostrador", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    prismaMock.user.findUnique.mockResolvedValue(makeUser({ role: "PASSENGER" }));
+
+    await expect(requireCounterAgent()).rejects.toThrow("forbidden");
+  });
+
+  it("devuelve 403 cuando la cuenta está deshabilitada", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    prismaMock.user.findUnique.mockResolvedValue(
+      makeUser({ role: "COUNTER_AGENT", isActive: false }),
+    );
+
+    await expect(requireCounterAgent()).rejects.toThrow("forbidden");
+  });
+
+  it("devuelve el usuario cuando es empleado de mostrador activo", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    const agent = makeUser({ role: "COUNTER_AGENT", isActive: true });
+    prismaMock.user.findUnique.mockResolvedValue(agent);
+
+    const result = await requireCounterAgent();
+
+    expect(result).toEqual(agent);
   });
 });

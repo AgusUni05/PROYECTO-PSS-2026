@@ -84,3 +84,19 @@ export async function requirePassenger(): Promise<User> {
   if (user.role !== "PASSENGER" || !user.isActive) forbidden();
   return user;
 }
+
+/** Regla US-30: solo un usuario con rol COUNTER_AGENT activo entra a la terminal de mostrador. */
+export function isCounterAgent(user: User | null): user is User {
+  return user !== null && user.role === "COUNTER_AGENT" && user.isActive;
+}
+
+/**
+ * Exige un usuario con rol COUNTER_AGENT activo (US-30/US-32/US-33/US-34).
+ * Sin sesión → redirige a sign-in; sin permiso → 403.
+ */
+export async function requireCounterAgent(): Promise<User> {
+  const user = await getCurrentUser();
+  if (!user) redirect("/sign-in");
+  if (!isCounterAgent(user)) forbidden();
+  return user;
+}
