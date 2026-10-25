@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { getCurrentUser, isAdmin } from "@/lib/auth";
+import { getCurrentUser, isAdmin, isCounterAgent } from "@/lib/auth";
 import { PlaneIcon } from "@/components/plane-icon";
 
 // Cabecera del sitio público (US-28/US-29): no exige sesión. La sesión es un
@@ -47,6 +47,12 @@ export async function SiteHeader() {
               <Link href="/admin" className="font-semibold text-white underline-offset-2 hover:text-tower-accent hover:underline">
                 <span className="sm:hidden">Admin</span>
                 <span className="hidden sm:inline">Panel de administración</span>
+              </Link>
+            )}
+            {isCounterAgent(user) && (
+              <Link href="/mostrador" className="font-semibold text-white underline-offset-2 hover:text-tower-accent hover:underline">
+                <span className="sm:hidden">Mostrador</span>
+                <span className="hidden sm:inline">Terminal de mostrador</span>
               </Link>
             )}
             <UserButton />
