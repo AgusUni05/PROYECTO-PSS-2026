@@ -41,13 +41,15 @@ function bookingRow(overrides: Record<string, unknown> = {}) {
 }
 
 describe("getBookingForPayment (US-20)", () => {
-  it("devuelve la reserva mapeada con su vuelo, importe y pasajeros", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(bookingRow() as never);
+  it("devuelve la reserva del comprador autenticado con su vuelo, importe y pasajeros", async () => {
+    prismaMock.booking.findFirst.mockResolvedValue(bookingRow() as never);
 
-    const result = await getBookingForPayment("DEMO0001");
+    const result = await getBookingForPayment("DEMO0001", "USU_COMPRADOR");
 
-    expect(prismaMock.booking.findUnique).toHaveBeenCalledWith(
-      expect.objectContaining({ where: { code: "DEMO0001" } }),
+    expect(prismaMock.booking.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { code: "DEMO0001", buyerId: "USU_COMPRADOR", channel: "WEB" },
+      }),
     );
     expect(result).toMatchObject({
       code: "DEMO0001",
@@ -69,10 +71,12 @@ describe("getBookingForPayment (US-20)", () => {
     });
   });
 
-  it("devuelve null si el código no existe", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(null);
+  it("devuelve null si la reserva no existe o pertenece a otra cuenta", async () => {
+    prismaMock.booking.findFirst.mockResolvedValue(null);
 
-    expect(await getBookingForPayment("NADA0000")).toBeNull();
+    expect(await getBookingForPayment("NADA0000", "USU_COMPRADOR")).toBeNull();
+    expect(await getBookingForPayment("DEMO0001", "USU_COMPRADOR")).toBeNull();
+    expect(prismaMock.booking.findUnique).not.toHaveBeenCalled();
   });
 });
 

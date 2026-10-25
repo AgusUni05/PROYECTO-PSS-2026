@@ -356,7 +356,7 @@ function bookingRow(overrides: Record<string, unknown> = {}) {
     contactName: "Pasajero Demo",
     contactEmail: "demo@volar.test",
     channel: "WEB",
-    buyerId: null,
+    buyerId: buyer.id,
     flight: { code: "VU-DEMO-01", economyCapacity: 150, firstClassCapacity: 12 },
     tickets: [
       { id: "PAS_1", firstName: "María", lastName: "Demo", unitPrice: { toString: () => "45000" } },
@@ -403,15 +403,20 @@ describe("cardBrand (US-20)", () => {
 
 describe("processPayment (US-20/US-21/US-22)", () => {
   it("aprueba con último dígito par, registra el intento sin datos sensibles y confirma la compra", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(bookingRow() as never);
+    prismaMock.booking.findFirst.mockResolvedValue(bookingRow() as never);
     prismaMock.booking.updateMany.mockResolvedValue({ count: 1 });
 
-    const result = await processPayment("DEMO0001", values);
+    const result = await processPayment("DEMO0001", values, buyer.id);
 
     expect(result).toMatchObject({
       ok: true,
       data: { status: "APPROVED", bookingCode: "DEMO0001", rejectionReason: null },
     });
+    expect(prismaMock.booking.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { code: "DEMO0001", buyerId: buyer.id, channel: "WEB" },
+      }),
+    );
 
     const payment = prismaMock.payment.create.mock.calls[0][0].data as Record<string, unknown>;
     expect(payment).toMatchObject({
@@ -427,7 +432,12 @@ describe("processPayment (US-20/US-21/US-22)", () => {
 
     expect(prismaMock.booking.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
-        where: expect.objectContaining({ id: "RES_1", status: "PENDING_PAYMENT" }),
+        where: expect.objectContaining({
+          id: "RES_1",
+          buyerId: buyer.id,
+          channel: "WEB",
+          status: "PENDING_PAYMENT",
+        }),
         data: expect.objectContaining({ status: "CONFIRMED" }),
       }),
     );
@@ -463,46 +473,40 @@ describe("processPayment (US-20/US-21/US-22)", () => {
     });
   });
 
-  it("vincula al comprador que paga si la reserva web no tenía comprador (demo del seed)", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(bookingRow() as never);
-    prismaMock.booking.updateMany.mockResolvedValue({ count: 1 });
+  it("rechaza una reserva sin titular y no permite reclamarla por código", async () => {
+    prismaMock.booking.findFirst.mockResolvedValue(null);
 
     const result = await processPayment("DEMO0001", values, buyer.id);
 
-    expect(result).toMatchObject({ ok: true, data: { status: "APPROVED" } });
-    const data = prismaMock.booking.updateMany.mock.calls[0][0].data as Record<string, unknown>;
-    expect(data).toMatchObject({ status: "CONFIRMED", buyerId: buyer.id });
+    expect(result).toEqual({ ok: false, error: "No encontramos la reserva indicada." });
+    expect(prismaMock.booking.findFirst).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { code: "DEMO0001", buyerId: buyer.id, channel: "WEB" },
+      }),
+    );
+    expect(prismaMock.$transaction).not.toHaveBeenCalled();
+    expect(prismaMock.payment.create).not.toHaveBeenCalled();
+    expect(prismaMock.booking.updateMany).not.toHaveBeenCalled();
+    expect(prismaMock.ticket.update).not.toHaveBeenCalled();
+    expect(prismaMock.emailNotification.create).not.toHaveBeenCalled();
   });
 
-  it("no pisa un comprador existente ni vincula una reserva de mostrador", async () => {
-    prismaMock.booking.findUnique.mockResolvedValueOnce(
-      bookingRow({ buyerId: "USU_OTRO" }) as never,
-    );
-    prismaMock.booking.updateMany.mockResolvedValue({ count: 1 });
+  it("rechaza una reserva perteneciente a otra cuenta sin registrar el pago", async () => {
+    prismaMock.booking.findFirst.mockResolvedValue(null);
 
-    await processPayment("DEMO0001", values, buyer.id);
+    const result = await processPayment("DEMO0001", values, buyer.id);
 
-    const withBuyer = prismaMock.booking.updateMany.mock.calls[0][0].data as Record<string, unknown>;
-    expect(withBuyer).toMatchObject({ status: "CONFIRMED" });
-    expect(withBuyer).not.toHaveProperty("buyerId");
-
-    prismaMock.booking.updateMany.mockClear();
-    prismaMock.booking.findUnique.mockResolvedValueOnce(
-      bookingRow({ channel: "COUNTER", buyerId: null }) as never,
-    );
-
-    await processPayment("DEMO0001", values, buyer.id);
-
-    const counter = prismaMock.booking.updateMany.mock.calls[0][0].data as Record<string, unknown>;
-    expect(counter).toMatchObject({ status: "CONFIRMED" });
-    expect(counter).not.toHaveProperty("buyerId");
+    expect(result).toEqual({ ok: false, error: "No encontramos la reserva indicada." });
+    expect(prismaMock.$transaction).not.toHaveBeenCalled();
+    expect(prismaMock.payment.create).not.toHaveBeenCalled();
+    expect(prismaMock.booking.updateMany).not.toHaveBeenCalled();
   });
 
   it("rechaza con último dígito impar, cancela los pasajes y libera el cupo", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(bookingRow() as never);
+    prismaMock.booking.findFirst.mockResolvedValue(bookingRow() as never);
     prismaMock.booking.updateMany.mockResolvedValue({ count: 1 });
 
-    const result = await processPayment("DEMO0001", rejectedValues);
+    const result = await processPayment("DEMO0001", rejectedValues, buyer.id);
 
     expect(result).toMatchObject({
       ok: true,
@@ -524,12 +528,12 @@ describe("processPayment (US-20/US-21/US-22)", () => {
   });
 
   it("libera el cupo de Primera cuando la reserva es de esa clase", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(
+    prismaMock.booking.findFirst.mockResolvedValue(
       bookingRow({ seatClass: "FIRST" }) as never,
     );
     prismaMock.booking.updateMany.mockResolvedValue({ count: 1 });
 
-    await processPayment("DEMO0001", rejectedValues);
+    await processPayment("DEMO0001", rejectedValues, buyer.id);
 
     expect(prismaMock.flight.updateMany).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -540,50 +544,50 @@ describe("processPayment (US-20/US-21/US-22)", () => {
   });
 
   it("rechaza si la reserva no existe", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(null);
+    prismaMock.booking.findFirst.mockResolvedValue(null);
 
-    const result = await processPayment("NADA0000", values);
+    const result = await processPayment("NADA0000", values, buyer.id);
 
     expect(result.ok).toBe(false);
     expect(prismaMock.payment.create).not.toHaveBeenCalled();
   });
 
   it("rechaza si la reserva ya no está pendiente de pago", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(bookingRow({ status: "CONFIRMED" }) as never);
+    prismaMock.booking.findFirst.mockResolvedValue(bookingRow({ status: "CONFIRMED" }) as never);
 
-    const result = await processPayment("DEMO0001", values);
+    const result = await processPayment("DEMO0001", values, buyer.id);
 
     expect(result).toEqual({ ok: false, error: "La reserva ya fue pagada y confirmada." });
     expect(prismaMock.$transaction).not.toHaveBeenCalled();
   });
 
   it("rechaza si faltan datos de pasajeros (US-19) sin registrar el intento", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(
+    prismaMock.booking.findFirst.mockResolvedValue(
       bookingRow({ tickets: bookingRow().tickets.slice(0, 2) }) as never,
     );
 
-    const result = await processPayment("DEMO0001", values);
+    const result = await processPayment("DEMO0001", values, buyer.id);
 
     expect(result).toMatchObject({ ok: false, error: expect.stringContaining("Pasajeros") });
     expect(prismaMock.payment.create).not.toHaveBeenCalled();
   });
 
   it("rechaza si la retención de cupo venció", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(
+    prismaMock.booking.findFirst.mockResolvedValue(
       bookingRow({ holdExpiresAt: new Date(Date.now() - 1000) }) as never,
     );
 
-    const result = await processPayment("DEMO0001", values);
+    const result = await processPayment("DEMO0001", values, buyer.id);
 
     expect(result.ok).toBe(false);
     expect(prismaMock.$transaction).not.toHaveBeenCalled();
   });
 
   it("avisa si la reserva cambió mientras se procesaba el pago", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(bookingRow() as never);
+    prismaMock.booking.findFirst.mockResolvedValue(bookingRow() as never);
     prismaMock.booking.updateMany.mockResolvedValue({ count: 0 });
 
-    const result = await processPayment("DEMO0001", values);
+    const result = await processPayment("DEMO0001", values, buyer.id);
 
     expect(result).toEqual({
       ok: false,
@@ -592,12 +596,12 @@ describe("processPayment (US-20/US-21/US-22)", () => {
   });
 
   it("no atribuye a una carrera los fallos de la emisión y deja el error en el log", async () => {
-    prismaMock.booking.findUnique.mockResolvedValue(bookingRow() as never);
+    prismaMock.booking.findFirst.mockResolvedValue(bookingRow() as never);
     prismaMock.booking.updateMany.mockResolvedValue({ count: 1 });
     prismaMock.invoice.create.mockRejectedValue(new Error("boom") as never);
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    const result = await processPayment("DEMO0001", values);
+    const result = await processPayment("DEMO0001", values, buyer.id);
 
     expect(result).toEqual({
       ok: false,

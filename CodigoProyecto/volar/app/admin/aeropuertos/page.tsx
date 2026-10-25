@@ -1,8 +1,7 @@
 import { ListNavigationProvider, ListResults } from "@/components/list-navigation";
 import { TableSkeleton } from "@/components/table-skeleton";
-import Link from "next/link";
 import { Info } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
+import { AdminEditDialog } from "@/components/admin-edit-dialog";
 import { AirportForm } from "@/features/airports/components/airport-form";
 import { AirportFilters } from "@/features/airports/components/airport-filters";
 import { AirportTable } from "@/features/airports/components/airport-table";
@@ -37,19 +36,13 @@ export default async function AeropuertosPage({
         <span className="font-medium text-foreground">Gestión de Aeropuertos</span>
       </p>
 
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="font-heading text-2xl font-semibold tracking-tight">
-            Gestión de Aeropuertos
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            Alta, modificación, baja y listado de aeropuertos para orígenes y destinos de
-            trayectos.
-          </p>
-        </div>
-        <Link href="#form-aeropuerto" className={buttonVariants()}>
-          + Nuevo Aeropuerto
-        </Link>
+      <div>
+        <h1 className="font-heading text-2xl font-semibold tracking-tight">
+          Gestión de Aeropuertos
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Alta, modificación, baja y listado de aeropuertos para orígenes y destinos de trayectos.
+        </p>
       </div>
 
       <div className="flex items-start gap-3.5 rounded-2xl bg-secondary p-4 text-[#2E1A8F]">
@@ -67,9 +60,15 @@ export default async function AeropuertosPage({
 
       <ListNavigationProvider>
         <div className="grid gap-6 lg:grid-cols-2">
-          <AirportForm key={editing?.id ?? "new"} editing={editing} />
+          <AirportForm />
           <AirportFilters filters={filters} />
         </div>
+
+        {editing && (
+          <AdminEditDialog title="Editar aeropuerto" returnTo="/admin/aeropuertos">
+            <AirportForm key={editing.id} editing={editing} />
+          </AdminEditDialog>
+        )}
 
         <ListResults skeleton={<TableSkeleton columns={6} />}>
           <AirportTable

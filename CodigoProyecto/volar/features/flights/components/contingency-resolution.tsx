@@ -251,8 +251,7 @@ function RebookCard({
       setResolved(true);
       setFeedback({ type: "success", message });
       toast.success(message);
-      // Refresca el Server Component para mostrar la vista resuelta.
-      router.refresh();
+      router.push("/");
     });
   }
 
@@ -355,8 +354,7 @@ function RefundCard({ token, amount }: { token: string; amount: number }) {
       setResolved(true);
       setFeedback({ type: "success", message: "Reembolso registrado correctamente." });
       toast.success("Reembolso registrado correctamente.");
-      // Refresca el Server Component para mostrar la vista resuelta y ocultar el botón.
-      router.refresh();
+      router.push("/");
     });
   }
 

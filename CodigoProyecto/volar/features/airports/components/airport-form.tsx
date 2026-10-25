@@ -22,6 +22,7 @@ const EMPTY_VALUES: AirportFormValues = { code: "", name: "", city: "" };
 export function AirportForm({ editing }: AirportFormProps) {
   const router = useRouter();
   const isEditing = !!editing;
+  const idPrefix = isEditing ? "edit-" : "";
 
   const form = useForm<AirportFormValues>({
     resolver: zodResolver(airportFormSchema),
@@ -59,7 +60,7 @@ export function AirportForm({ editing }: AirportFormProps) {
   }
 
   return (
-    <Card id="form-aeropuerto">
+    <Card id={isEditing ? undefined : "form-aeropuerto"}>
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle>{isEditing ? "Modificar Aeropuerto" : "Alta de Aeropuerto"}</CardTitle>
         <Badge variant={isEditing ? "default" : "secondary"}>
@@ -69,11 +70,11 @@ export function AirportForm({ editing }: AirportFormProps) {
       <CardContent>
         <form className="grid gap-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
           <div className="space-y-1.5">
-            <Label htmlFor="code">
+            <Label htmlFor={`${idPrefix}code`}>
               Código Aeropuerto (IATA / ICAO) <span className="text-destructive">*</span>
             </Label>
             <Input
-              id="code"
+              id={`${idPrefix}code`}
               placeholder="Ej: EZE, COR, MDZ, AEP"
               maxLength={4}
               className="uppercase"
@@ -90,11 +91,11 @@ export function AirportForm({ editing }: AirportFormProps) {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="name">
+            <Label htmlFor={`${idPrefix}name`}>
               Nombre Oficial del Aeropuerto <span className="text-destructive">*</span>
             </Label>
             <Input
-              id="name"
+              id={`${idPrefix}name`}
               placeholder="Ej: Ministro Pistarini / Aeroparque J. Newbery"
               aria-invalid={!!form.formState.errors.name}
               {...form.register("name")}
@@ -105,11 +106,11 @@ export function AirportForm({ editing }: AirportFormProps) {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="city">
+            <Label htmlFor={`${idPrefix}city`}>
               Ciudad / Localidad <span className="text-destructive">*</span>
             </Label>
             <Input
-              id="city"
+              id={`${idPrefix}city`}
               placeholder="Ej: Buenos Aires, Córdoba, Mendoza"
               aria-invalid={!!form.formState.errors.city}
               {...form.register("city")}

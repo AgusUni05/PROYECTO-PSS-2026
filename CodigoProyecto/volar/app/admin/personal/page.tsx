@@ -1,8 +1,6 @@
 import { ListNavigationProvider, ListResults } from "@/components/list-navigation";
 import { TableSkeleton } from "@/components/table-skeleton";
-import Link from "next/link";
 import { Info } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
 import { requireAdmin } from "@/lib/auth";
 import { StaffForm } from "@/features/staff/components/staff-form";
 import { StaffFilters } from "@/features/staff/components/staff-filters";
@@ -37,9 +35,6 @@ export default async function PersonalPage({
             Mostrador.
           </p>
         </div>
-        <Link href="#form-personal" className={buttonVariants()}>
-          + Nueva Cuenta de Personal
-        </Link>
       </div>
 
       <div className="flex items-start gap-3.5 rounded-2xl bg-secondary p-4 text-[#2E1A8F]">

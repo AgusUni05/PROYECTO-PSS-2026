@@ -15,6 +15,12 @@ import { groupTicketsByFlight } from "./purchase-summary";
 export function PurchaseHistoryView({ history }: { history: PurchaseHistory }) {
   return (
     <div className="flex flex-col gap-8">
+      <div className="flex justify-end">
+        <Link href="/" className={buttonVariants({ variant: "outline" })}>
+          Volver al inicio
+        </Link>
+      </div>
+
       <section aria-labelledby="upcoming-heading" className="min-w-0">
         <h2
           id="upcoming-heading"

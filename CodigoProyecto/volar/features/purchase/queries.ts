@@ -86,14 +86,16 @@ function toBookingForPayment(booking: BookingRow): BookingForPayment {
 }
 
 /**
- * US-20/US-34: reserva por su código para la pantalla de pago, con el vuelo,
- * el importe y los pasajeros. Devuelve también su estado y el vencimiento de
- * la retención para que la página decida si todavía se puede pagar. `null` si
- * el código no existe.
+ * US-20/US-34: reserva propia del comprador autenticado para la pantalla de
+ * pago. El filtro en la consulta evita exponer pasajeros de reservas ajenas;
+ * `null` cubre tanto un código inexistente como uno de otro titular.
  */
-export async function getBookingForPayment(code: string): Promise<BookingForPayment | null> {
-  const booking = await prisma.booking.findUnique({
-    where: { code },
+export async function getBookingForPayment(
+  code: string,
+  buyerId: string,
+): Promise<BookingForPayment | null> {
+  const booking = await prisma.booking.findFirst({
+    where: { code, buyerId, channel: "WEB" },
     include: BOOKING_FOR_PAYMENT_INCLUDE,
   });
   return booking ? toBookingForPayment(booking) : null;

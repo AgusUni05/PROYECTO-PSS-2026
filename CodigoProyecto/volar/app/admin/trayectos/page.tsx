@@ -1,6 +1,7 @@
 import { ListNavigationProvider, ListResults } from "@/components/list-navigation";
 import { TableSkeleton } from "@/components/table-skeleton";
 import { Info } from "lucide-react";
+import { AdminEditDialog } from "@/components/admin-edit-dialog";
 import { RouteForm } from "@/features/routes/components/route-form";
 import { RouteFilters } from "@/features/routes/components/route-filters";
 import { RouteTable } from "@/features/routes/components/route-table";
@@ -64,7 +65,13 @@ export default async function TrayectosPage({
         </div>
       </div>
 
-      <RouteForm key={editing?.id ?? "new"} airports={airports} editing={editing} />
+      <RouteForm airports={airports} />
+
+      {editing && (
+        <AdminEditDialog title="Editar trayecto" returnTo="/admin/trayectos">
+          <RouteForm key={editing.id} airports={airports} editing={editing} />
+        </AdminEditDialog>
+      )}
 
       <ListNavigationProvider>
         <RouteFilters filters={filters} airports={airports} />

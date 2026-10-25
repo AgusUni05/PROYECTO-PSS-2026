@@ -42,6 +42,7 @@ const EMPTY_VALUES: RouteFormValues = {
 export function RouteForm({ airports, editing }: RouteFormProps) {
   const router = useRouter();
   const isEditing = !!editing;
+  const idPrefix = isEditing ? "edit-" : "";
 
   // Base UI's Select.Value solo resuelve la etiqueta a mostrar si el Select
   // recibe la lista de items (value/label); si no, muestra el value crudo.
@@ -95,7 +96,7 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
   }
 
   return (
-    <Card id="form-trayecto">
+    <Card id={isEditing ? undefined : "form-trayecto"}>
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle>{isEditing ? "Modificar Trayecto" : "Nuevo Trayecto"}</CardTitle>
         <Badge variant={isEditing ? "default" : "secondary"}>
@@ -106,7 +107,7 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <Label htmlFor="originId">
+              <Label htmlFor={`${idPrefix}originId`}>
                 Aeropuerto de Origen <span className="text-destructive">*</span>
               </Label>
               <Controller
@@ -114,7 +115,7 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
                 name="originId"
                 render={({ field }) => (
                   <Select items={airportItems} value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger id="originId" className="w-full">
+                    <SelectTrigger id={`${idPrefix}originId`} className="w-full">
                       <SelectValue placeholder="-- Seleccionar aeropuerto de salida --" />
                     </SelectTrigger>
                     <SelectContent>
@@ -134,7 +135,7 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
               )}
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="destinationId">
+              <Label htmlFor={`${idPrefix}destinationId`}>
                 Aeropuerto de Destino <span className="text-destructive">*</span>
               </Label>
               <Controller
@@ -142,7 +143,7 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
                 name="destinationId"
                 render={({ field }) => (
                   <Select items={airportItems} value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger id="destinationId" className="w-full">
+                    <SelectTrigger id={`${idPrefix}destinationId`} className="w-full">
                       <SelectValue placeholder="-- Seleccionar aeropuerto de llegada --" />
                     </SelectTrigger>
                     <SelectContent>
@@ -210,11 +211,11 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <Label htmlFor="departureTime">
+              <Label htmlFor={`${idPrefix}departureTime`}>
                 Horario de Partida <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="departureTime"
+                id={`${idPrefix}departureTime`}
                 type="time"
                 aria-invalid={!!form.formState.errors.departureTime}
                 {...form.register("departureTime")}
@@ -226,11 +227,11 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
               )}
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="arrivalTime">
+              <Label htmlFor={`${idPrefix}arrivalTime`}>
                 Horario de Llegada <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="arrivalTime"
+                id={`${idPrefix}arrivalTime`}
                 type="time"
                 aria-invalid={!!form.formState.errors.arrivalTime}
                 {...form.register("arrivalTime")}

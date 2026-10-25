@@ -180,6 +180,8 @@ describe("PurchaseHistoryView", () => {
     expect(html).toContain("No tenés vuelos próximos");
     expect(html).toContain('href="/vuelos"');
     expect(html).toContain("Buscar vuelos");
+    expect(html).toContain('href="/"');
+    expect(html).toContain("Volver al inicio");
   });
 
   it("muestra el estado vacío del historial", () => {

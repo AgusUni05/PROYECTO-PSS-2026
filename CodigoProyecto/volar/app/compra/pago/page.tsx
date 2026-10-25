@@ -55,13 +55,13 @@ export default async function PagoPage({
     redirect(`/sign-in?${new URLSearchParams({ redirect_url: returnTo })}`);
   }
 
-  const booking = await getBookingForPayment(code.data);
+  const booking = await getBookingForPayment(code.data, user.id);
   if (!booking) {
     return (
       <PurchaseShell title="Pago de la compra" currentStep={3}>
         <Unavailable
           title="No encontramos esta reserva"
-          description="El código no corresponde a ninguna reserva registrada. Iniciá la compra de nuevo."
+          description="El código no corresponde a una reserva disponible para esta cuenta. Iniciá la compra de nuevo."
         />
       </PurchaseShell>
     );

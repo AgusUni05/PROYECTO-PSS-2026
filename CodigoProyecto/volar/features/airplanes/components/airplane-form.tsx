@@ -27,6 +27,7 @@ const EMPTY_VALUES: AirplaneFormValues = {
 export function AirplaneForm({ editing }: AirplaneFormProps) {
   const router = useRouter();
   const isEditing = !!editing;
+  const idPrefix = isEditing ? "edit-" : "";
 
   const form = useForm<AirplaneFormValues>({
     resolver: zodResolver(airplaneFormSchema),
@@ -67,7 +68,7 @@ export function AirplaneForm({ editing }: AirplaneFormProps) {
   }
 
   return (
-    <Card id="form-avion">
+    <Card id={isEditing ? undefined : "form-avion"}>
       <CardHeader className="flex-row items-center justify-between space-y-0">
         <CardTitle>{isEditing ? "Editar Capacidad de Avión" : "Registro de Avión"}</CardTitle>
         <Badge variant={isEditing ? "default" : "secondary"}>
@@ -77,11 +78,11 @@ export function AirplaneForm({ editing }: AirplaneFormProps) {
       <CardContent>
         <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)} noValidate>
           <div className="space-y-1.5">
-            <Label htmlFor="identifier">
+            <Label htmlFor={`${idPrefix}identifier`}>
               Identificador / Matrícula <span className="text-destructive">*</span>
             </Label>
             <Input
-              id="identifier"
+              id={`${idPrefix}identifier`}
               placeholder="Ej: LV-ARG01, BOEING-737-A"
               className="uppercase"
               aria-invalid={!!form.formState.errors.identifier}
@@ -99,11 +100,11 @@ export function AirplaneForm({ editing }: AirplaneFormProps) {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="model">
+            <Label htmlFor={`${idPrefix}model`}>
               Modelo de Aeronave <span className="text-destructive">*</span>
             </Label>
             <Input
-              id="model"
+              id={`${idPrefix}model`}
               placeholder="Ej: Boeing 737-800, Airbus A320, Embraer 190"
               aria-invalid={!!form.formState.errors.model}
               {...form.register("model")}
@@ -115,11 +116,11 @@ export function AirplaneForm({ editing }: AirplaneFormProps) {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <Label htmlFor="economySeats">
+              <Label htmlFor={`${idPrefix}economySeats`}>
                 Asientos Economy <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="economySeats"
+                id={`${idPrefix}economySeats`}
                 type="number"
                 min={0}
                 max={999}
@@ -128,11 +129,11 @@ export function AirplaneForm({ editing }: AirplaneFormProps) {
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="firstClassSeats">
+              <Label htmlFor={`${idPrefix}firstClassSeats`}>
                 Asientos Primera Clase <span className="text-destructive">*</span>
               </Label>
               <Input
-                id="firstClassSeats"
+                id={`${idPrefix}firstClassSeats`}
                 type="number"
                 min={0}
                 max={999}

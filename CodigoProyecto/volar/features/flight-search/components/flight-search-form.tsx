@@ -1,5 +1,6 @@
 "use client";
 
+import type { MouseEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useListNavigation } from "@/components/list-navigation";
 import { useForm } from "react-hook-form";
@@ -43,16 +44,34 @@ export function FlightSearchForm({ airports, defaultValues }: Props) {
     if (form.formState.isSubmitted) void form.trigger(["origen", "destino"]);
   }
 
+  function openAirportPicker(event: MouseEvent<HTMLLabelElement>) {
+    if (event.target instanceof HTMLSelectElement) return;
+
+    event.preventDefault();
+    const select = event.currentTarget.querySelector("select");
+    if (select?.showPicker) {
+      select.showPicker();
+    } else if (select) {
+      select.focus();
+      select.click();
+    }
+  }
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
       <div className="grid grid-cols-1 gap-2 rounded-[22px] bg-card p-2.5 shadow-[0_30px_70px_-30px_rgba(22,19,61,0.45),0_2px_6px_rgba(22,19,61,0.06)] sm:grid-cols-2 sm:gap-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_210px_auto] lg:gap-0">
-        <div className="group flex flex-col justify-center gap-1 rounded-2xl px-5 py-3 transition-colors hover:bg-muted focus-within:bg-secondary">
-          <Label htmlFor="origen" className="gap-1.5 text-[11px] font-bold tracking-[0.09em] text-muted-foreground uppercase">
+        <label
+          htmlFor="origen"
+          onClick={openAirportPicker}
+          className="group flex cursor-pointer flex-col justify-center gap-1 rounded-2xl px-5 py-3 transition-colors hover:bg-muted focus-within:bg-secondary"
+        >
+          <span id="origen-label" className="flex items-center gap-1.5 text-[11px] font-bold tracking-[0.09em] text-muted-foreground uppercase">
             <MapPin className="size-3.5 text-primary" />
             Origen <span className="text-primary">*</span>
-          </Label>
+          </span>
           <NativeSelect
             id="origen"
+            aria-labelledby="origen-label"
             aria-invalid={!!errors.origen}
             className="h-auto cursor-pointer border-0 bg-transparent p-0 text-base font-bold"
             {...form.register("origen")}
@@ -65,9 +84,9 @@ export function FlightSearchForm({ airports, defaultValues }: Props) {
             ))}
           </NativeSelect>
           {errors.origen && <p className="text-xs text-destructive">{errors.origen.message}</p>}
-        </div>
+        </label>
 
-        <div className="group relative flex flex-col justify-center gap-1 rounded-2xl px-5 pt-7 pb-3 transition-colors hover:bg-muted focus-within:bg-secondary sm:py-3 sm:pr-5 sm:pl-[34px] sm:before:absolute sm:before:top-4 sm:before:bottom-4 sm:before:left-0 sm:before:w-px sm:before:bg-border">
+        <div className="group relative">
           <button
             type="button"
             onClick={swapAirports}
@@ -76,24 +95,31 @@ export function FlightSearchForm({ airports, defaultValues }: Props) {
           >
             <ArrowLeftRight className="size-4 transition-transform duration-300" />
           </button>
-          <Label htmlFor="destino" className="gap-1.5 text-[11px] font-bold tracking-[0.09em] text-muted-foreground uppercase">
-            <MapPin className="size-3.5 text-primary" />
-            Destino <span className="text-primary">*</span>
-          </Label>
-          <NativeSelect
-            id="destino"
-            aria-invalid={!!errors.destino}
-            className="h-auto cursor-pointer border-0 bg-transparent p-0 text-base font-bold"
-            {...form.register("destino")}
+          <label
+            htmlFor="destino"
+            onClick={openAirportPicker}
+            className="group flex h-full w-full cursor-pointer flex-col justify-center gap-1 rounded-2xl px-5 pt-7 pb-3 transition-colors hover:bg-muted focus-within:bg-secondary sm:py-3 sm:pr-5 sm:pl-[34px] sm:before:absolute sm:before:top-4 sm:before:bottom-4 sm:before:left-0 sm:before:w-px sm:before:bg-border"
           >
-            <option value="">Seleccionar destino</option>
-            {airports.map((a) => (
-              <option key={a.id} value={a.id}>
-                {a.city} - {a.name} ({a.code})
-              </option>
-            ))}
-          </NativeSelect>
-          {errors.destino && <p className="text-xs text-destructive">{errors.destino.message}</p>}
+            <span id="destino-label" className="flex items-center gap-1.5 text-[11px] font-bold tracking-[0.09em] text-muted-foreground uppercase">
+              <MapPin className="size-3.5 text-primary" />
+              Destino <span className="text-primary">*</span>
+            </span>
+            <NativeSelect
+              id="destino"
+              aria-labelledby="destino-label"
+              aria-invalid={!!errors.destino}
+              className="h-auto cursor-pointer border-0 bg-transparent p-0 text-base font-bold"
+              {...form.register("destino")}
+            >
+              <option value="">Seleccionar destino</option>
+              {airports.map((a) => (
+                <option key={a.id} value={a.id}>
+                  {a.city} - {a.name} ({a.code})
+                </option>
+              ))}
+            </NativeSelect>
+            {errors.destino && <p className="text-xs text-destructive">{errors.destino.message}</p>}
+          </label>
         </div>
 
         <div className="group relative flex flex-col justify-center gap-1 rounded-2xl px-5 py-3 transition-colors hover:bg-muted focus-within:bg-secondary lg:before:absolute lg:before:top-4 lg:before:bottom-4 lg:before:left-0 lg:before:w-px lg:before:bg-border">

@@ -408,18 +408,18 @@ function notPayableMessage(status: BookingStatus): string {
  * cancelan los pasajes. Nunca se persisten datos sensibles de la tarjeta
  * (RNF-08): solo la marca y los últimos 4 dígitos.
  *
- * `buyerId` es el usuario autenticado que paga. Si la reserva web se creó sin
- * comprador (p. ej. la reserva demo del seed), se lo vincula al aprobar el pago
- * para que los comprobantes queden a su nombre. Nunca pisa un comprador
- * existente ni vincula reservas de mostrador (COUNTER).
+ * `buyerId` es el usuario autenticado que paga. La reserva debe pertenecerle y
+ * ser una venta WEB; no se permite reclamar reservas sin titular usando solo
+ * el código de reserva. La titularidad se vuelve a exigir en la escritura
+ * condicional dentro de la transacción.
  */
 export async function processPayment(
   code: string,
   values: PaymentFormValues,
-  buyerId?: string,
+  buyerId: string,
 ): Promise<ActionResult<PaymentOutcome>> {
-  const booking = await prisma.booking.findUnique({
-    where: { code },
+  const booking = await prisma.booking.findFirst({
+    where: { code, buyerId, channel: "WEB" },
     select: {
       id: true,
       code: true,
@@ -431,8 +431,6 @@ export async function processPayment(
       seatClass: true,
       contactName: true,
       contactEmail: true,
-      channel: true,
-      buyerId: true,
       flight: { select: { code: true, economyCapacity: true, firstClassCapacity: true } },
       tickets: {
         orderBy: { createdAt: "asc" },
@@ -486,13 +484,16 @@ export async function processPayment(
       // Una reserva web sin comprador (p. ej. la demo del seed) se vincula al
       // usuario que paga en la misma escritura que la confirma. Nunca se pisa
       // un comprador existente ni se vincula una venta de mostrador.
-      const bindsBuyer =
-        approved && booking.channel === "WEB" && booking.buyerId === null && buyerId !== undefined;
-
       const { count } = await tx.booking.updateMany({
-        where: { id: booking.id, status: "PENDING_PAYMENT", holdExpiresAt: { gt: now } },
+        where: {
+          id: booking.id,
+          buyerId,
+          channel: "WEB",
+          status: "PENDING_PAYMENT",
+          holdExpiresAt: { gt: now },
+        },
         data: approved
-          ? { status: "CONFIRMED", confirmedAt: now, ...(bindsBuyer ? { buyerId } : {}) }
+          ? { status: "CONFIRMED", confirmedAt: now }
           : { status: "REJECTED" },
       });
       if (count === 0) throw new Error("BOOKING_CHANGED");
