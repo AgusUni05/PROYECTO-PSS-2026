@@ -17,7 +17,7 @@ export const HOLD_MINUTES = 10;
 // Alfabeto sin 0/O/1/I para que el código de reserva no se confunda al leerlo.
 const CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
-function newBookingCode(): string {
+export function newBookingCode(): string {
   const bytes = randomBytes(6);
   return Array.from(bytes, (b) => CODE_ALPHABET[b % CODE_ALPHABET.length]).join("");
 }
@@ -378,10 +378,15 @@ export function cardBrand(cardNumber: string): string {
  * rechaza si es impar (permite probar ambos casos de forma determinista). El
  * id de transacción se genera igual que lo haría la pasarela real.
  */
+/** Id de transacción con el mismo formato que generaría la pasarela real. */
+export function newTransactionId(): string {
+  return `TX-${randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase()}`;
+}
+
 function simulateGateway(cardNumber: string): { approved: boolean; transactionId: string } {
   return {
     approved: Number(cardNumber.slice(-1)) % 2 === 0,
-    transactionId: `TX-${randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase()}`,
+    transactionId: newTransactionId(),
   };
 }
 

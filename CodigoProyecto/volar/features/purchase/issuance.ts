@@ -136,6 +136,10 @@ async function sendPurchaseEmail(
   tx: Prisma.TransactionClient,
   booking: BookingToIssue,
 ): Promise<void> {
+  // US-33: una venta de mostrador puede no tener email de contacto; sin
+  // destinatario no hay nada para encolar (no es un error, es opcional).
+  if (!booking.contactEmail) return;
+
   await tx.emailNotification.create({
     data: {
       id: newId("EmailNotification"),

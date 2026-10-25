@@ -128,6 +128,14 @@ describe("issueComprobantes (US-23/US-24)", () => {
     expect(seats).toEqual(["1B", "1C"]);
   });
 
+  it("no encola el email de comprobantes si contactEmail está vacío (venta de mostrador sin email)", async () => {
+    prismaMock.ticket.findMany.mockResolvedValue([] as never);
+
+    await issueComprobantes(prismaMock as never, { ...booking, contactEmail: "" }, new Date());
+
+    expect(prismaMock.emailNotification.create).not.toHaveBeenCalled();
+  });
+
   it("falla entera si no quedan asientos libres", async () => {
     prismaMock.ticket.findMany.mockResolvedValue([] as never);
 
