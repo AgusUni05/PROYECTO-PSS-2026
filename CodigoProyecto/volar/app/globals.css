@@ -177,6 +177,35 @@
   100% { offset-distance: 100%; opacity: 0; }
 }
 
+/* Aviones cruzando la pantalla de punta a punta (fondo de las pantallas de
+   acceso). El ícono apunta al noreste en su orientación de dibujo (ver
+   PlaneIcon): cada rumbo se calcula sumando la rotación desde ahí, verificado
+   a ojo con un diagrama N/S/E/O antes de fijar estos valores. */
+@keyframes plane-ltr {
+  0% { transform: translateX(-12vw) rotate(45deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateX(112vw) rotate(45deg); opacity: 0; }
+}
+@keyframes plane-rtl {
+  0% { transform: translateX(12vw) rotate(225deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateX(-112vw) rotate(225deg); opacity: 0; }
+}
+@keyframes plane-ttb {
+  0% { transform: translateY(-12vh) rotate(135deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(112vh) rotate(135deg); opacity: 0; }
+}
+@keyframes plane-btt {
+  0% { transform: translateY(12vh) rotate(-45deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-112vh) rotate(-45deg); opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-rise, .animate-rise-d1, .animate-rise-d2, .animate-rise-d3, .animate-rise-d4,
   .skeleton-shimmer {
