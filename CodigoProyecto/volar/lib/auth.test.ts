@@ -24,6 +24,7 @@ import {
   requirePassenger,
   isCounterAgent,
   requireCounterAgent,
+  canPassengerAccessBooking,
 } from "./auth";
 
 beforeEach(() => {
@@ -261,5 +262,61 @@ describe("requireCounterAgent", () => {
     const result = await requireCounterAgent();
 
     expect(result).toEqual(agent);
+  });
+});
+
+describe("canPassengerAccessBooking", () => {
+  const booking = { buyerId: "BUY_1", contactEmail: "buyer@example.com" };
+
+  it("devuelve false cuando no hay sesión", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: null } as never);
+
+    expect(await canPassengerAccessBooking(booking)).toBe(false);
+  });
+
+  it("devuelve false cuando el usuario local no es pasajero activo", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    prismaMock.user.findUnique.mockResolvedValue(makeUser({ role: "ADMIN" }));
+
+    expect(await canPassengerAccessBooking(booking)).toBe(false);
+  });
+
+  it("permite el acceso cuando el buyerId coincide con el usuario autenticado", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    prismaMock.user.findUnique.mockResolvedValue(makeUser({ id: "BUY_1", role: "PASSENGER", isActive: true }));
+
+    expect(await canPassengerAccessBooking(booking)).toBe(true);
+  });
+
+  it("rechaza cuando el buyerId no coincide con el usuario autenticado", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    prismaMock.user.findUnique.mockResolvedValue(makeUser({ id: "BUY_2", role: "PASSENGER", isActive: true }));
+
+    expect(await canPassengerAccessBooking(booking)).toBe(false);
+  });
+
+  it("permite el acceso a compra de mostrador cuando el email verificado coincide con contactEmail", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    prismaMock.user.findUnique.mockResolvedValue(makeUser({ id: "BUY_2", role: "PASSENGER", isActive: true }));
+    vi.mocked(currentUser).mockResolvedValue({
+      emailAddresses: [
+        { emailAddress: "buyer@example.com", verification: { status: "verified" } },
+      ],
+    } as never);
+
+    expect(await canPassengerAccessBooking({ buyerId: null, contactEmail: "buyer@example.com" })).toBe(true);
+  });
+
+  it("rechaza compra de mostrador cuando ningún email verificado coincide", async () => {
+    vi.mocked(auth).mockResolvedValue({ userId: "clerk_1" } as never);
+    prismaMock.user.findUnique.mockResolvedValue(makeUser({ id: "BUY_2", role: "PASSENGER", isActive: true }));
+    vi.mocked(currentUser).mockResolvedValue({
+      emailAddresses: [
+        { emailAddress: "buyer@example.com", verification: { status: "unverified" } },
+        { emailAddress: "otro@example.com", verification: { status: "verified" } },
+      ],
+    } as never);
+
+    expect(await canPassengerAccessBooking({ buyerId: null, contactEmail: "buyer@example.com" })).toBe(false);
   });
 });

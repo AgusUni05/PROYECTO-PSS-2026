@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { prismaMock } from "@/tests/prisma-mock";
 
 vi.mock("next/cache", () => ({
   revalidatePath: vi.fn(),
@@ -9,18 +10,53 @@ vi.mock("./contingency-resolution", () => ({
   resolveRebooking: vi.fn(),
 }));
 
+vi.mock("@/lib/auth", () => ({
+  canPassengerAccessBooking: vi.fn(),
+}));
+
 import { revalidatePath } from "next/cache";
 import { resolveRebooking, resolveRefund } from "./contingency-resolution";
+import { canPassengerAccessBooking } from "@/lib/auth";
 import { resolveRebookingAction, resolveRefundAction } from "./contingency-actions";
 
 const mockedResolveRefund = vi.mocked(resolveRefund);
 const mockedResolveRebooking = vi.mocked(resolveRebooking);
 
+const mockBooking = { buyerId: "BUY_1", contactEmail: "buyer@example.com" };
+const mockContingency = {
+  id: "TC_1",
+  ticket: { id: "PAS_1", booking: mockBooking },
+};
+
 describe("resolveRefundAction", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(mockContingency as never);
+    vi.mocked(canPassengerAccessBooking).mockResolvedValue(true);
+  });
+
   it("rechaza un token vacío", async () => {
     const result = await resolveRefundAction("");
 
     expect(result).toEqual({ ok: false, error: "El enlace no es válido." });
+    expect(mockedResolveRefund).not.toHaveBeenCalled();
+  });
+
+  it("rechaza un token que no existe", async () => {
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(null);
+
+    const result = await resolveRefundAction("tok-abc-123");
+
+    expect(result).toEqual({ ok: false, error: "El enlace no es válido o expiró." });
+    expect(mockedResolveRefund).not.toHaveBeenCalled();
+  });
+
+  it("rechaza cuando el usuario no tiene acceso a la reserva", async () => {
+    vi.mocked(canPassengerAccessBooking).mockResolvedValue(false);
+
+    const result = await resolveRefundAction("tok-abc-123");
+
+    expect(result).toEqual({ ok: false, error: "Necesitás iniciar sesión para continuar." });
     expect(mockedResolveRefund).not.toHaveBeenCalled();
   });
 
@@ -36,6 +72,7 @@ describe("resolveRefundAction", () => {
 
     const result = await resolveRefundAction("tok-abc-123");
 
+    expect(canPassengerAccessBooking).toHaveBeenCalledWith(mockBooking);
     expect(result).toEqual({
       ok: true,
       data: { refundId: "REE_1", amount: 45000, gatewayRefundId: "GW-123" },
@@ -66,6 +103,12 @@ describe("resolveRefundAction", () => {
 });
 
 describe("resolveRebookingAction", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(mockContingency as never);
+    vi.mocked(canPassengerAccessBooking).mockResolvedValue(true);
+  });
+
   it("rechaza un token vacío sin llamar al dominio", async () => {
     const result = await resolveRebookingAction("", "VUE_2");
 
@@ -77,6 +120,15 @@ describe("resolveRebookingAction", () => {
     const result = await resolveRebookingAction("tok-abc-123", "");
 
     expect(result).toEqual({ ok: false, error: "Elegí un vuelo alternativo." });
+    expect(mockedResolveRebooking).not.toHaveBeenCalled();
+  });
+
+  it("rechaza cuando el usuario no tiene acceso a la reserva", async () => {
+    vi.mocked(canPassengerAccessBooking).mockResolvedValue(false);
+
+    const result = await resolveRebookingAction("tok-abc-123", "VUE_2");
+
+    expect(result).toEqual({ ok: false, error: "Necesitás iniciar sesión para continuar." });
     expect(mockedResolveRebooking).not.toHaveBeenCalled();
   });
 
@@ -115,7 +167,7 @@ describe("resolveRebookingAction", () => {
   });
 
   it("informa un token inexistente", async () => {
-    mockedResolveRebooking.mockResolvedValue({ type: "notFound" });
+    prismaMock.ticketContingency.findUnique.mockResolvedValue(null);
 
     const result = await resolveRebookingAction("tok-abc-123", "VUE_2");
 

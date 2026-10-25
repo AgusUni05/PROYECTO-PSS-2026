@@ -35,6 +35,7 @@ const pendingView = {
     id: "PAS_1",
     unitPrice: 45000,
     seatClass: "ECONOMY" as const,
+    bookingId: "RES_1",
   },
   flight: {
     code: "VU-20261001-001",
