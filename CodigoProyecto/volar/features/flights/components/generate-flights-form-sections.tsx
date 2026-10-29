@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { maxFlightDateString } from "@/lib/dates";
 import { formatDays } from "@/features/routes/days";
 import type { ActiveRouteOption } from "@/features/routes/queries";
 import type { ActiveAirplaneOption } from "@/features/airplanes/queries";
@@ -32,6 +33,7 @@ export function RoutePeriodSection({
       ? matchingDates(startDate, endDate, selectedRoute.operatingDays).length
       : null;
   const todayIso = new Date().toISOString().slice(0, 10);
+  const maxIso = maxFlightDateString();
 
   const routeItems = routes.map((route) => ({
     value: route.id,
@@ -85,6 +87,7 @@ export function RoutePeriodSection({
               id="startDate"
               type="date"
               min={todayIso}
+              max={maxIso}
               aria-invalid={!!form.formState.errors.startDate}
               {...form.register("startDate")}
             />
@@ -102,6 +105,7 @@ export function RoutePeriodSection({
               id="endDate"
               type="date"
               min={startDate || todayIso}
+              max={maxIso}
               aria-invalid={!!form.formState.errors.endDate}
               {...form.register("endDate")}
             />

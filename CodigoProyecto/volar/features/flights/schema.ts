@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { idSchema } from "@/lib/id";
-import { DATE_REGEX, todayDateString } from "@/lib/dates";
+import { DATE_REGEX, maxFlightDateString, todayDateString } from "@/lib/dates";
 
 // US-09: capacidad por clase, entero no negativo (mismas reglas al generar y al editar un vuelo).
 const capacityField = z
@@ -40,6 +40,14 @@ export const generateFlightsFormSchema = z
   .refine((data) => data.startDate >= todayDateString(), {
     message: "La fecha de inicio no puede ser anterior a hoy",
     path: ["startDate"],
+  })
+  .refine((data) => data.startDate <= maxFlightDateString(), {
+    message: "La fecha de inicio no puede superar el último día del mes dentro de un año",
+    path: ["startDate"],
+  })
+  .refine((data) => data.endDate <= maxFlightDateString(), {
+    message: "La fecha de fin no puede superar el último día del mes dentro de un año",
+    path: ["endDate"],
   })
   .refine((data) => data.endDate >= data.startDate, {
     message: "La fecha fin debe ser igual o posterior al inicio",

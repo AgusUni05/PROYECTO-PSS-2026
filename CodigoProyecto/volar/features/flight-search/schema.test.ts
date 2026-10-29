@@ -8,6 +8,19 @@ function isoDaysFromToday(days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
+function lastDayOfMonthNextYear(): string {
+  const today = new Date();
+  return new Date(Date.UTC(today.getUTCFullYear() + 1, today.getUTCMonth() + 1, 0))
+    .toISOString()
+    .slice(0, 10);
+}
+
+function isoDaysAfter(dateString: string, days: number): string {
+  const date = new Date(`${dateString}T00:00:00.000Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
 const base = {
   origen: newId("Airport"),
   destino: newId("Airport"),
@@ -49,6 +62,17 @@ describe("flightSearchSchema (US-13)", () => {
 
   it("rechaza fechas pasadas", () => {
     expect(fieldErrors({ ...base, fecha: isoDaysFromToday(-1) }).fecha).toBeDefined();
+  });
+
+  it("acepta el último día del mes dentro de un año", () => {
+    expect(
+      flightSearchSchema.safeParse({ ...base, fecha: lastDayOfMonthNextYear() }).success,
+    ).toBe(true);
+  });
+
+  it("rechaza fechas posteriores al mes dentro de un año", () => {
+    const dayAfterLimit = isoDaysAfter(lastDayOfMonthNextYear(), 1);
+    expect(fieldErrors({ ...base, fecha: dayAfterLimit }).fecha).toBeDefined();
   });
 
   it("rechaza fechas con formato inválido", () => {

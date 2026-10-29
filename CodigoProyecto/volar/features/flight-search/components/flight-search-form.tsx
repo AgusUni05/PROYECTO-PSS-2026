@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/native-select";
+import { maxFlightDateString } from "@/lib/dates";
 import { flightSearchSchema, type FlightSearchValues } from "../schema";
 
 type AirportOption = { id: string; code: string; name: string; city: string };
@@ -32,8 +33,10 @@ export function FlightSearchForm({ airports, defaultValues, basePath = "/vuelos"
   });
   const { errors } = form.formState;
 
-  // Recalculado en cada render: acota el date picker nativo a hoy en adelante.
+  // Recalculado en cada render: acota el date picker nativo desde hoy hasta el
+  // último día del mes que cae dentro de un año.
   const todayIso = new Date().toISOString().slice(0, 10);
+  const maxIso = maxFlightDateString();
 
   function onSubmit(values: FlightSearchValues) {
     navigate(`${basePath}?${new URLSearchParams(values).toString()}`);
@@ -133,6 +136,7 @@ export function FlightSearchForm({ airports, defaultValues, basePath = "/vuelos"
             id="fecha"
             type="date"
             min={todayIso}
+            max={maxIso}
             aria-invalid={!!errors.fecha}
             className="h-auto border-0 bg-transparent p-0 text-base font-bold"
             {...form.register("fecha")}

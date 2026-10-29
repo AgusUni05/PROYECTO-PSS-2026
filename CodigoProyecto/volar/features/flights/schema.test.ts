@@ -14,6 +14,19 @@ function isoDaysFromToday(days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
+function lastDayOfMonthNextYear(): string {
+  const today = new Date();
+  return new Date(Date.UTC(today.getUTCFullYear() + 1, today.getUTCMonth() + 1, 0))
+    .toISOString()
+    .slice(0, 10);
+}
+
+function isoDaysAfter(dateString: string, days: number): string {
+  const date = new Date(`${dateString}T00:00:00.000Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
 const today = isoDaysFromToday(0);
 const yesterday = isoDaysFromToday(-1);
 const tomorrow = isoDaysFromToday(1);
@@ -50,6 +63,42 @@ describe("generateFlightsFormSchema", () => {
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error.flatten().fieldErrors.startDate).toBeDefined();
+    }
+  });
+
+  it("acepta un período que termina el último día del mes dentro de un año", () => {
+    expect(
+      generateFlightsFormSchema.safeParse({
+        ...base,
+        startDate: today,
+        endDate: lastDayOfMonthNextYear(),
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rechaza una fecha de inicio posterior al mes dentro de un año", () => {
+    const dayAfterLimit = isoDaysAfter(lastDayOfMonthNextYear(), 1);
+    const result = generateFlightsFormSchema.safeParse({
+      ...base,
+      startDate: dayAfterLimit,
+      endDate: dayAfterLimit,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.startDate).toBeDefined();
+    }
+  });
+
+  it("rechaza una fecha de fin posterior al mes dentro de un año", () => {
+    const dayAfterLimit = isoDaysAfter(lastDayOfMonthNextYear(), 1);
+    const result = generateFlightsFormSchema.safeParse({
+      ...base,
+      startDate: today,
+      endDate: dayAfterLimit,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.flatten().fieldErrors.endDate).toBeDefined();
     }
   });
 

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { idSchema } from "@/lib/id";
-import { DATE_REGEX, todayDateString } from "@/lib/dates";
+import { DATE_REGEX, maxFlightDateString, todayDateString } from "@/lib/dates";
 
 // Los checks de campo cortan (abort) para que, con un campo vacío o inválido,
 // no se sumen los refine de abajo: un solo motivo por campo para el pasajero.
@@ -27,6 +27,10 @@ export const flightSearchSchema = z
   })
   .refine((data) => data.fecha >= todayDateString(), {
     message: "La fecha de salida no puede ser anterior a hoy",
+    path: ["fecha"],
+  })
+  .refine((data) => data.fecha <= maxFlightDateString(), {
+    message: "La fecha de salida no puede superar el último día del mes dentro de un año",
     path: ["fecha"],
   });
 
