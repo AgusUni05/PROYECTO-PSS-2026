@@ -33,7 +33,8 @@ export const DAY_SHORT_LABELS: Record<DayOfWeek, string> = {
 
 /** Formatea una lista de días en el orden de la semana, ej: "Lun, Mié, Vie, Dom". */
 export function formatDays(days: DayOfWeek[]): string {
-  return DAY_ORDER.filter((d) => days.includes(d))
+  const daySet = new Set(days);
+  return DAY_ORDER.filter((d) => daySet.has(d))
     .map((d) => DAY_SHORT_LABELS[d])
     .join(", ");
 }

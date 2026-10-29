@@ -84,10 +84,11 @@ async function getAirportsWithFutureFlights(airportIds: string[]): Promise<Set<s
     select: { route: { select: { originId: true, destinationId: true } } },
   });
 
+  const airportIdSet = new Set(airportIds);
   const blocked = new Set<string>();
   for (const f of flights) {
-    if (airportIds.includes(f.route.originId)) blocked.add(f.route.originId);
-    if (airportIds.includes(f.route.destinationId)) blocked.add(f.route.destinationId);
+    if (airportIdSet.has(f.route.originId)) blocked.add(f.route.originId);
+    if (airportIdSet.has(f.route.destinationId)) blocked.add(f.route.destinationId);
   }
   return blocked;
 }

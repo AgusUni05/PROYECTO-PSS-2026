@@ -1,6 +1,14 @@
 "use client";
 
-import { createContext, useCallback, useContext, useTransition, type FormEvent, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useTransition,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -29,8 +37,10 @@ export function ListNavigationProvider({ children }: { children: ReactNode }) {
     [router],
   );
 
+  const contextValue = useMemo(() => ({ isPending, navigate }), [isPending, navigate]);
+
   return (
-    <ListNavigationContext.Provider value={{ isPending, navigate }}>{children}</ListNavigationContext.Provider>
+    <ListNavigationContext.Provider value={contextValue}>{children}</ListNavigationContext.Provider>
   );
 }
 

@@ -18,6 +18,8 @@ export function ReservationSearchForm({ defaultValue }: { defaultValue: string }
       <CardContent>
         <form
           className="flex flex-wrap items-end gap-3"
+          action="/mostrador/reservas"
+          method="get"
           onSubmit={(event) => {
             event.preventDefault();
             const criterio = (new FormData(event.currentTarget).get("criterio") as string) ?? "";

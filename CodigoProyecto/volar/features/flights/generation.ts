@@ -23,9 +23,10 @@ export function matchingDates(
   const dates: Date[] = [];
   const cursor = new Date(`${startDate}T00:00:00.000Z`);
   const end = new Date(`${endDate}T00:00:00.000Z`);
+  const operatingDaySet = new Set(operatingDays);
 
   while (cursor <= end) {
-    if (operatingDays.includes(JS_DAY_TO_DAYOFWEEK[cursor.getUTCDay()])) {
+    if (operatingDaySet.has(JS_DAY_TO_DAYOFWEEK[cursor.getUTCDay()])) {
       dates.push(new Date(cursor));
     }
     cursor.setUTCDate(cursor.getUTCDate() + 1);

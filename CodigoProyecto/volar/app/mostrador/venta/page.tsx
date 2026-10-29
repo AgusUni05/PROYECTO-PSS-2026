@@ -51,10 +51,14 @@ export default async function MostradorVentaPage({
   );
 }
 
+const currencyFormatter = new Intl.NumberFormat("es-AR", {
+  style: "currency",
+  currency: "ARS",
+  maximumFractionDigits: 0,
+});
+
 function formatCurrencyLabel(fare: string): string {
-  return new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS", maximumFractionDigits: 0 }).format(
-    Number(fare),
-  );
+  return currencyFormatter.format(Number(fare));
 }
 
 function Unavailable({ message }: { message: string }) {

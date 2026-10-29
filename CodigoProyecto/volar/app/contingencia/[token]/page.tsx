@@ -27,9 +27,11 @@ export default async function ContingenciaPage({
 }: {
   params: Promise<{ token: string }>;
 }) {
-  const { token } = await params;
+  const [{ token }, { isAuthenticated, redirectToSignIn }] = await Promise.all([
+    params,
+    auth(),
+  ]);
 
-  const { isAuthenticated, redirectToSignIn } = await auth();
   if (!isAuthenticated) {
     return redirectToSignIn({
       returnBackUrl: `/contingencia/${encodeURIComponent(token)}`,
