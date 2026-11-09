@@ -26,6 +26,7 @@ export const ID_PREFIXES = {
   TicketContingency: "CON",
   Refund: "REE",
   EmailNotification: "NOT",
+  FlightAuditEvent: "AUD",
 } as const;
 
 export type EntityName = keyof typeof ID_PREFIXES;
