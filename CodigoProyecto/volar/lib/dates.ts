@@ -25,3 +25,10 @@ export function maxFlightDateString(): string {
 export function parseDateString(date: string): Date {
   return new Date(`${date}T00:00:00.000Z`);
 }
+
+/** US-42: "YYYY-MM-DD" desplazada `days` días (negativo para restar), en UTC. */
+export function addDaysToDateString(date: string, days: number): string {
+  const result = parseDateString(date);
+  result.setUTCDate(result.getUTCDate() + days);
+  return result.toISOString().slice(0, 10);
+}

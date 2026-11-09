@@ -99,6 +99,21 @@ Producción: `features/flight-search/components/flight-search-form.tsx`,
 `features/purchase/components/purchase-card.tsx`,
 `features/purchase/components/purchase-download-actions.tsx`.
 
+### US-42 (opcional) — Búsqueda flexible ±3 días
+
+| Evidencia | Archivo |
+| --- | --- |
+| Desplazamiento de fechas `YYYY-MM-DD` en UTC, con cambio de mes, año y bisiestos. | `lib/dates.test.ts` |
+| Resumen por día: 7 días de -3 a +3, cantidad de vuelos, cupos, menor tarifa sin contar clases agotadas, "menor precio" en los días más baratos (todos si empatan, ninguno si todos cuestan igual) y días fuera del rango buscable. | `features/flight-search/flexible-dates.test.ts` |
+| Una sola consulta del rango, recortada a hoy y al máximo buscable, filtrando con `isOnSale` (descarta vuelos agotados o ya partidos). | `features/flight-search/queries.test.ts` |
+| Grilla: etiquetas de desplazamiento y fecha, links a la búsqueda del día, días no seleccionables y aviso sin alternativas. | `features/flight-search/components/flexible-dates-grid.test.tsx` |
+| `/vuelos` solo consulta y muestra la grilla cuando la fecha exacta no tiene vuelos. | `app/vuelos/page.test.tsx` |
+
+Producción: `lib/dates.ts`, `features/flight-search/flexible-dates.ts`,
+`features/flight-search/queries.ts`,
+`features/flight-search/components/flexible-dates-grid.tsx`,
+`app/vuelos/page.tsx`.
+
 ## Comandos de verificación
 
 Ejecutar desde `CodigoProyecto/volar`:
@@ -170,6 +185,13 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
 - [ ] **Mobile.** Revisar Mis Compras, comprobantes y contingencia a 320 px de
       ancho: sin scroll horizontal, textos sin solaparse y targets táctiles
       cómodos.
+- [ ] **Fechas cercanas (US-42).** En `/vuelos`, buscar un trayecto en un día
+      sin frecuencia: debajo del aviso "No encontramos vuelos" aparece la grilla
+      de 7 días (-3 a +3) con la tarifa más baja, vuelos y cupos de cada día, y
+      "Menor precio" en el o los más baratos (ninguno si todos cuestan igual). Un clic en un día con vuelos muestra sus
+      tarjetas; los días sin vuelos o anteriores a hoy no se pueden elegir. Con
+      vuelos en la fecha exacta, la grilla no aparece. A 320 px la grilla queda
+      en 2 columnas sin scroll horizontal.
 
 ## Limitaciones conocidas
 
