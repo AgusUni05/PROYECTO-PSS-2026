@@ -15,6 +15,7 @@ import type { ActiveRouteOption } from "@/features/routes/queries";
 import type { ActiveAirplaneOption } from "@/features/airplanes/queries";
 import { matchingDates } from "../generation";
 import type { GenerateFlightsFormValues } from "../schema";
+import { totalCapacityLabel } from "./generate-flights-form.utils";
 
 type FormSectionProps = {
   form: UseFormReturn<GenerateFlightsFormValues>;
@@ -143,6 +144,8 @@ export function AirplaneCapacitySection({
     value: airplane.id,
     label: `${airplane.identifier} (${airplane.model} - ${airplane.economySeats} Eco / ${airplane.firstClassSeats} First)`,
   }));
+  const economyCapacity = useWatch({ control: form.control, name: "economyCapacity" });
+  const firstClassCapacity = useWatch({ control: form.control, name: "firstClassCapacity" });
 
   function handleAirplaneChange(airplaneId: string | null, onChange: (value: string) => void) {
     onChange(airplaneId ?? "");
@@ -232,6 +235,10 @@ export function AirplaneCapacitySection({
             {form.formState.errors.firstClassCapacity.message}
           </p>
         )}
+        <p className="flex items-center justify-between rounded-lg bg-muted px-3.5 py-2.5 text-sm">
+          <span className="text-muted-foreground">Capacidad total</span>
+          <strong className="font-extrabold">{totalCapacityLabel(economyCapacity, firstClassCapacity)}</strong>
+        </p>
       </div>
     </div>
   );
