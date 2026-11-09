@@ -70,7 +70,7 @@ function DayCell({ day, search }: { day: FlexibleDay; search: FlightSearchValues
       <span className="text-sm font-extrabold">{shortDayLabel(day.date)}</span>
     </>
   );
-  const base = "flex h-full min-h-32 flex-col items-center justify-between gap-1 rounded-xl border px-2 py-3 text-center";
+  const base = "flex h-full min-h-32 flex-col items-center justify-start gap-1 rounded-xl border px-2 py-3 text-center";
 
   if (day.status === "available" && day.minFare !== null) {
     const href = `/vuelos?${new URLSearchParams({ ...search, fecha: day.date })}`;
