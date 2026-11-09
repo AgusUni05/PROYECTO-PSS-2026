@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { prismaMock } from "@/tests/prisma-mock";
-import { getFlightOnSale, searchFlights } from "./queries";
+import { getFlightOnSale, searchFlexibleDates, searchFlights } from "./queries";
 
 const inOneWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
@@ -121,5 +121,88 @@ describe("getFlightOnSale (US-14 / US-08)", () => {
       }) as never,
     );
     expect(await getFlightOnSale("VUE_1")).toBeNull();
+  });
+});
+
+describe("searchFlexibleDates (US-42)", () => {
+  // "Hoy" fijo para que los límites del rango buscable sean deterministas.
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(new Date("2026-10-01T12:00:00.000Z"));
+  });
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  function rowOn(date: string, overrides: Record<string, unknown> = {}) {
+    return flightRow({
+      id: `VUE_${date}`,
+      date: new Date(`${date}T00:00:00.000Z`),
+      departureAt: new Date(`${date}T15:00:00.000Z`),
+      arrivalAt: new Date(`${date}T16:30:00.000Z`),
+      ...overrides,
+    });
+  }
+
+  it("consulta en una sola query los vuelos programados del trayecto entre -3 y +3 días", async () => {
+    prismaMock.flight.findMany.mockResolvedValue([]);
+
+    await searchFlexibleDates({ ...params, fecha: "2026-10-10" });
+
+    expect(prismaMock.flight.findMany).toHaveBeenCalledTimes(1);
+    expect(prismaMock.flight.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: {
+          status: "SCHEDULED",
+          date: {
+            gte: new Date("2026-10-07T00:00:00.000Z"),
+            lte: new Date("2026-10-13T00:00:00.000Z"),
+          },
+          route: { originId: "AER_ORIGEN", destinationId: "AER_DESTINO" },
+        },
+        orderBy: { departureAt: "asc" },
+      }),
+    );
+  });
+
+  it("no consulta días anteriores a hoy y los marca como no disponibles", async () => {
+    prismaMock.flight.findMany.mockResolvedValue([]);
+
+    const days = await searchFlexibleDates({ ...params, fecha: "2026-10-02" });
+
+    expect(prismaMock.flight.findMany.mock.calls[0][0]?.where?.date).toEqual({
+      gte: new Date("2026-10-01T00:00:00.000Z"),
+      lte: new Date("2026-10-05T00:00:00.000Z"),
+    });
+    expect(days.map((d) => d.status)).toEqual([
+      "unavailable",
+      "unavailable",
+      "empty",
+      "empty",
+      "empty",
+      "empty",
+      "empty",
+    ]);
+  });
+
+  it("resume solo los vuelos a la venta: descarta los agotados y los que ya partieron", async () => {
+    prismaMock.flight.findMany.mockResolvedValue([
+      // Hoy, pero ya partió (09:00 UTC < 12:00 UTC): no está a la venta.
+      rowOn("2026-10-01", { departureAt: new Date("2026-10-01T09:00:00.000Z") }),
+      rowOn("2026-10-02", { economyFare: { toString: () => "42000" } }),
+      rowOn("2026-10-04", { economyOccupied: 150, firstClassOccupied: 16 }),
+    ] as never);
+
+    const days = await searchFlexibleDates({ ...params, fecha: "2026-10-03" });
+
+    expect(days.map((d) => [d.date, d.status, d.minFare])).toEqual([
+      ["2026-09-30", "unavailable", null],
+      ["2026-10-01", "empty", null],
+      ["2026-10-02", "available", "42000"],
+      ["2026-10-03", "empty", null],
+      ["2026-10-04", "empty", null],
+      ["2026-10-05", "empty", null],
+      ["2026-10-06", "empty", null],
+    ]);
   });
 });

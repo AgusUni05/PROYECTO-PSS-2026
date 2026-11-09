@@ -1,8 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import type { FlightGetPayload } from "@/generated/prisma/models";
-import { parseDateString } from "@/lib/dates";
+import {
+  addDaysToDateString,
+  maxFlightDateString,
+  parseDateString,
+  todayDateString,
+} from "@/lib/dates";
 import { availableSeats, isOnSale } from "@/features/flights/availability";
 import type { FlightSearchValues } from "./schema";
+import { buildFlexibleDays, FLEXIBLE_RANGE_DAYS, type FlexibleDay } from "./flexible-dates";
 
 export type FlightSearchResult = {
   id: string;
@@ -69,6 +75,35 @@ export async function searchFlights(params: FlightSearchValues): Promise<FlightS
 
   const now = new Date();
   return rows.filter((f) => isOnSale(f, now)).map(toSearchResult);
+}
+
+/**
+ * US-42: vuelos a la venta del mismo trayecto entre 3 días antes y 3 días
+ * después de la fecha buscada, resumidos por día para la grilla de fechas
+ * cercanas. Una sola consulta; los días fuera del rango buscable (antes de hoy
+ * o después del máximo, las mismas reglas del buscador) no se consultan.
+ */
+export async function searchFlexibleDates(params: FlightSearchValues): Promise<FlexibleDay[]> {
+  const bounds = { min: todayDateString(), max: maxFlightDateString() };
+  const from = addDaysToDateString(params.fecha, -FLEXIBLE_RANGE_DAYS);
+  const to = addDaysToDateString(params.fecha, FLEXIBLE_RANGE_DAYS);
+
+  const rows = await prisma.flight.findMany({
+    where: {
+      status: "SCHEDULED",
+      date: {
+        gte: parseDateString(from > bounds.min ? from : bounds.min),
+        lte: parseDateString(to < bounds.max ? to : bounds.max),
+      },
+      route: { originId: params.origen, destinationId: params.destino },
+    },
+    orderBy: { departureAt: "asc" },
+    include: FLIGHT_ON_SALE_INCLUDE,
+  });
+
+  const now = new Date();
+  const flights = rows.filter((f) => isOnSale(f, now)).map(toSearchResult);
+  return buildFlexibleDays(params.fecha, flights, bounds);
 }
 
 /**
