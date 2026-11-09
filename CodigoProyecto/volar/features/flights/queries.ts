@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { flightFiltersSchema, type FlightFilters } from "./schema";
 import { completePastFlights } from "./status";
+import type { FlightAuditAction, FlightAuditChange } from "./audit";
 
 export const FLIGHTS_PAGE_SIZE = 10;
 
@@ -126,4 +127,60 @@ export async function listRoutesForCancellation(): Promise<RouteForCancellationO
     destinationCode: r.destination.code,
     futureFlightCount: r._count.flights,
   }));
+}
+
+export type FlightAuditEntry = {
+  id: string;
+  action: FlightAuditAction;
+  changes: FlightAuditChange[];
+  reason: string | null;
+  createdAt: Date;
+  userName: string;
+  userEmail: string;
+};
+
+export type FlightAuditTrail = {
+  code: string;
+  date: Date;
+  originCode: string;
+  destinationCode: string;
+  status: "SCHEDULED" | "COMPLETED" | "CANCELLED";
+  createdAt: Date;
+  createdByName: string;
+  events: FlightAuditEntry[];
+};
+
+/** US-43: historial de auditoría de un vuelo, del evento más antiguo al más reciente. */
+export async function getFlightAuditTrail(flightId: string): Promise<FlightAuditTrail | null> {
+  const flight = await prisma.flight.findUnique({
+    where: { id: flightId },
+    include: {
+      route: { include: { origin: { select: { code: true } }, destination: { select: { code: true } } } },
+      createdBy: { select: { firstName: true, lastName: true } },
+      auditEvents: {
+        orderBy: { createdAt: "asc" },
+        include: { user: { select: { firstName: true, lastName: true, email: true } } },
+      },
+    },
+  });
+  if (!flight) return null;
+
+  return {
+    code: flight.code,
+    date: flight.date,
+    originCode: flight.route.origin.code,
+    destinationCode: flight.route.destination.code,
+    status: flight.status,
+    createdAt: flight.createdAt,
+    createdByName: `${flight.createdBy.firstName} ${flight.createdBy.lastName}`,
+    events: flight.auditEvents.map((e) => ({
+      id: e.id,
+      action: e.action,
+      changes: e.changes as FlightAuditChange[],
+      reason: e.reason,
+      createdAt: e.createdAt,
+      userName: `${e.user.firstName} ${e.user.lastName}`,
+      userEmail: e.user.email,
+    })),
+  };
 }
