@@ -72,7 +72,21 @@ describe("buildFlexibleDays (US-42)", () => {
     expect(day).toMatchObject({ offset: -3, minFare: "90000", availableSeats: 4 });
   });
 
-  it("marca como menor precio solo al día más barato, el primero si hay empate", () => {
+  it("marca como menor precio al día más barato", () => {
+    const days = buildFlexibleDays(
+      "2026-10-01",
+      [
+        result("2026-09-28", { economyFare: "42000" }),
+        result("2026-09-30", { economyFare: "41000" }),
+        result("2026-10-04", { economyFare: "43000" }),
+      ],
+      WIDE_BOUNDS,
+    );
+
+    expect(days.filter((d) => d.isCheapest).map((d) => d.date)).toEqual(["2026-09-30"]);
+  });
+
+  it("si varios días empatan en el precio más bajo, los marca a todos", () => {
     const days = buildFlexibleDays(
       "2026-10-01",
       [
@@ -83,7 +97,17 @@ describe("buildFlexibleDays (US-42)", () => {
       WIDE_BOUNDS,
     );
 
-    expect(days.filter((d) => d.isCheapest).map((d) => d.date)).toEqual(["2026-09-30"]);
+    expect(days.filter((d) => d.isCheapest).map((d) => d.date)).toEqual(["2026-09-30", "2026-10-04"]);
+  });
+
+  it("no marca menor precio si todos los días con vuelos cuestan lo mismo", () => {
+    const days = buildFlexibleDays(
+      "2026-10-01",
+      [result("2026-09-28"), result("2026-09-30"), result("2026-10-02")],
+      WIDE_BOUNDS,
+    );
+
+    expect(days.some((d) => d.isCheapest)).toBe(false);
   });
 
   it("no marca menor precio cuando hay un solo día con vuelos", () => {

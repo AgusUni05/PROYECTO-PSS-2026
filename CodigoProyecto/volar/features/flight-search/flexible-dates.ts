@@ -64,13 +64,14 @@ export function buildFlexibleDays(
     });
   }
 
-  // "Menor precio" solo tiene sentido si hay al menos dos días para comparar.
-  const priced = days.filter((day) => day.minFare !== null);
-  if (priced.length >= 2) {
-    const cheapest = priced.reduce((best, day) =>
-      Number(day.minFare) < Number(best.minFare) ? day : best,
-    );
-    cheapest.isCheapest = true;
+  // "Menor precio" marca todos los días con la tarifa más baja. Si todos los
+  // días con vuelos cuestan lo mismo (o hay uno solo), no hay nada que destacar.
+  const prices = days.flatMap((day) => (day.minFare === null ? [] : Number(day.minFare)));
+  const lowest = Math.min(...prices);
+  if (prices.some((price) => price > lowest)) {
+    for (const day of days) {
+      day.isCheapest = day.minFare !== null && Number(day.minFare) === lowest;
+    }
   }
 
   return days;
