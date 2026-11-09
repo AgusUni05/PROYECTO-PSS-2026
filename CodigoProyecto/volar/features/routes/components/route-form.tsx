@@ -11,13 +11,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { AirportCombobox } from "@/features/airports/components/airport-combobox";
 import { createRouteAction, updateRouteAction } from "../actions";
 import { routeFormSchema, type RouteFormValues } from "../schema";
 import { DAY_LABELS, DAY_ORDER } from "../days";
@@ -44,17 +38,14 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
   const isEditing = !!editing;
   const idPrefix = isEditing ? "edit-" : "";
 
-  // Base UI's Select.Value solo resuelve la etiqueta a mostrar si el Select
-  // recibe la lista de items (value/label); si no, muestra el value crudo.
-  const airportItems = airports.map((a) => ({
-    value: a.id,
-    label: `${a.code} - ${a.city} (${a.name})`,
-  }));
-
   const form = useForm<RouteFormValues>({
     resolver: zodResolver(routeFormSchema),
     defaultValues: editing?.values ?? EMPTY_VALUES,
   });
+
+  // US-40: cada buscador oculta el aeropuerto elegido en el otro extremo.
+  const originId = useWatch({ control: form.control, name: "originId" });
+  const destinationId = useWatch({ control: form.control, name: "destinationId" });
 
   const departureTime = useWatch({ control: form.control, name: "departureTime" });
   const arrivalTime = useWatch({ control: form.control, name: "arrivalTime" });
@@ -114,18 +105,15 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
                 control={form.control}
                 name="originId"
                 render={({ field }) => (
-                  <Select items={airportItems} value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger id={`${idPrefix}originId`} className="w-full">
-                      <SelectValue placeholder="-- Seleccionar aeropuerto de salida --" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {airports.map((a) => (
-                        <SelectItem key={a.id} value={a.id}>
-                          {a.code} - {a.city} ({a.name})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <AirportCombobox
+                    id={`${idPrefix}originId`}
+                    airports={airports}
+                    value={field.value}
+                    excludedId={destinationId}
+                    onChange={field.onChange}
+                    placeholder="Buscá el aeropuerto de salida (código o ciudad)"
+                    invalid={!!form.formState.errors.originId}
+                  />
                 )}
               />
               {form.formState.errors.originId && (
@@ -142,18 +130,15 @@ export function RouteForm({ airports, editing }: RouteFormProps) {
                 control={form.control}
                 name="destinationId"
                 render={({ field }) => (
-                  <Select items={airportItems} value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger id={`${idPrefix}destinationId`} className="w-full">
-                      <SelectValue placeholder="-- Seleccionar aeropuerto de llegada --" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {airports.map((a) => (
-                        <SelectItem key={a.id} value={a.id}>
-                          {a.code} - {a.city} ({a.name})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <AirportCombobox
+                    id={`${idPrefix}destinationId`}
+                    airports={airports}
+                    value={field.value}
+                    excludedId={originId}
+                    onChange={field.onChange}
+                    placeholder="Buscá el aeropuerto de llegada (código o ciudad)"
+                    invalid={!!form.formState.errors.destinationId}
+                  />
                 )}
               />
               {form.formState.errors.destinationId && (
