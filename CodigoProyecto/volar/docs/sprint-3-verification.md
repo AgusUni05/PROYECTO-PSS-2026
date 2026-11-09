@@ -114,6 +114,21 @@ Producción: `lib/dates.ts`, `features/flight-search/flexible-dates.ts`,
 `features/flight-search/components/flexible-dates-grid.tsx`,
 `app/vuelos/page.tsx`.
 
+### US-40 (opcional) — Catálogo maestro con autocompletado
+
+| Evidencia | Archivo |
+| --- | --- |
+| Búsqueda por código, nombre o ciudad, sin mayúsculas ni tildes; etiqueta de cada sugerencia; cada extremo del trayecto oculta el aeropuerto elegido en el otro. | `features/airports/airport-search.test.ts` |
+| Buscador accesible (`role="combobox"`, asociado a su label), arranca completado al editar y marca el error del formulario. | `features/airports/components/airport-combobox.test.tsx` |
+| Origen y destino del trayecto usan el buscador, en alta y en edición. | `features/routes/components/route-form.test.tsx` |
+| Capacidad total de la aeronave (Economy + Primera), con guion si falta una capacidad. | `features/flights/components/generate-flights-form.test.tsx` |
+
+Producción: `features/airports/airport-search.ts`,
+`features/airports/components/airport-combobox.tsx`,
+`features/routes/components/route-form.tsx`,
+`features/flights/components/generate-flights-form-sections.tsx`,
+`features/flights/components/generate-flights-form.utils.ts`.
+
 ## Comandos de verificación
 
 Ejecutar desde `CodigoProyecto/volar`:
@@ -192,6 +207,17 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
       tarjetas; los días sin vuelos o anteriores a hoy no se pueden elegir. Con
       vuelos en la fecha exacta, la grilla no aparece. A 320 px la grilla queda
       en 2 columnas sin scroll horizontal.
+- [ ] **Autocompletado de aeropuertos (US-40).** Como ADMIN, en
+      `/admin/trayectos` tipear en Origen "eze", "cordoba" (sin tilde) o parte
+      del nombre del aeropuerto: las sugerencias muestran código, nombre y
+      ciudad; sin coincidencias aparece "No hay aeropuertos que coincidan". Se
+      elige con el mouse o con flechas + Enter. El destino no ofrece el
+      aeropuerto elegido como origen (y al revés). "Limpiar Campos" vacía ambos
+      buscadores y "Editar" los abre completados. A 320 px no hay scroll
+      horizontal.
+- [ ] **Capacidad total (US-40).** En `/admin/vuelos`, al elegir un avión se
+      precargan Economy y Primera y se muestra la capacidad total; editar una
+      capacidad actualiza el total y vaciarla muestra "—".
 
 ## Limitaciones conocidas
 
