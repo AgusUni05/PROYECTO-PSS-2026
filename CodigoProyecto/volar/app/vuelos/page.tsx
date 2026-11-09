@@ -6,9 +6,15 @@ import { buttonVariants } from "@/components/ui/button";
 import { FlightSearchForm } from "@/features/flight-search/components/flight-search-form";
 import { FlightResultCard } from "@/features/flight-search/components/flight-result-card";
 import { FlightResultsSkeleton } from "@/features/flight-search/components/flight-search-skeleton";
+import { FlexibleDatesGrid } from "@/features/flight-search/components/flexible-dates-grid";
 import { ListNavigationProvider, ListResults } from "@/components/list-navigation";
 import { flightSearchSchema, type FlightSearchValues } from "@/features/flight-search/schema";
-import { searchFlights, type FlightSearchResult } from "@/features/flight-search/queries";
+import {
+  searchFlexibleDates,
+  searchFlights,
+  type FlightSearchResult,
+} from "@/features/flight-search/queries";
+import type { FlexibleDay } from "@/features/flight-search/flexible-dates";
 import { listActiveAirports } from "@/features/airports/queries";
 import { formatLongDate } from "@/features/flights/format";
 import { parseDateString } from "@/lib/dates";
@@ -33,6 +39,9 @@ export default async function VuelosPage({
     listActiveAirports(),
     parsed?.success ? searchFlights(parsed.data) : Promise.resolve(null),
   ]);
+  // US-42: sin vuelos en la fecha exacta, se ofrecen los días cercanos (±3).
+  const flexibleDays =
+    parsed?.success && flights?.length === 0 ? await searchFlexibleDates(parsed.data) : null;
 
   const formDefaults = {
     origen: typeof sp.origen === "string" ? sp.origen : "",
@@ -72,7 +81,12 @@ export default async function VuelosPage({
 
           <ListResults skeleton={<FlightResultsSkeleton />}>
             {parsed?.success && flights && (
-              <SearchResults search={parsed.data} flights={flights} airports={airports} />
+              <SearchResults
+                search={parsed.data}
+                flights={flights}
+                flexibleDays={flexibleDays}
+                airports={airports}
+              />
             )}
           </ListResults>
         </ListNavigationProvider>
@@ -84,10 +98,12 @@ export default async function VuelosPage({
 function SearchResults({
   search,
   flights,
+  flexibleDays,
   airports,
 }: {
   search: FlightSearchValues;
   flights: FlightSearchResult[];
+  flexibleDays: FlexibleDay[] | null;
   airports: { id: string; code: string; city: string }[];
 }) {
   const origin = airports.find((a) => a.id === search.origen);
@@ -111,16 +127,19 @@ function SearchResults({
       </div>
 
       {flights.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-10 text-center">
-          <p className="text-lg font-bold">No encontramos vuelos disponibles para la fecha seleccionada</p>
-          <p className="max-w-md text-sm text-muted-foreground">
-            No hay vuelos a la venta para este trayecto en esa fecha, o ya no quedan asientos
-            disponibles. Probá con otra fecha u otro origen / destino.
-          </p>
-          <Link href="#buscador" className={buttonVariants({ variant: "outline" })}>
-            Cambiar búsqueda
-          </Link>
-        </div>
+        <>
+          <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border py-10 text-center">
+            <p className="text-lg font-bold">No encontramos vuelos disponibles para la fecha seleccionada</p>
+            <p className="max-w-md text-sm text-muted-foreground">
+              No hay vuelos a la venta para este trayecto en esa fecha, o ya no quedan asientos
+              disponibles. Probá con otra fecha u otro origen / destino.
+            </p>
+            <Link href="#buscador" className={buttonVariants({ variant: "outline" })}>
+              Cambiar búsqueda
+            </Link>
+          </div>
+          {flexibleDays && <FlexibleDatesGrid days={flexibleDays} search={search} />}
+        </>
       ) : (
         <ul className="flex flex-col gap-3.5">
           {flights.map((f) => (
