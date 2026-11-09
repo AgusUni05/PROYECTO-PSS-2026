@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
   Table,
@@ -113,17 +114,26 @@ export function FlightTable({ flights, total, page, pageCount, filters, airplane
                     )}
                   </TableCell>
                   <TableCell className="text-right">
-                    {f.status === "SCHEDULED" && f.departureAt > now && (
-                      <div className="flex justify-end gap-2">
-                        <EditFlightDialog flight={f} airplanes={airplanes} />
-                        <CancelFlightButton flight={f} />
-                      </div>
-                    )}
-                    {f.status === "CANCELLED" && (
-                      <Button variant="secondary" size="sm" disabled>
-                        Vuelo Cancelado
-                      </Button>
-                    )}
+                    <div className="flex justify-end gap-2">
+                      {f.status === "SCHEDULED" && f.departureAt > now && (
+                        <>
+                          <EditFlightDialog flight={f} airplanes={airplanes} />
+                          <CancelFlightButton flight={f} />
+                        </>
+                      )}
+                      {f.status === "CANCELLED" && (
+                        <Button variant="secondary" size="sm" disabled>
+                          Vuelo Cancelado
+                        </Button>
+                      )}
+                      {/* US-43: historial de auditoría del vuelo */}
+                      <Link
+                        href={`/admin/vuelos/${f.id}/historial`}
+                        className={buttonVariants({ variant: "ghost", size: "sm" })}
+                      >
+                        Historial
+                      </Link>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}

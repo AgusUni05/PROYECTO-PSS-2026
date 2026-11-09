@@ -16,6 +16,7 @@ import {
   type FlightWindow,
 } from "./generation";
 import { buildContingencyOutbox, emailNotificationInput } from "./contingency";
+import { auditChanges, type FlightAuditChange } from "./audit";
 
 function formatDate(date: Date): string {
   return date.toISOString().slice(0, 10);
@@ -24,6 +25,11 @@ function formatDate(date: Date): string {
 function yyyymmdd(date: Date): string {
   return formatDate(date).replace(/-/g, "");
 }
+
+/** US-43: en una cancelación el único valor modificado es el estado. */
+const CANCELLATION_CHANGES: FlightAuditChange[] = [
+  { field: "status", from: "SCHEDULED", to: "CANCELLED" },
+];
 
 /**
  * US-04/US-07: genera un SalesPeriod y un Flight por cada fecha del rango que
@@ -112,10 +118,12 @@ export async function generateFlights(
       },
     });
 
+    const auditEvents = [];
     for (const w of windows) {
+      const flightId = newId("Flight");
       await tx.flight.create({
         data: {
-          id: newId("Flight"),
+          id: flightId,
           code: `VU-${yyyymmdd(w.date)}-${route.code.replace("TR-", "")}`,
           routeId: route.id,
           salesPeriodId: period.id,
@@ -130,7 +138,27 @@ export async function generateFlights(
           createdById,
         },
       });
+
+      // US-43: la creación queda auditada con los valores iniciales del vuelo.
+      auditEvents.push({
+        id: newId("FlightAuditEvent"),
+        flightId,
+        action: "CREATED" as const,
+        changes: auditChanges(null, {
+          departureAt: w.departureAt,
+          arrivalAt: w.arrivalAt,
+          airplane: airplane.identifier,
+          economyCapacity: data.economyCapacity,
+          firstClassCapacity: data.firstClassCapacity,
+          economyFare: data.economyFare,
+          firstClassFare: data.firstClassFare,
+          status: "SCHEDULED",
+        }),
+        userId: createdById,
+      });
     }
+
+    await tx.flightAuditEvent.createMany({ data: auditEvents });
 
     return period;
   });
@@ -287,6 +315,30 @@ export async function updateFlight(
   // cambio de contingencia y el outbox de notificación.
   const registerChange = scheduleChanged && affectedTickets.length > 0;
 
+  // US-43: valores modificados por esta edición (vacío si se guardó sin cambios).
+  const changes = auditChanges(
+    {
+      departureAt: flight.departureAt,
+      arrivalAt: flight.arrivalAt,
+      airplane: flight.airplane.identifier,
+      economyCapacity: flight.economyCapacity,
+      firstClassCapacity: flight.firstClassCapacity,
+      economyFare: Number(flight.economyFare),
+      firstClassFare: Number(flight.firstClassFare),
+      status: flight.status,
+    },
+    {
+      departureAt: newWindow.departureAt,
+      arrivalAt: newWindow.arrivalAt,
+      airplane: targetAirplane.identifier,
+      economyCapacity: data.economyCapacity,
+      firstClassCapacity: data.firstClassCapacity,
+      economyFare: data.economyFare,
+      firstClassFare: data.firstClassFare,
+      status: flight.status,
+    },
+  );
+
   try {
     await prisma.$transaction(async (tx) => {
       if (registerChange) {
@@ -342,6 +394,18 @@ export async function updateFlight(
         },
       });
       if (count === 0) throw new Error("FLIGHT_CHANGED");
+
+      if (changes.length > 0) {
+        await tx.flightAuditEvent.create({
+          data: {
+            id: newId("FlightAuditEvent"),
+            flightId: flight.id,
+            action: "UPDATED",
+            changes,
+            userId: updatedById,
+          },
+        });
+      }
     });
   } catch {
     return {
@@ -426,6 +490,17 @@ export async function cancelFlight(
         },
       });
       if (count === 0) throw new Error("FLIGHT_CHANGED");
+
+      await tx.flightAuditEvent.create({
+        data: {
+          id: newId("FlightAuditEvent"),
+          flightId: flight.id,
+          action: "CANCELLED",
+          changes: CANCELLATION_CHANGES,
+          reason,
+          userId: cancelledById,
+        },
+      });
     });
   } catch {
     return {
@@ -520,6 +595,17 @@ export async function cancelFlightsByRoute(
         },
       });
       if (count !== flights.length) throw new Error("FLIGHT_CHANGED");
+
+      await tx.flightAuditEvent.createMany({
+        data: flights.map((flight) => ({
+          id: newId("FlightAuditEvent"),
+          flightId: flight.id,
+          action: "CANCELLED" as const,
+          changes: CANCELLATION_CHANGES,
+          reason,
+          userId: cancelledById,
+        })),
+      });
     });
   } catch {
     return {

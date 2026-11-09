@@ -95,6 +95,13 @@ enum FlightChangeType {
   CANCELLATION
 }
 
+// US-43: tipo de evento registrado en la auditoría de vuelos
+enum FlightAuditAction {
+  CREATED
+  UPDATED
+  CANCELLED
+}
+
 // US-26: curso de acción elegido por el pasajero afectado
 enum ContingencyResolution {
   PENDING
@@ -144,6 +151,7 @@ model User {
   updatedFlights Flight[]       @relation("FlightUpdatedBy")
   salesPeriods   SalesPeriod[]
   flightChanges  FlightChange[]
+  flightAudits   FlightAuditEvent[]
 
   @@index([role])
   @@index([documentNumber])
@@ -282,6 +290,7 @@ model Flight {
   bookings        Booking[]
   tickets         Ticket[]            @relation("TicketFlight")
   changes         FlightChange[]
+  auditEvents     FlightAuditEvent[]
   rebookedTickets TicketContingency[] @relation("ContingencyNewFlight")
 
   @@unique([routeId, date]) // Un vuelo por trayecto y fecha
@@ -422,6 +431,24 @@ model InvoiceItem {
 
   @@index([invoiceId])
   @@map("invoice_items")
+}
+
+// US-43: registro inmutable de quién creó, modificó o canceló cada vuelo.
+// Solo se insertan filas: un trigger de la base rechaza UPDATE y DELETE.
+model FlightAuditEvent {
+  id        String            @id
+  flightId  String
+  flight    Flight            @relation(fields: [flightId], references: [id])
+  action    FlightAuditAction
+  // Valores modificados: [{ field, from, to }]. En CREATED, from es null.
+  changes   Json
+  reason    String? // Motivo de la cancelación
+  userId    String
+  user      User              @relation(fields: [userId], references: [id])
+  createdAt DateTime          @default(now())
+
+  @@index([flightId, createdAt])
+  @@map("flight_audit_events")
 }
 
 // ─────────────────────────────────────────────────────────────

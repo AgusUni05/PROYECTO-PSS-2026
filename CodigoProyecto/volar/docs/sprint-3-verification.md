@@ -129,6 +129,26 @@ Producción: `features/airports/airport-search.ts`,
 `features/flights/components/generate-flights-form-sections.tsx`,
 `features/flights/components/generate-flights-form.utils.ts`.
 
+### US-43 (opcional) — Auditoría e historial de cambios sobre vuelos
+
+| Evidencia | Archivo |
+| --- | --- |
+| Diferencias entre estados (solo los campos que cambian; en la creación, todos con `from: null`), formato de cada valor y hora argentina del evento. | `features/flights/audit.test.ts` |
+| Un evento `CREATED` por vuelo generado, `UPDATED` con los valores anteriores y nuevos (también sin ventas y sin evento si no cambia nada o la edición no se aplica) y `CANCELLED` con motivo, puntual y por trayecto, siempre con el usuario que hizo la acción y dentro de la misma transacción. | `features/flights/service.test.ts` |
+| Historial: quién creó el vuelo, usuario, fecha y hora, evento, valores anteriores y nuevos, motivo y aviso para vuelos sin eventos. | `features/flights/components/flight-audit-trail.test.tsx` |
+
+Inmutabilidad: la aplicación solo inserta en `flight_audit_events` y la
+migración `20261109120000_flight_audit_events` agrega un trigger que rechaza
+cualquier `UPDATE` o `DELETE` sobre la tabla (también desde consultas manuales).
+
+Producción: `prisma/schema.prisma` (`FlightAuditEvent`),
+`prisma/migrations/20261109120000_flight_audit_events/migration.sql`,
+`features/flights/audit.ts`, `features/flights/service.ts`,
+`features/flights/queries.ts`,
+`features/flights/components/flight-audit-trail.tsx`,
+`features/flights/components/flight-table.tsx`,
+`app/admin/vuelos/[id]/historial/page.tsx`.
+
 ## Comandos de verificación
 
 Ejecutar desde `CodigoProyecto/volar`:
@@ -218,6 +238,16 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
 - [ ] **Capacidad total (US-40).** En `/admin/vuelos`, al elegir un avión se
       precargan Economy y Primera y se muestra la capacidad total; editar una
       capacidad actualiza el total y vaciarla muestra "—".
+- [ ] **Auditoría de vuelos (US-43).** Con la migración aplicada, como ADMIN
+      generar vuelos en `/admin/vuelos` y abrir "Historial" de uno: aparece un
+      evento "Creación" con el usuario, fecha y hora y los valores iniciales.
+      Editar la tarifa y el horario: aparece una "Modificación" con solo esos
+      campos, tachando el valor anterior. Guardar sin cambios no agrega eventos.
+      Cancelar el vuelo: aparece la "Cancelación" con el motivo. El link
+      "Historial" está también en vuelos cancelados y completados. En la base,
+      un `UPDATE` o `DELETE` sobre `flight_audit_events` falla con
+      "flight_audit_events es inmutable". A 320 px la tabla scrollea dentro de
+      su contenedor, sin scroll horizontal de la página.
 
 ## Limitaciones conocidas
 
@@ -242,6 +272,14 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
   no dejar una fila `PENDING` invisible para siempre.
 - **Sin bloqueo entre ejecuciones.** Dos instancias simultáneas de
   `pnpm mail:send` podrían tomar las mismas filas. Ejecutar una sola a la vez.
+- **Auditoría desde US-43.** Los vuelos generados antes de aplicar la
+  migración no tienen evento "Creación" (el historial igual muestra quién los
+  creó, desde `Flight.createdBy`); sus cambios posteriores sí se registran.
+  Las reprogramaciones y reembolsos de pasajeros (US-26) no se auditan: solo
+  cambian la ocupación, no los datos del vuelo.
+- **`seed:demo --clean` con vuelo auditado.** Si se edita o cancela el vuelo
+  demo desde el panel, su historial no se puede borrar (es inmutable) y el
+  `--clean` falla al eliminar ese vuelo.
 - **Reembolso simulado.** No hay devolución de dinero real ni integración con
   una pasarela. El importe reembolsado es el del pasaje y queda registrado,
   pero `gatewayRefundId` incluye un sufijo con `Date.now()`; es único, no
@@ -249,8 +287,9 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
 
 ## Notas operativas
 
-- El schema y las migraciones necesarias ya existían; **Sprint 3 no agrega
-  migraciones**. Aplicar con `pnpm prisma migrate deploy`.
+- Las historias obligatorias del Sprint 3 no agregan migraciones. **US-43
+  agrega `20261109120000_flight_audit_events`** (tabla, enum y trigger de
+  inmutabilidad). Aplicar con `pnpm prisma migrate deploy`.
 - Un fallo de SMTP deja las filas en `PENDING` (el transporte se crea antes de
   actualizar la base). Corregir la configuración y reintentar `pnpm mail:send`
   es seguro: solo se envían las pendientes.

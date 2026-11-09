@@ -799,3 +799,189 @@ describe("cancelFlightsByRoute (US-06/RF-10)", () => {
     if (!result.ok) expect(result.error).toBeDefined();
   });
 });
+
+describe("auditoría de vuelos (US-43)", () => {
+  const inOneWeek = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const flightDate = new Date(
+    Date.UTC(inOneWeek.getUTCFullYear(), inOneWeek.getUTCMonth(), inOneWeek.getUTCDate()),
+  );
+  const arrivalAt = new Date(inOneWeek.getTime() + 90 * 60 * 1000);
+
+  const flight = {
+    id: "VUE_1",
+    code: "VU-1",
+    status: "SCHEDULED",
+    date: flightDate,
+    departureAt: inOneWeek,
+    arrivalAt,
+    airplaneId: "AVI_1",
+    economyCapacity: 150,
+    firstClassCapacity: 16,
+    economyOccupied: 0,
+    firstClassOccupied: 0,
+    economyFare: "45000",
+    firstClassFare: "95000",
+    airplane: { identifier: "LV-ARG01", economySeats: 150, firstClassSeats: 16 },
+    tickets: [],
+  };
+
+  const unchanged = {
+    economyCapacity: 150,
+    firstClassCapacity: 16,
+    economyFare: 45000,
+    firstClassFare: 95000,
+  };
+
+  it("registra la creación de cada vuelo generado con quién lo creó y sus valores iniciales", async () => {
+    prismaMock.route.findUnique.mockResolvedValue(route as never);
+    prismaMock.airplane.findUnique.mockResolvedValue(airplane as never);
+    prismaMock.flight.findMany.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+    prismaMock.salesPeriod.create.mockResolvedValue({ id: "PER_1" } as never);
+    prismaMock.flight.create.mockResolvedValue({} as never);
+
+    const result = await generateFlights(formValues, "USU_admin");
+
+    expect(result.ok).toBe(true);
+    const flightId = prismaMock.flight.create.mock.calls[0][0].data.id;
+    const [event] = prismaMock.flightAuditEvent.createMany.mock.calls[0][0]?.data as never[];
+    expect(event).toEqual({
+      id: expect.stringMatching(/^AUD_/),
+      flightId,
+      action: "CREATED",
+      userId: "USU_admin",
+      changes: expect.arrayContaining([
+        { field: "airplane", from: null, to: "LV-ARG01" },
+        { field: "economyFare", from: null, to: 45000 },
+        { field: "departureAt", from: null, to: "2026-10-01T08:30:00.000Z" },
+        { field: "status", from: null, to: "SCHEDULED" },
+      ]),
+    });
+  });
+
+  it("registra solo los valores modificados, con el valor anterior y el nuevo", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flight as never);
+    prismaMock.airplane.findUnique.mockResolvedValue({
+      id: "AVI_2",
+      identifier: "LV-GRANDE",
+      economySeats: 200,
+      firstClassSeats: 20,
+      isActive: true,
+    } as never);
+    prismaMock.flight.findFirst.mockResolvedValue(null);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await updateFlight(
+      "VUE_1",
+      { ...unchanged, economyFare: 50000, airplaneId: "AVI_2" },
+      "USU_editor",
+    );
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.flightAuditEvent.create).toHaveBeenCalledWith({
+      data: {
+        id: expect.stringMatching(/^AUD_/),
+        flightId: "VUE_1",
+        action: "UPDATED",
+        changes: [
+          { field: "airplane", from: "LV-ARG01", to: "LV-GRANDE" },
+          { field: "economyFare", from: 45000, to: 50000 },
+        ],
+        userId: "USU_editor",
+      },
+    });
+  });
+
+  it("registra el cambio de horario aunque no haya pasajes vendidos", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flight as never);
+    prismaMock.flight.findFirst.mockResolvedValue(null);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    await updateFlight(
+      "VUE_1",
+      { ...unchanged, departureTime: "10:00", arrivalTime: "11:30" },
+      "USU_admin",
+    );
+
+    expect(prismaMock.flightChange.create).not.toHaveBeenCalled();
+    const { changes } = prismaMock.flightAuditEvent.create.mock.calls[0][0].data;
+    expect(changes).toEqual([
+      expect.objectContaining({ field: "departureAt", to: expect.stringMatching(/T10:00:00/) }),
+      expect.objectContaining({ field: "arrivalAt", to: expect.stringMatching(/T11:30:00/) }),
+    ]);
+  });
+
+  it("no registra un evento si se guarda sin cambios", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await updateFlight("VUE_1", unchanged, "USU_admin");
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.flightAuditEvent.create).not.toHaveBeenCalled();
+  });
+
+  it("no registra un evento si la edición no se aplica", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 0 });
+
+    await updateFlight("VUE_1", { ...unchanged, economyFare: 50000 }, "USU_admin");
+
+    expect(prismaMock.flightAuditEvent.create).not.toHaveBeenCalled();
+  });
+
+  it("registra la cancelación puntual con el motivo y quién canceló", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await cancelFlight("VUE_1", { reason: "meteorologico" }, "USU_admin");
+
+    expect(result.ok).toBe(true);
+    expect(prismaMock.flightAuditEvent.create).toHaveBeenCalledWith({
+      data: {
+        id: expect.stringMatching(/^AUD_/),
+        flightId: "VUE_1",
+        action: "CANCELLED",
+        changes: [{ field: "status", from: "SCHEDULED", to: "CANCELLED" }],
+        reason: CANCELLATION_REASON_LABELS.meteorologico,
+        userId: "USU_admin",
+      },
+    });
+  });
+
+  it("registra una cancelación por cada vuelo al cancelar todo el trayecto", async () => {
+    prismaMock.route.findUnique.mockResolvedValue({ id: "TRA_1" } as never);
+    prismaMock.flight.findMany.mockResolvedValue([
+      { ...flight, id: "VUE_1" },
+      { ...flight, id: "VUE_2" },
+    ] as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 2 });
+
+    const result = await cancelFlightsByRoute({ routeId: "TRA_1", reason: "operativo" }, "USU_admin");
+
+    expect(result.ok).toBe(true);
+    const events = prismaMock.flightAuditEvent.createMany.mock.calls[0][0]?.data as {
+      flightId: string;
+      action: string;
+      reason: string;
+      userId: string;
+    }[];
+    expect(events.map((e) => e.flightId)).toEqual(["VUE_1", "VUE_2"]);
+    for (const event of events) {
+      expect(event).toMatchObject({
+        action: "CANCELLED",
+        reason: CANCELLATION_REASON_LABELS.operativo,
+        userId: "USU_admin",
+      });
+    }
+  });
+
+  it("no registra la cancelación si el vuelo cambió en el medio", async () => {
+    prismaMock.flight.findUnique.mockResolvedValue(flight as never);
+    prismaMock.flight.updateMany.mockResolvedValue({ count: 0 });
+
+    const result = await cancelFlight("VUE_1", { reason: "operativo" }, "USU_admin");
+
+    expect(result.ok).toBe(false);
+    expect(prismaMock.flightAuditEvent.create).not.toHaveBeenCalled();
+  });
+});
