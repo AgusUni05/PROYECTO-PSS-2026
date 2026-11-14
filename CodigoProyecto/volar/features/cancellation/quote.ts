@@ -23,6 +23,14 @@ export type CancellableTicket = {
 /** Motivo por el que la reserva no se puede cancelar voluntariamente. */
 export type CancellationBlock = "not-confirmed" | "no-tickets" | "contingency" | "departed";
 
+export const CANCELLATION_BLOCK_MESSAGES: Record<CancellationBlock, string> = {
+  "not-confirmed": "La reserva no está confirmada.",
+  "no-tickets": "La reserva no tiene pasajes activos para cancelar.",
+  contingency:
+    "Tu vuelo tuvo un cambio de la aerolínea: podés reprogramar o pedir el reembolso completo sin penalidad desde Mis Compras.",
+  departed: "El vuelo ya salió o no está programado: la reserva ya no se puede cancelar.",
+};
+
 export type CancellationLine = {
   ticketId: string;
   passenger: string;

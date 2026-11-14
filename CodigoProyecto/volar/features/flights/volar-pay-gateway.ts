@@ -6,7 +6,8 @@
 export type RefundGatewayInput = {
   amount: number;
   ticketId: string;
-  contingencyId: string;
+  /** US-26: la contingencia que origina el reembolso; ausente en la cancelación voluntaria (US-39). */
+  contingencyId?: string;
 };
 
 export type RefundGatewayResult = {
