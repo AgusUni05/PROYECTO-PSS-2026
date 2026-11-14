@@ -553,6 +553,8 @@ describe("resolveRebooking", () => {
         seat: "1B",
         number: "ETK-RES1A2B3-1-R1",
         issuedAt: new Date("2026-09-26T12:00:00.000Z"),
+        // US-38: el check-in era del vuelo anterior; en el nuevo hay que volver a hacerlo.
+        checkedInAt: null,
       },
     });
 
