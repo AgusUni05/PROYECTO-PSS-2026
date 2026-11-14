@@ -149,6 +149,29 @@ Producción: `prisma/schema.prisma` (`FlightAuditEvent`),
 `features/flights/components/flight-table.tsx`,
 `app/admin/vuelos/[id]/historial/page.tsx`.
 
+### US-38 (opcional) — Check-in online y tarjeta de embarque
+
+| Evidencia | Archivo |
+| --- | --- |
+| Ventana: abre 24 h antes de la salida (inclusive) y cierra a la hora de embarque, 40 min antes (exclusive); rango de salidas equivalente para filtrar en la base. | `features/checkin/window.test.ts` |
+| Check-in por pasajero: titularidad por sesión, compra confirmada, pasajes de la reserva, emitidos, vuelo programado y ventana abierta; revalidación al escribir, sin dejarlo a medias; idempotente. | `features/checkin/service.test.ts` |
+| Acción: sesión activa, declaración de mercancías peligrosas obligatoria, al menos un pasajero, ids válidos y refresco de pantallas. | `features/checkin/actions.test.ts` |
+| Pantalla: agrupación por vuelo actual, estado de cada ventana, vuelo cancelado no disponible; tarjeta con formulario, "Check-in hecho", aviso de apertura o cierre. | `features/checkin/queries.test.ts`, `features/checkin/components/checkin-flight-card.test.tsx`, `app/compra/checkin/page.test.tsx` |
+| Tarjeta de embarque en PDF: una por pasajero con check-in y pasaje emitido, hora de embarque, sin importes; descarga autorizada como e-tickets y factura. | `features/purchase/documents.test.ts`, `app/api/compras/[code]/downloads.test.ts`, `features/purchase/queries.test.ts` |
+| Mis Compras: estado del check-in de cada vuelo próximo; reprogramar un pasaje (US-26) borra su check-in. | `features/purchase/history.test.ts`, `features/purchase/components/purchase-history.test.tsx`, `features/flights/contingency-resolution.test.ts` |
+
+Migración: `20261114120000_ticket_checkin` agrega la columna opcional
+`tickets.checkedInAt`. Tiene que estar aplicada (`pnpm prisma migrate deploy`)
+antes de publicar el código.
+
+Producción: `features/checkin/` (`window.ts`, `service.ts`, `queries.ts`,
+`schema.ts`, `actions.ts`, `components/`), `app/compra/checkin/page.tsx`,
+`app/api/compras/[code]/tarjetas-embarque/route.ts`,
+`features/purchase/documents.ts`, `features/purchase/downloads.ts`,
+`features/purchase/history.ts`,
+`features/purchase/components/purchase-checkin-status.tsx`,
+`features/flights/contingency-resolution.ts`.
+
 ## Comandos de verificación
 
 Ejecutar desde `CodigoProyecto/volar`:
@@ -248,6 +271,17 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
       un `UPDATE` o `DELETE` sobre `flight_audit_events` falla con
       "flight_audit_events es inmutable". A 320 px la tabla scrollea dentro de
       su contenedor, sin scroll horizontal de la página.
+- [ ] **Check-in online (US-38).** Con la migración aplicada y una cuenta
+      pasajero con un pasaje emitido: más de 24 h antes de la salida, Mis
+      Compras muestra "Check-in online desde el …" y la pantalla de check-in
+      avisa cuándo se habilita, sin formulario. Dentro de la ventana, "Hacer
+      check-in" abre la pantalla con los pasajeros marcados; sin la declaración
+      de mercancías peligrosas el botón queda deshabilitado. Al confirmar, los
+      pasajeros figuran "Check-in hecho" y se descargan las tarjetas de
+      embarque en PDF (una por pasajero, con la hora de embarque y sin
+      importes). Antes del check-in la descarga responde 404. Después de la
+      hora de embarque, "El check-in de este vuelo cerró". A 320 px no hay
+      scroll horizontal.
 
 ## Limitaciones conocidas
 
