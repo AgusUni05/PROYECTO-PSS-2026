@@ -18,6 +18,7 @@ Este repositorio corresponde al **Sprint 3**, cuyo alcance fue:
 | US-42 (opcional) | Búsqueda flexible: si la fecha buscada no tiene vuelos, `/vuelos` muestra una grilla de ±3 días con la tarifa más baja y los cupos de cada día. |
 | US-40 (opcional) | Catálogo maestro con autocompletado: buscador predictivo de aeropuertos (código, nombre o ciudad) en origen y destino de los trayectos, y capacidad total de la aeronave al programar vuelos. |
 | US-38 (opcional) | Check-in online: desde 24 h antes de la salida hasta la hora de embarque (40 min antes), por pasajero desde Mis Compras, con la declaración de mercancías peligrosas y la tarjeta de embarque en PDF. Requiere la migración `20261114120000_ticket_checkin`. |
+| US-39 (opcional) | Cancelación voluntaria de la reserva completa desde Mis Compras, con la política de penalidades por anticipación (20 %, 35 % o 50 % de retención), motivo y reintegro simulado. Requiere la migración `20261114130000_refund_voluntary_cancellation`. El cambio voluntario de fecha queda para una segunda parte. |
 | US-43 (opcional) | Auditoría de vuelos: registro inmutable de creación, modificación y cancelación de cada vuelo (usuario, fecha y hora, valores anteriores y nuevos, motivo), consultable desde "Historial" en `/admin/vuelos`. |
 
 ## Stack
