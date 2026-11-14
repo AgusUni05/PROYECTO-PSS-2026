@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { availableSeats, isOnSale } from "@/features/flights/availability";
 import { voluntaryBlock, type CancellationBlock } from "@/features/cancellation/quote";
 import { loadCancellableBooking, type CancellableBooking } from "@/features/cancellation/queries";
-import type { ChangeCandidate } from "./quote";
+import { buildChangeQuote, type ChangeCandidate, type ChangeQuote } from "./quote";
 
 export type ChangeOptions = {
   booking: CancellableBooking;
@@ -80,4 +80,26 @@ export async function getChangeOptions(
   });
 
   return { booking, blocked: null, candidates };
+}
+
+export type ChangeView = ChangeOptions & {
+  /** Vuelo elegido y su liquidación; null si no se eligió uno elegible. */
+  selected: { candidate: ChangeCandidate; quote: ChangeQuote } | null;
+};
+
+/** US-39: datos de la pantalla de cambio, con la liquidación del vuelo elegido (si es elegible). */
+export async function getChangeView(
+  code: string,
+  buyerId: string,
+  selectedFlightId: string | undefined,
+  now: Date = new Date(),
+): Promise<ChangeView | null> {
+  const options = await getChangeOptions(code, buyerId, now);
+  if (!options) return null;
+
+  const candidate = options.candidates.find((flight) => flight.id === selectedFlightId);
+  return {
+    ...options,
+    selected: candidate ? { candidate, quote: buildChangeQuote(options.booking, candidate, now) } : null,
+  };
 }

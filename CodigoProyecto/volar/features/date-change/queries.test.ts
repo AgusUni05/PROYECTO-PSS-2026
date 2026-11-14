@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { prismaMock } from "@/tests/prisma-mock";
 import { cancellableBookingRow } from "@/features/cancellation/test-fixtures";
-import { getChangeOptions } from "./queries";
+import { getChangeOptions, getChangeView } from "./queries";
 import { candidateRow } from "./test-fixtures";
 
 const NOW = new Date("2026-11-14T10:00:00.000Z");
@@ -62,5 +62,27 @@ describe("getChangeOptions (US-39, cambio de fecha)", () => {
         capacity: 100,
       },
     ]);
+  });
+});
+
+describe("getChangeView (US-39, cambio de fecha)", () => {
+  it("con un vuelo elegible seleccionado devuelve su liquidación", async () => {
+    prismaMock.booking.findFirst.mockResolvedValue(cancellableBookingRow() as never);
+    prismaMock.flight.findUnique.mockResolvedValue({ routeId: "TRA_1" } as never);
+    prismaMock.flight.findMany.mockResolvedValue([candidateRow()] as never);
+
+    const view = await getChangeView("GNQ47M", "USU_1", "VUE_NUEVO", NOW);
+
+    expect(view?.selected?.candidate.id).toBe("VUE_NUEVO");
+    expect(view?.selected?.quote).toMatchObject({ penalty: "6750.00", fareDifference: "3000.00", total: "9750.00" });
+  });
+
+  it("sin vuelo elegido o con uno que no es elegible no liquida nada", async () => {
+    prismaMock.booking.findFirst.mockResolvedValue(cancellableBookingRow() as never);
+    prismaMock.flight.findUnique.mockResolvedValue({ routeId: "TRA_1" } as never);
+    prismaMock.flight.findMany.mockResolvedValue([candidateRow()] as never);
+
+    expect((await getChangeView("GNQ47M", "USU_1", undefined, NOW))?.selected).toBeNull();
+    expect((await getChangeView("GNQ47M", "USU_1", "VUE_OTRO", NOW))?.selected).toBeNull();
   });
 });
