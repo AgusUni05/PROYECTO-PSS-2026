@@ -17,6 +17,8 @@ export type ChangeCandidate = {
   fare: string;
   /** Cupo disponible en esa clase. */
   available: number;
+  /** Capacidad de esa clase (para tomar el cupo con una actualización condicional). */
+  capacity: number;
 };
 
 export type ChangeLine = {

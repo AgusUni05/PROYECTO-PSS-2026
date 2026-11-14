@@ -383,7 +383,7 @@ export function newTransactionId(): string {
   return `TX-${randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase()}`;
 }
 
-function simulateGateway(cardNumber: string): { approved: boolean; transactionId: string } {
+export function simulateGateway(cardNumber: string): { approved: boolean; transactionId: string } {
   return {
     approved: Number(cardNumber.slice(-1)) % 2 === 0,
     transactionId: newTransactionId(),

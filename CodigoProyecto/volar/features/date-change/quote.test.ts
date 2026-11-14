@@ -35,6 +35,7 @@ const candidate = (fare: string): ChangeCandidate => ({
   arrivalAt: new Date("2026-11-23T10:00:00.000Z"),
   fare,
   available: 30,
+  capacity: 100,
 });
 
 const booking = (tickets: CancellableTicket[], status = "CONFIRMED" as const) => ({
