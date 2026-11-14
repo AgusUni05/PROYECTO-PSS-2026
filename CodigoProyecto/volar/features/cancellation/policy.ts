@@ -27,15 +27,37 @@ export const CANCELLATION_POLICY: readonly CancellationTier[] = [
 ];
 
 /**
+ * Cambio voluntario de fecha: mismos tramos que la cancelación, con penalidad
+ * de 15 %, 25 % y 35 % sobre lo abonado, más la diferencia de tarifa.
+ */
+export const CHANGE_POLICY: readonly CancellationTier[] = [
+  { label: "Más de 48 horas antes", retentionRate: 0.15 },
+  { label: "Entre 24 y 48 horas antes", retentionRate: 0.25 },
+  { label: "Menos de 24 horas antes", retentionRate: 0.35 },
+];
+
+/** Índice del tramo (0: más de 48 h, 1: entre 24 y 48 h inclusive, 2: menos de 24 h); null si ya salió. */
+function anticipationTier(departureAt: Date, now: Date): 0 | 1 | 2 | null {
+  const remaining = departureAt.getTime() - now.getTime();
+  if (remaining <= 0) return null;
+  if (remaining > 48 * HOUR) return 0;
+  if (remaining >= 24 * HOUR) return 1;
+  return 2;
+}
+
+/**
  * Tramo según la anticipación a la salida: más de 48 h retiene 20 %, entre 24
  * y 48 h (inclusive) 35 %, menos de 24 h 50 %. Null si el vuelo ya salió.
  */
 export function cancellationTier(departureAt: Date, now: Date): CancellationTier | null {
-  const remaining = departureAt.getTime() - now.getTime();
-  if (remaining <= 0) return null;
-  if (remaining > 48 * HOUR) return CANCELLATION_POLICY[0];
-  if (remaining >= 24 * HOUR) return CANCELLATION_POLICY[1];
-  return CANCELLATION_POLICY[2];
+  const tier = anticipationTier(departureAt, now);
+  return tier === null ? null : CANCELLATION_POLICY[tier];
+}
+
+/** Tramo de penalidad del cambio voluntario de fecha (`retentionRate` es la penalidad). */
+export function changeTier(departureAt: Date, now: Date): CancellationTier | null {
+  const tier = anticipationTier(departureAt, now);
+  return tier === null ? null : CHANGE_POLICY[tier];
 }
 
 /** "20 %" a partir de 0.2. */

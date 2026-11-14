@@ -3,6 +3,7 @@ import {
   CANCELLATION_REASON_LABELS,
   CANCELLATION_REASONS,
   cancellationTier,
+  changeTier,
   voluntaryRefundAmounts,
 } from "./policy";
 
@@ -61,5 +62,18 @@ describe("motivos de cancelación (US-39)", () => {
       "Cambio de fechas de vacaciones o estadía",
       "Razones médicas del grupo familiar",
     ]);
+  });
+});
+
+describe("changeTier (US-39, cambio de fecha)", () => {
+  it("usa los mismos tramos que la cancelación con 15 %, 25 % y 35 % de penalidad", () => {
+    expect(changeTier(DEPARTURE, hoursBefore(72))).toMatchObject({ label: "Más de 48 horas antes", retentionRate: 0.15 });
+    expect(changeTier(DEPARTURE, hoursBefore(48))).toMatchObject({ retentionRate: 0.25 });
+    expect(changeTier(DEPARTURE, hoursBefore(24))).toMatchObject({ retentionRate: 0.25 });
+    expect(changeTier(DEPARTURE, hoursBefore(1))).toMatchObject({ retentionRate: 0.35 });
+  });
+
+  it("con el vuelo ya salido no se puede cambiar", () => {
+    expect(changeTier(DEPARTURE, DEPARTURE)).toBeNull();
   });
 });
