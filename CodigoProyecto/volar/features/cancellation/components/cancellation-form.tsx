@@ -10,6 +10,7 @@ import { cancelBookingAction } from "../actions";
 import { formatPesos } from "../format";
 import { CANCELLATION_REASON_LABELS, CANCELLATION_REASONS, type CancellationReason } from "../policy";
 import type { CancellationQuote } from "../quote";
+import { cancellationConfirmationText } from "./cancellation-form.utils";
 
 // US-39: motivo, aceptación de que es irreversible y confirmación final.
 export function CancellationForm({ quote }: { quote: CancellationQuote }) {
@@ -18,8 +19,6 @@ export function CancellationForm({ quote }: { quote: CancellationQuote }) {
   const [accepted, setAccepted] = useState(false);
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
-
-  const passengers = quote.lines.length === 1 ? "el pasaje" : `los ${quote.lines.length} pasajes`;
 
   function confirm() {
     if (!reason) return;
@@ -41,7 +40,7 @@ export function CancellationForm({ quote }: { quote: CancellationQuote }) {
   }
 
   return (
-    <section className="grid gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5">
+    <section className="grid grid-cols-1 gap-4 rounded-2xl border border-border bg-card p-4 sm:p-5">
       <div className="grid gap-1.5">
         <Label htmlFor="motivo">Motivo de la cancelación</Label>
         <NativeSelect
@@ -75,10 +74,10 @@ export function CancellationForm({ quote }: { quote: CancellationQuote }) {
         open={open}
         onOpenChange={setOpen}
         triggerLabel={`Solicitar cancelación (reintegro ${formatPesos(quote.totals.refund)})`}
-        triggerClassName="min-h-11 w-full sm:w-fit"
+        triggerClassName="h-auto min-h-11 w-full py-2 whitespace-normal sm:w-fit"
         triggerDisabled={!reason || !accepted}
         title={`¿Cancelar la reserva ${quote.code}?`}
-        description={`Se cancelan ${passengers}, se reintegran ${formatPesos(quote.totals.refund)} a ${quote.paymentMethod} y se retienen ${formatPesos(quote.totals.penalty)}. Los asientos se liberan para la venta. No se puede deshacer.`}
+        description={cancellationConfirmationText(quote)}
         confirmLabel="Confirmar cancelación y reembolso"
         cancelLabel="Conservar mi reserva"
         pendingLabel="Cancelando…"

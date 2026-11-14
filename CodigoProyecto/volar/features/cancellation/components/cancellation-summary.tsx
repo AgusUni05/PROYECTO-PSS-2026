@@ -7,7 +7,7 @@ import type { CancellationQuote } from "../quote";
 // de penalidades (cambio_cancelacion_pasajero.html).
 export function CancellationSummary({ quote }: { quote: CancellationQuote }) {
   return (
-    <div className="grid gap-4">
+    <div className="grid grid-cols-1 gap-4">
       <section className="min-w-0 rounded-2xl border border-border bg-card p-4 sm:p-5">
         <h2 className="text-base font-extrabold">Pasajes a cancelar</h2>
         <ul className="mt-3 divide-y divide-border">
@@ -36,19 +36,19 @@ export function CancellationSummary({ quote }: { quote: CancellationQuote }) {
         <dl className="mt-3 grid gap-2 text-sm">
           <div className="flex justify-between gap-3">
             <dt className="text-muted-foreground">Importe abonado</dt>
-            <dd className="font-semibold">{formatPesos(quote.totals.paid)}</dd>
+            <dd className="font-semibold whitespace-nowrap">{formatPesos(quote.totals.paid)}</dd>
           </div>
           <div className="flex justify-between gap-3">
             <dt className="text-muted-foreground">Retención por penalidad</dt>
-            <dd className="font-semibold text-destructive">{`- ${formatPesos(quote.totals.penalty)}`}</dd>
+            <dd className="font-semibold whitespace-nowrap text-destructive">{`- ${formatPesos(quote.totals.penalty)}`}</dd>
           </div>
           <div className="flex justify-between gap-3">
             <dt className="text-muted-foreground">Medio de acreditación</dt>
-            <dd className="text-right font-semibold break-words">{quote.paymentMethod}</dd>
+            <dd className="text-right font-semibold whitespace-nowrap">{quote.paymentMethod}</dd>
           </div>
           <div className="mt-1 flex items-end justify-between gap-3 border-t border-dashed border-border pt-3">
             <dt className="font-bold">Monto neto a reembolsar</dt>
-            <dd className="text-xl font-extrabold">{formatPesos(quote.totals.refund)}</dd>
+            <dd className="text-xl font-extrabold whitespace-nowrap">{formatPesos(quote.totals.refund)}</dd>
           </div>
         </dl>
       </section>
@@ -62,7 +62,7 @@ export function CancellationSummary({ quote }: { quote: CancellationQuote }) {
           {CANCELLATION_POLICY.map((tier) => (
             <li key={tier.label} className="flex justify-between gap-3">
               <span>{tier.label}</span>
-              <b>{`Retención ${formatRetention(tier.retentionRate)}`}</b>
+              <b className="whitespace-nowrap">{`Retención ${formatRetention(tier.retentionRate)}`}</b>
             </li>
           ))}
         </ul>

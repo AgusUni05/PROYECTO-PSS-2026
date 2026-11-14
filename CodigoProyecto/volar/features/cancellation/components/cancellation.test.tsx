@@ -7,6 +7,7 @@ vi.mock("../actions", () => ({ cancelBookingAction: vi.fn() }));
 import { formatPesos } from "../format";
 import type { CancellationQuote } from "../quote";
 import { CancellationForm } from "./cancellation-form";
+import { cancellationConfirmationText } from "./cancellation-form.utils";
 import { CancellationSummary } from "./cancellation-summary";
 
 const quote: CancellationQuote = {
@@ -82,5 +83,19 @@ describe("CancellationForm (US-39)", () => {
   it("pide confirmar que es irreversible y arranca con el botón deshabilitado", () => {
     expect(html).toContain("la cancelación voluntaria es irreversible");
     expect(html).toMatch(/<button[^>]*disabled[^>]*>[^<]*Solicitar cancelación/);
+  });
+});
+
+describe("cancellationConfirmationText (US-39)", () => {
+  it("con un pasaje usa el singular", () => {
+    expect(cancellationConfirmationText(quote)).toBe(
+      `Se cancela el pasaje, se reintegran ${formatPesos("36000.00")} a VISA •••• 1112 y se retienen ${formatPesos("9000.00")}. El asiento se libera para la venta. No se puede deshacer.`,
+    );
+  });
+
+  it("con varios pasajes usa el plural", () => {
+    const two = { ...quote, lines: [quote.lines[0], { ...quote.lines[0], ticketId: "PAS_2" }] };
+
+    expect(cancellationConfirmationText(two)).toMatch(/^Se cancelan los 2 pasajes, .* Los asientos se liberan para la venta\./);
   });
 });

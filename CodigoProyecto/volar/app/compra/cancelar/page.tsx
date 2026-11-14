@@ -68,7 +68,7 @@ export default async function CancelarPage({ searchParams }: { searchParams: Pro
         </Link>
       }
     >
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
         <CancellationSummary quote={quote} />
         <CancellationForm quote={quote} />
       </div>
