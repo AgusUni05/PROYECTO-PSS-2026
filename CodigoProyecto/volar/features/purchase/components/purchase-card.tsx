@@ -149,16 +149,24 @@ export function PurchaseCard({ entry }: { entry: PurchaseHistoryEntry }) {
         />
         {/* US-39: con una contingencia pendiente la alerta ofrece la opción gratuita (US-26). */}
         {entry.status === "CONFIRMED" && entry.pendingContingencies.length === 0 && (
-          <Link
-            href={`/compra/cancelar?${new URLSearchParams({ reserva: entry.code })}`}
-            className={buttonVariants({
-              variant: "ghost",
-              size: "sm",
-              className: "mt-2 min-h-9 text-destructive hover:text-destructive",
-            })}
-          >
-            Cancelar reserva
-          </Link>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <Link
+              href={`/compra/cambiar?${new URLSearchParams({ reserva: entry.code })}`}
+              className={buttonVariants({ variant: "ghost", size: "sm", className: "min-h-9" })}
+            >
+              Cambiar fecha
+            </Link>
+            <Link
+              href={`/compra/cancelar?${new URLSearchParams({ reserva: entry.code })}`}
+              className={buttonVariants({
+                variant: "ghost",
+                size: "sm",
+                className: "min-h-9 text-destructive hover:text-destructive",
+              })}
+            >
+              Cancelar reserva
+            </Link>
+          </div>
         )}
       </div>
     </article>

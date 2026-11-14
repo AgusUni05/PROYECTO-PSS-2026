@@ -402,3 +402,24 @@ describe("cancelación voluntaria en Mis Compras (US-39)", () => {
     expect(html).toContain(formatPesos("9000.00"));
   });
 });
+
+describe("cambio voluntario de fecha en Mis Compras (US-39)", () => {
+  const CHANGE_HREF = 'href="/compra/cambiar?reserva=VOL-ABC123"';
+
+  it("una compra próxima confirmada ofrece cambiar la fecha", () => {
+    const html = renderToString(<PurchaseHistoryView history={{ upcoming: [upcomingEntry], past: [] }} />);
+
+    expect(html).toContain(CHANGE_HREF);
+    expect(html).toContain("Cambiar fecha");
+  });
+
+  it("con una contingencia pendiente no ofrece el cambio con penalidad", () => {
+    const html = renderToString(
+      <PurchaseHistoryView
+        history={{ upcoming: [{ ...upcomingEntry, pendingContingencies: [cancellation] }], past: [] }}
+      />,
+    );
+
+    expect(html).not.toContain(CHANGE_HREF);
+  });
+});
