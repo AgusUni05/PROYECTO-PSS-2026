@@ -56,6 +56,23 @@ const cents = (amount: string) => Math.round(Number(amount) * 100);
 const pesos = (value: number) => (value / 100).toFixed(2);
 
 /**
+ * US-39: reglas comunes a la cancelación y al cambio voluntario de fecha. Con
+ * una contingencia pendiente corresponde la opción gratuita de la US-26.
+ */
+export function voluntaryBlock(
+  booking: { status: BookingStatus; tickets: CancellableTicket[] },
+  now: Date,
+): CancellationBlock | null {
+  if (booking.status !== "CONFIRMED") return "not-confirmed";
+  if (booking.tickets.length === 0) return "no-tickets";
+  if (booking.tickets.some((ticket) => ticket.hasPendingContingency)) return "contingency";
+  const departed = booking.tickets.some(
+    (ticket) => ticket.flight.status !== "SCHEDULED" || ticket.flight.departureAt <= now,
+  );
+  return departed ? "departed" : null;
+}
+
+/**
  * US-39: liquidación de la cancelación voluntaria de la reserva completa (sus
  * pasajes emitidos). La usan la pantalla y el servicio, así no discrepan.
  * Cada pasaje se liquida con el tramo de su vuelo actual (US-26 puede haberlo
@@ -71,15 +88,11 @@ export function buildCancellationQuote(
   now: Date,
 ): CancellationQuote {
   const lines: CancellationLine[] = [];
-  let departed = false;
 
   for (const ticket of booking.tickets) {
     const tier =
       ticket.flight.status === "SCHEDULED" ? cancellationTier(ticket.flight.departureAt, now) : null;
-    if (!tier) {
-      departed = true;
-      continue;
-    }
+    if (!tier) continue;
     const { penalty, refund } = voluntaryRefundAmounts(ticket.unitPrice, tier.retentionRate);
     lines.push({
       ticketId: ticket.id,
@@ -95,16 +108,7 @@ export function buildCancellationQuote(
     });
   }
 
-  const blocked: CancellationBlock | null =
-    booking.status !== "CONFIRMED"
-      ? "not-confirmed"
-      : booking.tickets.length === 0
-        ? "no-tickets"
-        : booking.tickets.some((ticket) => ticket.hasPendingContingency)
-          ? "contingency"
-          : departed
-            ? "departed"
-            : null;
+  const blocked = voluntaryBlock(booking, now);
 
   const sum = (field: "paid" | "penalty" | "refund") =>
     pesos(lines.reduce((total, line) => total + cents(line[field]), 0));
