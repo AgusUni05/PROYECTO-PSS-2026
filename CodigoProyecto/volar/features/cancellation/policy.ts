@@ -19,6 +19,13 @@ export type CancellationTier = {
 
 const HOUR = 3600_000;
 
+/** Cuadro tarifario del wireframe, de mayor a menor anticipación. */
+export const CANCELLATION_POLICY: readonly CancellationTier[] = [
+  { label: "Más de 48 horas antes", retentionRate: 0.2 },
+  { label: "Entre 24 y 48 horas antes", retentionRate: 0.35 },
+  { label: "Menos de 24 horas antes", retentionRate: 0.5 },
+];
+
 /**
  * Tramo según la anticipación a la salida: más de 48 h retiene 20 %, entre 24
  * y 48 h (inclusive) 35 %, menos de 24 h 50 %. Null si el vuelo ya salió.
@@ -26,9 +33,14 @@ const HOUR = 3600_000;
 export function cancellationTier(departureAt: Date, now: Date): CancellationTier | null {
   const remaining = departureAt.getTime() - now.getTime();
   if (remaining <= 0) return null;
-  if (remaining > 48 * HOUR) return { label: "Más de 48 horas antes", retentionRate: 0.2 };
-  if (remaining >= 24 * HOUR) return { label: "Entre 24 y 48 horas antes", retentionRate: 0.35 };
-  return { label: "Menos de 24 horas antes", retentionRate: 0.5 };
+  if (remaining > 48 * HOUR) return CANCELLATION_POLICY[0];
+  if (remaining >= 24 * HOUR) return CANCELLATION_POLICY[1];
+  return CANCELLATION_POLICY[2];
+}
+
+/** "20 %" a partir de 0.2. */
+export function formatRetention(rate: number): string {
+  return `${Math.round(rate * 100)} %`;
 }
 
 /**
