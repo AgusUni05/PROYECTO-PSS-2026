@@ -9,6 +9,7 @@ import type {
   SeatClass,
   TicketStatus,
 } from "@/generated/prisma/enums";
+import { checkinWindowState, type CheckinWindowState } from "@/features/checkin/window";
 
 export type PurchaseHistoryFlight = {
   id: string;
@@ -19,6 +20,8 @@ export type PurchaseHistoryFlight = {
   status: FlightStatus;
   origin: { code: string; city: string };
   destination: { code: string; city: string };
+  /** US-38: ventana de check-in según la hora de la consulta; "unavailable" si no está programado. */
+  checkinState: CheckinWindowState | "unavailable";
 };
 
 export type PurchaseHistoryTicket = {
@@ -32,6 +35,8 @@ export type PurchaseHistoryTicket = {
   documentType: DocumentType;
   documentNumber: string;
   issuedAt: Date | null;
+  /** US-38: momento del check-in online; null si no se hizo. */
+  checkedInAt: Date | null;
   flight: PurchaseHistoryFlight;
 };
 
@@ -92,6 +97,7 @@ const PURCHASE_HISTORY_SELECT = {
       documentType: true,
       documentNumber: true,
       issuedAt: true,
+      checkedInAt: true,
       // US-26: el pasaje puede estar reprogramado en un vuelo distinto al de
       // la compra, así que el vuelo vigente siempre sale del ticket.
       flight: {
@@ -135,7 +141,7 @@ const PURCHASE_HISTORY_SELECT = {
 type PurchaseHistoryRow = BookingGetPayload<{ select: typeof PURCHASE_HISTORY_SELECT }>;
 type PurchaseHistoryFlightRow = PurchaseHistoryRow["tickets"][number]["flight"];
 
-function toPurchaseHistoryFlight(flight: PurchaseHistoryFlightRow): PurchaseHistoryFlight {
+function toPurchaseHistoryFlight(flight: PurchaseHistoryFlightRow, now: Date): PurchaseHistoryFlight {
   return {
     id: flight.id,
     code: flight.code,
@@ -148,10 +154,12 @@ function toPurchaseHistoryFlight(flight: PurchaseHistoryFlightRow): PurchaseHist
       code: flight.route.destination.code,
       city: flight.route.destination.city,
     },
+    checkinState:
+      flight.status === "SCHEDULED" ? checkinWindowState(flight.departureAt, now) : "unavailable",
   };
 }
 
-function toPurchaseHistoryEntry(booking: PurchaseHistoryRow): PurchaseHistoryEntry {
+function toPurchaseHistoryEntry(booking: PurchaseHistoryRow, now: Date): PurchaseHistoryEntry {
   return {
     id: booking.id,
     code: booking.code,
@@ -172,7 +180,8 @@ function toPurchaseHistoryEntry(booking: PurchaseHistoryRow): PurchaseHistoryEnt
       documentType: ticket.documentType,
       documentNumber: ticket.documentNumber,
       issuedAt: ticket.issuedAt,
-      flight: toPurchaseHistoryFlight(ticket.flight),
+      checkedInAt: ticket.checkedInAt,
+      flight: toPurchaseHistoryFlight(ticket.flight, now),
     })),
     invoice: booking.invoice
       ? {
@@ -269,7 +278,7 @@ export async function getPurchaseHistoryForUser(
     select: PURCHASE_HISTORY_SELECT,
   });
 
-  const entries = bookings.map(toPurchaseHistoryEntry);
+  const entries = bookings.map((booking) => toPurchaseHistoryEntry(booking, now));
 
   return {
     upcoming: sortUpcoming(

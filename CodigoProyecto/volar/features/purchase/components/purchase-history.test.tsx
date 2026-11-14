@@ -20,6 +20,7 @@ const nextFlight: PurchaseHistoryFlight = {
   status: "SCHEDULED",
   origin: { code: "AEP", city: "Buenos Aires" },
   destination: { code: "COR", city: "Córdoba" },
+  checkinState: "not-open",
 };
 
 const pastFlight: PurchaseHistoryFlight = {
@@ -31,6 +32,7 @@ const pastFlight: PurchaseHistoryFlight = {
   status: "COMPLETED",
   origin: { code: "AEP", city: "Buenos Aires" },
   destination: { code: "MDZ", city: "Mendoza" },
+  checkinState: "unavailable",
 };
 
 const upcomingTicket: PurchaseHistoryTicket = {
@@ -44,6 +46,7 @@ const upcomingTicket: PurchaseHistoryTicket = {
   documentType: "DNI",
   documentNumber: "30123456",
   issuedAt: new Date("2026-09-20T10:05:00.000Z"),
+  checkedInAt: null,
   flight: nextFlight,
 };
 
@@ -58,6 +61,7 @@ const pastTicket: PurchaseHistoryTicket = {
   documentType: "DNI",
   documentNumber: "28987654",
   issuedAt: new Date("2026-09-01T10:05:00.000Z"),
+  checkedInAt: null,
   flight: pastFlight,
 };
 
@@ -72,6 +76,7 @@ const cancelledTicket: PurchaseHistoryTicket = {
   documentType: "DNI",
   documentNumber: "30123456",
   issuedAt: new Date("2026-09-10T10:05:00.000Z"),
+  checkedInAt: null,
   flight: pastFlight,
 };
 
@@ -306,5 +311,50 @@ describe("groupTicketsByFlight", () => {
 
     expect(groups.map((group) => group.flight.id)).toEqual([pastFlight.id, nextFlight.id]);
     expect(groups[1].tickets.map((ticket) => ticket.id)).toEqual(["PAS_PROX", "PAS_PROX_2"]);
+  });
+});
+
+describe("check-in en Mis Compras (US-38)", () => {
+  function entryWith(state: PurchaseHistoryFlight["checkinState"], checkedInAt: Date | null = null) {
+    const flight = { ...nextFlight, checkinState: state };
+    return { ...upcomingEntry, tickets: [{ ...upcomingTicket, flight, checkedInAt }] };
+  }
+  const renderCard = (entry: PurchaseHistoryEntry) =>
+    renderToString(<PurchaseHistoryView history={{ upcoming: [entry], past: [] }} />);
+  const CHECKIN_HREF = 'href="/compra/checkin?reserva=VOL-ABC123"';
+
+  it("antes de la ventana avisa desde cuándo se puede hacer", () => {
+    const html = renderCard(entryWith("not-open"));
+
+    expect(html).toContain("Check-in online desde el 01/10/2026 a las 12:30 hs");
+    expect(html).not.toContain(CHECKIN_HREF);
+  });
+
+  it("con la ventana abierta ofrece hacer el check-in", () => {
+    const html = renderCard(entryWith("open"));
+
+    expect(html).toContain(CHECKIN_HREF);
+    expect(html).toContain("Hacer check-in");
+  });
+
+  it("si todos ya hicieron el check-in lleva a las tarjetas de embarque", () => {
+    const html = renderCard(entryWith("open", new Date("2026-10-01T20:00:00.000Z")));
+
+    expect(html).toContain(CHECKIN_HREF);
+    expect(html).toContain("Ver tarjetas de embarque");
+    expect(html).not.toContain("Hacer check-in");
+  });
+
+  it("con la ventana cerrada solo ofrece las tarjetas de quien hizo el check-in", () => {
+    expect(renderCard(entryWith("closed"))).toContain("El check-in online cerró");
+    expect(renderCard(entryWith("closed", new Date("2026-10-01T20:00:00.000Z")))).toContain(
+      "Ver tarjetas de embarque",
+    );
+  });
+
+  it("un vuelo cancelado o ya salido no muestra el check-in", () => {
+    const html = renderCard(entryWith("unavailable"));
+
+    expect(html).not.toContain("heck-in");
   });
 });

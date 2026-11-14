@@ -158,6 +158,8 @@ describe("getPurchaseHistoryForUser (US-35)", () => {
       status: "SCHEDULED",
       origin: { code: "COR", city: "Córdoba" },
       destination: { code: "SLA", city: "Salta" },
+      // US-38: sale el 06/11 y la consulta es el 01/11, todavía no abre.
+      checkinState: "not-open",
     });
     expect(ticket).toMatchObject({
       id: "PAS_1",
@@ -432,5 +434,39 @@ describe("getPurchaseHistoryForUser (US-35)", () => {
       upcoming: [{ id: "RES_1", totalAmount: "135000" }],
       past: [],
     });
+  });
+});
+
+describe("check-in en Mis Compras (US-38)", () => {
+  it("devuelve el check-in de cada pasaje y el estado de la ventana de cada vuelo", async () => {
+    const checkedInAt = new Date("2026-11-01T11:00:00.000Z");
+    prismaMock.booking.findMany.mockResolvedValue([
+      bookingRow({
+        tickets: [
+          // Sale en menos de 24 h (y faltan más de 40 min): ventana abierta.
+          ticketRow({
+            checkedInAt,
+            flight: flightRow({ id: "VUE_ABIERTO", departureAt: new Date("2026-11-02T10:00:00.000Z") }),
+          }),
+          ticketRow({ id: "PAS_2", checkedInAt: null }),
+          ticketRow({
+            id: "PAS_3",
+            checkedInAt: null,
+            flight: flightRow({ id: "VUE_CANCELADO", status: "CANCELLED" }),
+          }),
+        ],
+      }),
+    ] as never);
+
+    const history = await getPurchaseHistoryForUser("USU_1", NOW);
+    const [entry] = history.upcoming;
+
+    const ticketSelect = (findManySelect().tickets as { select: Record<string, unknown> }).select;
+    expect(ticketSelect).toMatchObject({ checkedInAt: true });
+    expect(entry.tickets.map((t) => [t.id, t.checkedInAt, t.flight.checkinState])).toEqual([
+      ["PAS_1", checkedInAt, "open"],
+      ["PAS_2", null, "not-open"],
+      ["PAS_3", null, "unavailable"],
+    ]);
   });
 });
