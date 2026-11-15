@@ -75,7 +75,10 @@ export default async function AsientosPage({ searchParams }: { searchParams: Pro
             <p className="text-sm text-muted-foreground">
               {`Clase ${SEAT_CLASS_LABELS[item.seatClass]}. Elegí un pasajero y tocá un asiento libre. Los asientos que elijas quedan bloqueados para otros compradores.`}
             </p>
+            {/* La key cambia con los asientos reales: si una confirmación falla y
+                la página se refresca, el mapa descarta la elección vieja. */}
             <SeatMap
+              key={`${item.passengers.map((p) => p.seat).join()}|${item.occupied.join()}`}
               code={view.code}
               flightId={item.flight.id}
               section={item.section}
