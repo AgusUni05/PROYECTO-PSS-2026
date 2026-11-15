@@ -70,7 +70,7 @@ describe("ChangeBreakdown (US-39)", () => {
     expect(html).toContain(formatPesos("45000.00"));
     expect(html).toContain(formatPesos("48000.00"));
     expect(html).toContain(formatPesos("3000.00"));
-    expect(html).toContain("Penalidad por cambio (15 %)");
+    expect(html).toContain("Penalidad por cambio (15\u00a0%)");
     expect(html).toContain(formatPesos("6750.00"));
     expect(html).toContain("Adicional a abonar");
     expect(html).toContain(formatPesos("9750.00"));

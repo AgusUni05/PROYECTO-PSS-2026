@@ -60,9 +60,9 @@ export function changeTier(departureAt: Date, now: Date): CancellationTier | nul
   return tier === null ? null : CHANGE_POLICY[tier];
 }
 
-/** "20 %" a partir de 0.2. */
+/** "20 %" a partir de 0.2, con espacio no separable para que no se corte la línea. */
 export function formatRetention(rate: number): string {
-  return `${Math.round(rate * 100)} %`;
+  return `${Math.round(rate * 100)}\u00a0%`;
 }
 
 /**

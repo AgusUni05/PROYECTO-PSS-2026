@@ -53,7 +53,7 @@ describe("CancellationSummary (US-39)", () => {
     expect(html).toContain("Laza, Franco");
     expect(html).toContain("VU-20261120-002");
     expect(html).toContain("Más de 48 horas antes");
-    expect(html).toContain("Retención 20 %");
+    expect(html).toContain("Retención 20\u00a0%");
   });
 
   it("muestra la liquidación con el medio de acreditación y el neto a reembolsar", () => {
@@ -65,9 +65,9 @@ describe("CancellationSummary (US-39)", () => {
   });
 
   it("explica la política de penalidades completa", () => {
-    expect(html).toContain("20 %");
-    expect(html).toContain("35 %");
-    expect(html).toContain("50 %");
+    expect(html).toContain("20\u00a0%");
+    expect(html).toContain("35\u00a0%");
+    expect(html).toContain("50\u00a0%");
   });
 });
 
