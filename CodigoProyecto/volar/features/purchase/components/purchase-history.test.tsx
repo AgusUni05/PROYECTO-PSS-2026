@@ -8,6 +8,7 @@ import type {
   PurchaseHistoryTicket,
 } from "@/features/purchase/history";
 import { formatCurrency, formatLongDate } from "@/features/flights/format";
+import { formatPesos } from "@/features/cancellation/format";
 import { PurchaseHistoryView } from "./purchase-history";
 import { groupTicketsByFlight } from "./purchase-summary.utils";
 
@@ -92,6 +93,7 @@ const upcomingEntry: PurchaseHistoryEntry = {
   tickets: [upcomingTicket],
   invoice: { id: "FAC_1", number: 1, issuedAt: new Date("2026-09-20T10:05:00.000Z") },
   pendingContingencies: [],
+  voluntaryCancellation: null,
 };
 
 const pastEntry: PurchaseHistoryEntry = {
@@ -106,6 +108,7 @@ const pastEntry: PurchaseHistoryEntry = {
   tickets: [pastTicket],
   invoice: { id: "FAC_2", number: 2, issuedAt: new Date("2026-09-01T10:05:00.000Z") },
   pendingContingencies: [],
+  voluntaryCancellation: null,
 };
 
 const cancellation: PendingPurchaseContingency = {
@@ -131,6 +134,7 @@ const cancelledEntry: PurchaseHistoryEntry = {
   tickets: [cancelledTicket],
   invoice: null,
   pendingContingencies: [cancellation],
+  voluntaryCancellation: null,
 };
 
 function render(history: PurchaseHistory): string {
@@ -356,5 +360,66 @@ describe("check-in en Mis Compras (US-38)", () => {
     const html = renderCard(entryWith("unavailable"));
 
     expect(html).not.toContain("heck-in");
+  });
+});
+
+describe("cancelación voluntaria en Mis Compras (US-39)", () => {
+  const render = (history: PurchaseHistory) => renderToString(<PurchaseHistoryView history={history} />);
+  const CANCEL_HREF = 'href="/compra/cancelar?reserva=VOL-ABC123"';
+
+  it("una compra próxima confirmada ofrece cancelar la reserva", () => {
+    const html = render({ upcoming: [upcomingEntry], past: [] });
+
+    expect(html).toContain(CANCEL_HREF);
+    expect(html).toContain("Cancelar reserva");
+  });
+
+  it("con una contingencia pendiente no ofrece la cancelación con penalidad", () => {
+    const html = render({ upcoming: [{ ...upcomingEntry, pendingContingencies: [cancellation] }], past: [] });
+
+    expect(html).not.toContain(CANCEL_HREF);
+  });
+
+  it("una reserva cancelada por el pasajero muestra el motivo, el reintegro y la retención", () => {
+    const html = render({
+      upcoming: [],
+      past: [
+        {
+          ...pastEntry,
+          status: "CANCELLED",
+          voluntaryCancellation: {
+            reason: "Imprevisto personal o laboral",
+            refund: "36000.00",
+            penalty: "9000.00",
+          },
+        },
+      ],
+    });
+
+    expect(html).toContain("Cancelada por el pasajero");
+    expect(html).toContain("Imprevisto personal o laboral");
+    expect(html).toContain(formatPesos("36000.00"));
+    expect(html).toContain(formatPesos("9000.00"));
+  });
+});
+
+describe("cambio voluntario de fecha en Mis Compras (US-39)", () => {
+  const CHANGE_HREF = 'href="/compra/cambiar?reserva=VOL-ABC123"';
+
+  it("una compra próxima confirmada ofrece cambiar la fecha", () => {
+    const html = renderToString(<PurchaseHistoryView history={{ upcoming: [upcomingEntry], past: [] }} />);
+
+    expect(html).toContain(CHANGE_HREF);
+    expect(html).toContain("Cambiar fecha");
+  });
+
+  it("con una contingencia pendiente no ofrece el cambio con penalidad", () => {
+    const html = renderToString(
+      <PurchaseHistoryView
+        history={{ upcoming: [{ ...upcomingEntry, pendingContingencies: [cancellation] }], past: [] }}
+      />,
+    );
+
+    expect(html).not.toContain(CHANGE_HREF);
   });
 });

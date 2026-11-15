@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { formatCurrency, formatDate } from "@/features/flights/format";
+import { formatPesos } from "@/features/cancellation/format";
 import type { PurchaseHistory, PurchaseHistoryEntry } from "@/features/purchase/history";
 import { PurchaseCard, PurchaseContingencyAlerts } from "./purchase-card";
 import { PurchaseDownloadActions } from "./purchase-download-actions";
@@ -118,6 +119,13 @@ function PurchaseHistoryRow({ entry }: { entry: PurchaseHistoryEntry }) {
           <dd className="font-semibold break-words">{formatCurrency(entry.totalAmount)}</dd>
         </div>
       </dl>
+
+      {entry.voluntaryCancellation && (
+        <p className="mt-3 rounded-xl bg-muted px-3 py-2 text-xs break-words">
+          <b>Cancelada por el pasajero</b>
+          {` · Motivo: ${entry.voluntaryCancellation.reason} · Reintegro ${formatPesos(entry.voluntaryCancellation.refund)} (retención ${formatPesos(entry.voluntaryCancellation.penalty)})`}
+        </p>
+      )}
 
       <PurchaseContingencyAlerts entry={entry} />
 

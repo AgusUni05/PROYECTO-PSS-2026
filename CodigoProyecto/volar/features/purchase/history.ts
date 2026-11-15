@@ -63,6 +63,8 @@ export type PurchaseHistoryEntry = {
   tickets: PurchaseHistoryTicket[];
   invoice: { id: string; number: number; issuedAt: Date } | null;
   pendingContingencies: PendingPurchaseContingency[];
+  /** US-39: motivo, reintegro y retención si el pasajero canceló la reserva; null si no. */
+  voluntaryCancellation: { reason: string; refund: string; penalty: string } | null;
 };
 
 export type PurchaseHistory = {
@@ -116,6 +118,11 @@ const PURCHASE_HISTORY_SELECT = {
           },
         },
       },
+      // US-39: reembolsos de la cancelación voluntaria (los de contingencia no tienen motivo).
+      refunds: {
+        where: { reason: { not: null } },
+        select: { amount: true, penaltyAmount: true, reason: true },
+      },
       contingencies: {
         where: { resolution: "PENDING" },
         orderBy: { createdAt: "asc" },
@@ -159,6 +166,22 @@ function toPurchaseHistoryFlight(flight: PurchaseHistoryFlightRow, now: Date): P
   };
 }
 
+/** US-39: suma los reembolsos voluntarios de la reserva (en centavos, para no perder precisión). */
+function toVoluntaryCancellation(
+  booking: PurchaseHistoryRow,
+): PurchaseHistoryEntry["voluntaryCancellation"] {
+  const refunds = booking.tickets.flatMap((ticket) => ticket.refunds);
+  if (refunds.length === 0) return null;
+  const cents = (value: { toString(): string } | null) => Math.round(Number(value?.toString() ?? 0) * 100);
+  const total = (pick: (refund: (typeof refunds)[number]) => { toString(): string } | null) =>
+    (refunds.reduce((sum, refund) => sum + cents(pick(refund)), 0) / 100).toFixed(2);
+  return {
+    reason: refunds[0].reason ?? "",
+    refund: total((refund) => refund.amount),
+    penalty: total((refund) => refund.penaltyAmount),
+  };
+}
+
 function toPurchaseHistoryEntry(booking: PurchaseHistoryRow, now: Date): PurchaseHistoryEntry {
   return {
     id: booking.id,
@@ -190,6 +213,7 @@ function toPurchaseHistoryEntry(booking: PurchaseHistoryRow, now: Date): Purchas
           issuedAt: booking.invoice.issuedAt,
         }
       : null,
+    voluntaryCancellation: toVoluntaryCancellation(booking),
     pendingContingencies: booking.tickets.flatMap((ticket) =>
       ticket.contingencies.map((contingency) => ({
         ticketId: contingency.ticketId,

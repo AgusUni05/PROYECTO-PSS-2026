@@ -35,6 +35,7 @@ function ticketRow(overrides: Record<string, unknown> = {}) {
     issuedAt: new Date("2026-10-20T15:00:00.000Z"),
     flight: flightRow(),
     contingencies: [],
+    refunds: [],
     ...overrides,
   };
 }
@@ -418,6 +419,7 @@ describe("getPurchaseHistoryForUser (US-35)", () => {
         "status",
         "tickets",
         "totalAmount",
+        "voluntaryCancellation",
       ].sort(),
     );
     expect(entry).not.toHaveProperty("payments");
@@ -468,5 +470,36 @@ describe("check-in en Mis Compras (US-38)", () => {
       ["PAS_2", null, "not-open"],
       ["PAS_3", null, "unavailable"],
     ]);
+  });
+});
+
+describe("cancelación voluntaria en Mis Compras (US-39)", () => {
+  it("resume el motivo, el reintegro y la retención de una reserva cancelada por el pasajero", async () => {
+    const refund = (amount: string, penalty: string) => ({
+      amount: { toString: () => amount },
+      penaltyAmount: { toString: () => penalty },
+      reason: "Imprevisto personal o laboral",
+    });
+    prismaMock.booking.findMany.mockResolvedValue([
+      bookingRow({
+        status: "CANCELLED",
+        tickets: [
+          ticketRow({ status: "REFUNDED", seat: null, refunds: [refund("36000", "9000")] }),
+          ticketRow({ id: "PAS_2", status: "REFUNDED", seat: null, refunds: [refund("36000", "9000")] }),
+        ],
+      }),
+      bookingRow({ id: "RES_2", code: "XYZ98765", tickets: [ticketRow({ id: "PAS_3", refunds: [] })] }),
+    ] as never);
+
+    const history = await getPurchaseHistoryForUser("USU_1", NOW);
+
+    const ticketSelect = (findManySelect().tickets as { select: Record<string, unknown> }).select;
+    expect(ticketSelect.refunds).toMatchObject({ where: { reason: { not: null } } });
+    expect(history.past.find((e) => e.code === "ABC12345")?.voluntaryCancellation).toEqual({
+      reason: "Imprevisto personal o laboral",
+      refund: "72000.00",
+      penalty: "18000.00",
+    });
+    expect(history.upcoming.find((e) => e.code === "XYZ98765")?.voluntaryCancellation).toBeNull();
   });
 });

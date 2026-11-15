@@ -172,6 +172,36 @@ Producción: `features/checkin/` (`window.ts`, `service.ts`, `queries.ts`,
 `features/purchase/components/purchase-checkin-status.tsx`,
 `features/flights/contingency-resolution.ts`.
 
+### US-39 (opcional) — Cambio o cancelación a pedido del pasajero
+
+Ambas operaciones son sobre la reserva completa y aplican la política de
+penalidades por anticipación (cambio_cancelacion_pasajero.html).
+
+| Evidencia | Archivo |
+| --- | --- |
+| Política de penalidades: más de 48 h retiene 20 %, entre 24 y 48 h (inclusive) 35 %, menos de 24 h 50 %; vuelo ya salido no se cancela; retención redondeada al centavo y reintegro exacto. | `features/cancellation/policy.test.ts` |
+| Liquidación por pasaje con el tramo de su vuelo actual y totales; bloqueos por compra no confirmada, sin pasajes, contingencia pendiente o vuelo salido. | `features/cancellation/quote.test.ts`, `features/cancellation/queries.test.ts` |
+| Cancelación: reserva cancelada, pasajes reembolsados con el asiento liberado, un `Refund` por pasaje con motivo y retención, cupo devuelto por vuelo y clase, revalidación al escribir y sin cambios si algo cambió. | `features/cancellation/service.test.ts` |
+| Acción y pantalla: sesión, motivo de la lista, confirmación de que es irreversible, titularidad, derivación a la opción gratuita ante una contingencia, liquidación y formulario. | `features/cancellation/actions.test.ts`, `features/cancellation/components/cancellation.test.tsx`, `app/compra/cancelar/page.test.tsx` |
+| Mis Compras: "Cambiar fecha" y "Cancelar reserva" en compras próximas sin contingencias y "Cancelada por el pasajero" con motivo, reintegro y retención en el historial. | `features/purchase/history.test.ts`, `features/purchase/components/purchase-history.test.tsx` |
+| Cambio de fecha: penalidad de 15 %, 25 % o 35 % sobre lo abonado más la diferencia de tarifa (sin devolución si el vuelo nuevo es más barato), con el ejemplo del wireframe. | `features/cancellation/policy.test.ts`, `features/date-change/quote.test.ts` |
+| Vuelos elegibles: misma ruta, a la venta, distintos del actual y con cupo para todos; solo los 10 más próximos. | `features/date-change/queries.test.ts` |
+| Cambio: pago rechazado registrado sin cambiar la reserva; pago aprobado que toma el cupo nuevo, libera el anterior y reemite los e-tickets con vuelo, asiento, número y precio nuevos, borrando el check-in del vuelo anterior (US-38); sin cobro si algo cambió al escribir. | `features/date-change/service.test.ts` |
+| Acción y pantalla del cambio: sesión, datos de tarjeta, aceptación de la política, lista de vuelos que lleva al desglose, desglose y pago. | `features/date-change/actions.test.ts`, `features/date-change/components/change.test.tsx`, `app/compra/cambiar/page.test.tsx` |
+
+Migración: `20261114130000_refund_voluntary_cancellation` agrega las columnas
+opcionales `refunds.reason` y `refunds.penaltyAmount`. Tiene que estar aplicada
+(`pnpm prisma migrate deploy`) antes de publicar el código.
+
+Producción: `features/cancellation/` (`policy.ts`, `quote.ts`, `queries.ts`,
+`service.ts`, `schema.ts`, `actions.ts`, `format.ts`, `components/`),
+`app/compra/cancelar/page.tsx`, `features/flights/volar-pay-gateway.ts`,
+`features/date-change/` (`quote.ts`, `queries.ts`, `service.ts`, `schema.ts`,
+`actions.ts`, `components/`), `app/compra/cambiar/page.tsx`,
+`features/purchase/service.ts` (exporta la pasarela simulada),
+`features/purchase/history.ts`, `features/purchase/components/purchase-card.tsx`,
+`features/purchase/components/purchase-history.tsx`.
+
 ## Comandos de verificación
 
 Ejecutar desde `CodigoProyecto/volar`:
@@ -285,6 +315,25 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
       401. Después de la
       hora de embarque, "El check-in de este vuelo cerró". A 320 px no hay
       scroll horizontal.
+- [ ] **Cancelación voluntaria (US-39).** Con la migración aplicada y una
+      cuenta pasajero con una compra próxima confirmada: "Cancelar reserva"
+      abre la liquidación con cada pasaje, su tramo y retención, el medio de
+      acreditación y el neto a reembolsar. El botón queda deshabilitado hasta
+      elegir el motivo y aceptar que es irreversible; el diálogo permite
+      "Conservar mi reserva". Al confirmar, la compra pasa al historial como
+      "Cancelada por el pasajero" con el reintegro y la retención, y el cupo y
+      los asientos del vuelo quedan libres. Con una contingencia pendiente no
+      se ofrece la cancelación con penalidad. A 320 px no hay scroll
+      horizontal.
+- [ ] **Cambio voluntario de fecha (US-39).** "Cambiar fecha" lista hasta 10
+      vuelos próximos de la misma ruta. Al elegir uno, la pantalla baja sola
+      hasta el desglose (en mobile queda debajo de la lista), que muestra el
+      crédito por lo abonado, el costo del vuelo nuevo, la diferencia de tarifa
+      (cero si es más barato), la penalidad del tramo y el adicional. El pago queda
+      deshabilitado hasta aceptar la política. Con una tarjeta terminada en
+      número impar el pago se rechaza y la reserva no cambia; con una en número
+      par, Mis Compras muestra el vuelo nuevo con asiento y e-ticket nuevos, y
+      el cupo pasa del vuelo viejo al nuevo. A 320 px no hay scroll horizontal.
 
 ## Limitaciones conocidas
 

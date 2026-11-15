@@ -506,6 +506,10 @@ model Refund {
   contingencyId   String?            @unique
   contingency     TicketContingency? @relation(fields: [contingencyId], references: [id])
   amount          Decimal            @db.Decimal(12, 2)
+  // US-39: cancelación voluntaria. Motivo elegido e importe retenido por la
+  // política de penalidades; ambos null en los reembolsos por contingencia.
+  reason          String?
+  penaltyAmount   Decimal?           @db.Decimal(12, 2)
   status          RefundStatus       @default(PENDING)
   gatewayRefundId String?
   createdAt       DateTime           @default(now())
