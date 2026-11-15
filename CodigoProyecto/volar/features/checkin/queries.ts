@@ -12,6 +12,8 @@ export type CheckinPassenger = {
   seatClass: SeatClass;
   number: string | null;
   checkedInAt: Date | null;
+  /** US-41: valijas adicionales en bodega ya compradas. */
+  extraBags: number;
 };
 
 export type CheckinFlightGroup = {
@@ -64,6 +66,7 @@ export async function getCheckinView(
           documentType: true,
           documentNumber: true,
           checkedInAt: true,
+          extraBags: true,
           flight: {
             select: {
               id: true,

@@ -43,6 +43,7 @@ function group(overrides: Partial<CheckinFlightGroup> = {}): CheckinFlightGroup 
         seatClass: "ECONOMY",
         number: "ETK-DEMO0001-1",
         checkedInAt: null,
+        extraBags: 0,
       },
     ],
     ...overrides,

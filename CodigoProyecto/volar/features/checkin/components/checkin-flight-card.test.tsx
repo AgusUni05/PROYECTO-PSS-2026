@@ -18,6 +18,7 @@ function passenger(overrides: Partial<CheckinPassenger> = {}): CheckinPassenger 
     seatClass: "ECONOMY",
     number: "ETK-DEMO0001-1",
     checkedInAt: null,
+    extraBags: 0,
     ...overrides,
   };
 }

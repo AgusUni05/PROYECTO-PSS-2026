@@ -63,6 +63,8 @@ export function CheckinForm({ code, passengers }: { code: string; passengers: Ch
                 <span className="block text-sm font-bold break-words">{`${passenger.lastName}, ${passenger.firstName}`}</span>
                 <span className="block text-xs text-muted-foreground">
                   {`${documentLabel(passenger)} · ${SEAT_CLASS_LABELS[passenger.seatClass]} · Asiento ${passenger.seat ?? "—"}`}
+                  {passenger.extraBags > 0 &&
+                    ` · +${passenger.extraBags} ${passenger.extraBags === 1 ? "valija" : "valijas"}`}
                 </span>
               </label>
             </li>

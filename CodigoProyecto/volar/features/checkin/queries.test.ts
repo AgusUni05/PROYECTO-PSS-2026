@@ -30,6 +30,7 @@ function ticket(overrides: Record<string, unknown> = {}) {
     documentType: "DNI",
     documentNumber: "30000001",
     checkedInAt: null,
+    extraBags: 0,
     flight: flight(),
     ...overrides,
   };
