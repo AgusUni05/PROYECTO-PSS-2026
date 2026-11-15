@@ -221,6 +221,27 @@ Producción: `features/cancellation/` (`policy.ts`, `quote.ts`, `queries.ts`,
 `features/purchase/history.ts`, `features/purchase/components/purchase-card.tsx`,
 `features/purchase/components/purchase-history.tsx`.
 
+### US-41 (opcional) — Equipaje adicional en el check-in
+
+Paso opcional del check-in (`/compra/checkin/equipaje`), antes de confirmarlo.
+Precio fijo de $ 45.000 por valija y hasta 3 adicionales por pasajero
+(`features/baggage/pricing.ts`).
+
+| Evidencia | Archivo |
+| --- | --- |
+| Datos: al menos una valija, hasta 3 por pasajero, sin pasajeros repetidos y los datos de tarjeta de la compra. | `features/baggage/schema.test.ts` |
+| Compra: titularidad por sesión, pasajes de la reserva, ventana abierta, pasajero sin check-in confirmado y tope contando las ya compradas; pago rechazado registrado sin cambios; pago aprobado que suma las valijas al pasaje, registra el `Payment` y agrega a la factura un ítem por pasajero (cantidad, precio unitario e importe) sumando el total; sin cobro si algo cambió al escribir (doble envío, check-in). | `features/baggage/service.test.ts` |
+
+Migración: `20261115120000_ticket_extra_bags` agrega `tickets.extraBags`
+(entero, por defecto 0). Tiene que estar aplicada (`pnpm prisma migrate
+deploy`) antes de publicar el código.
+
+Producción: `features/baggage/` (`pricing.ts`, `schema.ts`, `service.ts`,
+`actions.ts`, `components/baggage-form.tsx`),
+`app/compra/checkin/equipaje/page.tsx`, `features/checkin/queries.ts`,
+`features/checkin/components/checkin-flight-card.tsx`,
+`features/checkin/components/checkin-form.tsx`.
+
 ## Comandos de verificación
 
 Ejecutar desde `CodigoProyecto/volar`:
@@ -363,6 +384,15 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
       par, Mis Compras muestra el vuelo nuevo con asiento y e-ticket nuevos, y
       el cupo pasa del vuelo viejo al nuevo. A 320 px no hay scroll horizontal.
 
+- [ ] **Equipaje adicional (US-41).** Con la migración aplicada y la ventana de
+      check-in abierta, "Agregar equipaje" abre la pantalla con los pasajeros
+      que todavía no hicieron el check-in. El total se actualiza al sumar o
+      quitar valijas (máximo 3 por pasajero) y el pago aparece solo con al menos
+      una valija. Con una tarjeta terminada en número impar el pago se rechaza
+      y no cambia nada; con una en número par vuelve al check-in, donde el
+      pasajero muestra "+N valijas", y la factura (pantalla y PDF) suma una
+      línea "Equipaje adicional en bodega" por pasajero con el total
+      actualizado. A 320 px no hay scroll horizontal.
 ## Limitaciones conocidas
 
 - **Asientos repetidos entre clases (bug conocido, sin corregir).** Primera y
@@ -406,6 +436,10 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
   una pasarela. El importe reembolsado es el del pasaje y queda registrado,
   pero `gatewayRefundId` incluye un sufijo con `Date.now()`; es único, no
   determinista.
+- **Equipaje adicional fuera de las cancelaciones (US-41).** La cancelación
+  voluntaria (US-39) y el reembolso por contingencia (US-26) liquidan solo el
+  pasaje; las valijas adicionales no se reembolsan. Tampoco se pueden agregar
+  después de confirmar el check-in.
 
 ## Notas operativas
 

@@ -117,9 +117,9 @@
   - **US-40 - Catálogo Maestro de Aeropuertos y Flota (Opcional):** Como administrador, quiero administrar aeropuertos y aviones desde un catálogo, para no ingresarlos a mano al definir trayectos y vuelos.
 
 ## RFO-05: Gestión de equipaje con cargo
-- **Descripción:** El sistema debe permitir agregar equipaje despachado adicional durante la compra, con su precio asociado, e impactarlo en el importe total y en el detalle de la factura.
+- **Descripción:** El sistema debe permitir agregar equipaje despachado adicional al realizar el check-in, con su precio asociado, e impactarlo en el importe total y en el detalle de la factura.
 - **User Stories Asociadas:**
-  - **US-41 - Gestión de Equipaje con Cargo (Opcional):** Como pasajero, quiero agregar equipaje despachado adicional al comprar, para viajar con lo que necesito.
+  - **US-41 - Gestión de Equipaje con Cargo (Opcional):** Como pasajero, quiero agregar equipaje despachado adicional al realizar el Check-In, para viajar con lo que necesito.
 
 ## RFO-06: Búsqueda flexible por fechas cercanas
 - **Descripción:** El sistema debe ofrecer, junto con la búsqueda por fecha exacta, las opciones disponibles en los días previos y posteriores con su precio, para que el pasajero pueda comparar antes de comprar.
@@ -425,7 +425,7 @@
 
 ## US-41 - Gestión de Equipaje con Cargo (Opcional)
 - **Trazabilidad:** RFO-05
-- **Narrativa:** Como pasajero, quiero agregar equipaje despachado adicional al comprar, para viajar con lo que necesito.
+- **Narrativa:** Como pasajero, quiero agregar equipaje despachado adicional al realizar el Check-In, para viajar con lo que necesito.
 - **Criterios de Aceptación:**
   - Selección de valijas adicionales en bodega con adición al total y desglose en la factura.
 
