@@ -6,6 +6,9 @@ import {
   type CancellationBlock,
 } from "@/features/cancellation/quote";
 
+/** Cuántos vuelos se ofrecen para el cambio: los más próximos que cumplen las condiciones. */
+export const MAX_CHANGE_CANDIDATES = 10;
+
 /** Vuelo de la misma ruta al que se puede cambiar la reserva. */
 export type ChangeCandidate = {
   id: string;

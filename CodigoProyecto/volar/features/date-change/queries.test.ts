@@ -63,6 +63,22 @@ describe("getChangeOptions (US-39, cambio de fecha)", () => {
       },
     ]);
   });
+
+  it("ofrece solo los 10 vuelos elegibles más próximos", async () => {
+    prismaMock.booking.findFirst.mockResolvedValue(cancellableBookingRow() as never);
+    prismaMock.flight.findUnique.mockResolvedValue({ routeId: "TRA_1" } as never);
+    // Ordenados por salida como los devuelve la consulta; el primero no tiene cupo.
+    prismaMock.flight.findMany.mockResolvedValue([
+      candidateRow({ id: "VUE_LLENO", economyOccupied: 100 }),
+      ...Array.from({ length: 12 }, (_, i) => candidateRow({ id: `VUE_${i + 1}` })),
+    ] as never);
+
+    const options = await getChangeOptions("GNQ47M", "USU_1", NOW);
+
+    expect(options?.candidates.map((flight) => flight.id)).toEqual(
+      Array.from({ length: 10 }, (_, i) => `VUE_${i + 1}`),
+    );
+  });
 });
 
 describe("getChangeView (US-39, cambio de fecha)", () => {

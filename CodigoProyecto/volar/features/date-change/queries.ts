@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { availableSeats, isOnSale } from "@/features/flights/availability";
 import { voluntaryBlock, type CancellationBlock } from "@/features/cancellation/quote";
 import { loadCancellableBooking, type CancellableBooking } from "@/features/cancellation/queries";
-import { buildChangeQuote, type ChangeCandidate, type ChangeQuote } from "./quote";
+import { buildChangeQuote, MAX_CHANGE_CANDIDATES, type ChangeCandidate, type ChangeQuote } from "./quote";
 
 export type ChangeOptions = {
   booking: CancellableBooking;
@@ -13,7 +13,8 @@ export type ChangeOptions = {
 /**
  * US-39: reserva propia y vuelos a los que se puede cambiar: misma ruta que el
  * vuelo actual, a la venta (la misma regla del buscador), distintos del actual
- * y con cupo en la clase para todos los pasajes. `buyerId` sale de la sesión.
+ * y con cupo en la clase para todos los pasajes; solo los más próximos
+ * (MAX_CHANGE_CANDIDATES). `buyerId` sale de la sesión.
  */
 export async function getChangeOptions(
   code: string,
@@ -79,7 +80,7 @@ export async function getChangeOptions(
     ];
   });
 
-  return { booking, blocked: null, candidates };
+  return { booking, blocked: null, candidates: candidates.slice(0, MAX_CHANGE_CANDIDATES) };
 }
 
 export type ChangeView = ChangeOptions & {

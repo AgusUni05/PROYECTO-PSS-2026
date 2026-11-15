@@ -49,15 +49,16 @@ const quote: ChangeQuote = {
 describe("ChangeFlightList (US-39)", () => {
   const html = renderToString(<ChangeFlightList code="GNQ47M" candidates={candidates} selectedId="VUE_B" />);
 
-  it("cada vuelo selecciona el cambio por link, con fecha, hora, tarifa y cupos", () => {
-    expect(html).toContain('href="/compra/cambiar?reserva=GNQ47M&amp;vuelo=VUE_A"');
+  it("cada vuelo selecciona el cambio por link que lleva al desglose, con fecha, hora, tarifa y cupos", () => {
+    expect(html).toContain('href="/compra/cambiar?reserva=GNQ47M&amp;vuelo=VUE_A#desglose"');
     expect(html).toContain("VU-20261118-002");
     expect(html).toContain("08:30");
     expect(html).toContain("120 cupos");
+    expect(html).toContain("Se muestran hasta 10 vuelos próximos");
   });
 
   it("marca el vuelo elegido", () => {
-    expect(html).toMatch(/aria-current="true"[^>]*href="\/compra\/cambiar\?reserva=GNQ47M&amp;vuelo=VUE_B"|href="\/compra\/cambiar\?reserva=GNQ47M&amp;vuelo=VUE_B"[^>]*aria-current="true"/);
+    expect(html).toMatch(/aria-current="true"[^>]*href="\/compra\/cambiar\?reserva=GNQ47M&amp;vuelo=VUE_B#desglose"|href="\/compra\/cambiar\?reserva=GNQ47M&amp;vuelo=VUE_B#desglose"[^>]*aria-current="true"/);
   });
 });
 

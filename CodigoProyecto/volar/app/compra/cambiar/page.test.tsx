@@ -124,7 +124,7 @@ describe("/compra/cambiar (US-39, cambio de fecha)", () => {
     expect(html).not.toContain("Pago del adicional");
   });
 
-  it("con un vuelo elegido muestra el desglose y el pago", async () => {
+  it("con un vuelo elegido muestra el desglose y el pago, en el destino de los links de la lista", async () => {
     vi.mocked(getChangeView).mockResolvedValue(
       view({
         selected: {
@@ -149,5 +149,6 @@ describe("/compra/cambiar (US-39, cambio de fecha)", () => {
 
     expect(html).toContain("Desglose del cambio");
     expect(html).toContain("Pago del adicional");
+    expect(html).toContain('id="desglose"');
   });
 });

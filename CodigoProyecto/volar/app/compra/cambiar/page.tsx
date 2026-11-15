@@ -86,7 +86,7 @@ export default async function CambiarPage({ searchParams }: { searchParams: Prom
           candidates={view.candidates}
           selectedId={view.selected?.candidate.id ?? null}
         />
-        <div className="grid grid-cols-1 gap-4">
+        <div id="desglose" className="grid scroll-mt-4 grid-cols-1 gap-4">
           {view.selected ? (
             <>
               <ChangeBreakdown quote={view.selected.quote} />

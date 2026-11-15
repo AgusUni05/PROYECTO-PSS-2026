@@ -185,9 +185,9 @@ penalidades por anticipación (cambio_cancelacion_pasajero.html).
 | Acción y pantalla: sesión, motivo de la lista, confirmación de que es irreversible, titularidad, derivación a la opción gratuita ante una contingencia, liquidación y formulario. | `features/cancellation/actions.test.ts`, `features/cancellation/components/cancellation.test.tsx`, `app/compra/cancelar/page.test.tsx` |
 | Mis Compras: "Cambiar fecha" y "Cancelar reserva" en compras próximas sin contingencias y "Cancelada por el pasajero" con motivo, reintegro y retención en el historial. | `features/purchase/history.test.ts`, `features/purchase/components/purchase-history.test.tsx` |
 | Cambio de fecha: penalidad de 15 %, 25 % o 35 % sobre lo abonado más la diferencia de tarifa (sin devolución si el vuelo nuevo es más barato), con el ejemplo del wireframe. | `features/cancellation/policy.test.ts`, `features/date-change/quote.test.ts` |
-| Vuelos elegibles: misma ruta, a la venta, distintos del actual y con cupo para todos. | `features/date-change/queries.test.ts` |
+| Vuelos elegibles: misma ruta, a la venta, distintos del actual y con cupo para todos; solo los 10 más próximos. | `features/date-change/queries.test.ts` |
 | Cambio: pago rechazado registrado sin cambiar la reserva; pago aprobado que toma el cupo nuevo, libera el anterior y reemite los e-tickets con vuelo, asiento, número y precio nuevos, borrando el check-in del vuelo anterior (US-38); sin cobro si algo cambió al escribir. | `features/date-change/service.test.ts` |
-| Acción y pantalla del cambio: sesión, datos de tarjeta, aceptación de la política, lista de vuelos, desglose y pago. | `features/date-change/actions.test.ts`, `features/date-change/components/change.test.tsx`, `app/compra/cambiar/page.test.tsx` |
+| Acción y pantalla del cambio: sesión, datos de tarjeta, aceptación de la política, lista de vuelos que lleva al desglose, desglose y pago. | `features/date-change/actions.test.ts`, `features/date-change/components/change.test.tsx`, `app/compra/cambiar/page.test.tsx` |
 
 Migración: `20261114130000_refund_voluntary_cancellation` agrega las columnas
 opcionales `refunds.reason` y `refunds.penaltyAmount`. Tiene que estar aplicada
@@ -325,10 +325,11 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
       los asientos del vuelo quedan libres. Con una contingencia pendiente no
       se ofrece la cancelación con penalidad. A 320 px no hay scroll
       horizontal.
-- [ ] **Cambio voluntario de fecha (US-39).** Desde "Cambiar fecha", elegir
-      otro vuelo de la misma ruta: el desglose muestra el crédito por lo
-      abonado, el costo del vuelo nuevo, la diferencia de tarifa (cero si es
-      más barato), la penalidad del tramo y el adicional. El pago queda
+- [ ] **Cambio voluntario de fecha (US-39).** "Cambiar fecha" lista hasta 10
+      vuelos próximos de la misma ruta. Al elegir uno, la pantalla baja sola
+      hasta el desglose (en mobile queda debajo de la lista), que muestra el
+      crédito por lo abonado, el costo del vuelo nuevo, la diferencia de tarifa
+      (cero si es más barato), la penalidad del tramo y el adicional. El pago queda
       deshabilitado hasta aceptar la política. Con una tarjeta terminada en
       número impar el pago se rechaza y la reserva no cambia; con una en número
       par, Mis Compras muestra el vuelo nuevo con asiento y e-ticket nuevos, y
