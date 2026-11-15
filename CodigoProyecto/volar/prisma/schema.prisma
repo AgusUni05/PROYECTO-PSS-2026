@@ -363,6 +363,7 @@ model Ticket {
   status      TicketStatus @default(PENDING)
   issuedAt    DateTime?
   checkedInAt DateTime? // US-38: check-in online confirmado (se borra si el pasaje se reprograma)
+  extraBags   Int       @default(0) // US-41: valijas adicionales en bodega compradas en el check-in
   pdfPath     String? // US-36: archivo generado para descarga
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
