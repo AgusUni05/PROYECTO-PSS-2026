@@ -276,10 +276,13 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
       Compras muestra "Check-in online desde el …" y la pantalla de check-in
       avisa cuándo se habilita, sin formulario. Dentro de la ventana, "Hacer
       check-in" abre la pantalla con los pasajeros marcados; sin la declaración
-      de mercancías peligrosas el botón queda deshabilitado. Al confirmar, los
-      pasajeros figuran "Check-in hecho" y se descargan las tarjetas de
-      embarque en PDF (una por pasajero, con la hora de embarque y sin
-      importes). Antes del check-in la descarga responde 404. Después de la
+      de mercancías peligrosas el botón queda deshabilitado. Al confirmar, el
+      vuelo muestra "Todos los pasajeros de este vuelo ya hicieron el
+      check-in" (si solo lo hicieron algunos, esos figuran "Check-in hecho"),
+      Mis Compras pasa a "Ver tarjetas de embarque" y se descargan las
+      tarjetas de embarque en PDF (una por pasajero, con la hora de embarque y
+      sin importes). Antes del check-in la descarga responde 404 y sin sesión,
+      401. Después de la
       hora de embarque, "El check-in de este vuelo cerró". A 320 px no hay
       scroll horizontal.
 
