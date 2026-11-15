@@ -149,6 +149,25 @@ Producción: `prisma/schema.prisma` (`FlightAuditEvent`),
 `features/flights/components/flight-table.tsx`,
 `app/admin/vuelos/[id]/historial/page.tsx`.
 
+### US-37 (opcional) — Selección de asiento en el mapa de la cabina
+
+Paso 1 del check-in online (seleccion_asiento.html); el paso 2 es la
+confirmación de la US-38. Usa la misma numeración que la emisión de la compra
+(US-23): cada clase arranca en la fila 1.
+
+| Evidencia | Archivo |
+| --- | --- |
+| Asientos de cada clase según la capacidad del vuelo (4 por fila en Primera, 6 en Economy), con la última fila incompleta. | `features/seats/cabin.test.ts` |
+| Mapa: solo vuelos con la ventana de check-in abierta y pasajeros sin check-in, la clase comprada habilitada, la otra bloqueada y los ocupados de todo el vuelo. | `features/seats/queries.test.ts` |
+| Cambio de asientos: titularidad por sesión, compra confirmada, pasajes del vuelo, sin check-in, ventana abierta y asiento de la clase; libera y asigna en una transacción que revalida todo, permite intercambiar asientos dentro de la reserva y, si otro comprador tomó el asiento, la restricción única lo bloquea sin cambiar nada. | `features/seats/service.test.ts`, `features/seats/actions.test.ts` |
+| Pantalla: pasajeros, referencias, asientos libres, propios y ocupados, aviso de la otra clase, intercambio entre pasajeros y paso 1 de 2; Mis Compras entra al check-in por los asientos y el paso 2 permite volver a cambiarlos. | `features/seats/components/seat-map.test.tsx`, `features/seats/components/seat-map.utils.test.ts`, `app/compra/checkin/asientos/page.test.tsx`, `features/checkin/components/checkin-flight-card.test.tsx`, `features/purchase/components/purchase-history.test.tsx` |
+
+Producción: `features/seats/` (`cabin.ts`, `queries.ts`, `schema.ts`,
+`service.ts`, `actions.ts`, `components/`), `app/compra/checkin/asientos/page.tsx`,
+`features/checkin/components/checkin-flight-card.tsx`,
+`features/checkin/components/checkin-flight-header.tsx`,
+`features/purchase/components/purchase-checkin-status.tsx`. Sin migración.
+
 ### US-38 (opcional) — Check-in online y tarjeta de embarque
 
 | Evidencia | Archivo |
@@ -301,6 +320,15 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
       un `UPDATE` o `DELETE` sobre `flight_audit_events` falla con
       "flight_audit_events es inmutable". A 320 px la tabla scrollea dentro de
       su contenedor, sin scroll horizontal de la página.
+- [ ] **Selección de asiento (US-37).** Con la ventana de check-in abierta,
+      "Hacer check-in" en Mis Compras abre el paso 1 con el mapa de la clase
+      comprada y la otra clase bloqueada. Elegir un pasajero y tocar un asiento
+      libre lo asigna; tocar el asiento de otro pasajero de la reserva los
+      intercambia; los ocupados no se pueden tocar. "Confirmar asientos y
+      continuar al check-in" guarda y pasa al paso 2, donde el asiento nuevo
+      figura en la lista y "Cambiar asientos" vuelve al mapa. Después del
+      check-in el asiento queda fijo y la tarjeta de embarque lo muestra. A
+      320 px no hay scroll horizontal de la página.
 - [ ] **Check-in online (US-38).** Con la migración aplicada y una cuenta
       pasajero con un pasaje emitido: más de 24 h antes de la salida, Mis
       Compras muestra "Check-in online desde el …" y la pantalla de check-in
@@ -337,6 +365,14 @@ SMTP sandbox. Marcar cada punto antes de dar por cerrado el sprint.
 
 ## Limitaciones conocidas
 
+- **Asientos repetidos entre clases (bug conocido, sin corregir).** Primera y
+  Economy numeran desde la fila 1 y la emisión de la compra (US-23), la
+  reprogramación (US-26) y el cambio de fecha (US-39) solo miran los asientos
+  ocupados de la misma clase,
+  pero el asiento es único por vuelo: en un vuelo con un pasaje de Primera en
+  el 1A, la próxima compra de Economy recibiría el 1A y la base la rechazaría.
+  El mapa de la US-37 lo evita en la elección manual marcando como ocupados
+  los asientos de todo el vuelo.
 - **Sin E2E de navegador.** No hay Playwright ni otro runner de navegador. Los
   componentes se validan con `renderToString`; hover, foco, layout real y
   comportamiento de descarga del navegador son verificación manual.

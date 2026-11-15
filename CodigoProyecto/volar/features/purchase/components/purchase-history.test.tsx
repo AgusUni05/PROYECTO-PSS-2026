@@ -334,10 +334,10 @@ describe("check-in en Mis Compras (US-38)", () => {
     expect(html).not.toContain(CHECKIN_HREF);
   });
 
-  it("con la ventana abierta ofrece hacer el check-in", () => {
+  it("con la ventana abierta ofrece hacer el check-in, empezando por los asientos (US-37)", () => {
     const html = renderCard(entryWith("open"));
 
-    expect(html).toContain(CHECKIN_HREF);
+    expect(html).toContain('href="/compra/checkin/asientos?reserva=VOL-ABC123"');
     expect(html).toContain("Hacer check-in");
   });
 

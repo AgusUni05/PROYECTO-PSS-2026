@@ -21,7 +21,8 @@ export function PurchaseCheckinStatus({
   if (issued.length === 0 || flight.checkinState === "unavailable") return null;
 
   const checkedIn = issued.filter((ticket) => ticket.checkedInAt !== null).length;
-  const href = `/compra/checkin?${new URLSearchParams({ reserva: code })}`;
+  const query = new URLSearchParams({ reserva: code });
+  const href = `/compra/checkin?${query}`;
 
   if (flight.checkinState === "not-open") {
     const opensAt = checkinOpensAt(flight.departureAt);
@@ -33,8 +34,12 @@ export function PurchaseCheckinStatus({
   }
 
   if (flight.checkinState === "open" && checkedIn < issued.length) {
+    // US-37: el check-in arranca por la elección de asientos (paso 1).
     return (
-      <Link href={href} className={buttonVariants({ size: "sm", className: "mt-2 min-h-9" })}>
+      <Link
+        href={`/compra/checkin/asientos?${query}`}
+        className={buttonVariants({ size: "sm", className: "mt-2 min-h-9" })}
+      >
         Hacer check-in
       </Link>
     );

@@ -1,5 +1,7 @@
-import { formatDate, formatLongDate, formatTime } from "@/features/flights/format";
+import Link from "next/link";
+import { formatDate, formatTime } from "@/features/flights/format";
 import type { CheckinFlightGroup } from "../queries";
+import { CheckinFlightHeader } from "./checkin-flight-header";
 import { CheckinForm } from "./checkin-form";
 
 function stateMessage(group: CheckinFlightGroup): string | null {
@@ -23,25 +25,7 @@ export function CheckinFlightCard({ code, group }: { code: string; group: Checki
 
   return (
     <section className="min-w-0 space-y-4 rounded-2xl border border-border bg-card p-4 sm:p-5">
-      <header className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="font-mono text-xs text-muted-foreground">{flight.code}</p>
-          <h2 className="text-lg font-extrabold break-words">
-            {`${flight.origin.city} (${flight.origin.code}) → ${flight.destination.city} (${flight.destination.code})`}
-          </h2>
-          <p className="text-sm text-muted-foreground">{formatLongDate(flight.date)}</p>
-        </div>
-        <dl className="flex gap-5 text-sm">
-          <div>
-            <dt className="text-xs text-muted-foreground">Embarque</dt>
-            <dd className="font-extrabold">{`${formatTime(group.boardingAt)} hs`}</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-muted-foreground">Salida</dt>
-            <dd className="font-extrabold">{`${formatTime(flight.departureAt)} hs`}</dd>
-          </div>
-        </dl>
-      </header>
+      <CheckinFlightHeader flight={flight} boardingAt={group.boardingAt} />
 
       {message && (
         <p className="rounded-xl bg-muted px-3.5 py-3 text-sm text-muted-foreground">{message}</p>
@@ -53,7 +37,19 @@ export function CheckinFlightCard({ code, group }: { code: string; group: Checki
             Todos los pasajeros de este vuelo ya hicieron el check-in.
           </p>
         ) : (
-          <CheckinForm code={code} passengers={group.passengers} />
+          <>
+            {/* US-37: el paso 1 del check-in es elegir los asientos. */}
+            <p className="text-sm text-muted-foreground">
+              {"Paso 2 de 2: confirmá el check-in. "}
+              <Link
+                href={`/compra/checkin/asientos?${new URLSearchParams({ reserva: code })}`}
+                className="font-semibold text-primary underline-offset-4 hover:underline"
+              >
+                Cambiar asientos
+              </Link>
+            </p>
+            <CheckinForm code={code} passengers={group.passengers} />
+          </>
         ))}
     </section>
   );
