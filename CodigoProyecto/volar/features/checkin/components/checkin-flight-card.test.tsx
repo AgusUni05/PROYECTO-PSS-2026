@@ -63,6 +63,20 @@ describe("CheckinFlightCard (US-38)", () => {
     expect(html).toContain("Confirmar check-in");
   });
 
+  it("es el paso 2 y permite volver a elegir los asientos (US-37)", () => {
+    const html = render(group());
+
+    expect(html).toContain("Paso 2 de 2");
+    expect(html).toContain('href="/compra/checkin/asientos?reserva=DEMO0001"');
+    expect(html).toContain("Cambiar asientos");
+  });
+
+  it("si todos ya hicieron el check-in no ofrece cambiar asientos (US-37)", () => {
+    const html = render(group({ passengers: [passenger({ checkedInAt: new Date("2026-11-19T20:00:00.000Z") })] }));
+
+    expect(html).not.toContain("Cambiar asientos");
+  });
+
   it("un pasajero que ya hizo el check-in figura como hecho y no se puede volver a elegir", () => {
     const html = render(
       group({
