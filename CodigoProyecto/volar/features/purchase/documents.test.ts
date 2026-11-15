@@ -2,6 +2,8 @@ import { inflateSync } from "node:zlib";
 import { describe, expect, it } from "vitest";
 import { PDFDocument } from "pdf-lib";
 import {
+  buildBoardingPassesFilename,
+  buildBoardingPassesPdf,
   buildETicketsFilename,
   buildETicketsPdf,
   buildInvoiceFilename,
@@ -41,6 +43,7 @@ function ticket(overrides: Partial<ComprobanteTicket> = {}): ComprobanteTicket {
     documentNumber: "30000001",
     status: "ISSUED",
     issuedAt: ISSUED_AT,
+    checkedInAt: null,
     flight: REPROGRAMMED_FLIGHT,
     ...overrides,
   };
@@ -291,5 +294,72 @@ describe("nombres de archivo (US-36)", () => {
 
     expect(long).toBe(`VolAR-e-tickets-${"A".repeat(40)}.pdf`);
     expect(buildInvoiceFilename("...")).toBe("VolAR-factura-reserva.pdf");
+  });
+});
+
+describe("buildBoardingPassesPdf (US-38)", () => {
+  const CHECKED_IN_AT = new Date("2026-10-28T20:00:00.000Z");
+
+  function checkedInPurchase() {
+    return purchaseFixture({
+      tickets: [
+        ticket({ checkedInAt: CHECKED_IN_AT }),
+        ticket({ id: "PAS_2", number: "ETK-DEMO0001-2", seat: "1B", firstName: "Juan" }),
+      ],
+    });
+  }
+
+  it("genera una tarjeta A4 por cada pasajero con check-in", async () => {
+    const pdf = await PDFDocument.load(await buildBoardingPassesPdf(checkedInPurchase()));
+
+    expect(pdf.getPageCount()).toBe(1);
+  });
+
+  it("muestra pasajero, reserva, vuelo actual, asiento, clase y la hora de embarque", async () => {
+    const text = pdfText(await buildBoardingPassesPdf(checkedInPurchase()));
+
+    expect(text).toContain("TARJETA DE EMBARQUE");
+    expect(text).toContain("Demo, Maria");
+    expect(text).toContain("DEMO0001");
+    expect(text).toContain("VU-REPROGRAMADO");
+    expect(text).toContain("1A");
+    expect(text).toContain("Economy");
+    expect(text).toContain("07:50 hs");
+    expect(text).toContain("08:30 hs");
+    expect(text).not.toContain("Demo, Juan");
+  });
+
+  it("no imprime importes ni datos de pago", async () => {
+    const bytes = await buildBoardingPassesPdf(checkedInPurchase());
+
+    expect(pdfText(bytes)).not.toContain("Total de la compra");
+    expect(pdfText(bytes)).not.toContain("45.000");
+    expect(bytesAsLatin1(bytes)).not.toContain(CARD_SENTINEL);
+  });
+
+  it("omite pasajes que ya no están emitidos aunque tengan check-in", async () => {
+    const purchase = purchaseFixture({
+      tickets: [
+        ticket({ checkedInAt: CHECKED_IN_AT, status: "REFUNDED" }),
+        ticket({ id: "PAS_2", firstName: "Juan", checkedInAt: CHECKED_IN_AT }),
+      ],
+    });
+
+    const text = pdfText(await buildBoardingPassesPdf(purchase));
+
+    expect(text).toContain("Demo, Juan");
+    expect(text).not.toContain("Demo, Maria");
+  });
+
+  it("falla con BOARDING_PASSES_NOT_FOUND si nadie hizo el check-in", async () => {
+    await expect(buildBoardingPassesPdf(purchaseFixture())).rejects.toThrow(
+      "BOARDING_PASSES_NOT_FOUND",
+    );
+  });
+
+  it("sanea el nombre de archivo", () => {
+    expect(buildBoardingPassesFilename("../../RES 2026/001")).toBe(
+      "VolAR-tarjetas-embarque-RES-2026-001.pdf",
+    );
   });
 });

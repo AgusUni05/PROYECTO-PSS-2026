@@ -5,6 +5,8 @@ import type { PurchaseComprobantes } from "./queries";
 import { bookingCodeSchema } from "./schema";
 import type { PurchaseDocumentKind } from "./document-types";
 import {
+  buildBoardingPassesFilename,
+  buildBoardingPassesPdf,
   buildETicketsFilename,
   buildETicketsPdf,
   buildInvoiceFilename,
@@ -46,12 +48,27 @@ export async function authorizePurchaseDownload(
   return { ok: true, purchase };
 }
 
-/** US-36: los builders señalan un comprobante ausente con este código. */
+/** US-36/US-38: los builders señalan un comprobante ausente con estos códigos. */
+const MISSING_DOCUMENT_ERRORS = new Set([
+  "TICKETS_NOT_FOUND",
+  "INVOICE_NOT_FOUND",
+  "BOARDING_PASSES_NOT_FOUND",
+]);
+
 function isMissingDocumentError(error: unknown): boolean {
-  return (
-    error instanceof Error &&
-    (error.message === "TICKETS_NOT_FOUND" || error.message === "INVOICE_NOT_FOUND")
-  );
+  return error instanceof Error && MISSING_DOCUMENT_ERRORS.has(error.message);
+}
+
+/** Cómo se genera y se nombra cada comprobante descargable. */
+function documentFor(kind: PurchaseDocumentKind) {
+  switch (kind) {
+    case "etickets":
+      return { build: buildETicketsPdf, filename: buildETicketsFilename };
+    case "invoice":
+      return { build: buildInvoicePdf, filename: buildInvoiceFilename };
+    case "boarding-passes":
+      return { build: buildBoardingPassesPdf, filename: buildBoardingPassesFilename };
+  }
 }
 
 /**
@@ -63,7 +80,7 @@ export async function purchasePdfResponse(
   rawCode: string,
   kind: PurchaseDocumentKind,
 ): Promise<NextResponse> {
-  const isETickets = kind === "etickets";
+  const document = documentFor(kind);
 
   try {
     const access = await authorizePurchaseDownload(rawCode);
@@ -72,12 +89,8 @@ export async function purchasePdfResponse(
     }
 
     const { purchase } = access;
-    const pdf = isETickets
-      ? await buildETicketsPdf(purchase)
-      : await buildInvoicePdf(purchase);
-    const filename = isETickets
-      ? buildETicketsFilename(purchase.code)
-      : buildInvoiceFilename(purchase.code);
+    const pdf = await document.build(purchase);
+    const filename = document.filename(purchase.code);
 
     return new NextResponse(new Uint8Array(pdf), {
       status: 200,

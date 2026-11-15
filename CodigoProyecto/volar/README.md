@@ -17,6 +17,7 @@ Este repositorio corresponde al **Sprint 3**, cuyo alcance fue:
 | UX | Mis Compras responsive (sin scroll horizontal a 320 px), alertas de contingencia accionables y descargas ocultas para compras no confirmadas. |
 | US-42 (opcional) | Búsqueda flexible: si la fecha buscada no tiene vuelos, `/vuelos` muestra una grilla de ±3 días con la tarifa más baja y los cupos de cada día. |
 | US-40 (opcional) | Catálogo maestro con autocompletado: buscador predictivo de aeropuertos (código, nombre o ciudad) en origen y destino de los trayectos, y capacidad total de la aeronave al programar vuelos. |
+| US-38 (opcional) | Check-in online: desde 24 h antes de la salida hasta la hora de embarque (40 min antes), por pasajero desde Mis Compras, con la declaración de mercancías peligrosas y la tarjeta de embarque en PDF. Requiere la migración `20261114120000_ticket_checkin`. |
 | US-43 (opcional) | Auditoría de vuelos: registro inmutable de creación, modificación y cancelación de cada vuelo (usuario, fecha y hora, valores anteriores y nuevos, motivo), consultable desde "Historial" en `/admin/vuelos`. |
 
 ## Stack

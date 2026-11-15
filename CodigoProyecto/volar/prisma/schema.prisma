@@ -360,9 +360,10 @@ model Ticket {
   documentType   DocumentType
   documentNumber String
 
-  status    TicketStatus @default(PENDING)
-  issuedAt  DateTime?
-  pdfPath   String? // US-36: archivo generado para descarga
+  status      TicketStatus @default(PENDING)
+  issuedAt    DateTime?
+  checkedInAt DateTime? // US-38: check-in online confirmado (se borra si el pasaje se reprograma)
+  pdfPath     String? // US-36: archivo generado para descarga
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 

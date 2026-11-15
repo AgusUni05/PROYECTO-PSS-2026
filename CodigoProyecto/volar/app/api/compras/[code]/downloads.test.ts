@@ -16,14 +16,20 @@ vi.mock("@/features/purchase/documents", async (importOriginal) => {
     ...actual,
     buildETicketsPdf: vi.fn(),
     buildInvoicePdf: vi.fn(),
+    buildBoardingPassesPdf: vi.fn(),
   };
 });
 
 import { getCurrentUser } from "@/lib/auth";
 import { getBookingComprobantesForBuyer } from "@/features/purchase/queries";
-import { buildETicketsPdf, buildInvoicePdf } from "@/features/purchase/documents";
+import {
+  buildBoardingPassesPdf,
+  buildETicketsPdf,
+  buildInvoicePdf,
+} from "@/features/purchase/documents";
 import { GET as getETickets } from "./etickets/route";
 import { GET as getInvoice } from "./factura/route";
+import { GET as getBoardingPasses } from "./tarjetas-embarque/route";
 
 const PDF_BYTES = new Uint8Array([0x25, 0x50, 0x44, 0x46]); // %PDF
 
@@ -85,6 +91,7 @@ function makePurchase(overrides: Partial<PurchaseComprobantes> = {}): PurchaseCo
         documentNumber: "30000001",
         status: "ISSUED",
         issuedAt,
+        checkedInAt: null,
         flight: ticketFlight,
       },
       {
@@ -98,6 +105,7 @@ function makePurchase(overrides: Partial<PurchaseComprobantes> = {}): PurchaseCo
         documentNumber: "30000002",
         status: "ISSUED",
         issuedAt,
+        checkedInAt: null,
         flight: ticketFlight,
       },
     ],
@@ -308,6 +316,52 @@ describe("GET /api/compras/[code]/factura (US-36)", () => {
     vi.mocked(buildInvoicePdf).mockRejectedValue(new Error("INVOICE_NOT_FOUND"));
 
     const response = await callInvoice();
+
+    await expectJsonError(response, 404, "Comprobante no disponible");
+  });
+});
+
+function callBoardingPasses(code = "DEMO0001") {
+  return getBoardingPasses(
+    new Request(`http://localhost/api/compras/${code}/tarjetas-embarque`),
+    { params: Promise.resolve({ code }) },
+  );
+}
+
+describe("GET /api/compras/[code]/tarjetas-embarque (US-38)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(getCurrentUser).mockResolvedValue(makeUser());
+    vi.mocked(getBookingComprobantesForBuyer).mockResolvedValue(makePurchase());
+    vi.mocked(buildBoardingPassesPdf).mockResolvedValue(PDF_BYTES);
+  });
+
+  it("el dueño descarga sus tarjetas de embarque como PDF", async () => {
+    const response = await callBoardingPasses();
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toBe("application/pdf");
+    expect(response.headers.get("Content-Disposition")).toBe(
+      'attachment; filename="VolAR-tarjetas-embarque-DEMO0001.pdf"',
+    );
+    expect(response.headers.get("Cache-Control")).toBe("private, no-store");
+    expect(buildBoardingPassesPdf).toHaveBeenCalledWith(makePurchase());
+    expect(buildETicketsPdf).not.toHaveBeenCalled();
+  });
+
+  it("sin sesión responde 401 y no genera tarjetas", async () => {
+    vi.mocked(getCurrentUser).mockResolvedValue(null);
+
+    const response = await callBoardingPasses();
+
+    await expectJsonError(response, 401, "No autorizado");
+    expect(buildBoardingPassesPdf).not.toHaveBeenCalled();
+  });
+
+  it("responde 404 si ningún pasajero hizo el check-in", async () => {
+    vi.mocked(buildBoardingPassesPdf).mockRejectedValue(new Error("BOARDING_PASSES_NOT_FOUND"));
+
+    const response = await callBoardingPasses();
 
     await expectJsonError(response, 404, "Comprobante no disponible");
   });

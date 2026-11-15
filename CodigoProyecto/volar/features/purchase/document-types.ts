@@ -1,1 +1,1 @@
-export type PurchaseDocumentKind = "etickets" | "invoice";
+export type PurchaseDocumentKind = "etickets" | "invoice" | "boarding-passes";

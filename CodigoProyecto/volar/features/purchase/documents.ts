@@ -7,6 +7,7 @@ import {
   formatLongDate,
   formatTime,
 } from "@/features/flights/format";
+import { boardingTime } from "@/features/checkin/window";
 import type { ComprobanteTicket, PurchaseComprobantes } from "./queries";
 
 // US-36: armado de los PDF de e-tickets y factura. Son funciones puras: no
@@ -78,6 +79,10 @@ export function buildETicketsFilename(bookingCode: string): string {
 
 export function buildInvoiceFilename(bookingCode: string): string {
   return `VolAR-factura-${sanitizeBookingCode(bookingCode)}.pdf`;
+}
+
+export function buildBoardingPassesFilename(bookingCode: string): string {
+  return `VolAR-tarjetas-embarque-${sanitizeBookingCode(bookingCode)}.pdf`;
 }
 
 function drawText(page: PDFPage, text: string, options: DrawTextOptions): void {
@@ -346,6 +351,105 @@ export async function buildETicketsPdf(
   issuedTickets.forEach((ticket, index) => {
     const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
     drawETicketPage(page, fonts, purchase, ticket, index, issuedTickets.length);
+  });
+
+  return pdfDoc.save({ useObjectStreams: false });
+}
+
+/** US-38: una tarjeta de embarque por página; usa el vuelo actual del pasaje y no muestra importes. */
+function drawBoardingPassPage(
+  page: PDFPage,
+  fonts: DocumentFonts,
+  purchase: PurchaseComprobantes,
+  ticket: ComprobanteTicket,
+  index: number,
+  total: number,
+): void {
+  const { flight } = ticket;
+  const boarding = `${formatTime(boardingTime(flight.departureAt))} hs`;
+  let y = drawHeader(page, fonts, "TARJETA DE EMBARQUE");
+
+  drawText(page, "PASAJERO", {
+    x: MARGIN,
+    y,
+    size: 9,
+    font: fonts.regular,
+    color: MUTED_COLOR,
+  });
+  drawText(page, `${ticket.lastName}, ${ticket.firstName}`, {
+    x: MARGIN,
+    y: y - 18,
+    size: 18,
+    font: fonts.bold,
+    color: TEXT_COLOR,
+  });
+  drawRightAligned(page, `Tarjeta ${index + 1} de ${total}`, {
+    right: page.getSize().width - MARGIN,
+    y: y - 14,
+    size: 10,
+    font: fonts.regular,
+    color: MUTED_COLOR,
+  });
+  y -= 44;
+
+  y = drawField(
+    page,
+    fonts,
+    y,
+    "Documento",
+    `${formatDocument(ticket.documentType)} ${ticket.documentNumber}`,
+  );
+  y = drawField(page, fonts, y, "Reserva", purchase.code);
+  y = drawField(page, fonts, y, "Vuelo", flight.code);
+  y = drawField(page, fonts, y, "Ruta", `${flight.origin.code} - ${flight.destination.code}`);
+  y = drawField(
+    page,
+    fonts,
+    y,
+    "Ciudades",
+    `${flight.origin.city} - ${flight.destination.city}`,
+    10,
+  );
+  y = drawField(page, fonts, y, "Fecha", formatLongDate(flight.date));
+  y = drawField(page, fonts, y, "Embarque", boarding, 14);
+  y = drawField(page, fonts, y, "Salida", `${formatTime(flight.departureAt)} hs`);
+  y = drawField(page, fonts, y, "Asiento", ticket.seat ?? "Pendiente", 14);
+  y = drawField(page, fonts, y, "Clase", SEAT_CLASS_LABELS[ticket.seatClass]);
+  y = drawField(page, fonts, y, "E-ticket", ticket.number ?? "Pendiente");
+  if (ticket.checkedInAt) {
+    y = drawField(page, fonts, y, "Check-in", formatDate(ticket.checkedInAt));
+  }
+
+  const note = `Presentate en la puerta de embarque antes de las ${boarding} con tu documento. La puerta se informa en el aeropuerto.`;
+  wrapText(note, fonts.regular, 10, CONTENT_WIDTH).forEach((line, lineIndex) => {
+    drawText(page, line, {
+      x: MARGIN,
+      y: y - 8 - lineIndex * 13,
+      size: 10,
+      font: fonts.regular,
+      color: MUTED_COLOR,
+    });
+  });
+}
+
+/** US-38: tarjetas de los pasajes emitidos que ya hicieron el check-in. */
+export async function buildBoardingPassesPdf(
+  purchase: PurchaseComprobantes,
+): Promise<Uint8Array> {
+  const passes = purchase.tickets.filter(
+    (ticket) => ticket.status === "ISSUED" && ticket.checkedInAt !== null,
+  );
+
+  if (passes.length === 0) {
+    throw new Error("BOARDING_PASSES_NOT_FOUND");
+  }
+
+  const pdfDoc = await newDocument(`Tarjetas de embarque ${purchase.code}`, "Tarjetas de embarque");
+  const fonts = await embedFonts(pdfDoc);
+
+  passes.forEach((ticket, index) => {
+    const page = pdfDoc.addPage([PAGE_WIDTH, PAGE_HEIGHT]);
+    drawBoardingPassPage(page, fonts, purchase, ticket, index, passes.length);
   });
 
   return pdfDoc.save({ useObjectStreams: false });

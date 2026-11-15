@@ -81,6 +81,7 @@ function makePurchase(overrides: Partial<PurchaseComprobantes> = {}): PurchaseCo
         documentNumber: "30000001",
         status: "ISSUED",
         issuedAt,
+        checkedInAt: null,
         flight,
       },
       {
@@ -94,6 +95,7 @@ function makePurchase(overrides: Partial<PurchaseComprobantes> = {}): PurchaseCo
         documentNumber: "AB123456",
         status: "REFUNDED",
         issuedAt,
+        checkedInAt: null,
         flight,
       },
     ],

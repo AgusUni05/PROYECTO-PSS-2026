@@ -331,3 +331,20 @@ describe("getBookingComprobantesForBuyer (US-35/US-36)", () => {
     );
   });
 });
+
+describe("check-in en los comprobantes (US-38)", () => {
+  it("selecciona y devuelve el momento del check-in de cada pasaje", async () => {
+    const checkedInAt = new Date("2026-10-29T20:00:00.000Z");
+    const row = comprobantesRow();
+    row.tickets[0] = { ...row.tickets[0], checkedInAt } as (typeof row.tickets)[number];
+    prismaMock.booking.findFirst.mockResolvedValue(row as never);
+
+    const result = await getBookingComprobantesForBuyer("DEMO0001", "USR_OWNER");
+
+    const include = prismaMock.booking.findFirst.mock.calls[0][0]?.include as {
+      tickets: { select: Record<string, unknown> };
+    };
+    expect(include.tickets.select).toMatchObject({ checkedInAt: true });
+    expect(result?.tickets[0].checkedInAt).toEqual(checkedInAt);
+  });
+});

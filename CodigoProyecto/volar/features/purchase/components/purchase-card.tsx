@@ -8,6 +8,7 @@ import type {
   PurchaseHistoryTicket,
 } from "@/features/purchase/history";
 import type { TicketStatus } from "@/generated/prisma/enums";
+import { PurchaseCheckinStatus } from "./purchase-checkin-status";
 import { PurchaseDownloadActions } from "./purchase-download-actions";
 import { PurchaseStatus } from "./purchase-status";
 import { groupTicketsByFlight } from "./purchase-summary.utils";
@@ -131,6 +132,9 @@ export function PurchaseCard({ entry }: { entry: PurchaseHistoryEntry }) {
                   </li>
                 ))}
               </ul>
+              {entry.status === "CONFIRMED" && (
+                <PurchaseCheckinStatus code={entry.code} flight={group.flight} tickets={group.tickets} />
+              )}
             </div>
           ))
         )}

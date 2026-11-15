@@ -447,9 +447,10 @@ export async function resolveRebooking(
           rebookingNumberSuffix(contingency.id),
         );
 
+        // US-38: el check-in era del vuelo anterior; en el nuevo se vuelve a hacer.
         await tx.ticket.update({
           where: { id: ticket.id },
-          data: { flightId: candidate.id, seat, number, issuedAt: now },
+          data: { flightId: candidate.id, seat, number, issuedAt: now, checkedInAt: null },
         });
 
         // I1: los demás tokens PENDING del mismo pasaje quedan resueltos como

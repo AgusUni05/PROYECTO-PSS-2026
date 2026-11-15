@@ -133,6 +133,8 @@ export type ComprobanteTicket = {
   documentNumber: string;
   status: TicketStatus;
   issuedAt: Date | null;
+  /** US-38: momento del check-in online; null si no se hizo. */
+  checkedInAt: Date | null;
   /**
    * US-26/US-36: vuelo actual del pasaje. Tras una reprogramación la reserva
    * conserva el vuelo original, así que los comprobantes usan este vuelo.
@@ -195,6 +197,7 @@ const BOOKING_FOR_COMPROBANTES_INCLUDE = {
       documentNumber: true,
       status: true,
       issuedAt: true,
+      checkedInAt: true,
       flight: {
         select: {
           code: true,
@@ -271,6 +274,7 @@ function toPurchaseComprobantes(booking: ComprobantesRow): PurchaseComprobantes 
       documentNumber: ticket.documentNumber,
       status: ticket.status,
       issuedAt: ticket.issuedAt,
+      checkedInAt: ticket.checkedInAt,
       flight: {
         code: ticket.flight.code,
         date: ticket.flight.date,
