@@ -11,9 +11,12 @@ export type SeatSelectionFlight = {
   seatClass: SeatClass;
   /** Sección de la clase comprada: la única habilitada en el mapa. */
   section: CabinSection;
-  /** Filas de la otra clase, que el mapa muestra bloqueadas; null si el vuelo no la tiene. */
-  otherRows: { seatClass: SeatClass; from: number; to: number } | null;
-  /** Asientos tomados por otros pasajes (y por los de la reserva que ya hicieron el check-in). */
+  /** La otra clase, que el mapa muestra bloqueada; null si el vuelo no la tiene. */
+  otherClass: SeatClass | null;
+  /**
+   * Asientos tomados por otros pasajes de cualquier clase (y por los de la
+   * reserva que ya hicieron el check-in): el asiento es único por vuelo.
+   */
   occupied: string[];
   /** Pasajeros sin check-in: los que pueden elegir asiento. */
   passengers: SeatPassenger[];
@@ -57,7 +60,6 @@ export async function getSeatSelectionView(
       const pending = group.passengers.filter((p) => p.checkedInAt === null);
       const seatClass = pending[0].seatClass;
       const otherClass: SeatClass = seatClass === "FIRST" ? "ECONOMY" : "FIRST";
-      const other = cabinSection(cabin, otherClass).rows;
 
       const taken = await prisma.ticket.findMany({
         where: {
@@ -73,10 +75,7 @@ export async function getSeatSelectionView(
         boardingAt: group.boardingAt,
         seatClass,
         section: cabinSection(cabin, seatClass),
-        otherRows:
-          other.length > 0
-            ? { seatClass: otherClass, from: other[0].number, to: other[other.length - 1].number }
-            : null,
+        otherClass: cabinSection(cabin, otherClass).seats.length > 0 ? otherClass : null,
         occupied: taken.flatMap((ticket) => ticket.seat ?? []),
         passengers: pending.map((p) => ({ id: p.id, name: `${p.lastName}, ${p.firstName}`, seat: p.seat })),
       };

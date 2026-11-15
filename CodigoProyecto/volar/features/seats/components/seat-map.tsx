@@ -11,7 +11,7 @@ import { chooseSeatsAction } from "../actions";
 import type { SeatSelectionFlight } from "../queries";
 import { changedSeats, nextPassenger, pickSeat, type SeatAssignments } from "./seat-map.utils";
 
-type SeatMapProps = Pick<SeatSelectionFlight, "section" | "otherRows" | "occupied" | "passengers"> & {
+type SeatMapProps = Pick<SeatSelectionFlight, "section" | "otherClass" | "occupied" | "passengers"> & {
   code: string;
   flightId: string;
 };
@@ -19,7 +19,7 @@ type SeatMapProps = Pick<SeatSelectionFlight, "section" | "otherRows" | "occupie
 // US-37: mapa de la cabina del paso 1 del check-in (seleccion_asiento.html).
 // Se elige un pasajero y después un asiento libre de su clase; elegir el
 // asiento de otro pasajero de la reserva los intercambia.
-export function SeatMap({ code, flightId, section, otherRows, occupied, passengers }: SeatMapProps) {
+export function SeatMap({ code, flightId, section, otherClass, occupied, passengers }: SeatMapProps) {
   const router = useRouter();
   const initial: SeatAssignments = Object.fromEntries(passengers.map((p) => [p.id, p.seat]));
   const [assignments, setAssignments] = useState<SeatAssignments>(initial);
@@ -100,10 +100,10 @@ export function SeatMap({ code, flightId, section, otherRows, occupied, passenge
         </li>
       </ul>
 
-      {otherRows && (
+      {otherClass && (
         <p className="flex items-start gap-2 rounded-xl bg-muted px-3.5 py-2.5 text-xs text-muted-foreground">
           <Lock aria-hidden className="mt-px size-3.5 shrink-0" />
-          {`${SEAT_CLASS_LABELS[otherRows.seatClass]} (filas ${otherRows.from} a ${otherRows.to}): no disponible para un pasaje ${SEAT_CLASS_LABELS[section.seatClass]}.`}
+          {`${SEAT_CLASS_LABELS[otherClass]}: no disponible para un pasaje ${SEAT_CLASS_LABELS[section.seatClass]}.`}
         </p>
       )}
 

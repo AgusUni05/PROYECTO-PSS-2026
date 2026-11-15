@@ -6,7 +6,7 @@ import { chooseSeats } from "./service";
 const NOW = new Date("2026-11-20T00:00:00.000Z");
 // Sale en 10 h: dentro de la ventana de check-in (abre 24 h antes, cierra 40 min antes).
 const DEPARTURE_OPEN = new Date("2026-11-20T10:00:00.000Z");
-// 16 asientos de Primera (filas 1 a 4): Economy va de la fila 5 en adelante.
+// 150 asientos de Economy: filas 1 a 25 (6 por fila).
 const FLIGHT = {
   status: "SCHEDULED",
   departureAt: DEPARTURE_OPEN,
@@ -112,15 +112,21 @@ describe("chooseSeats (US-37)", () => {
   });
 
   it("solo asientos de la clase del pasaje", async () => {
+    // 26A no existe con 150 asientos de Economy (filas 1 a 25).
     prismaMock.booking.findFirst.mockResolvedValue(bookingRow([ticketRow()]) as never);
+    expect(await choose([{ ticketId: "PAS_1", seat: "26A" }])).toMatchObject({
+      ok: false,
+      error: "El asiento 26A no corresponde a la clase del pasaje.",
+    });
 
-    // 1A es de Primera; 40A no existe con 150 asientos de Economy (filas 5 a 29).
-    for (const seat of ["1A", "40A"]) {
-      expect(await choose([{ ticketId: "PAS_1", seat }])).toMatchObject({
-        ok: false,
-        error: `El asiento ${seat} no corresponde a la clase del pasaje.`,
-      });
-    }
+    // Primera tiene 4 asientos por fila: no hay letra E.
+    prismaMock.booking.findFirst.mockResolvedValue(
+      bookingRow([ticketRow({ seat: "1A", seatClass: "FIRST" })]) as never,
+    );
+    expect(await choose([{ ticketId: "PAS_1", seat: "1E" }])).toMatchObject({
+      ok: false,
+      error: "El asiento 1E no corresponde a la clase del pasaje.",
+    });
     expect(prismaMock.$transaction).not.toHaveBeenCalled();
   });
 

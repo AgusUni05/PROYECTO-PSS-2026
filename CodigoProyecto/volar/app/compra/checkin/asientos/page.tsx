@@ -79,7 +79,7 @@ export default async function AsientosPage({ searchParams }: { searchParams: Pro
               code={view.code}
               flightId={item.flight.id}
               section={item.section}
-              otherRows={item.otherRows}
+              otherClass={item.otherClass}
               occupied={item.occupied}
               passengers={item.passengers}
             />

@@ -62,14 +62,15 @@ describe("getSeatSelectionView (US-37)", () => {
     expect(getCheckinView).toHaveBeenCalledWith("DEMO0001", "USU_1", NOW);
   });
 
-  it("arma la cabina de la clase comprada, con la otra clase bloqueada y los ocupados de otros", async () => {
+  it("arma la cabina de la clase comprada, con la otra clase bloqueada y los ocupados de todo el vuelo", async () => {
     const result = await getSeatSelectionView("DEMO0001", "USU_1", NOW);
     const [flight] = result?.flights ?? [];
 
-    // 6 asientos de Primera ocupan las filas 1 y 2: Economy va de la 3 a la 4.
+    // 12 asientos de Economy: filas 1 y 2 (cada clase arranca en la fila 1).
     expect(flight.seatClass).toBe("ECONOMY");
-    expect(flight.section.rows.map((row) => row.number)).toEqual([3, 4]);
-    expect(flight.otherRows).toEqual({ seatClass: "FIRST", from: 1, to: 2 });
+    expect(flight.section.rows.map((row) => row.number)).toEqual([1, 2]);
+    expect(flight.otherClass).toBe("FIRST");
+    // El asiento es único por vuelo: también cuentan los ocupados de la otra clase.
     expect(flight.occupied).toEqual(["3B", "1A"]);
     expect(flight.passengers).toEqual([{ id: "PAS_1", name: "Demo, Maria", seat: "5A" }]);
     // Los asientos de los pasajeros que eligen no cuentan como ocupados.

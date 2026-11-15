@@ -37,7 +37,7 @@ function view(overrides: Partial<SeatSelectionView> = {}): SeatSelectionView {
         boardingAt: new Date("2026-11-20T09:20:00.000Z"),
         seatClass: "ECONOMY",
         section: cabinSection({ economyCapacity: 12, firstClassCapacity: 4 }, "ECONOMY"),
-        otherRows: { seatClass: "FIRST", from: 1, to: 1 },
+        otherClass: "FIRST",
         occupied: [],
         passengers: [{ id: "PAS_1", name: "Demo, Maria", seat: "2A" }],
       },
