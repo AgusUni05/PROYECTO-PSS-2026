@@ -47,6 +47,14 @@ export function CheckinFlightCard({ code, group }: { code: string; group: Checki
               >
                 Cambiar asientos
               </Link>
+              {" · "}
+              {/* US-41: equipaje adicional opcional, antes de confirmar. */}
+              <Link
+                href={`/compra/checkin/equipaje?${new URLSearchParams({ reserva: code })}`}
+                className="font-semibold text-primary underline-offset-4 hover:underline"
+              >
+                Agregar equipaje
+              </Link>
             </p>
             <CheckinForm code={code} passengers={group.passengers} />
           </>
