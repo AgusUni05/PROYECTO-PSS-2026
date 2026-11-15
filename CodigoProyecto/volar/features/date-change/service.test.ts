@@ -107,6 +107,7 @@ describe("changeBookingDate (US-39, cambio de fecha)", () => {
       seat: "1B",
       issuedAt: NOW,
       unitPrice: "48000.00",
+      checkedInAt: null,
     });
     expect(String((ticketUpdate.data as { number: string }).number)).toMatch(/^ETK-GNQ47M-1-C/);
     expect(prismaMock.payment.create.mock.calls[0][0].data).toMatchObject({

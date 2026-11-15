@@ -134,6 +134,8 @@ export async function changeBookingDate(
             number: ticketNumber(booking.code, index, numberSuffix),
             issuedAt: now,
             unitPrice: line.newUnitPrice,
+            // US-38: el check-in era del vuelo anterior; en el nuevo se vuelve a hacer.
+            checkedInAt: null,
           },
         });
         if (moved.count !== 1) throw new ChangeAbortedError("CHANGED");

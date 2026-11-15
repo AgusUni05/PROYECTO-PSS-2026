@@ -186,7 +186,7 @@ penalidades por anticipación (cambio_cancelacion_pasajero.html).
 | Mis Compras: "Cambiar fecha" y "Cancelar reserva" en compras próximas sin contingencias y "Cancelada por el pasajero" con motivo, reintegro y retención en el historial. | `features/purchase/history.test.ts`, `features/purchase/components/purchase-history.test.tsx` |
 | Cambio de fecha: penalidad de 15 %, 25 % o 35 % sobre lo abonado más la diferencia de tarifa (sin devolución si el vuelo nuevo es más barato), con el ejemplo del wireframe. | `features/cancellation/policy.test.ts`, `features/date-change/quote.test.ts` |
 | Vuelos elegibles: misma ruta, a la venta, distintos del actual y con cupo para todos. | `features/date-change/queries.test.ts` |
-| Cambio: pago rechazado registrado sin cambiar la reserva; pago aprobado que toma el cupo nuevo, libera el anterior y reemite los e-tickets con vuelo, asiento, número y precio nuevos; sin cobro si algo cambió al escribir. | `features/date-change/service.test.ts` |
+| Cambio: pago rechazado registrado sin cambiar la reserva; pago aprobado que toma el cupo nuevo, libera el anterior y reemite los e-tickets con vuelo, asiento, número y precio nuevos, borrando el check-in del vuelo anterior (US-38); sin cobro si algo cambió al escribir. | `features/date-change/service.test.ts` |
 | Acción y pantalla del cambio: sesión, datos de tarjeta, aceptación de la política, lista de vuelos, desglose y pago. | `features/date-change/actions.test.ts`, `features/date-change/components/change.test.tsx`, `app/compra/cambiar/page.test.tsx` |
 
 Migración: `20261114130000_refund_voluntary_cancellation` agrega las columnas
